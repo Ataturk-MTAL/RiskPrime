@@ -98,7 +98,7 @@ Dosya adı önerisi: `risk-<dönem>.json` (örnek `risk-2026-2027.json`). Asıl 
 
 1. **Başlangıç:** yeni değerlendirme (başlangıç verisiyle ya da boş), dosya aç (sürükle-bırak), "geçen yılı yeni yıla kopyala".
 2. **Okul, kapsam ve imzacılar:** okul, kapsam başlığı, gruplama (alan / bina / yok), dönem, tarihler, imzacılar (ekle/sil/sırala).
-3. **Mekânlar:** ekle, adını değiştir, tür, bina ve alan etiketini seç (önceki değerlerden öneri listesi), sil (onaylı), sırala. Liste bina ya da alana göre süzülür.
+3. **Mekânlar:** ekle, adını değiştir, tür, bina ve alan etiketini seç (önceki değerlerden öneri listesi), sil (onaylı), sırala. Liste `gruplama`ya göre bina ya da alan başlıkları altında gösterilir.
 4. **Risk satırları (seçili mekân):** ekle, düzenle, sil (onaylı); "kütüphaneden ekle" ile hazır satır seçimi. O ve Ş açılır listeden; skor ve renkli düzey anında görünür. Durum: açık / tamam.
 5. **Kontrol listeleri:** liste oluştur (iç), kütüphaneden KL listesi ekle, Excel'den içe al (dış). Maddeler eklenir, düzenlenir, silinir (dış listede kilit açılınca). Cevap: Evet / Hayır / U-D, açıklama.
 6. **Karşılaştır:** ikinci bir yılın dosyası yüklenir; satır tablosunda geçen yılın düzeyi yan sütunda görünür. Eşleşmeyen satırlar "yeni" ya da "kaldırıldı" olarak işaretlenir. Karşılaştırma dosyası değiştirilmez.
