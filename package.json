@@ -20,6 +20,7 @@
     "generate:sample": "node scripts/generate-sample.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
     "@myriaddreamin/typst-ts-web-compiler": "0.7.0",
     "@myriaddreamin/typst.ts": "0.7.0",
     "docx": "^9.5.0",
