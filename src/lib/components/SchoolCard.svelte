@@ -25,6 +25,17 @@
     store.loadCount;
     open = !untrack(() => store.assessment.school.name);
   });
+  let root = $state<HTMLElement>();
+  // Opened from elsewhere (readiness list): expand, scroll into view, focus the first empty field.
+  $effect(() => {
+    if (!store.schoolRequest) return;
+    open = true;
+    requestAnimationFrame(() => {
+      root?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const empty = [...(root?.querySelectorAll<HTMLInputElement>('input') ?? [])].find((i) => !i.value);
+      empty?.focus({ preventScroll: true });
+    });
+  });
 
   const filled = $derived(a.school.signatories.filter((s) => s.name).length);
   const summary = $derived(
@@ -33,7 +44,7 @@
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
 </script>
 
-<Collapsible.Root bind:open class="rounded-xl border bg-card">
+<Collapsible.Root bind:open bind:ref={root} class="scroll-mt-4 rounded-xl border bg-card">
   <Collapsible.Trigger class="flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/70 data-[state=open]:rounded-b-none">
     <span class="flex flex-wrap items-baseline gap-x-3">
       <h2 class="font-semibold">Okul ve kapsam</h2>

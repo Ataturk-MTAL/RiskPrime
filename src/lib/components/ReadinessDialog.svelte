@@ -40,7 +40,7 @@
     <AlertDialog.Header>
       <AlertDialog.Title>PDF eksiklerle çıkacak</AlertDialog.Title>
       <AlertDialog.Description>
-        {#if gaps}Puanlanan satır: {gaps.totals.scoredRows} / {gaps.totals.totalRows}. {/if}İmzalanacak belgede şu eksikler var:
+        {#if gaps}Puanlanan satır: {gaps.totals.scoredRows} / {gaps.totals.totalRows}.{' '}{/if}İmzalanacak belgede şu eksikler var:
       </AlertDialog.Description>
     </AlertDialog.Header>
     {#if gaps}
@@ -48,13 +48,17 @@
         {#if gaps.missingMeta.length}
           <section>
             <h3 class="font-semibold">Eksik bilgi</h3>
-            <p>{gaps.missingMeta.map((m) => META_LABELS[m]).join(', ')}</p>
+            <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={() => go(() => store.openSchool())}>
+              {gaps.missingMeta.map((m) => META_LABELS[m]).join(', ')}
+            </Button>
           </section>
         {/if}
         {#if gaps.emptySignatories}
           <section>
             <h3 class="font-semibold">İmza</h3>
-            <p>{gaps.emptySignatories} imza sahibinin adı boş</p>
+            <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={() => go(() => store.openSchool())}>
+              {gaps.emptySignatories} imzacının adı boş
+            </Button>
           </section>
         {/if}
         {#if gaps.unscored.length}

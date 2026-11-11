@@ -75,7 +75,7 @@
           />
         </div>
       {/key}
-      <Sheet.Footer class="flex-row items-center justify-between border-t">
+      <Sheet.Footer class="flex-row flex-wrap items-center justify-between gap-2 border-t">
         <ConfirmDialog
           label="Satırı sil"
           variant="destructive"
@@ -85,8 +85,8 @@
           onconfirm={() => store.apply((a) => removeRow(a, locationId, row.id))}
         ><Trash2 />Satırı sil</ConfirmDialog>
         <div class="flex gap-1">
-          <Button variant="outline" disabled={index === 0} onclick={() => go(-1)}><ChevronLeft />Önceki</Button>
-          <Button variant="outline" disabled={index === rows.length - 1} onclick={() => go(1)}>Sonraki<ChevronRight /></Button>
+          <Button variant="outline" disabled={index === 0} onclick={() => go(-1)}><ChevronLeft /><span class="max-sm:sr-only">Önceki</span></Button>
+          <Button variant="outline" disabled={index === rows.length - 1} onclick={() => go(1)}><span class="max-sm:sr-only">Sonraki</span><ChevronRight /></Button>
         </div>
       </Sheet.Footer>
     {/if}

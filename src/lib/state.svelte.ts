@@ -63,6 +63,8 @@ class Store {
   tab = $state<Tab>("risk");
   locationId = $state<string | null>(null);
   checklistId = $state<string | null>(null);
+  /** Incremented to ask the school card to open and take focus. */
+  schoolRequest = $state(0);
   /** Incremented whenever a whole assessment is loaded (not on edits). */
   loadCount = $state(0);
   conflict = $state.raw<{ codes: string[]; resolve: (choice: ConflictChoice) => void } | null>(
@@ -203,6 +205,10 @@ class Store {
 
   async newEmpty() {
     if (await this.#confirmDiscard()) this.#load(emptyAssessment(""), "Boş çalışma açıldı.");
+  }
+
+  openSchool() {
+    this.schoolRequest += 1;
   }
 
   selectLocation(id: string) {
