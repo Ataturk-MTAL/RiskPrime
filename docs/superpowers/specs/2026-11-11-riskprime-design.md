@@ -5,7 +5,7 @@ Durum: Onaylandı (kullanıcı, 11.11.2026)
 
 ## Amaç
 
-Okul alanlarının (atölye, depo, oda) İSG risk değerlendirmesini ve kontrol listelerini tarayıcıda hazırlamak, yıllar arasında karşılaştırmak ve imzaya hazır PDF almak. Ölçüt: alan şefi kurulum yapmadan bir linkten açar, alan/tehlike/kontrol maddesi ekler, düzenler, siler; puanlar; PDF alır; gelecek yıl dosyayı açıp yeni yıla kopyalar.
+Okul mekânlarının (atölye, depo, oda, ıslak hacim) İSG risk değerlendirmesini ve kontrol listelerini tarayıcıda hazırlamak, yıllar arasında karşılaştırmak ve imzaya hazır PDF almak. Ölçüt: alan şefi kurulum yapmadan bir linkten açar, alan/tehlike/kontrol maddesi ekler, düzenler, siler; puanlar; PDF alır; gelecek yıl dosyayı açıp yeni yıla kopyalar.
 
 Başlangıç verisi: `Planlar/RISK-ANALIZ` içindeki Typst belgesi (`EET-RISK-DEGERLENDIRME-VE-KONTROL-LISTESI.typ`, `atolye-verisi.typ`, `okul.json`).
 
@@ -30,7 +30,7 @@ MetricusPrime ile aynı biçim: build adımı olmayan statik sayfa, `Ataturk-MTA
 index.html            arayüz
 app.js                ekran mantığı ve olaylar (DOM)
 lib/matris.js         düzey(o, s), skor(o, s); saf fonksiyonlar
-lib/model.js          alan / satır / liste / madde: ekle, düzenle, sil, taşı; her işlem yeni kopya döner
+lib/model.js          mekân / satır / liste / madde: ekle, düzenle, sil, taşı; her işlem yeni kopya döner
 lib/dosya.js          JSON içe/dışa aktarma, doğrulama, sürüm yükseltme
 lib/excel.js          içe alma şablonu üretme ve okuma (SheetJS)
 lib/yil.js            yeni yıla kopyalama
@@ -57,13 +57,17 @@ Dosya adı önerisi: `risk-<dönem>.json` (örnek `risk-2026-2027.json`). Asıl 
   "degerlendirmeTarihi": "GG.AA.YYYY",
   "gecerlilikTarihi": "GG.AA.YYYY",
   "okul": {
-    "okul": "…", "alan": "…",
+    "okul": "…",
+    "kapsam": "Elektrik-Elektronik Teknolojisi Alanı",
+    "gruplama": "alan | bina | yok",
     "imzacilar": [ { "unvan": "İş Güvenliği Uzmanı", "ad": "" } ]
   },
-  "alanlar": [
+  "mekanlar": [
     {
       "id": "a-…", "ad": "ELE1 · Haberleşme ve Görüntü Sistemleri",
       "tur": "atolye | depo | ofis | islak | ortak",
+      "bina": "Atölyeler Binası",
+      "alan": "Elektrik-Elektronik Teknolojisi",
       "satirlar": [
         {
           "id": "r-…", "alet": "…", "tehlike": "…", "etkilenen": "…",
@@ -84,6 +88,7 @@ Dosya adı önerisi: `risk-<dönem>.json` (örnek `risk-2026-2027.json`). Asıl 
 }
 ```
 
+- Yapı bina → alan → mekân ağacı değil, etiketlidir: her mekânın `bina` ve `alan` etiketi vardır (ikisi de boş olabilir). Bir bina birden çok alanı, bir alan birden çok binayı kapsayabilir. Değerlendirmenin kapsamı serbesttir (tek atölye, bir alan, bir bina, tüm okul); `kapsam` kapakta başlık olarak basılır. `gruplama` ekranda ve PDF'te mekânların hangi etikete göre gruplanacağını seçer. `tur: "ortak"` mekân, kapsamdaki tüm mekânlar için ortak satırları taşır.
 - `o`, `s`, `o2`, `s2`: 1-5 tam sayı ya da `null` (puanlanmamış). Boş olan PDF'te boş kutu basılır.
 - Kimlikler (`id`) yıl kopyalamada korunur; karşılaştırma bunlara dayanır.
 - `kaynak: "dis"`: dışarıdan alınan liste. Maddelerin metni arayüzde kilitli gelir, yalnız cevap ve açıklama girilir. Kilit tek tıkla açılabilir.
@@ -92,9 +97,9 @@ Dosya adı önerisi: `risk-<dönem>.json` (örnek `risk-2026-2027.json`). Asıl 
 ## Ekranlar ve akış
 
 1. **Başlangıç:** yeni değerlendirme (başlangıç verisiyle ya da boş), dosya aç (sürükle-bırak), "geçen yılı yeni yıla kopyala".
-2. **Okul ve imzacılar:** okul, alan, dönem, tarihler, imzacılar (ekle/sil/sırala).
-3. **Alanlar:** ekle, adını değiştir, türünü seç, sil (onaylı), sırala.
-4. **Risk satırları (seçili alan):** ekle, düzenle, sil (onaylı); "kütüphaneden ekle" ile hazır satır seçimi. O ve Ş açılır listeden; skor ve renkli düzey anında görünür. Durum: açık / tamam.
+2. **Okul, kapsam ve imzacılar:** okul, kapsam başlığı, gruplama (alan / bina / yok), dönem, tarihler, imzacılar (ekle/sil/sırala).
+3. **Mekânlar:** ekle, adını değiştir, tür, bina ve alan etiketini seç (önceki değerlerden öneri listesi), sil (onaylı), sırala. Liste bina ya da alana göre süzülür.
+4. **Risk satırları (seçili mekân):** ekle, düzenle, sil (onaylı); "kütüphaneden ekle" ile hazır satır seçimi. O ve Ş açılır listeden; skor ve renkli düzey anında görünür. Durum: açık / tamam.
 5. **Kontrol listeleri:** liste oluştur (iç), kütüphaneden KL listesi ekle, Excel'den içe al (dış). Maddeler eklenir, düzenlenir, silinir (dış listede kilit açılınca). Cevap: Evet / Hayır / U-D, açıklama.
 6. **Karşılaştır:** ikinci bir yılın dosyası yüklenir; satır tablosunda geçen yılın düzeyi yan sütunda görünür. Eşleşmeyen satırlar "yeni" ya da "kaldırıldı" olarak işaretlenir. Karşılaştırma dosyası değiştirilmez.
 7. **Çıktı:**
@@ -120,17 +125,17 @@ Aynı Liste Kodu'na sahip satırlar tek liste olur. İçe alınan liste `kaynak:
 
 **Sayfa "Risk Satırları"**
 
-| Alan | Alan Türü | Alet / Ekipman Grubu | Tehlike ve Risk | Etkilenen | Mevcut Önlem | Düzeltici Önlem | Sorumlu | O | Ş |
-|---|---|---|---|---|---|---|---|---|---|
+| Mekân | Mekân Türü | Bina | Alan | Alet / Ekipman Grubu | Tehlike ve Risk | Etkilenen | Mevcut Önlem | Düzeltici Önlem | Sorumlu | O | Ş |
+|---|---|---|---|---|---|---|---|---|---|---|---|
 
-Alan adı yoksa alan oluşturulur. O ve Ş boş bırakılabilir.
+Mekân yoksa oluşturulur (bina ve alan etiketiyle). Bina, Alan, O ve Ş boş bırakılabilir.
 
 Doğrulama hepsi-ya-hiç: tek bir satırda hata varsa hiçbir şey eklenmez, hatalar sayfa ve satır numarasıyla listelenir (ör. "Risk Satırları, satır 7: Ş 1-5 arası olmalı, '6' yazılmış"). Excel dışında CSV de kabul edilir (tek sayfa, ilk satırdaki başlıklardan türü anlaşılır).
 
 ## PDF
 
 - typst.ts (tarayıcıda çalışan Typst derleyicisi). Şablona veri `data.json` sanal dosyası olarak verilir; şablon `json("data.json")` ile okur.
-- `sablon/rapor.typ`: bugünkü belgenin aynısı (kapak: T.C. / MİLLÎ EĞİTİM BAKANLIĞI / okul / alan; dayanak ve yöntem; periyodik kontroller; risk tablosu; kontrol listeleri; imza tablosu).
+- `sablon/rapor.typ`: bugünkü belgenin aynısı, mekân bölümleri `gruplama`ya göre ara başlıklarla (kapak: T.C. / MİLLÎ EĞİTİM BAKANLIĞI / okul / kapsam; dayanak ve yöntem; periyodik kontroller; risk tablosu; kontrol listeleri; imza tablosu).
 - `sablon/kontrol.typ`: MEB KL formu düzeni: başlık, liste adı ve kodu, tarih; S.No / Madde / Evet / Hayır / Gerekli Değil / Açıklama; altta imzacılar.
 - Yazı tipi: açık lisanslı ve Türkçe karakterleri tam bir sans (Noto Sans ya da Inter), `vendor/` içinde.
 - Boş puan ya da cevap kutusu boş basılır; "boş form" seçeneği tüm puan ve cevapları boşaltılmış kopyayla aynı şablonu derler.
