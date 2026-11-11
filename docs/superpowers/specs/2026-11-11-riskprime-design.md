@@ -102,12 +102,15 @@ Dosya adı önerisi: `risk-<dönem>.json` (örnek `risk-2026-2027.json`). Asıl 
 4. **Risk satırları (seçili mekân):** ekle, düzenle, sil (onaylı); "kütüphaneden ekle" ile hazır satır seçimi. O ve Ş açılır listeden; skor ve renkli düzey anında görünür. Durum: açık / tamam.
 5. **Kontrol listeleri:** liste oluştur (iç), kütüphaneden KL listesi ekle, Excel'den içe al (dış). Maddeler eklenir, düzenlenir, silinir (dış listede kilit açılınca). Cevap: Evet / Hayır / U-D, açıklama.
 6. **Karşılaştır:** ikinci bir yılın dosyası yüklenir; satır tablosunda geçen yılın düzeyi yan sütunda görünür. Eşleşmeyen satırlar "yeni" ya da "kaldırıldı" olarak işaretlenir. Karşılaştırma dosyası değiştirilmez.
-7. **Çıktı:**
-   - Değerlendirmeyi indir (`.json`).
-   - PDF: tam belge.
-   - PDF: yalnız kontrol listeleri (seçilenler).
+7. **Çıktı:** ana düğme **"PDF indir"** (varsayılan, tam belge). Yanındaki "▾ diğer biçimler" menüsü:
+   - Kayıt dosyası (`.json`) — uygulamada tekrar açılabilen tek biçim; menüde en üstte ve açıklamasıyla.
+   - PDF: yalnız kontrol listeleri (seçilenler, MEB KL form düzeni).
    - PDF: boş form (puan ve cevap kutuları boş).
+   - Excel (`.xlsx`): risk tablosu (mekân başına satırlar, skor ve düzey dahil) ve kontrol listeleri ayrı sayfalarda; yalnız çıktı, geri açılmaz.
+   - Word (`.docx`): tam belgenin düzenlenebilir hâli (MetricusPrime'daki docx kütüphanesiyle); yalnız çıktı.
    - Excel içe alma şablonunu indir.
+
+   PDF, Excel ya da Word indirilirken kayıt dosyası indirilmemişse "Kayıt dosyasını da indirin; PDF/Excel/Word uygulamada açılamaz" uyarısı ve tek tıkla JSON indirme gösterilir.
 
 Çalışma verisi tarayıcıda (localStorage) da tutulur, sayfa açılınca geri yüklenir. Bu yalnız kolaylıktır; ekranda "kaydedilmemiş değişiklik var, dosyayı indirin" uyarısı gösterilir. "Tarayıcıdaki veriyi sil" düğmesi bulunur.
 
