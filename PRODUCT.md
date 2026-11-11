@@ -1,0 +1,57 @@
+# Product
+
+<!-- impeccable:product-schema 1 -->
+
+## Platform
+
+web
+
+## Users
+
+- **Field teachers (alan öğretmenleri):** workshop teachers who score risk rows (likelihood O, severity Ş) for the workshops and rooms they run and mark checklist items. Mostly on school desktops, also on a phone while walking through a workshop.
+- **Department head / principal (alan şefi, okul müdürü):** collects the assessment for the department, keeps the yearly record, prepares the PDF for signatures.
+- **Occupational safety specialist (iş güvenliği uzmanı):** visits the school, reviews and countersigns the assessment.
+
+Scope: first used by Atatürk Mesleki ve Teknik Anadolu Lisesi, Elektrik-Elektronik Teknolojisi Alanı; designed so any MEB school and any department can use it with its own data. School-specific content (starter data) is an example, not a product assumption.
+
+## Product Purpose
+
+RiskPrime lets a school prepare its İSG (occupational health and safety) risk assessment and MEB control lists in the browser and produce the signed paper record. Success: a department finishes a complete, correctly scored assessment for every location, prints a PDF ready for signatures (or a blank form to fill by hand), and can reopen and update the same record next year.
+
+## Positioning
+
+Built on the MEB "Risk Değerlendirme Rehberi" method and the MEB control lists rather than a generic risk tool: the L-type 5×5 matrix (level read from the matrix cell, not the product), the KL-01–KL-43 lists with their text verbatim, and the Turkish official document layout. Runs entirely in the browser with no account and no server.
+
+## Operating Context
+
+- Assessment cycle: periodic renewal per the İSG Risk Değerlendirmesi Yönetmeliği; work is revisited yearly (period such as 2026-2027).
+- Per location (atölye, depo, ofis, ıslak hacim, ortak): risk rows with equipment, hazard, affected people, existing controls, O and Ş scores, corrective action, responsible person, due date, status, and after-action scores.
+- Control lists: MEB lists (text locked, items can be added or removed as the MEB form allows) and the school's own lists; answers Evet / Hayır / U.D. with notes.
+- Records: the `.json` file and the Excel workbook are both full, restorable records; PDF and Word are outputs only. Excel templates (blank, and pre-filled MEB KL-01–KL-43) feed data in.
+- Paper is the deliverable: the printed PDF is paraphed and signed by the signatories (İş Güvenliği Uzmanı, Çalışan Temsilcisi, Destek Elemanı, Alan Şefi, İşveren / Okul Müdürü).
+
+## Capabilities and Constraints
+
+- Static web app (GitHub Pages target); Svelte 5 + TypeScript + Tailwind 4 + shadcn-svelte (bits-ui), Vite+, pnpm.
+- All processing in the browser; no data is sent anywhere, no third-party requests at runtime (the PDF compiler is bundled). Must keep working on school networks.
+- Code is English; every user-facing string is Turkish.
+- Risk levels and their meaning come from the MEB guide (Anlamsız, Düşük, Orta, Yüksek, Tolere edilemez); the guide's scales for O and Ş are shown in the app.
+- Undecided: public deployment and whether the school-specific starter data (names) ships publicly.
+
+## Evidence on Hand
+
+- MEB Risk Değerlendirme Rehberi and KL-01–KL-43 control lists (sources in the Planlar repo, `RISK-ANALIZ/kaynaklar/`); library data in `src/lib/data/library.json`.
+- Real school inventory used for the starter assessment (`src/lib/data/starter.json`).
+- No testimonials, usage numbers or endorsements exist; do not invent them.
+
+## Product Principles
+
+1. The signed paper record is the outcome; every screen serves producing a correct, complete PDF.
+2. Data never leaves the user's device.
+3. Follow the MEB method exactly; do not simplify or reinterpret the matrix or the control lists.
+4. Scoring 20–30 rows per location must be fast and scannable; long Turkish text must stay readable.
+5. Nothing is lost: unsaved work is always visible, and every saved record can be reopened.
+
+## Accessibility & Inclusion
+
+Priority requirement: large enough text, high contrast and full keyboard use. Users include older teachers on shared school computers and phones in workshops. Target WCAG 2.2 AA; do not rely on colour alone for risk levels (level names are always shown).
