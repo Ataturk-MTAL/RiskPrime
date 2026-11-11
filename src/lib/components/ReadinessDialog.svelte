@@ -30,7 +30,7 @@
         <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={() => go(() => select(g.id))}>
           {g.name || 'Adsız'}
         </Button>
-        <span class="text-muted-foreground">: {g.count} {suffix}</span>
+        <span class="text-muted-foreground">: {g.count} {suffix}{g.detail ? ` (${g.detail})` : ''}</span>
       </li>
     {/each}
   </ul>

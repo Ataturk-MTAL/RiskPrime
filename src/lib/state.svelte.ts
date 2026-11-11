@@ -3,6 +3,7 @@ import { tick } from "svelte";
 import type { Assessment, ChecklistTemplate, LocationTemplate } from "$lib/domain/types";
 import { addLocationFromTemplate, emptyAssessment } from "$lib/domain/assessment";
 import { addChecklist as addChecklistFromTemplate } from "$lib/domain/checklist";
+import { autoAssign } from "$lib/domain/auto-assign";
 import { rollover } from "$lib/domain/rollover";
 import { fileName, parse, serialize } from "$lib/domain/file";
 import { isBackup, restoreBackup } from "$lib/domain/excel-backup";
@@ -330,12 +331,16 @@ class Store {
   addFromLibrary(locations: LocationTemplate[], checklists: ChecklistTemplate[]) {
     const beforeLocations = this.assessment.locations.length;
     const beforeLists = this.assessment.checklists.length;
-    const ok = this.apply((a) =>
-      checklists.reduce(
+    const ok = this.apply((a) => {
+      const added = checklists.reduce(
         (acc, tpl) => addChecklistFromTemplate(acc, tpl),
         locations.reduce(addLocationFromTemplate, a),
-      ),
-    );
+      );
+      return autoAssign(
+        added,
+        added.checklists.slice(beforeLists).map((c) => c.id),
+      );
+    });
     if (!ok) return;
     toast.info(
       `Eklendi: ${locations.length} mekân, ${checklists.length} kontrol listesi. İstemediğinizi ilgili ekrandan silebilirsiniz.`,

@@ -42,7 +42,8 @@ export interface RiskRow {
   status: RowStatus;
   likelihoodAfter: Score | null;
   severityAfter: Score | null;
-  source?: RiskSource;
+  /** Checklist items this row came from; deduped, order kept. */
+  sources?: RiskSource[];
 }
 
 export interface Location {

@@ -6,22 +6,26 @@
 
 <script lang="ts">
   import { Badge } from '$lib/components/ui/badge';
-  import { sourceText } from '$lib/domain/export-data';
-  import { sourceOf } from '$lib/domain/links';
+  import { sourceLabel, sourcesOf } from '$lib/domain/links';
   import type { RiskRow } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
 
+  const MAX_BADGES = 3;
+
   let { row }: { row: RiskRow } = $props();
 
-  const info = $derived(sourceOf(store.assessment, row));
-  const nowYes = $derived(info?.answer === 'yes' && row.status === 'open');
+  const infos = $derived(sourcesOf(store.assessment, row));
+  const nowYes = $derived(row.status === 'open' && infos.some((i) => i.answer === 'yes'));
 </script>
 
-{#if info}
+{#if infos.length}
   <span class="flex flex-wrap items-center gap-1">
-    <button type="button" class="rounded-4xl focus-visible:outline-none" title="{info.no}. {info.text}" aria-label="Kontrol maddesine git: {sourceText(store.assessment, row)}, cevap {SOURCE_ANSWER_TEXT[info.answer]}" onclick={() => store.selectChecklist(info.listId)}>
-      <Badge variant="outline">{sourceText(store.assessment, row)} · {SOURCE_ANSWER_TEXT[info.answer]}</Badge>
-    </button>
+    {#each infos.slice(0, MAX_BADGES) as info (info.listId + info.itemId)}
+      <button type="button" class="rounded-4xl focus-visible:outline-none" title="{info.no}. {info.text}" aria-label="Kontrol maddesine git: {sourceLabel(info)}, cevap {SOURCE_ANSWER_TEXT[info.answer]}" onclick={() => store.selectChecklist(info.listId)}>
+        <Badge variant="outline">{sourceLabel(info)} · {SOURCE_ANSWER_TEXT[info.answer]}</Badge>
+      </button>
+    {/each}
+    {#if infos.length > MAX_BADGES}<Badge variant="outline">+{infos.length - MAX_BADGES}</Badge>{/if}
     {#if nowYes}<Badge variant="destructive">Madde Evet oldu</Badge>{/if}
   </span>
 {/if}

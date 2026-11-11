@@ -2,7 +2,7 @@
 import { GROUPINGS, LOCATION_TYPES, STATUSES } from "./assessment";
 import { ANSWERS } from "./checklist";
 import { isScore } from "./matrix";
-import { SCHEMA_VERSION, type Assessment } from "./types";
+import { SCHEMA_VERSION, type Assessment, type RiskSource } from "./types";
 
 const SOURCES = ["internal", "external"];
 
@@ -61,10 +61,33 @@ function validateRow(r: unknown, path: string, errors: string[]): void {
   }
   if (!STATUSES.includes(r.status as never))
     errors.push(`${path}.status: ${STATUSES.join(" ya da ")} olmalı.`);
-  const s = r.source;
-  if (s !== undefined && !(isObject(s) && isString(s.listId) && isString(s.itemId))) {
+  // `source` is the pre-multi-link field; still accepted and converted by migrateRows.
+  if (r.source !== undefined && !isSourceRef(r.source))
     errors.push(`${path}.source: listId ve itemId metin olmalı.`);
-  }
+  const list = r.sources;
+  if (list !== undefined && !(Array.isArray(list) && list.every(isSourceRef)))
+    errors.push(`${path}.sources: her kayıt için listId ve itemId metin olmalı.`);
+}
+
+const isSourceRef = (s: unknown) => isObject(s) && isString(s.listId) && isString(s.itemId);
+
+/** Converts the old single `source` of every row into `sources` (deduped). Input is not mutated. */
+function migrateRows(a: Assessment): Assessment {
+  return {
+    ...a,
+    locations: a.locations.map((l) => ({
+      ...l,
+      rows: l.rows.map((r) => {
+        const { source, ...rest } = r as typeof r & { source?: RiskSource };
+        if (!source) return r;
+        const all = [...(rest.sources ?? []), source];
+        const sources = all.filter(
+          (s, i) => all.findIndex((t) => t.listId === s.listId && t.itemId === s.itemId) === i,
+        );
+        return { ...rest, sources };
+      }),
+    })),
+  };
 }
 
 function validateLocation(l: unknown, path: string, errors: string[]): void {
@@ -137,7 +160,7 @@ export function parse(text: string): { assessment: Assessment } | { errors: stri
     return { errors: ["Dosya okunamadı: geçerli bir JSON değil."] };
   }
   const errors = validate(value);
-  return errors.length ? { errors } : { assessment: value as Assessment };
+  return errors.length ? { errors } : { assessment: migrateRows(value as Assessment) };
 }
 
 export function serialize(a: Assessment): string {

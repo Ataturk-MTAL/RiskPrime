@@ -1,6 +1,6 @@
 import { isBefore } from "./date";
 import { hazardOf } from "./checklist-risk";
-import { rowsForItem } from "./links";
+import { rowsForItem, sourceLabel, sourcesOf } from "./links";
 import { riskLevel } from "./matrix";
 import type { Assessment, RiskRow } from "./types";
 
@@ -8,6 +8,8 @@ export interface GapEntry {
   id: string;
   name: string;
   count: number;
+  /** Extra hint, e.g. which linked items are now "Evet". */
+  detail?: string;
 }
 
 export type MetaField = "school" | "period" | "assessmentDate" | "validUntil";
@@ -83,17 +85,21 @@ export function readiness(a: Assessment): Readiness {
           i.answer === "no" &&
           rowsForItem(a, c.id, i.id).length === 0 &&
           // Rows made before sources existed are matched by their hazard text.
-          !a.locations.some((l) => l.rows.some((r) => !r.source && r.hazard === hazardOf(c, i))),
+          !a.locations.some((l) =>
+            l.rows.some((r) => !r.sources?.length && r.hazard === hazardOf(c, i)),
+          ),
       ).length,
     })),
   );
-  const sourceNowYes = perLocation(
-    (r) =>
-      r.status === "open" &&
-      !!r.source &&
-      a.checklists
-        .find((c) => c.id === r.source?.listId)
-        ?.items.find((i) => i.id === r.source?.itemId)?.answer === "yes",
+  const sourceNowYes = withCount(
+    a.locations.map((l) => {
+      const yes = l.rows
+        .filter((r) => r.status === "open")
+        .map((r) => sourcesOf(a, r).filter((s) => s.answer === "yes"))
+        .filter((s) => s.length);
+      const labels = [...new Set(yes.flat().map(sourceLabel))];
+      return { id: l.id, name: l.name, count: yes.length, detail: labels.join(", ") };
+    }),
   );
   const emptySignatories = a.school.signatories.filter((s) => blank(s.name)).length;
   const missingMeta: MetaField[] = [];

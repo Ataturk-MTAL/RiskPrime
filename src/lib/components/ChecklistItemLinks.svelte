@@ -3,6 +3,7 @@
   import { rowsForItem } from '$lib/domain/links';
   import type { Checklist, ChecklistItem } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
+  import ChecklistExistingRowButton from './ChecklistExistingRowButton.svelte';
   import ChecklistRiskButton from './ChecklistRiskButton.svelte';
 
   let { list, item }: { list: Checklist; item: ChecklistItem } = $props();
@@ -20,4 +21,9 @@
 {#if item.answer === 'yes' && rows.some((r) => store.assessment.locations.find((l) => l.id === r.locationId)?.rows.find((x) => x.id === r.rowId)?.status !== 'done')}
   <span class="text-xs text-muted-foreground">Bağlı satır hâlâ açık</span>
 {/if}
-{#if item.answer === 'no' && !rows.length}<ChecklistRiskButton {list} itemId={item.id} />{/if}
+{#if item.answer === 'no'}
+  <div class="flex flex-wrap gap-2">
+    {#if !rows.length}<ChecklistRiskButton {list} itemId={item.id} />{/if}
+    <ChecklistExistingRowButton {list} itemId={item.id} />
+  </div>
+{/if}

@@ -52,7 +52,7 @@ const ROW_KEYS = [
   "status",
   "likelihoodAfter",
   "severityAfter",
-  "source",
+  "sources",
 ] as const;
 const SCORE_KEYS = ["likelihood", "severity", "likelihoodAfter", "severityAfter"] as const;
 

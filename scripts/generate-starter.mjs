@@ -44,6 +44,24 @@ export function detectType(name) {
   return "workshop";
 }
 
+const lower = (s) => s.toLocaleLowerCase("tr");
+const codeOf = (name) => name.match(/^\s*(ELE\d+)\b/i)?.[1].toUpperCase();
+
+/** JS copy of suggestLocations() in src/lib/domain/auto-assign.ts (a test guards drift). */
+function suggestIds(locations, listName) {
+  const name = lower(listName);
+  if (name.startsWith("ortak")) return [];
+  const codes = new Set((listName.match(/\bELE\d+\b/gi) ?? []).map((c) => c.toUpperCase()));
+  const pick = (f) => locations.filter(f).map((l) => l.id);
+  const byCode = pick((l) => codes.has(codeOf(l.name) ?? ""));
+  if (byCode.length) return byCode;
+  const byName = pick((l) => lower(l.name) === name);
+  if (byName.length) return byName;
+  if (name.includes("depo")) return pick((l) => l.type === "storage");
+  if (/odalar|odası/.test(name)) return pick((l) => l.type === "office");
+  return [];
+}
+
 const two = (n) => String(n).padStart(2, "0");
 
 export function convert(data, school) {
@@ -77,6 +95,7 @@ export function convert(data, school) {
     code: "",
     name,
     source: "internal",
+    ...(suggestIds(locations, name).length ? { locationIds: suggestIds(locations, name) } : {}),
     items: items.map((text, j) => ({
       id: `m-${two(i + 1)}-${two(j + 1)}`,
       no: String(j + 1),

@@ -33,6 +33,7 @@ import {
   type Location,
   type LocationType,
   type RiskRow,
+  type RiskSource,
   type RowStatus,
   type Score,
 } from "./types";
@@ -76,16 +77,25 @@ const optionalColumn = (header: unknown[] | undefined, name: string) =>
   (header || []).findIndex((h) => norm(cell(h)) === norm(name));
 const keyColumn = (header: unknown[] | undefined) => optionalColumn(header, LOCATION_KEY_HEADER);
 
-/** "<Liste No>/<Madde No>" for a row's source, or "" when unlinked or dangling. */
-function sourceRef(a: Assessment, r: RiskRow): string {
-  const listIndex = a.checklists.findIndex((c) => c.id === r.source?.listId);
+const SOURCE_SEPARATOR = "; ";
+
+/** "<Liste No>/<Madde No>" for one source, or "" when dangling. */
+function sourceRef(a: Assessment, s: RiskSource): string {
+  const listIndex = a.checklists.findIndex((c) => c.id === s.listId);
   const items = a.checklists[listIndex]?.items ?? [];
-  const position = items.findIndex((m) => m.id === r.source?.itemId);
+  const position = items.findIndex((m) => m.id === s.itemId);
   if (position < 0) return "";
   const no = items[position].no.trim();
   const unique = no !== "" && items.filter((m) => m.no.trim() === no).length === 1;
   return `${listIndex + 1}/${unique ? no : `#${position + 1}`}`;
 }
+
+/** All of a row's source refs joined with "; " (dangling ones skipped). */
+const sourceRefs = (a: Assessment, r: RiskRow) =>
+  (r.sources ?? [])
+    .map((s) => sourceRef(a, s))
+    .filter(Boolean)
+    .join(SOURCE_SEPARATOR);
 const LIST_COLUMNS: ColumnDef[] = [
   ["listNo", "Liste No"],
   ["code", "Liste Kodu"],
@@ -146,7 +156,7 @@ function riskSheet(a: Assessment): Table {
         orBlank(riskScore(r.likelihoodAfter, r.severityAfter)),
         level(riskLevel(r.likelihoodAfter, r.severityAfter)),
         locationIndex + 1,
-        sourceRef(a, r),
+        sourceRefs(a, r),
       ];
     }),
   );
@@ -323,10 +333,18 @@ function linkBackup(
     rows: l.rows.map((r) => {
       const hit = refs.get(r.id);
       if (!hit) return r;
-      const source = resolveRef(lists, hit.ref);
-      if (!source)
-        errors.push(`${SHEET_RISK}, satır ${hit.rowNo}: Kaynak Madde '${hit.ref}' bulunamadı.`);
-      return source ? { ...r, source } : r;
+      const sources = hit.ref.split(";").flatMap((part) => {
+        const ref = part.trim();
+        if (!ref) return [];
+        const found = resolveRef(lists, ref);
+        if (!found)
+          errors.push(`${SHEET_RISK}, satır ${hit.rowNo}: Kaynak Madde '${ref}' bulunamadı.`);
+        return found ? [found] : [];
+      });
+      const unique = sources.filter(
+        (s, i) => sources.findIndex((t) => t.listId === s.listId && t.itemId === s.itemId) === i,
+      );
+      return unique.length ? { ...r, sources: unique } : r;
     }),
   }));
   const checklists = lists.map(({ list, locationNos }) => {

@@ -1868,6 +1868,7 @@
       "code": "",
       "name": "ELE1 · Haberleşme ve Görüntü Sistemleri",
       "source": "internal",
+      "locationIds": ["a-02"],
       "items": [
         {
           "id": "m-03-01",
@@ -1904,6 +1905,7 @@
       "code": "",
       "name": "ELE2, ELE4, ELE7, ELE12 · Elektrik tesisat setleri",
       "source": "internal",
+      "locationIds": ["a-03", "a-04", "a-07", "a-10"],
       "items": [
         {
           "id": "m-04-01",
@@ -1933,6 +1935,7 @@
       "code": "",
       "name": "ELE5 · Zayıf Akım ve Güvenlik Sistemleri",
       "source": "internal",
+      "locationIds": ["a-05"],
       "items": [
         {
           "id": "m-05-01",
@@ -1962,6 +1965,7 @@
       "code": "",
       "name": "ELE6 · Pano Montaj",
       "source": "internal",
+      "locationIds": ["a-06"],
       "items": [
         {
           "id": "m-06-01",
@@ -1984,6 +1988,7 @@
       "code": "",
       "name": "ELE7 · Endüstriyel Elektronik",
       "source": "internal",
+      "locationIds": ["a-07"],
       "items": [
         {
           "id": "m-07-01",
@@ -1999,6 +2004,7 @@
       "code": "",
       "name": "ELE9 · Bilgisayar Laboratuvarı (KL-27, KL-19)",
       "source": "internal",
+      "locationIds": ["a-08"],
       "items": [
         {
           "id": "m-08-01",
@@ -2035,6 +2041,7 @@
       "code": "",
       "name": "ELE10 · Otomasyon (PLC)",
       "source": "internal",
+      "locationIds": ["a-09"],
       "items": [
         {
           "id": "m-09-01",
@@ -2064,6 +2071,7 @@
       "code": "",
       "name": "ELE13, ELE15 · Kumanda ve motorlar",
       "source": "internal",
+      "locationIds": ["a-11", "a-13"],
       "items": [
         {
           "id": "m-10-01",
@@ -2107,6 +2115,7 @@
       "code": "",
       "name": "ELE14 · Hidrolik-Pnömatik ve Proses (KL-28)",
       "source": "internal",
+      "locationIds": ["a-12"],
       "items": [
         {
           "id": "m-11-01",
@@ -2143,6 +2152,7 @@
       "code": "",
       "name": "Elektronik ve elektrik depoları",
       "source": "internal",
+      "locationIds": ["a-14", "a-15"],
       "items": [
         {
           "id": "m-12-01",
@@ -2200,6 +2210,7 @@
       "code": "",
       "name": "Öğrenci tuvaleti (KL-11)",
       "source": "internal",
+      "locationIds": ["a-16"],
       "items": [
         {
           "id": "m-13-01",
@@ -2257,6 +2268,7 @@
       "code": "",
       "name": "Öğretmen odaları ve şef odası (KL-19)",
       "source": "internal",
+      "locationIds": ["a-17", "a-18"],
       "items": [
         {
           "id": "m-14-01",

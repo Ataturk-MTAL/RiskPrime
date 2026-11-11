@@ -1,7 +1,7 @@
 // Pure data transforms shared by the PDF, Excel and Word exports.
 import { grouped } from "./assessment";
 import { fileName } from "./file";
-import { liveLocationIds, sourceOf } from "./links";
+import { liveLocationIds, sourceLabel, sourcesOf } from "./links";
 import { riskLevel, riskScore, type Level } from "./matrix";
 import type { Answer, Assessment, Checklist, Location, RiskRow, RowStatus } from "./types";
 
@@ -90,7 +90,7 @@ export function checklistRows(a: Assessment): ExportChecklistRow[] {
   );
 }
 
-export type PdfRow = Omit<RiskRow, "source"> & {
+export type PdfRow = Omit<RiskRow, "sources"> & {
   /** Checklist reference such as "KL-26.06"; "" when the row has no (valid) source. */
   source: string;
   score: number | null;
@@ -102,15 +102,9 @@ export type PdfLocation = Omit<Location, "rows"> & { rows: PdfRow[] };
 /** Names of the locations the list applies to, joined with ", "; "" for a general list. */
 export type PdfChecklist = Checklist & { locationNames: string };
 
-const SHORT_NAME_LENGTH = 12;
-
-/** "KL-26.06": list code (else a short list name) + "." + item no. */
+/** "KL-26.06, KL-26.07": one label per linked item (see sourceLabel); "" when none. */
 export function sourceText(a: Assessment, r: RiskRow): string {
-  const info = sourceOf(a, r);
-  if (!info) return "";
-  const list = a.checklists.find((c) => c.id === info.listId);
-  const label = info.code || (list?.name ?? "").trim().slice(0, SHORT_NAME_LENGTH);
-  return info.code ? `${label}.${info.no}` : `${label} md.${info.no}`;
+  return sourcesOf(a, r).map(sourceLabel).join(", ");
 }
 
 export interface PdfData {
@@ -124,7 +118,7 @@ export interface PdfData {
 }
 
 function pdfRow(a: Assessment, r: RiskRow, blank: boolean): PdfRow {
-  const { source: _source, ...plain } = r;
+  const { sources: _sources, ...plain } = r;
   const source = sourceText(a, r);
   if (blank) {
     return {

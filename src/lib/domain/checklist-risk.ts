@@ -14,7 +14,7 @@ function find(
   return { list, item };
 }
 
-/** Item text plus its MEB reference when the list has a code; the link itself is kept in row.source. */
+/** Item text plus its MEB reference when the list has a code; the link itself is kept in row.sources. */
 export const hazardOf = (list: Checklist, item: ChecklistItem) =>
   list.code.trim() ? `${item.text} (${list.code.trim()}.${item.no})` : item.text;
 
@@ -27,7 +27,9 @@ export function hasChecklistRisk(
   const { list, item } = find(a, listId, itemId);
   const hazard = hazardOf(list, item);
   const linked = (r: RiskRow) =>
-    r.source ? r.source.listId === listId && r.source.itemId === itemId : r.hazard === hazard;
+    r.sources?.length
+      ? r.sources.some((s) => s.listId === listId && s.itemId === itemId)
+      : r.hazard === hazard;
   return !!a.locations.find((l) => l.id === locationId)?.rows.some(linked);
 }
 
@@ -43,7 +45,7 @@ export function riskRowFromChecklistItem(
   return addRow(a, locationId, {
     hazard: hazardOf(list, item),
     action: item.note,
-    source: { listId, itemId },
+    sources: [{ listId, itemId }],
   });
 }
 
