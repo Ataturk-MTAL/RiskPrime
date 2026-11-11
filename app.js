@@ -6,12 +6,6 @@
   const DEPO_ANAHTARI = 'riskprime.calisma';
   const TUR_SECENEKLERI = Object.entries(model.TUR_ADLARI);
   const PUAN_ALANLARI = ['o', 's', 'o2', 's2'];
-  const METIN_SUTUNLARI = [
-    ['alet', 'Alet / ekipman grubu'],
-    ['tehlike', 'Tehlike ve risk'],
-    ['etkilenen', 'Etkilenen'],
-    ['mevcut', 'Mevcut önlem'],
-  ];
   const durum = { d: null, mekanId: null, kirli: false, depoAcik: true };
   const $ = (secici) => document.querySelector(secici);
 
@@ -127,36 +121,64 @@
       : '<span class="duzey bos">—</span>';
   }
 
+  const PUAN_ETIKETI = { o: 'Olasılık', s: 'Şiddet', o2: 'Olasılık (önlem sonrası)', s2: 'Şiddet (önlem sonrası)' };
+
   function puanSecimi(satir, alan) {
     const secenek = ['', 1, 2, 3, 4, 5].map((p) => {
       const secili = satir[alan] === (p === '' ? null : p);
       return `<option value="${p}"${secili ? ' selected' : ''}>${p === '' ? '—' : p}</option>`;
     }).join('');
-    return `<select data-satir="${kacis(satir.id)}" data-k="${alan}" aria-label="${alan}">${secenek}</select>`;
+    const harf = alan.startsWith('o') ? 'O' : 'Ş';
+    return `<label class="puan">${harf}<select data-satir="${kacis(satir.id)}" data-k="${alan}" aria-label="${PUAN_ETIKETI[alan]}">${secenek}</select></label>`;
   }
 
-  function metinKutusu(satir, alan, etiket) {
-    return `<textarea data-satir="${kacis(satir.id)}" data-k="${alan}" aria-label="${etiket}" rows="2">${kacis(satir[alan])}</textarea>`;
+  function girdiAlani(satir, k, etiket, { tek = false, ipucu = '' } = {}) {
+    const id = kacis(satir.id);
+    const giris = tek
+      ? `<input data-satir="${id}" data-k="${k}" value="${kacis(satir[k])}" placeholder="${ipucu}">`
+      : `<textarea data-satir="${id}" data-k="${k}" rows="1" placeholder="${ipucu}">${kacis(satir[k])}</textarea>`;
+    return `<label class="rs-alan rsa-${k}"><span>${etiket}</span>${giris}</label>`;
   }
 
+  // Satırın sol şeridi mevcut risk düzeyinin rengini alır; puansızsa gri.
+  function seritRengi(satir) {
+    const dz = matris.duzey(satir.o, satir.s);
+    return dz ? dz.zemin : 'var(--cizgi)';
+  }
+
+  /** Bir risk satırı: tehlike | mevcut risk | önlem | önlem sonrası (dar ekranda iki sıra). */
   function satirHtml(satir, sira) {
     const id = kacis(satir.id);
-    return `<tr data-satir-satiri="${id}">
-      <td class="no">${sira}</td>
-      ${METIN_SUTUNLARI.map(([k, e]) => `<td>${metinKutusu(satir, k, e)}</td>`).join('')}
-      <td>${puanSecimi(satir, 'o')}</td>
-      <td>${puanSecimi(satir, 's')}</td>
-      <td class="skor" data-skor>${matris.skor(satir.o, satir.s) ?? ''}</td>
-      <td data-duzey="1">${duzeyHtml(satir.o, satir.s)}</td>
-      <td>${metinKutusu(satir, 'onlem', 'Düzeltici önlem')}</td>
-      <td>${metinKutusu(satir, 'sorumlu', 'Sorumlu')}</td>
-      <td><input data-satir="${id}" data-k="bitis" value="${kacis(satir.bitis)}" placeholder="GG.AA.YYYY" size="10" aria-label="Bitiş tarihi"></td>
-      <td><select data-satir="${id}" data-k="durum" aria-label="Durum">${secenekler([['acik', 'Açık'], ['tamam', 'Tamam']], satir.durum)}</select></td>
-      <td>${puanSecimi(satir, 'o2')}</td>
-      <td>${puanSecimi(satir, 's2')}</td>
-      <td data-duzey="2">${duzeyHtml(satir.o2, satir.s2)}</td>
-      <td><button type="button" data-satir-sil="${id}">Sil</button></td>
-    </tr>`;
+    return `<article class="rs" data-satir-satiri="${id}" style="--serit:${seritRengi(satir)}">
+      <div class="rs-no">${sira}</div>
+      <div class="rs-tehlike">
+        ${girdiAlani(satir, 'alet', 'Alet / ekipman grubu', { ipucu: 'ör. Havya istasyonu' })}
+        ${girdiAlani(satir, 'tehlike', 'Tehlike ve risk', { ipucu: 'Ne olabilir? Sonucu?' })}
+        <div class="rs-ikili">
+          ${girdiAlani(satir, 'etkilenen', 'Etkilenen', { ipucu: 'Öğrenci, öğretmen' })}
+          ${girdiAlani(satir, 'mevcut', 'Mevcut önlem')}
+        </div>
+      </div>
+      <div class="rs-risk">
+        <span class="rs-baslik">Mevcut risk</span>
+        <div class="puanlar">${puanSecimi(satir, 'o')}${puanSecimi(satir, 's')}<span class="skor" data-skor title="Skor = O × Ş">${matris.skor(satir.o, satir.s) ?? ''}</span></div>
+        <div data-duzey="1">${duzeyHtml(satir.o, satir.s)}</div>
+      </div>
+      <div class="rs-onlem">
+        ${girdiAlani(satir, 'onlem', 'Düzeltici / önleyici faaliyet')}
+        <div class="rs-uclu">
+          ${girdiAlani(satir, 'sorumlu', 'Sorumlu', { tek: true })}
+          ${girdiAlani(satir, 'bitis', 'Bitiş', { tek: true, ipucu: 'GG.AA.YYYY' })}
+          <label class="rs-alan"><span>Durum</span><select data-satir="${id}" data-k="durum">${secenekler([['acik', 'Açık'], ['tamam', 'Tamam']], satir.durum)}</select></label>
+        </div>
+      </div>
+      <div class="rs-risk rs-sonra">
+        <span class="rs-baslik">Önlem sonrası</span>
+        <div class="puanlar">${puanSecimi(satir, 'o2')}${puanSecimi(satir, 's2')}</div>
+        <div data-duzey="2">${duzeyHtml(satir.o2, satir.s2)}</div>
+      </div>
+      <button type="button" class="ikon tehlikeli rs-sil" data-satir-sil="${id}" title="Satırı sil" aria-label="Satır ${sira}: sil">✕</button>
+    </article>`;
   }
 
   function seciliMekan() {
@@ -182,25 +204,9 @@
           <button type="button" data-mekan-sil class="tehlikeli">Mekânı sil</button>
         </div>
       </div>
-      <div class="tablo-kap">
-        <table class="risk">
-          <thead>
-            <tr>
-              <th rowspan="2">No</th>
-              ${METIN_SUTUNLARI.map(([, e]) => `<th rowspan="2">${e}</th>`).join('')}
-              <th colspan="4">Mevcut risk</th>
-              <th rowspan="2">Düzeltici / önleyici faaliyet</th>
-              <th rowspan="2">Sorumlu</th>
-              <th rowspan="2">Bitiş</th>
-              <th rowspan="2">Durum</th>
-              <th colspan="3">Önlem sonrası</th>
-              <th rowspan="2"></th>
-            </tr>
-            <tr><th>O</th><th>Ş</th><th>Skor</th><th>Düzey</th><th>O</th><th>Ş</th><th>Düzey</th></tr>
-          </thead>
-          <tbody>${mekan.satirlar.map((s, i) => satirHtml(s, i + 1)).join('')}</tbody>
-        </table>
-      </div>
+      <div class="risk-satirlari">${mekan.satirlar.length
+    ? mekan.satirlar.map((s, i) => satirHtml(s, i + 1)).join('')
+    : '<p class="bos">Bu mekânda risk satırı yok. "Satır ekle" ile başlayın ya da "+ Hazır formdan ekle".</p>'}</div>
       <button type="button" id="satir-ekle" class="birincil">Satır ekle</button>`;
   }
 
@@ -219,6 +225,7 @@
     const satir = seciliMekan().satirlar.find((s) => s.id === satirId);
     const tr = [...document.querySelectorAll('[data-satir-satiri]')].find((x) => x.dataset.satirSatiri === satirId);
     if (!satir || !tr) return;
+    tr.style.setProperty('--serit', seritRengi(satir));
     tr.querySelector('[data-skor]').textContent = matris.skor(satir.o, satir.s) ?? '';
     tr.querySelector('[data-duzey="1"]').innerHTML = duzeyHtml(satir.o, satir.s);
     tr.querySelector('[data-duzey="2"]').innerHTML = duzeyHtml(satir.o2, satir.s2);
@@ -381,7 +388,7 @@
       const mekanId = durum.mekanId;
       if (e.target.closest('#satir-ekle')) {
         if (dene((d) => model.satirEkle(d, mekanId, {}))) {
-          const son = kutu.querySelector('tbody tr:last-child textarea');
+          const son = kutu.querySelector('.rs:last-child textarea');
           if (son) son.focus();
         }
         return;

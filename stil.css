@@ -109,7 +109,7 @@ textarea { width: 100%; min-width: 140px; resize: vertical; field-sizing: conten
 .sekmeler #kutuphane-ac { margin-bottom: var(--s1); border-color: var(--lacivert); color: var(--lacivert); font-weight: 600; }
 
 /* ─── İki sütunlu düzen ─────────────────────────────── */
-.duzen { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+.duzen { display: grid; grid-template-columns: 250px minmax(0, 1fr); }
 .duzen .yan { margin-right: 0; align-self: start; position: sticky; top: var(--s2); max-height: calc(100vh - var(--s4)); overflow: auto; }
 .duzen .ana { margin-left: var(--s3); min-width: 0; }
 .yan ul { list-style: none; margin: 0; padding: 0; }
@@ -126,6 +126,9 @@ textarea { width: 100%; min-width: 140px; resize: vertical; field-sizing: conten
 .rozet.hayir { background: var(--hayir-zemin); color: var(--kirmizi); }
 .yeni-mekan { display: grid; gap: 6px; margin-top: var(--s4); border-top: 1px solid var(--cizgi); padding-top: var(--s1); }
 .mekan-baslik { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s3); align-items: flex-end; margin-bottom: var(--s3); }
+.mekan-baslik > label { flex: 1 1 140px; }
+.mekan-baslik > label:first-child { flex: 2 1 240px; }
+.mekan-baslik > label input, .mekan-baslik > label select { width: 100%; }
 .mekan-baslik .genis { flex: 1 1 320px; }
 .mekan-baslik .dugmeler { display: flex; gap: 6px; margin-left: auto; }
 .mekan-baslik .dugmeler [data-mekan-sil], .mekan-baslik .dugmeler [data-liste-sil] { margin-left: var(--s3); }
@@ -134,23 +137,54 @@ textarea { width: 100%; min-width: 140px; resize: vertical; field-sizing: conten
 
 /* ─── Tablolar: başlık ve ilk sütunlar kaydırırken sabit ─ */
 .tablo-kap { overflow: auto; max-height: calc(100vh - 160px); border: 1px solid var(--cizgi); border-radius: var(--r); }
-table.risk, table.kontrol { border-collapse: separate; border-spacing: 0; width: 100%; }
-table.risk { min-width: 1450px; }
-table.risk th, table.risk td, table.kontrol th, table.kontrol td {
+table.kontrol { border-collapse: separate; border-spacing: 0; width: 100%; }
+table.kontrol th, table.kontrol td {
   border-right: 1px solid var(--cizgi); border-bottom: 1px solid var(--cizgi); padding: var(--s1); vertical-align: top; background: var(--kart);
 }
-table.risk th, table.kontrol th { background: var(--gri); font-size: 12px; font-weight: 600; position: sticky; top: 0; z-index: 2; }
-table.risk thead tr:nth-child(2) th { top: 28px; }
-/* No ve Alet sütunları (gövde + ilk başlık satırı) yatay kaydırmada solda kalır. */
-table.risk td:nth-child(-n+2), table.risk thead tr:first-child th:nth-child(-n+2) { position: sticky; z-index: 1; }
-table.risk thead tr:first-child th:nth-child(-n+2) { z-index: 3; }
-table.risk td:nth-child(1), table.risk thead tr:first-child th:nth-child(1) { left: 0; width: 40px; min-width: 40px; }
-table.risk td:nth-child(2), table.risk thead tr:first-child th:nth-child(2) { left: 40px; box-shadow: 2px 0 0 var(--cizgi); }
-/* Uzun metin sütunları geniş; kutu içeriğe göre uzar ama ekranı kaplamaz. */
-table.risk textarea { max-height: 9em; }
-table.risk textarea[data-k="tehlike"], table.risk textarea[data-k="onlem"] { min-width: 260px; }
-table.risk textarea[data-k="alet"], table.risk textarea[data-k="mevcut"] { min-width: 180px; }
-td.no, td.skor { text-align: center; vertical-align: middle; }
+table.kontrol th { background: var(--gri); font-size: 12px; font-weight: 600; position: sticky; top: 0; z-index: 2; }
+td.no { text-align: center; vertical-align: middle; }
+
+/* ─── Risk satırı kartı: tehlike | mevcut risk | önlem | önlem sonrası ─ */
+.ana { container-type: inline-size; }
+.risk-satirlari { display: grid; gap: var(--s2); }
+.rs {
+  display: grid; gap: var(--s2) var(--s3); align-items: start;
+  grid-template-columns: 28px minmax(0, 1.15fr) 132px minmax(0, 1fr) 132px 32px;
+  grid-template-areas: "no tehlike risk onlem sonra sil";
+  padding: var(--s3); border: 1px solid var(--cizgi); border-left: 6px solid var(--serit, var(--cizgi));
+  border-radius: var(--r); background: var(--kart);
+}
+.rs:focus-within { box-shadow: 0 0 0 2px rgba(232, 113, 26, .25); }
+.rs-no { grid-area: no; font-weight: 700; color: var(--ikincil); padding-top: 18px; text-align: center; }
+.rs-tehlike { grid-area: tehlike; display: grid; gap: var(--s2); }
+.rs-onlem { grid-area: onlem; display: grid; gap: var(--s2); }
+.rs-risk { grid-area: risk; display: grid; gap: 6px; justify-items: start; background: var(--gri); border-radius: var(--r); padding: var(--s2); }
+.rs-sonra { grid-area: sonra; }
+.rs-sil { grid-area: sil; margin-top: 16px; }
+.rs-baslik { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .02em; color: var(--ikincil); }
+.rs-alan { gap: 2px; }
+.rs-alan > span { font-size: 11px; color: var(--ikincil); }
+.rs-alan textarea { min-width: 0; max-height: 10em; }
+.rsa-alet textarea { font-weight: 600; }
+.rs-ikili { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--s2); }
+.rs-uclu { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, .8fr); gap: var(--s2); }
+.rs-uclu input, .rs-uclu select { min-width: 0; width: 100%; }
+.puanlar { display: flex; align-items: center; gap: 6px; }
+.puan { flex-direction: row; align-items: center; gap: 2px; font-weight: 600; color: var(--yazi); font-size: 13px; }
+.skor { min-width: 22px; text-align: center; font-weight: 700; color: var(--ikincil); }
+
+/* Dar alanda iki sıra: üstte tehlike + mevcut risk, altta önlem + önlem sonrası. */
+@container (max-width: 980px) {
+  .rs {
+    grid-template-columns: 28px minmax(0, 1fr) 132px 32px;
+    grid-template-areas: "no tehlike risk sil" "no onlem sonra sil";
+  }
+  .rs-onlem { border-top: 1px dashed var(--cizgi); padding-top: var(--s2); }
+}
+@container (max-width: 560px) {
+  .rs { grid-template-columns: 24px minmax(0, 1fr) 32px; grid-template-areas: "no tehlike sil" "no risk sil" "no onlem sil" "no sonra sil"; }
+  .rs-ikili, .rs-uclu { grid-template-columns: 1fr; }
+}
 .duzey {
   display: inline-block; min-width: 76px; padding: 2px 6px; border-radius: var(--s1);
   font-size: 12px; font-weight: 600; text-align: center;
