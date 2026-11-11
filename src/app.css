@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
+/* shadcn-svelte primitives use data-active/open/... variants; bits-ui 2 only sets data-state and data-orientation. */
+@custom-variant data-active (&[data-state="active"]);
+@custom-variant data-open (&[data-state="open"]);
+@custom-variant data-closed (&[data-state="closed"]);
+@custom-variant data-checked (&[data-state="checked"]);
+@custom-variant data-horizontal (&[data-orientation="horizontal"]);
+@custom-variant data-vertical (&[data-orientation="vertical"]);
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

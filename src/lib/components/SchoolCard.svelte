@@ -68,7 +68,7 @@
         <div class="grid grid-cols-[1fr_auto] gap-2 sm:grid-cols-[1fr_1fr_auto]">
           <Input class="col-span-2 sm:col-span-1" aria-label="Unvan" value={signatory.title} onchange={(e) => store.apply((x) => updateSignatory(x, i, { title: value(e) }))} />
           <Input aria-label="Ad soyad" placeholder="Ad Soyad" value={signatory.name} onchange={(e) => store.apply((x) => updateSignatory(x, i, { name: value(e) }))} />
-          <Button variant="ghost" size="icon" class="text-muted-foreground hover:text-destructive" aria-label="İmzacıyı sil" onclick={() => store.apply((x) => removeSignatory(x, i))}><Trash2 /></Button>
+          <Button variant="ghost" size="icon" class="text-muted-foreground hover:text-destructive" aria-label="İmzacıyı sil" onclick={() => store.applyWithUndo((x) => removeSignatory(x, i), `İmzacı silindi: ${signatory.title}`)}><Trash2 /></Button>
         </div>
       {/each}
       <Button variant="outline" size="sm" onclick={() => store.apply((x) => addSignatory(x, ''))}><Plus />İmzacı ekle</Button>

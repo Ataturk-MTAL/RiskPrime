@@ -23,15 +23,20 @@ export type ExportKind =
   | "docx"
   | "template";
 export type ConflictChoice = "replace" | "append" | null;
+/** Answer to "unsaved changes will be lost": save first, discard, or cancel (null). */
+export type DiscardChoice = "save" | "discard" | null;
 
 const STORAGE_KEY = "riskprime.assessment";
+/** Survives reloads so New/Open still warn about work that was never downloaded. */
+const DIRTY_KEY = "riskprime.dirty";
+const SAVED_AT_KEY = "riskprime.savedAt";
+const UNDO_TOAST_MS = 10_000;
 const MAX_SHOWN_ERRORS = 8;
 const PDF_KINDS = {
   "pdf-full": "full",
   "pdf-checklists": "checklists",
   "pdf-blank": "blank",
 } as const;
-const LEAVE_PROMPT = "İndirilmemiş değişiklikler kaybolacak. Devam edilsin mi?";
 
 const starterAssessment = (): Assessment => structuredClone(starter) as unknown as Assessment;
 
@@ -47,6 +52,8 @@ function errorList(title: string, errors: string[]): string[] {
 class Store {
   assessment = $state.raw<Assessment>(starterAssessment());
   dirty = $state(false);
+  /** ISO time of the last .json / .xlsx download, if any. */
+  savedAt = $state<string | null>(null);
   storageOk = $state(true);
   errors = $state.raw<string[]>([]);
   busy = $state("");
@@ -58,10 +65,17 @@ class Store {
   conflict = $state.raw<{ codes: string[]; resolve: (choice: ConflictChoice) => void } | null>(
     null,
   );
+  discard = $state.raw<{ resolve: (choice: DiscardChoice) => void } | null>(null);
 
   constructor() {
     const saved = this.#readStorage();
     if (saved) this.assessment = saved;
+    try {
+      this.dirty = localStorage.getItem(DIRTY_KEY) === "1";
+      this.savedAt = localStorage.getItem(SAVED_AT_KEY);
+    } catch {
+      this.storageOk = false;
+    }
     this.#settle();
   }
 
@@ -88,6 +102,10 @@ class Store {
   #persist() {
     try {
       localStorage.setItem(STORAGE_KEY, serialize(this.assessment));
+      if (this.dirty) localStorage.setItem(DIRTY_KEY, "1");
+      else localStorage.removeItem(DIRTY_KEY);
+      if (this.savedAt) localStorage.setItem(SAVED_AT_KEY, this.savedAt);
+      else localStorage.removeItem(SAVED_AT_KEY);
     } catch {
       this.storageOk = false;
     }
@@ -125,20 +143,63 @@ class Store {
     return true;
   }
 
-  #confirmDiscard(): boolean {
-    return !this.dirty || window.confirm(LEAVE_PROMPT);
+  #markSaved() {
+    this.dirty = false;
+    this.savedAt = new Date().toISOString();
+    this.#persist();
   }
 
-  #load(next: Assessment) {
-    if (this.apply(() => next, { dirty: false })) this.loadCount += 1;
+  /** Resolves true when the current work may be replaced (nothing unsaved, saved first, or discarded). */
+  async #confirmDiscard(): Promise<boolean> {
+    if (!this.dirty) return true;
+    const choice = await new Promise<DiscardChoice>((resolve) => {
+      this.discard = {
+        resolve: (c) => {
+          this.discard = null;
+          resolve(c);
+        },
+      };
+    });
+    if (choice === "save") await this.exportAs("json");
+    return choice !== null;
   }
 
-  newFromStarter() {
-    if (this.#confirmDiscard()) this.#load(starterAssessment());
+  /** Replaces the whole assessment and offers a one-step undo. */
+  #load(next: Assessment, message: string) {
+    const previous = this.assessment;
+    const previousDirty = this.dirty;
+    if (!this.apply(() => next, { dirty: false })) return;
+    this.loadCount += 1;
+    toast.success(message, {
+      duration: UNDO_TOAST_MS,
+      action: { label: "Geri al", onClick: () => this.#restore(previous, previousDirty) },
+    });
   }
 
-  newEmpty() {
-    if (this.#confirmDiscard()) this.#load(emptyAssessment(""));
+  #restore(previous: Assessment, wasDirty: boolean) {
+    if (this.apply(() => previous, { dirty: wasDirty })) this.loadCount += 1;
+  }
+
+  /** Applies a destructive edit without a dialog; the toast offers undo instead. */
+  applyWithUndo(update: (a: Assessment) => Assessment, message: string) {
+    const previous = this.assessment;
+    const previousDirty = this.dirty;
+    if (!this.apply(update)) return;
+    toast(message, {
+      duration: UNDO_TOAST_MS,
+      action: {
+        label: "Geri al",
+        onClick: () => this.apply(() => previous, { dirty: previousDirty }),
+      },
+    });
+  }
+
+  async newFromStarter() {
+    if (await this.#confirmDiscard()) this.#load(starterAssessment(), "Örnek çalışma açıldı.");
+  }
+
+  async newEmpty() {
+    if (await this.#confirmDiscard()) this.#load(emptyAssessment(""), "Boş çalışma açıldı.");
   }
 
   selectLocation(id: string) {
@@ -184,7 +245,7 @@ class Store {
     }
     const result = parse(text);
     if ("errors" in result) return this.fail(errorList(`"${file.name}" açılamadı:`, result.errors));
-    if (this.#confirmDiscard()) this.#load(result.assessment);
+    if (await this.#confirmDiscard()) this.#load(result.assessment, `Açıldı: ${file.name}`);
   }
 
   askConflict(codes: string[]): Promise<ConflictChoice> {
@@ -200,12 +261,12 @@ class Store {
   }
 
   /** Opens an Excel backup like a .json file: confirm, then replace everything. */
-  #restoreExcel(fileName: string, sheets: Record<string, unknown[][]>) {
+  async #restoreExcel(name: string, sheets: Record<string, unknown[][]>) {
     const result = restoreBackup(sheets);
-    if ("errors" in result) return this.fail(errorList(`"" geri yüklenemedi:`, result.errors));
-    if (!this.#confirmDiscard()) return;
-    this.#load(result.assessment);
-    toast.info(`Kayıt dosyası geri yüklendi: `);
+    if ("errors" in result)
+      return this.fail(errorList(`"${name}" geri yüklenemedi:`, result.errors));
+    if (await this.#confirmDiscard())
+      this.#load(result.assessment, `Kayıt dosyası geri yüklendi: ${name}`);
   }
 
   async #importExcel(file: File) {
@@ -239,7 +300,7 @@ class Store {
         new Blob([serialize(this.assessment)], { type: "application/json" }),
         fileName(this.assessment),
       );
-      this.dirty = false;
+      this.#markSaved();
       return;
     }
     const a = this.assessment;
@@ -258,7 +319,7 @@ class Store {
     this.clearErrors();
     try {
       await jobs[kind]();
-      if (kind === "xlsx") this.dirty = false; // the Excel file is a full backup, like .json
+      if (kind === "xlsx") this.#markSaved(); // the Excel file is a full backup, like .json
     } catch (error) {
       this.fail([`Çıktı alınamadı: ${error instanceof Error ? error.message : ""}`]);
     } finally {

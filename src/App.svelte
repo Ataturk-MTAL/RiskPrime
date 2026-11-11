@@ -7,6 +7,7 @@
   import ChecklistEditor from '$lib/components/ChecklistEditor.svelte';
   import ChecklistSidebar from '$lib/components/ChecklistSidebar.svelte';
   import ConflictDialog from '$lib/components/ConflictDialog.svelte';
+  import DiscardDialog from '$lib/components/DiscardDialog.svelte';
   import LibraryDialog from '$lib/components/LibraryDialog.svelte';
   import LocationEditor from '$lib/components/LocationEditor.svelte';
   import LocationSidebar from '$lib/components/LocationSidebar.svelte';
@@ -62,4 +63,5 @@
 
 <LibraryDialog bind:open={libraryOpen} />
 <ConflictDialog />
+<DiscardDialog />
 <Toaster />
