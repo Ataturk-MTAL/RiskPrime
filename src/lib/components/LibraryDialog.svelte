@@ -7,6 +7,7 @@
   import type { Library } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
   import libraryData from '$lib/data/library.json';
+  import { downloadBlankTemplate, downloadMebTemplate } from '$lib/templates';
 
   let { open = $bindable(false) }: { open?: boolean } = $props();
 
@@ -111,7 +112,12 @@
       </section>
     </div>
     <Dialog.Footer class="items-center sm:justify-between">
-      <span class="text-xs text-muted-foreground">Kendi listeniz mi var? "diğer biçimler" menüsünden Excel şablonunu indirin, doldurun, "Dosya aç" ile yükleyin.</span>
+      <span class="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+        Kendi listeniz mi var? Excel şablonu indirin, doldurun, "Dosya aç" ile yükleyin:
+        <Button variant="link" size="sm" class="h-auto p-0 text-xs" onclick={downloadMebTemplate}>MEB KL-01–KL-43 şablonu</Button>
+        ·
+        <Button variant="link" size="sm" class="h-auto p-0 text-xs" onclick={downloadBlankTemplate}>boş şablon</Button>
+      </span>
       <span class="flex gap-2">
         <Button variant="outline" onclick={() => (open = false)}>Vazgeç</Button>
         <Button disabled={selected.size === 0} onclick={add}>{selected.size ? `Seçilenleri ekle (${selected.size})` : 'Seçilenleri ekle'}</Button>

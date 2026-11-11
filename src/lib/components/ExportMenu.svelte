@@ -5,24 +5,15 @@
   import { Button, buttonVariants } from '$lib/components/ui/button';
   import { store, type ExportKind } from '$lib/state.svelte';
 
+  // Outputs only; Excel templates live in the "Dosya aç" menu (AppHeader).
   const ITEMS: { kind: ExportKind; label: string; hint?: string }[] = [
     { kind: 'json', label: 'Kayıt dosyası (.json)', hint: 'Uygulamada tekrar açılabilen tek biçim' },
     { kind: 'pdf-checklists', label: 'PDF: yalnız kontrol listeleri' },
     { kind: 'pdf-blank', label: 'PDF: boş form', hint: 'Puan ve cevap kutuları boş, elle doldurmak için' },
-    { kind: 'xlsx', label: 'Excel (.xlsx)', hint: 'Yalnız çıktı, uygulamada açılmaz' },
+    { kind: 'xlsx', label: 'Excel (.xlsx)', hint: 'Okul bilgileri, risk tablosu, kontrol listeleri' },
     { kind: 'docx', label: 'Word (.docx)', hint: 'Yalnız çıktı, uygulamada açılmaz' },
-    { kind: 'template', label: 'Excel içe alma şablonu', hint: 'Doldurup "Dosya aç" ile yükleyin' },
   ];
   const busy = $derived(store.busy !== '');
-  const SAMPLE_FILE = 'riskprime-meb-kl-sablonu.xlsx';
-
-  // Static file from public/samples (pnpm generate:sample).
-  function downloadSample() {
-    const link = document.createElement('a');
-    link.href = `${import.meta.env.BASE_URL}samples/${SAMPLE_FILE}`;
-    link.download = SAMPLE_FILE;
-    link.click();
-  }
 </script>
 
 <div class="flex">
@@ -38,10 +29,6 @@
           {#if item.hint}<span class="text-xs text-muted-foreground">{item.hint}</span>{/if}
         </DropdownMenu.Item>
       {/each}
-      <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={downloadSample}>
-        <span>Excel şablonu: MEB KL-01–KL-43</span>
-        <span class="text-xs text-muted-foreground">MEB kontrol listeleri dolu; okul ve risk sayfaları boş</span>
-      </DropdownMenu.Item>
     </DropdownMenu.Content>
   </DropdownMenu.Root>
 </div>
