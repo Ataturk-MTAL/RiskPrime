@@ -81,6 +81,10 @@
   {/each}
 {/snippet}
 
+{#snippet empty()}
+  <p class="py-4 text-sm text-muted-foreground" role="status"><b class="block text-foreground">Sonuç yok</b>“{query.trim()}” için sonuç bulunamadı.</p>
+{/snippet}
+
 {#snippet groupHeading(title: string, entries: Entry[])}
   <p class="flex items-center gap-2 pt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
     {title}
@@ -101,6 +105,8 @@
         {#if visibleLocations.length}
           {@render groupHeading('Elektrik-Elektronik hazır form', visibleLocations)}
           {@render entryList(visibleLocations)}
+        {:else if !checklistGroups.length}
+          {@render empty()}
         {/if}
       </section>
       <section class="space-y-1">

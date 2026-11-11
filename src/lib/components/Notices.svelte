@@ -27,7 +27,7 @@
     <Alert.Root><Info /><Alert.Description>{store.busy}</Alert.Description></Alert.Root>
   {/if}
   {#if store.dirty}
-    <Alert.Root class="border-amber-400 bg-amber-50 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100">
+    <Alert.Root role="status" class="border-amber-400 bg-amber-50 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100">
       <Info />
       <Alert.Description class="flex flex-wrap items-center gap-2 text-inherit">
         <span>Çalışma henüz JSON ya da Excel olarak kaydedilmedi. PDF ve Word uygulamada tekrar açılamaz.</span>

@@ -68,7 +68,7 @@
     <div class="flex items-center gap-3">
       <Progress value={stats.answered} max={stats.total || 1} class="h-2 max-w-sm" aria-label="Cevaplanan madde oranı" />
       <span class="text-sm text-muted-foreground">
-        {stats.answered}/{stats.total} cevaplandı{#if stats.no} · <b class="text-red-600">{stats.no} hayır</b>{/if}
+        {stats.answered}/{stats.total} cevaplandı{#if stats.no}{" "}· <b class="text-red-600">{stats.no} hayır</b>{/if}
       </span>
     </div>
 
@@ -86,7 +86,7 @@
             <Input class="w-16" aria-label="Madde no" value={item.no} onchange={(e) => patchItem(listId, item.id, { no: value(e) })} />
             <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Madde metni" placeholder="Kontrol maddesi" value={item.text} onchange={(e) => patchItem(listId, item.id, { text: value(e) })} />
           {/if}
-          <ToggleGroup.Root type="single" variant="outline" aria-label="Cevap" value={item.answer} onValueChange={(v) => patchItem(listId, item.id, { answer: v as Answer })}>
+          <ToggleGroup.Root type="single" variant="outline" aria-label="Madde {item.no} cevabı" value={item.answer} onValueChange={(v) => patchItem(listId, item.id, { answer: v as Answer })}>
             {#each CHOICES as choice (choice.value)}
               <ToggleGroup.Item value={choice.value} class={choice.tone}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
             {/each}

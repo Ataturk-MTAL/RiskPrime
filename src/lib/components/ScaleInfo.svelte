@@ -9,11 +9,12 @@
 
 <Popover.Root>
   <Popover.Trigger
-    class="inline-flex size-5 items-center justify-center rounded-full align-middle text-muted-foreground hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+    class="relative inline-flex size-5 items-center justify-center rounded-full align-middle text-muted-foreground hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
     aria-label="{scale.title} ölçeği"
     onclick={(e: MouseEvent) => e.stopPropagation()}
   >
     <Info class="size-3.5" />
+    <span class="absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2" aria-hidden="true"></span>
   </Popover.Trigger>
   <Popover.Content class="w-80 text-sm" align="start">
     <p class="mb-2 font-semibold">{scale.title}</p>
