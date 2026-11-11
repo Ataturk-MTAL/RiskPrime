@@ -25,9 +25,40 @@ const ok = (r: ReturnType<typeof read>) => {
 };
 
 describe("excel-import", () => {
-  test("template has two sheets, a header and an example row", () => {
+  test("imports school info and signatories from the Okul Bilgileri sheet", () => {
+    const r = ok(
+      read(empty(), {
+        "Okul Bilgileri": [
+          ["Bilgi", "Değer"],
+          ["Okul", "Örnek MTAL"],
+          ["Gruplama", "Binaya göre"],
+          ["Değerlendirme Tarihi", "15.09.2026"],
+          [],
+          ["İmzacı Unvanı", "Ad Soyad"],
+          ["Okul Müdürü", "Ad SOYAD"],
+        ],
+      }),
+    );
+    expect(r.assessment.school.name).toBe("Örnek MTAL");
+    expect(r.assessment.school.grouping).toBe("building");
+    expect(r.assessment.assessmentDate).toBe("15.09.2026");
+    expect(r.assessment.school.signatories).toEqual([{ title: "Okul Müdürü", name: "Ad SOYAD" }]);
+    expect(r.summary.school).toBe(true);
+    expect(validate(r.assessment)).toEqual([]);
+  });
+
+  test("a bad Okul Bilgileri row blocks the whole import", () => {
+    const r = read(empty(), {
+      "Okul Bilgileri": [["Gruplama", "Kata göre"]],
+      "Risk Satırları": [RISK_HEADER, ["ELE1", "", "", "", "", "Kesik", "", "", "", "", "", ""]],
+    });
+    expect("errors" in r && r.errors[0]).toMatch(/^Okul Bilgileri, satır 1: Gruplama/);
+  });
+
+  test("template has school, checklist and risk sheets with header rows", () => {
     const t = template();
-    expect(Object.keys(t)).toEqual(["Kontrol Listesi", "Risk Satırları"]);
+    expect(Object.keys(t)).toEqual(["Okul Bilgileri", "Kontrol Listesi", "Risk Satırları"]);
+    expect(t["Okul Bilgileri"][0]).toEqual(["Bilgi", "Değer"]);
     expect(t["Kontrol Listesi"][0]).toEqual(CL_HEADER);
     expect(String(t["Risk Satırları"][1][0])).toMatch(/^ÖRNEK/);
   });
@@ -81,7 +112,7 @@ describe("excel-import", () => {
     expect(a.locations[1].type).toBe("storage");
     expect(a.locations[1].building).toBe("C Blok");
     expect(a.locations[1].rows[0].likelihood).toBeNull();
-    expect(r.summary).toEqual({ lists: 0, items: 0, locations: 1, rows: 2 });
+    expect(r.summary).toEqual({ lists: 0, items: 0, locations: 1, rows: 2, school: false });
   });
 
   test("a bad row adds nothing and errors carry sheet and row number", () => {

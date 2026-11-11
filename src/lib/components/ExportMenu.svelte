@@ -14,6 +14,15 @@
     { kind: 'template', label: 'Excel içe alma şablonu', hint: 'Doldurup "Dosya aç" ile yükleyin' },
   ];
   const busy = $derived(store.busy !== '');
+  const SAMPLE_FILE = 'riskprime-ornek-veri.xlsx';
+
+  // Static file from public/samples (pnpm generate:sample).
+  function downloadSample() {
+    const link = document.createElement('a');
+    link.href = `${import.meta.env.BASE_URL}samples/${SAMPLE_FILE}`;
+    link.download = SAMPLE_FILE;
+    link.click();
+  }
 </script>
 
 <div class="flex">
@@ -29,6 +38,10 @@
           {#if item.hint}<span class="text-xs text-muted-foreground">{item.hint}</span>{/if}
         </DropdownMenu.Item>
       {/each}
+      <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={downloadSample}>
+        <span>Örnek Excel veri dosyası</span>
+        <span class="text-xs text-muted-foreground">Okul, imzacılar, 2 liste, 6 risk satırı; denemek için</span>
+      </DropdownMenu.Item>
     </DropdownMenu.Content>
   </DropdownMenu.Root>
 </div>

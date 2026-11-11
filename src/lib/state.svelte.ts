@@ -218,7 +218,7 @@ class Store {
     if (!this.apply(() => result.assessment)) return;
     const s = result.summary;
     toast.info(
-      `İçe alındı: ${s.lists} kontrol listesi (${s.items} madde), ${s.rows} risk satırı, ${s.locations} yeni mekân.`,
+      `İçe alındı: ${s.school ? "okul ve imzacı bilgileri, " : ""}${s.lists} kontrol listesi (${s.items} madde), ${s.rows} risk satırı, ${s.locations} yeni mekân.`,
     );
   }
 

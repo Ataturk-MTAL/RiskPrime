@@ -16,7 +16,8 @@
     "fmt:check": "vp fmt --check",
     "lint:english": "ast-grep scan src scripts --globs '!src/lib/components/ui/**'",
     "generate:starter": "node scripts/generate-starter.mjs",
-    "generate:library": "node scripts/generate-library.mjs"
+    "generate:library": "node scripts/generate-library.mjs",
+    "generate:sample": "node scripts/generate-sample.mjs"
   },
   "dependencies": {
     "@myriaddreamin/typst-ts-web-compiler": "0.7.0",

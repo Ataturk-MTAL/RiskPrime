@@ -2,6 +2,7 @@
 import * as XLSX from "xlsx";
 import { template } from "../domain/excel-import";
 import { checklistRows, outputName, riskRows } from "../domain/export-data";
+import { SHEET_SCHOOL, schoolSheet } from "../domain/school-sheet";
 import type { Assessment } from "../domain/types";
 import { CHECKLIST_COLUMNS, RISK_COLUMNS, toTable } from "./columns";
 
@@ -30,6 +31,7 @@ export function downloadImportTemplate(): void {
 
 export function downloadExcel(a: Assessment): void {
   const book = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(book, XLSX.utils.aoa_to_sheet(schoolSheet(a)), SHEET_SCHOOL);
   const risks = XLSX.utils.aoa_to_sheet(toTable(riskRows(a), RISK_COLUMNS));
   const checklists = XLSX.utils.aoa_to_sheet(toTable(checklistRows(a), CHECKLIST_COLUMNS));
   XLSX.utils.book_append_sheet(book, risks, "Risk Tablosu");

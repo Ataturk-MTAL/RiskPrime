@@ -1,11 +1,13 @@
 // Excel import: template rows and sheet reading. Independent of SheetJS; sheets arrive as arrays of arrays.
 // Validation is all-or-nothing: one bad row means nothing is added.
-import { addLocation, addRow, LOCATION_TYPE_LABELS } from "./assessment";
+import { addLocation, addRow, emptyAssessment, LOCATION_TYPE_LABELS } from "./assessment";
 import { addChecklist } from "./checklist";
+import { applySchoolPatch, readSchoolSheet, SHEET_SCHOOL, schoolSheet } from "./school-sheet";
 import type { Assessment, ChecklistTemplate, LocationType } from "./types";
 
 export const SHEET_CHECKLIST = "Kontrol Listesi";
 export const SHEET_RISK = "Risk Satırları";
+export { SHEET_SCHOOL };
 
 type ColumnDef = readonly [key: string, header: string];
 const CHECKLIST_COLUMNS: ColumnDef[] = [
@@ -53,6 +55,7 @@ const TYPE_LOOKUP = new Map<string, LocationType>(
 
 export function template(): Record<string, (string | number)[][]> {
   return {
+    [SHEET_SCHOOL]: schoolSheet(emptyAssessment("")),
     [SHEET_CHECKLIST]: [
       CHECKLIST_COLUMNS.map(([, h]) => h),
       [
@@ -227,6 +230,8 @@ export interface ImportSummary {
   items: number;
   locations: number;
   rows: number;
+  /** True when an "Okul Bilgileri" sheet was read (school info / signatories updated). */
+  school: boolean;
 }
 
 /**
@@ -240,14 +245,16 @@ export function read(
 ): { assessment: Assessment; summary: ImportSummary } | { errors: string[] } {
   const checklistAoa = findSheet(sheets, SHEET_CHECKLIST);
   const riskAoa = findSheet(sheets, SHEET_RISK);
-  if (!checklistAoa && !riskAoa) {
+  const schoolAoa = findSheet(sheets, SHEET_SCHOOL);
+  if (!checklistAoa && !riskAoa && !schoolAoa) {
     return {
       errors: [
-        `Dosyada "${SHEET_CHECKLIST}" ya da "${SHEET_RISK}" adlı sayfa yok. Şablonu indirip kullanın.`,
+        `Dosyada "${SHEET_SCHOOL}", "${SHEET_CHECKLIST}" ya da "${SHEET_RISK}" adlı sayfa yok. Şablonu indirip kullanın.`,
       ],
     };
   }
   const errors: string[] = [];
+  const schoolPatch = schoolAoa ? readSchoolSheet(schoolAoa, errors) : null;
   const lists = checklistAoa ? readChecklists(checklistAoa, errors) : [];
   const risks = riskAoa ? readRisks(riskAoa, errors) : [];
   if (errors.length) return { errors };
@@ -257,7 +264,8 @@ export function read(
     opts.sameCode === "replace"
       ? { ...a, checklists: a.checklists.filter((l) => !codes.has(l.code)) }
       : a;
-  const withLists = lists.reduce((acc, l) => addChecklist(acc, l), base);
+  const withSchool = schoolPatch ? applySchoolPatch(base, schoolPatch) : base;
+  const withLists = lists.reduce((acc, l) => addChecklist(acc, l), withSchool);
   const { assessment, newLocations } = applyRisks(withLists, risks);
   return {
     assessment,
@@ -266,6 +274,7 @@ export function read(
       items: lists.reduce((t, l) => t + l.items.length, 0),
       locations: newLocations,
       rows: risks.length,
+      school: schoolPatch !== null,
     },
   };
 }
