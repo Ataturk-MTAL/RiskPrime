@@ -14,7 +14,7 @@
     { kind: 'template', label: 'Excel içe alma şablonu', hint: 'Doldurup "Dosya aç" ile yükleyin' },
   ];
   const busy = $derived(store.busy !== '');
-  const SAMPLE_FILE = 'riskprime-ornek-veri.xlsx';
+  const SAMPLE_FILE = 'riskprime-meb-kl-sablonu.xlsx';
 
   // Static file from public/samples (pnpm generate:sample).
   function downloadSample() {
@@ -39,8 +39,8 @@
         </DropdownMenu.Item>
       {/each}
       <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={downloadSample}>
-        <span>Örnek Excel veri dosyası</span>
-        <span class="text-xs text-muted-foreground">Okul, imzacılar, 2 liste, 6 risk satırı; denemek için</span>
+        <span>Excel şablonu: MEB KL-01–KL-43</span>
+        <span class="text-xs text-muted-foreground">MEB kontrol listeleri dolu; okul ve risk sayfaları boş</span>
       </DropdownMenu.Item>
     </DropdownMenu.Content>
   </DropdownMenu.Root>

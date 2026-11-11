@@ -99,8 +99,18 @@ export function readSchoolSheet(aoa: unknown[][], errors: string[]): SchoolPatch
     }
     readInfoRow(patch, first, second, (m) => errors.push(`${SHEET_SCHOOL}, satır ${i + 1}: ${m}`));
   });
-  if (signatories.length) patch.signatories = signatories;
+  // A list of titles without any names is an unfilled template: keep the current signatories.
+  if (signatories.some((s) => s.name)) patch.signatories = signatories;
   return patch;
+}
+
+/** True when the sheet actually changes something (an empty template changes nothing). */
+export function hasChanges(patch: SchoolPatch): boolean {
+  return (
+    Object.keys(patch.school).length > 0 ||
+    Object.keys(patch.meta).length > 0 ||
+    patch.signatories !== null
+  );
 }
 
 /** Applies a parsed patch; returns a new assessment. */

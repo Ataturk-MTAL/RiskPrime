@@ -8,7 +8,7 @@ Okul mekânlarının (atölye, depo, oda, ıslak hacim) iş sağlığı ve güve
 2. Mekânları (bina ve alan etiketiyle) ve risk satırlarını ekleyin, düzenleyin, silin. O ve Ş seçince skor ve renkli düzey görünür.
    - "+ Hazır formdan ekle": elektrik-elektronik hazır mekânları (risk satırlarıyla) ve kontrol listelerini, MEB KL-01–KL-43 listelerini seçip ekleyin; istemediğinizi silin.
    - "Kontrol listeleri" sekmesi: Evet / Hayır / U-D işaretleyin, açıklama yazın. MEB listesinin hazır metni kilitlidir; madde eklenip çıkarılabilir.
-   - Excel üç sayfadır: "Okul Bilgileri" (okul, dönem, tarihler, gruplama, imzacılar), "Kontrol Listesi", "Risk Satırları". Denemek için menüdeki "Örnek Excel veri dosyası"nı indirip "Dosya aç" ile yükleyin.
+   - Excel üç sayfadır: "Okul Bilgileri" (okul, dönem, tarihler, gruplama, imzacılar), "Kontrol Listesi", "Risk Satırları". Menüdeki "Excel şablonu: MEB KL-01–KL-43" dosyasında MEB kontrol listelerinin tamamı hazır; okul sayfasını doldurup "Dosya aç" ile yükleyin.
    - Kendi listeniz ya da risk satırlarınız için "diğer biçimler → Excel içe alma şablonu"nu doldurup "Dosya aç" ile yükleyin.
 3. "PDF indir" tam belgeyi verir. "▾ diğer biçimler" menüsünde: kayıt dosyası (`risk-<dönem>.json`), yalnız kontrol listeleri PDF'i, boş form PDF'i, Excel ve Word. Uygulamada tekrar açılabilen tek biçim `.json`'dur; sonraki sefer "Dosya aç" ile ya da sayfaya sürükleyerek açın.
 4. PDF tarayıcıda Typst (typst.ts) ile üretilir; sayfa bir adresle açılmalıdır (GitHub Pages ya da yerel sunucu). İlk PDF'te derleyici (~28 MB) bir kez indirilir.
@@ -21,18 +21,18 @@ Veriler yalnız tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kişisel �
 
 Yığın: Vite+ (`vp`) + Svelte 5 + TypeScript + Tailwind 4 + shadcn-svelte (bits-ui). Paket yöneticisi pnpm. Kod İngilizce, arayüz Türkçe.
 
-| Komut                                         | İş                                                                    |
-| --------------------------------------------- | --------------------------------------------------------------------- |
-| `pnpm install`                                | Bağımlılıklar (SheetJS `vendor/xlsx-0.20.3.tgz`'den gelir)            |
-| `pnpm dev`                                    | Geliştirme sunucusu                                                   |
-| `pnpm build` / `pnpm preview`                 | Statik derleme `dist/` (GitHub Pages) ve önizleme                     |
-| `pnpm test`                                   | vitest: alan mantığı ve üreteç testleri                               |
-| `pnpm check`                                  | svelte-check tip denetimi                                             |
-| `pnpm lint` / `pnpm fmt`                      | Vite+ lint (oxlint) ve biçimlendirme                                  |
-| `pnpm lint:english`                           | ast-grep: kodda Türkçe tanımlayıcı yasak (`tools/ast-grep/`)          |
-| `pnpm generate:starter <Planlar/RISK-ANALIZ>` | `src/lib/data/starter.json` (Typst 0.15 gerekir)                      |
-| `pnpm generate:library <KL01-KL43 PDF>`       | `src/lib/data/library.json` (pdftotext gerekir; starter'dan sonra)    |
-| `pnpm generate:sample`                        | `public/samples/riskprime-ornek-veri.xlsx`: içe alma için örnek dosya |
+| Komut                                         | İş                                                                                    |
+| --------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `pnpm install`                                | Bağımlılıklar (SheetJS `vendor/xlsx-0.20.3.tgz`'den gelir)                            |
+| `pnpm dev`                                    | Geliştirme sunucusu                                                                   |
+| `pnpm build` / `pnpm preview`                 | Statik derleme `dist/` (GitHub Pages) ve önizleme                                     |
+| `pnpm test`                                   | vitest: alan mantığı ve üreteç testleri                                               |
+| `pnpm check`                                  | svelte-check tip denetimi                                                             |
+| `pnpm lint` / `pnpm fmt`                      | Vite+ lint (oxlint) ve biçimlendirme                                                  |
+| `pnpm lint:english`                           | ast-grep: kodda Türkçe tanımlayıcı yasak (`tools/ast-grep/`)                          |
+| `pnpm generate:starter <Planlar/RISK-ANALIZ>` | `src/lib/data/starter.json` (Typst 0.15 gerekir)                                      |
+| `pnpm generate:library <KL01-KL43 PDF>`       | `src/lib/data/library.json` (pdftotext gerekir; starter'dan sonra)                    |
+| `pnpm generate:sample`                        | `public/samples/riskprime-meb-kl-sablonu.xlsx`: MEB KL-01–KL-43 dolu içe alma şablonu |
 
 Yapı:
 

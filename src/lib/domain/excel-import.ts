@@ -2,7 +2,13 @@
 // Validation is all-or-nothing: one bad row means nothing is added.
 import { addLocation, addRow, emptyAssessment, LOCATION_TYPE_LABELS } from "./assessment";
 import { addChecklist } from "./checklist";
-import { applySchoolPatch, readSchoolSheet, SHEET_SCHOOL, schoolSheet } from "./school-sheet";
+import {
+  applySchoolPatch,
+  hasChanges,
+  readSchoolSheet,
+  SHEET_SCHOOL,
+  schoolSheet,
+} from "./school-sheet";
 import type { Assessment, ChecklistTemplate, LocationType } from "./types";
 
 export const SHEET_CHECKLIST = "Kontrol Listesi";
@@ -274,7 +280,7 @@ export function read(
       items: lists.reduce((t, l) => t + l.items.length, 0),
       locations: newLocations,
       rows: risks.length,
-      school: schoolPatch !== null,
+      school: schoolPatch !== null && hasChanges(schoolPatch),
     },
   };
 }

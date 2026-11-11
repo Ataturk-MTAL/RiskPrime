@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vite-plus/test";
 import { emptyAssessment } from "./assessment";
-import { applySchoolPatch, readSchoolSheet, schoolSheet } from "./school-sheet";
+import { applySchoolPatch, hasChanges, readSchoolSheet, schoolSheet } from "./school-sheet";
 
 describe("school sheet", () => {
   test("round-trips school info, dates, grouping and signatories", () => {
@@ -40,6 +40,26 @@ describe("school sheet", () => {
     expect(next.period).toBe("2026-2027");
     expect(next.school.signatories).toEqual(base.school.signatories);
     expect(base.period).toBe("2025-2026");
+  });
+
+  test("an unfilled template (titles only, no names) changes nothing", () => {
+    const filled = {
+      ...emptyAssessment("2026-2027"),
+      school: {
+        ...emptyAssessment().school,
+        name: "Okul",
+        signatories: [{ title: "Okul Müdürü", name: "Ad SOYAD" }],
+      },
+    };
+    const blank = schoolSheet({
+      ...emptyAssessment(""),
+      school: { ...emptyAssessment().school, grouping: "area" },
+    }).map((row) => (row[0] === "Gruplama" ? [row[0], ""] : row));
+    const errors: string[] = [];
+    const patch = readSchoolSheet(blank, errors);
+    expect(errors).toEqual([]);
+    expect(hasChanges(patch)).toBe(false);
+    expect(applySchoolPatch(filled, patch)).toEqual(filled);
   });
 
   test("reports unknown labels and grouping values with row numbers", () => {
