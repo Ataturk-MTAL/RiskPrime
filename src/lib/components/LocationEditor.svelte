@@ -1,6 +1,7 @@
 <script lang="ts">
   import ArrowDown from '@lucide/svelte/icons/arrow-down';
   import ArrowUp from '@lucide/svelte/icons/arrow-up';
+  import Trash2 from '@lucide/svelte/icons/trash-2';
   import Plus from '@lucide/svelte/icons/plus';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
@@ -36,7 +37,7 @@
   {#if loc}
     {@const locId = loc.id}
     {#key locId}
-      <div class="grid items-end gap-2 @lg:grid-cols-2 @3xl:grid-cols-[2fr_1fr_1fr_1fr_auto]">
+      <div class="grid items-end gap-2 @lg:grid-cols-2 @3xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
         <Label class="flex flex-col items-start gap-1 @lg:col-span-2 @3xl:col-span-1">Mekân adı
           <Input value={loc.name} onchange={(e) => store.apply((a) => updateLocation(a, locId, { name: value(e) }))} />
         </Label>
@@ -59,7 +60,7 @@
             title="Mekân silinsin mi?"
             description={`"${loc.name}" ve ${loc.rows.length} satırı silinecek.`}
             onconfirm={() => store.apply((a) => removeLocation(a, locId))}
-          >Mekânı sil</ConfirmDialog>
+          ><Trash2 />Mekânı sil</ConfirmDialog>
         </div>
       </div>
     {/key}

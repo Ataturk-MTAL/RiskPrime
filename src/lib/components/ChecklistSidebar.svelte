@@ -5,7 +5,7 @@
   import { store } from '$lib/state.svelte';
 </script>
 
-<aside class="space-y-3 rounded-xl border bg-card p-3 md:sticky md:top-4">
+<aside class="space-y-3 rounded-xl border bg-card p-3 max-md:max-h-[45vh] max-md:overflow-y-auto md:sticky md:top-4">
   <h2 class="font-semibold">Kontrol listeleri</h2>
   <ul class="space-y-0.5">
     {#each store.assessment.checklists as list (list.id)}
@@ -25,7 +25,7 @@
         </button>
       </li>
     {:else}
-      <p class="text-sm text-muted-foreground">Henüz kontrol listesi yok. "+ Hazır formdan ekle" ile MEB ya da elektrik-elektronik listelerini ekleyin.</p>
+      <li class="px-2 text-sm text-muted-foreground">Henüz kontrol listesi yok. "+ Hazır formdan ekle" ile MEB ya da elektrik-elektronik listelerini ekleyin.</li>
     {/each}
   </ul>
   <Button variant="outline" class="w-full" onclick={() => store.addBlankChecklist()}><Plus />Boş liste ekle</Button>

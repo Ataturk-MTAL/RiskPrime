@@ -34,12 +34,12 @@
 </script>
 
 <Collapsible.Root bind:open class="rounded-xl border bg-card">
-  <Collapsible.Trigger class="flex w-full items-center justify-between gap-3 px-4 py-3 text-left">
+  <Collapsible.Trigger class="flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/70 data-[state=open]:rounded-b-none">
     <span class="flex flex-wrap items-baseline gap-x-3">
       <h2 class="font-semibold">Okul ve kapsam</h2>
       <span class="text-sm text-muted-foreground">{summary}</span>
     </span>
-    <ChevronDown class="size-4 shrink-0 transition-transform {open ? 'rotate-180' : ''}" />
+    <ChevronDown class="size-4 shrink-0 text-muted-foreground transition-transform {open ? 'rotate-180' : ''}" />
   </Collapsible.Trigger>
   <Collapsible.Content class="space-y-4 border-t px-4 py-4">
     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -62,13 +62,13 @@
         <Input value={a.validUntil} placeholder="GG.AA.YYYY" onchange={(e) => store.apply((x) => updateMeta(x, { validUntil: value(e) }))} />
       </Label>
     </div>
-    <div class="space-y-2">
+    <div class="max-w-3xl space-y-2">
       <h3 class="text-sm font-semibold">İmzacılar</h3>
       {#each a.school.signatories as signatory, i (i)}
         <div class="grid grid-cols-[1fr_auto] gap-2 sm:grid-cols-[1fr_1fr_auto]">
           <Input class="col-span-2 sm:col-span-1" aria-label="Unvan" value={signatory.title} onchange={(e) => store.apply((x) => updateSignatory(x, i, { title: value(e) }))} />
           <Input aria-label="Ad soyad" placeholder="Ad Soyad" value={signatory.name} onchange={(e) => store.apply((x) => updateSignatory(x, i, { name: value(e) }))} />
-          <Button variant="ghost" size="icon" aria-label="İmzacıyı sil" onclick={() => store.apply((x) => removeSignatory(x, i))}><Trash2 /></Button>
+          <Button variant="ghost" size="icon" class="text-muted-foreground hover:text-destructive" aria-label="İmzacıyı sil" onclick={() => store.apply((x) => removeSignatory(x, i))}><Trash2 /></Button>
         </div>
       {/each}
       <Button variant="outline" size="sm" onclick={() => store.apply((x) => addSignatory(x, ''))}><Plus />İmzacı ekle</Button>

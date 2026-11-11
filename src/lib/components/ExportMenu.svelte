@@ -20,7 +20,7 @@
   <Button class="rounded-r-none" disabled={busy} onclick={() => store.exportAs('pdf-full')}><Download />PDF indir</Button>
   <DropdownMenu.Root>
     <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline' }) + ' rounded-l-none'} disabled={busy}>
-      diğer biçimler <ChevronDown />
+      Diğer biçimler <ChevronDown />
     </DropdownMenu.Trigger>
     <DropdownMenu.Content align="end" class="w-72">
       {#each ITEMS as item (item.kind)}

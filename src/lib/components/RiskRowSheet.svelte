@@ -1,6 +1,7 @@
 <script lang="ts">
   import ChevronLeft from '@lucide/svelte/icons/chevron-left';
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
+  import Trash2 from '@lucide/svelte/icons/trash-2';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
@@ -82,7 +83,7 @@
           title="Satır silinsin mi?"
           description="Bu risk satırı kalıcı olarak silinecek."
           onconfirm={() => store.apply((a) => removeRow(a, locationId, row.id))}
-        >Satırı sil</ConfirmDialog>
+        ><Trash2 />Satırı sil</ConfirmDialog>
         <div class="flex gap-1">
           <Button variant="outline" disabled={index === 0} onclick={() => go(-1)}><ChevronLeft />Önceki</Button>
           <Button variant="outline" disabled={index === rows.length - 1} onclick={() => go(1)}>Sonraki<ChevronRight /></Button>

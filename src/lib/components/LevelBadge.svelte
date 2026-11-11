@@ -10,7 +10,7 @@
 </script>
 
 {#if level}
-  <Badge style="background:{level.background};color:{level.text}" title="Skor = O × Ş">{showScore ? `${score} ` : ''}{level.label}</Badge>
+  <Badge class="h-auto min-h-5 whitespace-normal text-center leading-tight" style="background:{level.background};color:{level.text}" title="Skor = O × Ş">{showScore ? `${score} ` : ''}{level.label}</Badge>
 {:else}
   <span class="text-muted-foreground">—</span>
 {/if}

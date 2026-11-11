@@ -14,7 +14,7 @@
   import { focusFirstField, store } from '$lib/state.svelte';
 
   const CHOICES: { value: Exclude<Answer, ''>; tone: string }[] = [
-    { value: 'yes', tone: 'data-[state=on]:bg-green-600 data-[state=on]:text-white' },
+    { value: 'yes', tone: 'data-[state=on]:bg-green-700 data-[state=on]:text-white' },
     { value: 'no', tone: 'data-[state=on]:bg-red-600 data-[state=on]:text-white' },
     { value: 'na', tone: 'data-[state=on]:bg-gray-500 data-[state=on]:text-white' },
   ];
@@ -62,7 +62,7 @@
         title="Liste silinsin mi?"
         description={`"${list.code} ${list.name}" listesi ve cevapları silinecek.`}
         onconfirm={() => store.apply((a) => removeChecklist(a, listId))}
-      >Listeyi sil</ConfirmDialog>
+      ><Trash2 />Listeyi sil</ConfirmDialog>
     </div>
 
     <div class="flex items-center gap-3">

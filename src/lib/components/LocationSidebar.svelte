@@ -24,7 +24,7 @@
   }
 </script>
 
-<aside class="space-y-4 rounded-xl border bg-card p-3 md:sticky md:top-4">
+<aside class="space-y-4 rounded-xl border bg-card p-3 max-md:max-h-[45vh] max-md:overflow-y-auto md:sticky md:top-4">
   <h2 class="font-semibold">Mekânlar</h2>
   {#each groups as group (group.title)}
     <div class="space-y-1">

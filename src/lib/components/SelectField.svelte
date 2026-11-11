@@ -24,8 +24,8 @@
 </script>
 
 <Select.Root type="single" {value} onValueChange={(v) => v !== value && onValueChange(v)}>
-  <Select.Trigger {size} aria-label={label} class={cn('w-full text-foreground', className)}>
-    {selected?.label ?? '—'}
+  <Select.Trigger {size} aria-label={label} class={cn('w-full min-w-0 text-foreground', className)}>
+    <span class="min-w-0 truncate">{selected?.label ?? '—'}</span>
   </Select.Trigger>
   <Select.Content>
     {#each options as option (option.value)}

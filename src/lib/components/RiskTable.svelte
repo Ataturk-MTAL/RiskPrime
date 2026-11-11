@@ -21,7 +21,7 @@
 
 <div class="[&_[data-slot=table-container]]:max-h-[70vh] [&_[data-slot=table-container]]:overflow-y-auto">
   <Table.Root class="table-fixed">
-    <Table.Header class="[&_th]:whitespace-normal sticky top-0 z-10 bg-card shadow-[0_1px_0_var(--border)]">
+    <Table.Header class="[&_th]:whitespace-normal [&_th]:align-bottom [&_th]:text-xs [&_th]:text-muted-foreground sticky top-0 z-10 bg-card shadow-[0_1px_0_var(--border)]">
       <Table.Row class="hover:bg-transparent">
         <Table.Head class="w-9">No</Table.Head>
         <Table.Head class="w-[14%]">Alet / ekipman grubu</Table.Head>
