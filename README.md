@@ -4,7 +4,7 @@ Okul mekânlarının (atölye, depo, oda, ıslak hacim) iş sağlığı ve güve
 
 ## Kullanım
 
-1. `index.html` dosyasını açın (ya da yayınlanmış sayfayı).
+1. Yayınlanmış sayfayı açın (ya da yerelde `pnpm dev`).
 2. Mekânları (bina ve alan etiketiyle) ve risk satırlarını ekleyin, düzenleyin, silin. O ve Ş seçince skor ve renkli düzey görünür.
    - "+ Hazır formdan ekle": elektrik-elektronik hazır mekânları (risk satırlarıyla) ve kontrol listelerini, MEB KL-01–KL-43 listelerini seçip ekleyin; istemediğinizi silin.
    - "Kontrol listeleri" sekmesi: Evet / Hayır / U-D işaretleyin, açıklama yazın. MEB listesinin hazır metni kilitlidir; madde eklenip çıkarılabilir.
@@ -21,7 +21,7 @@ Veriler yalnız tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kişisel �
 Yığın: Vite + Svelte 5 + TypeScript + Tailwind 4 + shadcn-svelte (bits-ui). Paket yöneticisi pnpm. Kod İngilizce, arayüz Türkçe.
 
 | Komut | İş |
-|---|---|
+| --- | --- |
 | `pnpm install` | Bağımlılıklar (SheetJS `vendor/xlsx-0.20.3.tgz`'den gelir) |
 | `pnpm dev` | Geliştirme sunucusu |
 | `pnpm build` / `pnpm preview` | Statik derleme `dist/` (GitHub Pages) ve önizleme |
