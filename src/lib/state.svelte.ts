@@ -221,7 +221,8 @@ class Store {
 export const store = new Store();
 
 /** Focus the first text field of an element id once it has rendered. */
-export async function focusFirstField(elementId: string) {
+export async function focusFirstField(elementId: string, delayMs = 0) {
   await tick();
+  if (delayMs) await new Promise((resolve) => setTimeout(resolve, delayMs)); // portaled content (sheet) mounts late
   document.getElementById(elementId)?.querySelector<HTMLElement>('textarea, input')?.focus();
 }

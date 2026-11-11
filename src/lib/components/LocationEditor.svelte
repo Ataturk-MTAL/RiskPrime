@@ -8,6 +8,8 @@
   import ConfirmDialog from './ConfirmDialog.svelte';
   import NativeSelect from './NativeSelect.svelte';
   import RiskRowCard from './RiskRowCard.svelte';
+  import RiskRowSheet from './RiskRowSheet.svelte';
+  import RiskTable from './RiskTable.svelte';
   import { addRow, LOCATION_TYPES, LOCATION_TYPE_LABELS, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
   import type { LocationType } from '$lib/domain/types';
   import { focusFirstField, store } from '$lib/state.svelte';
@@ -16,9 +18,17 @@
   const loc = $derived(store.location);
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
 
+  let openId = $state<string | null>(null);
+  let tableView = $state<HTMLElement>();
+
   function addNewRow(locationId: string) {
     const id = newId('r');
-    if (store.apply((a) => addRow(a, locationId, { id }))) focusFirstField(`row-${id}`);
+    if (!store.apply((a) => addRow(a, locationId, { id }))) return;
+    // The table view is display:none on narrow containers; then the card view owns editing.
+    if (tableView?.getClientRects().length) {
+      openId = id;
+      focusFirstField('row-sheet-body', 300);
+    } else focusFirstField(`row-${id}`);
   }
 </script>
 
@@ -54,13 +64,18 @@
       </div>
     {/key}
 
-    <div class="space-y-3">
+    {#if loc.rows.length === 0}
+      <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda risk satırı yok. "Satır ekle" ile başlayın ya da "+ Hazır formdan ekle".</p>
+    {/if}
+    <div bind:this={tableView} class="hidden @3xl:block">
+      {#if loc.rows.length}<RiskTable rows={loc.rows} locationId={locId} {openId} onopen={(id) => (openId = id)} />{/if}
+    </div>
+    <div class="space-y-3 @3xl:hidden">
       {#each loc.rows as row, i (row.id)}
         <RiskRowCard {row} index={i + 1} locationId={locId} />
-      {:else}
-        <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda risk satırı yok. "Satır ekle" ile başlayın ya da "+ Hazır formdan ekle".</p>
       {/each}
     </div>
+    <RiskRowSheet rows={loc.rows} locationId={locId} bind:openId />
     <Button onclick={() => addNewRow(locId)}><Plus />Satır ekle</Button>
   {:else}
     <p class="py-8 text-center text-sm text-muted-foreground">Soldan bir mekân seçin ya da yeni mekân ekleyin.</p>
