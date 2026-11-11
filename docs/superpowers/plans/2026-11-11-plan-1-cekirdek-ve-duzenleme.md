@@ -29,16 +29,16 @@
 
 ## Dosya yapısı
 
-| Dosya | Sorumluluk |
-|---|---|
-| `package.json` | test komutu |
-| `lib/matris.js` | `gecerliPuan`, `skor`, `duzey`, `MATRIS`, `DUZEYLER` |
-| `lib/model.js` | değerlendirme oluşturma; mekân/satır/imzacı işlemleri; `etiketler`, `gruplu` |
-| `lib/dosya.js` | `dogrula`, `oku`, `yaz`, `dosyaAdi` |
-| `scripts/baslangic-uret.js` | Typst verisinden `veri/baslangic.js` üretir |
-| `veri/baslangic.js` | üretilmiş başlangıç değerlendirmesi |
-| `index.html`, `stil.css`, `app.js` | arayüz |
-| `tests/*.test.js` | `node --test` |
+| Dosya                              | Sorumluluk                                                                   |
+| ---------------------------------- | ---------------------------------------------------------------------------- |
+| `package.json`                     | test komutu                                                                  |
+| `lib/matris.js`                    | `gecerliPuan`, `skor`, `duzey`, `MATRIS`, `DUZEYLER`                         |
+| `lib/model.js`                     | değerlendirme oluşturma; mekân/satır/imzacı işlemleri; `etiketler`, `gruplu` |
+| `lib/dosya.js`                     | `dogrula`, `oku`, `yaz`, `dosyaAdi`                                          |
+| `scripts/baslangic-uret.js`        | Typst verisinden `veri/baslangic.js` üretir                                  |
+| `veri/baslangic.js`                | üretilmiş başlangıç değerlendirmesi                                          |
+| `index.html`, `stil.css`, `app.js` | arayüz                                                                       |
+| `tests/*.test.js`                  | `node --test`                                                                |
 
 Kod bloklarının tam içeriği uygulama sırasında depoya yazılan dosyalardır; plan, her görevin dosyalarını, arayüzlerini, test komutlarını ve beklenen sonuçlarını tanımlar. Dosyaların tam içeriği ilgili commit'lerdedir (`git show <commit>`); aşağıda her görev için test kodu, uygulama kodu ve doğrulama adımları yer alır.
 
@@ -49,6 +49,7 @@ Kod bloklarının tam içeriği uygulama sırasında depoya yazılan dosyalardı
 **Files:** Create `package.json`, `.gitignore`, `lib/matris.js`; Test `tests/matris.test.js`
 
 **Interfaces:**
+
 - Produces: `RiskPrime.matris` / `require('./lib/matris.js')` → `{ MATRIS, DUZEYLER, gecerliPuan(p): boolean, skor(o, s): number|null, duzey(o, s): {kod, ad, zemin, yazi}|null }`
 
 - [ ] Step 1: `package.json` (`"test": "node --test"`), `.gitignore` (`node_modules/`, `.DS_Store`).
@@ -63,6 +64,7 @@ Kod bloklarının tam içeriği uygulama sırasında depoya yazılan dosyalardı
 **Files:** Create `lib/model.js`; Test `tests/model.test.js`
 
 **Interfaces:**
+
 - Consumes: `matris.gecerliPuan`.
 - Produces: `RiskPrime.model` → `SURUM, TURLER, GRUPLAMALAR, DURUMLAR, yeniId(onek), bosDegerlendirme(donem), bosSatir(id), ustBilgiGuncelle(d, {donem, degerlendirmeTarihi, gecerlilikTarihi}), okulGuncelle(d, {okul, kapsam, gruplama}), imzaciEkle(d, unvan), imzaciGuncelle(d, sira, {unvan, ad}), imzaciSil(d, sira), mekanEkle(d, {id?, ad, tur, bina, alan}), mekanGuncelle(d, id, {ad, tur, bina, alan}), mekanSil(d, id), mekanTasi(d, id, -1|1), satirEkle(d, mekanId, girdi), satirGuncelle(d, mekanId, satirId, degisiklik), satirSil(d, mekanId, satirId), etiketler(d, 'bina'|'alan'): string[], gruplu(d): {baslik, mekanlar}[]`. Hepsi yeni kopya döner; bilinmeyen kimlikte `Error` (`Mekân bulunamadı`, `Satır bulunamadı`, `İmzacı bulunamadı`); geçersiz tür/gruplama/durum/puanda `Error`. Güncellemeler yalnız izinli alanları alır (`id` değişmez).
 
@@ -77,6 +79,7 @@ Kod bloklarının tam içeriği uygulama sırasında depoya yazılan dosyalardı
 **Files:** Create `lib/dosya.js`; Test `tests/dosya.test.js`
 
 **Interfaces:**
+
 - Consumes: `model.SURUM/TURLER/GRUPLAMALAR/DURUMLAR`, `matris.gecerliPuan`.
 - Produces: `RiskPrime.dosya` → `dogrula(v): string[]`, `oku(metin): {degerlendirme} | {hatalar}`, `yaz(d): string` (2 boşluk girintili JSON + satır sonu), `dosyaAdi(d): "risk-<dönem>.json"` (dönem boşsa `risk-degerlendirme.json`).
 
@@ -91,6 +94,7 @@ Kod bloklarının tam içeriği uygulama sırasında depoya yazılan dosyalardı
 **Files:** Create `scripts/baslangic-uret.js`, `veri/baslangic.js` (üretilir); Test `tests/baslangic.test.js`
 
 **Interfaces:**
+
 - Consumes: `Planlar/RISK-ANALIZ/atolye-verisi.typ` (`labs`, `gruplar`), `okul.json`; `dosya.dogrula`.
 - Produces: `RiskPrime.baslangic` / `require('./veri/baslangic.js')`.
 

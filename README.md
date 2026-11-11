@@ -18,18 +18,19 @@ Veriler yalnız tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kişisel �
 
 ## Geliştirme
 
-Yığın: Vite + Svelte 5 + TypeScript + Tailwind 4 + shadcn-svelte (bits-ui). Paket yöneticisi pnpm. Kod İngilizce, arayüz Türkçe.
+Yığın: Vite+ (`vp`) + Svelte 5 + TypeScript + Tailwind 4 + shadcn-svelte (bits-ui). Paket yöneticisi pnpm. Kod İngilizce, arayüz Türkçe.
 
-| Komut | İş |
-| --- | --- |
-| `pnpm install` | Bağımlılıklar (SheetJS `vendor/xlsx-0.20.3.tgz`'den gelir) |
-| `pnpm dev` | Geliştirme sunucusu |
-| `pnpm build` / `pnpm preview` | Statik derleme `dist/` (GitHub Pages) ve önizleme |
-| `pnpm test` | vitest: alan mantığı ve üreteç testleri |
-| `pnpm check` | svelte-check tip denetimi |
-| `pnpm lint:english` | ast-grep: kodda Türkçe tanımlayıcı yasak (`tools/ast-grep/`) |
-| `pnpm generate:starter <Planlar/RISK-ANALIZ>` | `src/lib/data/starter.json` (Typst 0.15 gerekir) |
-| `pnpm generate:library <KL01-KL43 PDF>` | `src/lib/data/library.json` (pdftotext gerekir; starter'dan sonra) |
+| Komut                                         | İş                                                                 |
+| --------------------------------------------- | ------------------------------------------------------------------ |
+| `pnpm install`                                | Bağımlılıklar (SheetJS `vendor/xlsx-0.20.3.tgz`'den gelir)         |
+| `pnpm dev`                                    | Geliştirme sunucusu                                                |
+| `pnpm build` / `pnpm preview`                 | Statik derleme `dist/` (GitHub Pages) ve önizleme                  |
+| `pnpm test`                                   | vitest: alan mantığı ve üreteç testleri                            |
+| `pnpm check`                                  | svelte-check tip denetimi                                          |
+| `pnpm lint` / `pnpm fmt`                      | Vite+ lint (oxlint) ve biçimlendirme                               |
+| `pnpm lint:english`                           | ast-grep: kodda Türkçe tanımlayıcı yasak (`tools/ast-grep/`)       |
+| `pnpm generate:starter <Planlar/RISK-ANALIZ>` | `src/lib/data/starter.json` (Typst 0.15 gerekir)                   |
+| `pnpm generate:library <KL01-KL43 PDF>`       | `src/lib/data/library.json` (pdftotext gerekir; starter'dan sonra) |
 
 Yapı:
 

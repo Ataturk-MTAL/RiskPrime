@@ -1,5 +1,5 @@
 // Immutable operations on an Assessment. Every function returns a new copy and never mutates its input.
-import { isScore } from './matrix';
+import { isScore } from "./matrix";
 import {
   SCHEMA_VERSION,
   type Assessment,
@@ -12,41 +12,51 @@ import {
   type RowTemplate,
   type School,
   type Signatory,
-} from './types';
+} from "./types";
 
-export const LOCATION_TYPES: LocationType[] = ['workshop', 'storage', 'office', 'wet', 'common'];
+export const LOCATION_TYPES: LocationType[] = ["workshop", "storage", "office", "wet", "common"];
 export const LOCATION_TYPE_LABELS: Record<LocationType, string> = {
-  workshop: 'Atölye',
-  storage: 'Depo',
-  office: 'Ofis / oda',
-  wet: 'Islak hacim',
-  common: 'Ortak (tüm mekânlar)',
+  workshop: "Atölye",
+  storage: "Depo",
+  office: "Ofis / oda",
+  wet: "Islak hacim",
+  common: "Ortak (tüm mekânlar)",
 };
-export const GROUPINGS: Grouping[] = ['area', 'building', 'none'];
-export const STATUSES: RowStatus[] = ['open', 'done'];
-export const STATUS_LABELS: Record<RowStatus, string> = { open: 'Açık', done: 'Tamam' };
+export const GROUPINGS: Grouping[] = ["area", "building", "none"];
+export const STATUSES: RowStatus[] = ["open", "done"];
+export const STATUS_LABELS: Record<RowStatus, string> = { open: "Açık", done: "Tamam" };
 export const DEFAULT_SIGNATORY_TITLES: string[] = [
-  'İş Güvenliği Uzmanı',
-  'Çalışan Temsilcisi',
-  'Destek Elemanı',
-  'Alan Şefi',
-  'İşveren / Okul Müdürü',
+  "İş Güvenliği Uzmanı",
+  "Çalışan Temsilcisi",
+  "Destek Elemanı",
+  "Alan Şefi",
+  "İşveren / Okul Müdürü",
 ];
 
-const META_KEYS = ['period', 'assessmentDate', 'validUntil'] as const;
-const SCHOOL_KEYS = ['name', 'scope', 'grouping'] as const;
-const SIGNATORY_KEYS = ['title', 'name'] as const;
-const LOCATION_KEYS = ['name', 'type', 'building', 'area'] as const;
+const META_KEYS = ["period", "assessmentDate", "validUntil"] as const;
+const SCHOOL_KEYS = ["name", "scope", "grouping"] as const;
+const SIGNATORY_KEYS = ["title", "name"] as const;
+const LOCATION_KEYS = ["name", "type", "building", "area"] as const;
 const ROW_KEYS = [
-  'equipment', 'hazard', 'affected', 'existingControls', 'likelihood', 'severity',
-  'action', 'responsible', 'dueDate', 'status', 'likelihoodAfter', 'severityAfter',
+  "equipment",
+  "hazard",
+  "affected",
+  "existingControls",
+  "likelihood",
+  "severity",
+  "action",
+  "responsible",
+  "dueDate",
+  "status",
+  "likelihoodAfter",
+  "severityAfter",
 ] as const;
-const SCORE_KEYS = ['likelihood', 'severity', 'likelihoodAfter', 'severityAfter'] as const;
+const SCORE_KEYS = ["likelihood", "severity", "likelihoodAfter", "severityAfter"] as const;
 
 export function newId(prefix: string): string {
   const c = globalThis.crypto;
   const body =
-    c && typeof c.randomUUID === 'function'
+    c && typeof c.randomUUID === "function"
       ? c.randomUUID()
       : Date.now().toString(36) + Math.random().toString(36).slice(2);
   return `${prefix}-${body}`;
@@ -58,17 +68,17 @@ export function pick<T extends object>(source: object, keys: readonly string[]):
   return Object.fromEntries(keys.filter((k) => k in src).map((k) => [k, src[k]])) as Partial<T>;
 }
 
-export function emptyAssessment(period = ''): Assessment {
+export function emptyAssessment(period = ""): Assessment {
   return {
     version: SCHEMA_VERSION,
     period,
-    assessmentDate: '',
-    validUntil: '',
+    assessmentDate: "",
+    validUntil: "",
     school: {
-      name: '',
-      scope: '',
-      grouping: 'area',
-      signatories: DEFAULT_SIGNATORY_TITLES.map((title) => ({ title, name: '' })),
+      name: "",
+      scope: "",
+      grouping: "area",
+      signatories: DEFAULT_SIGNATORY_TITLES.map((title) => ({ title, name: "" })),
     },
     locations: [],
     checklists: [],
@@ -77,17 +87,17 @@ export function emptyAssessment(period = ''): Assessment {
 
 export function emptyRow(id?: string): RiskRow {
   return {
-    id: id || newId('r'),
-    equipment: '',
-    hazard: '',
-    affected: '',
-    existingControls: '',
+    id: id || newId("r"),
+    equipment: "",
+    hazard: "",
+    affected: "",
+    existingControls: "",
     likelihood: null,
     severity: null,
-    action: '',
-    responsible: '',
-    dueDate: '',
-    status: 'open',
+    action: "",
+    responsible: "",
+    dueDate: "",
+    status: "open",
     likelihoodAfter: null,
     severityAfter: null,
   };
@@ -95,14 +105,14 @@ export function emptyRow(id?: string): RiskRow {
 
 export function updateMeta(
   a: Assessment,
-  patch: Partial<Pick<Assessment, 'period' | 'assessmentDate' | 'validUntil'>>,
+  patch: Partial<Pick<Assessment, "period" | "assessmentDate" | "validUntil">>,
 ): Assessment {
   return { ...a, ...pick<Assessment>(patch, META_KEYS) };
 }
 
 export function updateSchool(
   a: Assessment,
-  patch: Partial<Pick<School, 'name' | 'scope' | 'grouping'>>,
+  patch: Partial<Pick<School, "name" | "scope" | "grouping">>,
 ): Assessment {
   const next = pick<School>(patch, SCHOOL_KEYS);
   if (next.grouping !== undefined && !GROUPINGS.includes(next.grouping)) {
@@ -121,14 +131,20 @@ function assertSignatoryIndex(list: Signatory[], index: number): void {
   }
 }
 
-export function addSignatory(a: Assessment, title = ''): Assessment {
-  return mapSignatories(a, (list) => [...list, { title, name: '' }]);
+export function addSignatory(a: Assessment, title = ""): Assessment {
+  return mapSignatories(a, (list) => [...list, { title, name: "" }]);
 }
 
-export function updateSignatory(a: Assessment, index: number, patch: Partial<Signatory>): Assessment {
+export function updateSignatory(
+  a: Assessment,
+  index: number,
+  patch: Partial<Signatory>,
+): Assessment {
   return mapSignatories(a, (list) => {
     assertSignatoryIndex(list, index);
-    return list.map((s, i) => (i === index ? { ...s, ...pick<Signatory>(patch, SIGNATORY_KEYS) } : s));
+    return list.map((s, i) =>
+      i === index ? { ...s, ...pick<Signatory>(patch, SIGNATORY_KEYS) } : s,
+    );
   });
 }
 
@@ -146,18 +162,22 @@ function findLocation(a: Assessment, id: string): Location {
 }
 
 function assertLocationType(type: unknown): void {
-  if (!LOCATION_TYPES.includes(type as LocationType)) throw new Error(`Geçersiz mekân türü: ${String(type)}`);
+  if (!LOCATION_TYPES.includes(type as LocationType))
+    throw new Error(`Geçersiz mekân türü: ${String(type)}`);
 }
 
-export function addLocation(a: Assessment, input: Partial<Omit<Location, 'rows'>> = {}): Assessment {
-  const type = input.type || 'workshop';
+export function addLocation(
+  a: Assessment,
+  input: Partial<Omit<Location, "rows">> = {},
+): Assessment {
+  const type = input.type || "workshop";
   assertLocationType(type);
   const location: Location = {
-    id: input.id || newId('a'),
-    name: (input.name || '').trim() || 'Yeni mekân',
+    id: input.id || newId("a"),
+    name: (input.name || "").trim() || "Yeni mekân",
     type,
-    building: (input.building || '').trim(),
-    area: (input.area || '').trim(),
+    building: (input.building || "").trim(),
+    area: (input.area || "").trim(),
     rows: [],
   };
   return { ...a, locations: [...a.locations, location] };
@@ -166,11 +186,11 @@ export function addLocation(a: Assessment, input: Partial<Omit<Location, 'rows'>
 export function updateLocation(
   a: Assessment,
   id: string,
-  patch: Partial<Pick<Location, 'name' | 'type' | 'building' | 'area'>>,
+  patch: Partial<Pick<Location, "name" | "type" | "building" | "area">>,
 ): Assessment {
   findLocation(a, id);
   const next = pick<Location>(patch, LOCATION_KEYS);
-  if ('type' in next) assertLocationType(next.type);
+  if ("type" in next) assertLocationType(next.type);
   return { ...a, locations: a.locations.map((l) => (l.id === id ? { ...l, ...next } : l)) };
 }
 
@@ -196,21 +216,32 @@ function assertRowValues(patch: Record<string, unknown>): void {
       throw new Error(`${k} 1-5 arası tam sayı ya da boş olmalı: ${String(patch[k])}`);
     }
   }
-  if ('status' in patch && !STATUSES.includes(patch.status as RowStatus)) {
+  if ("status" in patch && !STATUSES.includes(patch.status as RowStatus)) {
     throw new Error(`Geçersiz durum: ${String(patch.status)}`);
   }
 }
 
-function mapRows(a: Assessment, locationId: string, fn: (rows: RiskRow[]) => RiskRow[]): Assessment {
+function mapRows(
+  a: Assessment,
+  locationId: string,
+  fn: (rows: RiskRow[]) => RiskRow[],
+): Assessment {
   findLocation(a, locationId);
-  return { ...a, locations: a.locations.map((l) => (l.id === locationId ? { ...l, rows: fn(l.rows) } : l)) };
+  return {
+    ...a,
+    locations: a.locations.map((l) => (l.id === locationId ? { ...l, rows: fn(l.rows) } : l)),
+  };
 }
 
 function assertRowExists(rows: RiskRow[], rowId: string): void {
   if (!rows.some((r) => r.id === rowId)) throw new Error(`Satır bulunamadı: ${rowId}`);
 }
 
-export function addRow(a: Assessment, locationId: string, input: RowTemplate & { id?: string } = {}): Assessment {
+export function addRow(
+  a: Assessment,
+  locationId: string,
+  input: RowTemplate & { id?: string } = {},
+): Assessment {
   const values = pick<RiskRow>(input, ROW_KEYS);
   assertRowValues(values);
   const row: RiskRow = { ...emptyRow(input.id), ...values };
@@ -221,7 +252,7 @@ export function updateRow(
   a: Assessment,
   locationId: string,
   rowId: string,
-  patch: Partial<Omit<RiskRow, 'id'>>,
+  patch: Partial<Omit<RiskRow, "id">>,
 ): Assessment {
   const values = pick<RiskRow>(patch, ROW_KEYS);
   assertRowValues(values);
@@ -240,24 +271,24 @@ export function removeRow(a: Assessment, locationId: string, rowId: string): Ass
 
 /** Adds a library location with its rows, under new ids. */
 export function addLocationFromTemplate(a: Assessment, tpl: LocationTemplate): Assessment {
-  const id = newId('a');
+  const id = newId("a");
   const withLocation = addLocation(a, { ...tpl, id });
   return (tpl.rows || []).reduce((acc, row) => addRow(acc, id, row), withLocation);
 }
 
 /** Distinct building or area labels used by locations, sorted. */
-export function labels(a: Assessment, key: 'building' | 'area'): string[] {
+export function labels(a: Assessment, key: "building" | "area"): string[] {
   const set = new Set(a.locations.map((l) => l[key]).filter(Boolean));
-  return [...set].sort((x, y) => x.localeCompare(y, 'tr'));
+  return [...set].sort((x, y) => x.localeCompare(y, "tr"));
 }
 
 /** Location groups following school.grouping; order follows location order. */
 export function grouped(a: Assessment): { title: string; locations: Location[] }[] {
   const key = a.school.grouping;
-  if (key === 'none') return [{ title: '', locations: a.locations }];
+  if (key === "none") return [{ title: "", locations: a.locations }];
   const groups = new Map<string, Location[]>();
   for (const l of a.locations) {
-    const title = l[key] || '(Belirtilmemiş)';
+    const title = l[key] || "(Belirtilmemiş)";
     groups.set(title, [...(groups.get(title) || []), l]);
   }
   return [...groups].map(([title, locations]) => ({ title, locations }));

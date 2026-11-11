@@ -3,11 +3,11 @@
 export const SCHEMA_VERSION = 1;
 
 export type Score = 1 | 2 | 3 | 4 | 5;
-export type LocationType = 'workshop' | 'storage' | 'office' | 'wet' | 'common';
-export type Grouping = 'area' | 'building' | 'none';
-export type RowStatus = 'open' | 'done';
-export type ChecklistSource = 'internal' | 'external';
-export type Answer = 'yes' | 'no' | 'na' | '';
+export type LocationType = "workshop" | "storage" | "office" | "wet" | "common";
+export type Grouping = "area" | "building" | "none";
+export type RowStatus = "open" | "done";
+export type ChecklistSource = "internal" | "external";
+export type Answer = "yes" | "no" | "na" | "";
 
 export interface Signatory {
   title: string;
@@ -84,7 +84,7 @@ export interface ChecklistTemplate {
   items: { no: string; text: string }[];
 }
 
-export type RowTemplate = Partial<Omit<RiskRow, 'id'>>;
+export type RowTemplate = Partial<Omit<RiskRow, "id">>;
 
 export interface LocationTemplate {
   name: string;

@@ -14,13 +14,13 @@ Başlangıç verisi: `Planlar/RISK-ANALIZ` içindeki Typst belgesi (`EET-RISK-DE
 - MEB Risk Değerlendirme Rehberi L tipi matris: Risk = Olasılık (O) × Şiddet (Ş), O ve Ş 1-5 tam sayı.
 - Düzey çarpımdan değil matris hücresinden okunur:
 
-| O \ Ş | 1 | 2 | 3 | 4 | 5 |
-|---|---|---|---|---|---|
-| 1 | Anlamsız | Düşük | Düşük | Düşük | Düşük |
-| 2 | Düşük | Düşük | Düşük | Orta | Orta |
-| 3 | Düşük | Düşük | Orta | Orta | Yüksek |
-| 4 | Düşük | Orta | Orta | Yüksek | Yüksek |
-| 5 | Düşük | Orta | Yüksek | Yüksek | Tolere edilemez |
+| O \ Ş | 1        | 2     | 3      | 4      | 5               |
+| ----- | -------- | ----- | ------ | ------ | --------------- |
+| 1     | Anlamsız | Düşük | Düşük  | Düşük  | Düşük           |
+| 2     | Düşük    | Düşük | Düşük  | Orta   | Orta            |
+| 3     | Düşük    | Düşük | Orta   | Orta   | Yüksek          |
+| 4     | Düşük    | Orta  | Orta   | Yüksek | Yüksek          |
+| 5     | Düşük    | Orta  | Yüksek | Yüksek | Tolere edilemez |
 
 ## Mimari
 
@@ -60,29 +60,49 @@ Dosya adı önerisi: `risk-<dönem>.json` (örnek `risk-2026-2027.json`). Asıl 
     "okul": "…",
     "kapsam": "Elektrik-Elektronik Teknolojisi Alanı",
     "gruplama": "alan | bina | yok",
-    "imzacilar": [ { "unvan": "İş Güvenliği Uzmanı", "ad": "" } ]
+    "imzacilar": [{ "unvan": "İş Güvenliği Uzmanı", "ad": "" }]
   },
   "mekanlar": [
     {
-      "id": "a-…", "ad": "ELE1 · Haberleşme ve Görüntü Sistemleri",
+      "id": "a-…",
+      "ad": "ELE1 · Haberleşme ve Görüntü Sistemleri",
       "tur": "atolye | depo | ofis | islak | ortak",
       "bina": "Atölyeler Binası",
       "alan": "Elektrik-Elektronik Teknolojisi",
       "satirlar": [
         {
-          "id": "r-…", "alet": "…", "tehlike": "…", "etkilenen": "…",
-          "mevcut": "…", "o": 3, "s": 5,
-          "onlem": "…", "sorumlu": "…", "bitis": "GG.AA.YYYY",
-          "durum": "acik | tamam", "o2": 1, "s2": 5
+          "id": "r-…",
+          "alet": "…",
+          "tehlike": "…",
+          "etkilenen": "…",
+          "mevcut": "…",
+          "o": 3,
+          "s": 5,
+          "onlem": "…",
+          "sorumlu": "…",
+          "bitis": "GG.AA.YYYY",
+          "durum": "acik | tamam",
+          "o2": 1,
+          "s2": 5
         }
       ]
     }
   ],
   "kontrolListeleri": [
     {
-      "id": "k-…", "kod": "KL-26", "ad": "Elektrikli Tesisat ve Ekipmanlar",
+      "id": "k-…",
+      "kod": "KL-26",
+      "ad": "Elektrikli Tesisat ve Ekipmanlar",
       "kaynak": "ic | dis",
-      "maddeler": [ { "id": "m-…", "no": "26.01", "metin": "…", "cevap": "evet | hayir | ud | (boş)", "aciklama": "" } ]
+      "maddeler": [
+        {
+          "id": "m-…",
+          "no": "26.01",
+          "metin": "…",
+          "cevap": "evet | hayir | ud | (boş)",
+          "aciklama": ""
+        }
+      ]
     }
   ]
 }
@@ -120,16 +140,16 @@ Tek `.xlsx`, iki sayfa. İlk satır başlık; ikinci satır örnek (içe alırke
 
 **Sayfa "Kontrol Listesi"**
 
-| Liste Kodu | Liste Adı | Madde No | Madde |
-|---|---|---|---|
-| KL-26 | Elektrikli Tesisat ve Ekipmanlar | 26.01 | Elektrik tesisatının bakım ve onarımı … |
+| Liste Kodu | Liste Adı                        | Madde No | Madde                                   |
+| ---------- | -------------------------------- | -------- | --------------------------------------- |
+| KL-26      | Elektrikli Tesisat ve Ekipmanlar | 26.01    | Elektrik tesisatının bakım ve onarımı … |
 
 Aynı Liste Kodu'na sahip satırlar tek liste olur. İçe alınan liste `kaynak: "dis"` olur. Aynı kodda liste zaten varsa kullanıcıya "değiştir / yanına ekle / vazgeç" sorulur.
 
 **Sayfa "Risk Satırları"**
 
-| Mekân | Mekân Türü | Bina | Alan | Alet / Ekipman Grubu | Tehlike ve Risk | Etkilenen | Mevcut Önlem | Düzeltici Önlem | Sorumlu | O | Ş |
-|---|---|---|---|---|---|---|---|---|---|---|---|
+| Mekân | Mekân Türü | Bina | Alan | Alet / Ekipman Grubu | Tehlike ve Risk | Etkilenen | Mevcut Önlem | Düzeltici Önlem | Sorumlu | O   | Ş   |
+| ----- | ---------- | ---- | ---- | -------------------- | --------------- | --------- | ------------ | --------------- | ------- | --- | --- |
 
 Mekân yoksa oluşturulur (bina ve alan etiketiyle). Bina, Alan, O ve Ş boş bırakılabilir.
 
@@ -146,6 +166,7 @@ Doğrulama hepsi-ya-hiç: tek bir satırda hata varsa hiçbir şey eklenmez, hat
 ## Kütüphane
 
 `veri/kutuphane.json`:
+
 - Tehlike satırları: bugünkü `atolye-verisi.typ` satırları (ortak, kumanda seti, tesisat seti, PLC, depo, ofis …), puansız.
 - MEB KL listeleri, `MEB-Risk-Degerlendirme-Kontrol-Listeleri-KL01-KL43.pdf` metninden: KL-11, KL-19, KL-25, KL-26, KL-27, KL-28, KL-30, KL-31, KL-34, KL-35. Madde metinleri kaynakla birebir, madde numaralarıyla.
 

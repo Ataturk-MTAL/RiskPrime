@@ -10,4 +10,4 @@ rule:
         - kind: type_identifier
         - kind: shorthand_property_identifier
         - kind: shorthand_property_identifier_pattern
-    - regex: '(?i)([çğıöşüÇĞİÖŞÜ]|mekan|satir|okul|donem|tehlike|onlem|sorumlu|madde|cevap|aciklama|kontrol|imzaci|gruplama|cikti|disari|kutuphane|baslik|guncelle|duzey|siddet|olasilik|tarih|ozet|uyari|indir)'
+    - regex: "(?i)([çğıöşüÇĞİÖŞÜ]|mekan|satir|okul|donem|tehlike|onlem|sorumlu|madde|cevap|aciklama|kontrol|imzaci|gruplama|cikti|disari|kutuphane|baslik|guncelle|duzey|siddet|olasilik|tarih|ozet|uyari|indir)"
