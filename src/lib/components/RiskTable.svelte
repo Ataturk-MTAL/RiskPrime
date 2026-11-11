@@ -3,6 +3,7 @@
   import { Button } from '$lib/components/ui/button';
   import * as Table from '$lib/components/ui/table';
   import LevelBadge from './LevelBadge.svelte';
+  import ScaleInfo from './ScaleInfo.svelte';
   import SelectField from './SelectField.svelte';
   import { LIKELIHOOD_OPTIONS, parseScore, scoreValue, SEVERITY_OPTIONS } from './score-options';
   import { STATUS_LABELS, updateRow } from '$lib/domain/assessment';
@@ -25,8 +26,8 @@
         <Table.Head class="w-9">No</Table.Head>
         <Table.Head class="w-[14%]">Alet / ekipman grubu</Table.Head>
         <Table.Head class="w-[21%]">Tehlike ve risk</Table.Head>
-        <Table.Head class="w-12 px-1">O</Table.Head>
-        <Table.Head class="w-12 px-1">Ş</Table.Head>
+        <Table.Head class="w-14 px-1"><span class="inline-flex items-center gap-0.5">O<ScaleInfo kind="likelihood" /></span></Table.Head>
+        <Table.Head class="w-14 px-1"><span class="inline-flex items-center gap-0.5">Ş<ScaleInfo kind="severity" /></span></Table.Head>
         <Table.Head class="w-24">Düzey</Table.Head>
         <Table.Head class="w-[20%]">Düzeltici / önleyici faaliyet</Table.Head>
         <Table.Head class="w-[13%]">Sorumlu</Table.Head>
