@@ -6,6 +6,9 @@ Okul mekânlarının (atölye, depo, oda, ıslak hacim) iş sağlığı ve güve
 
 1. `index.html` dosyasını açın (ya da yayınlanmış sayfayı).
 2. Mekânları (bina ve alan etiketiyle) ve risk satırlarını ekleyin, düzenleyin, silin. O ve Ş seçince skor ve renkli düzey görünür.
+   - "+ Hazır formdan ekle": elektrik-elektronik hazır mekânları (risk satırlarıyla) ve kontrol listelerini, MEB KL-01–KL-43 listelerini seçip ekleyin; istemediğinizi silin.
+   - "Kontrol listeleri" sekmesi: Evet / Hayır / U-D işaretleyin, açıklama yazın. MEB listesinin hazır metni kilitlidir; madde eklenip çıkarılabilir.
+   - Kendi listeniz ya da risk satırlarınız için "diğer biçimler → Excel içe alma şablonu"nu doldurup "Dosya aç" ile yükleyin.
 3. "PDF indir" tam belgeyi verir. "▾ diğer biçimler" menüsünde: kayıt dosyası (`risk-<dönem>.json`), yalnız kontrol listeleri PDF'i, boş form PDF'i, Excel ve Word. Uygulamada tekrar açılabilen tek biçim `.json`'dur; sonraki sefer "Dosya aç" ile ya da sayfaya sürükleyerek açın.
 4. PDF tarayıcıda Typst (typst.ts) ile üretilir; sayfa bir adresle açılmalıdır (GitHub Pages ya da yerel sunucu). İlk PDF'te derleyici (~28 MB) bir kez indirilir.
 
@@ -17,5 +20,6 @@ Veriler yalnız tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kişisel �
 
 - Testler: `npm test` (Node ≥ 20).
 - Başlangıç verisini yeniden üretmek: `node scripts/baslangic-uret.js <Planlar/RISK-ANALIZ klasörü>` (Typst 0.15 gerekir).
+- Hazır kütüphaneyi (MEB KL-01–KL-43 + elektrik-elektronik formu) yeniden üretmek: `node scripts/kl-uret.js <MEB-Risk-Degerlendirme-Kontrol-Listeleri-KL01-KL43.pdf>` (pdftotext gerekir; baslangic.js'ten sonra çalıştırın).
 - Yerelde çalıştırma: `python3 -m http.server 8766` ve `http://127.0.0.1:8766/`.
 - Tasarım: `docs/superpowers/specs/2026-11-11-riskprime-design.md`; plan: `docs/superpowers/plans/`.

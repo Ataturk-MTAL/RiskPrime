@@ -4,10 +4,7 @@
 
   const { matris, model, dosya } = window.RiskPrime;
   const DEPO_ANAHTARI = 'riskprime.calisma';
-  const TUR_ADLARI = {
-    atolye: 'Atölye', depo: 'Depo', ofis: 'Ofis / oda', islak: 'Islak hacim', ortak: 'Ortak (tüm mekânlar)',
-  };
-  const TUR_SECENEKLERI = Object.entries(TUR_ADLARI);
+  const TUR_SECENEKLERI = Object.entries(model.TUR_ADLARI);
   const PUAN_ALANLARI = ['o', 's', 'o2', 's2'];
   const METIN_SUTUNLARI = [
     ['alet', 'Alet / ekipman grubu'],
@@ -46,9 +43,11 @@
     }
   }
 
-  function mesaj(metin) {
+  /** tur: 'hata' (kırmızı) | 'bilgi' (turuncu). Boş metin gizler. */
+  function mesaj(metin, tur = 'hata') {
     const el = $('#mesaj');
     el.textContent = metin || '';
+    el.className = tur === 'bilgi' ? 'uyari' : 'hata';
     el.hidden = !metin;
   }
 
@@ -93,6 +92,8 @@
     const { d } = durum;
     for (const el of document.querySelectorAll('[data-okul]')) el.value = d.okul[el.dataset.okul];
     for (const el of document.querySelectorAll('[data-ust]')) el.value = d[el.dataset.ust];
+    const dolu = d.okul.imzacilar.filter((x) => x.ad).length;
+    $('#okul-ozet').textContent = [d.okul.okul, d.donem, `${dolu}/${d.okul.imzacilar.length} imzacı`].filter(Boolean).join(' · ');
     $('#imzacilar').innerHTML = d.okul.imzacilar.map((x, i) => `
       <div class="imzaci">
         <input data-imzaci="${i}" data-k="unvan" value="${kacis(x.unvan)}" aria-label="Unvan">
@@ -203,10 +204,14 @@
       <button type="button" id="satir-ekle" class="birincil">Satır ekle</button>`;
   }
 
+  // Diğer ekranlar (kontrol-ekrani.js) tam çizimde kendini yeniler.
+  const ekCizimler = [];
+
   function hepsiniCiz() {
     ustCiz();
     mekanlariCiz();
     satirlariCiz();
+    ekCizimler.forEach((ciz) => ciz());
     bayraklariCiz();
   }
 
@@ -228,7 +233,40 @@
     if (kayipOnayi()) uygula(uret(), { kirli: false });
   }
 
+  function hataListesi(baslik, hatalar) {
+    const kalan = hatalar.length - 8;
+    return `${baslik}\n${hatalar.slice(0, 8).join('\n')}${kalan > 0 ? `\n… ve ${kalan} hata daha` : ''}`;
+  }
+
+  /** Excel içe alma: mevcut değerlendirmeye ekler (hepsi-ya-hiç). */
+  async function excelIceAl(f) {
+    const { excel, disari } = window.RiskPrime;
+    let sayfalar;
+    try {
+      sayfalar = await disari.excelOku(f);
+    } catch (hata) {
+      mesaj(`"${f.name}" okunamadı: ${hata.message}`);
+      return;
+    }
+    const cakisan = excel.cakisanKodlar(durum.d, sayfalar);
+    const ayniKod = cakisan.length && window.confirm(
+      `${cakisan.join(', ')} kodlu liste zaten var.\nTamam: mevcut listeyi değiştir (cevaplar silinir)\nİptal: yanına yeni liste olarak ekle`,
+    ) ? 'degistir' : 'ekle';
+    const sonuc = excel.oku(durum.d, sayfalar, { ayniKod });
+    if (sonuc.hatalar) {
+      mesaj(hataListesi(`"${f.name}" içe alınamadı, hiçbir şey eklenmedi:`, sonuc.hatalar));
+      return;
+    }
+    uygula(sonuc.degerlendirme);
+    const o = sonuc.ozet;
+    mesaj(`İçe alındı: ${o.liste} kontrol listesi (${o.madde} madde), ${o.satir} risk satırı, ${o.mekan} yeni mekân.`, 'bilgi');
+  }
+
   async function dosyaAc(f) {
+    if (/\.xlsx?$/i.test(f.name)) {
+      await excelIceAl(f);
+      return;
+    }
     let metin;
     try {
       metin = await f.text();
@@ -238,8 +276,7 @@
     }
     const sonuc = dosya.oku(metin);
     if (sonuc.hatalar) {
-      const kalan = sonuc.hatalar.length - 8;
-      mesaj(`"${f.name}" açılamadı:\n${sonuc.hatalar.slice(0, 8).join('\n')}${kalan > 0 ? `\n… ve ${kalan} hata daha` : ''}`);
+      mesaj(hataListesi(`"${f.name}" açılamadı:`, sonuc.hatalar));
       return;
     }
     if (kayipOnayi()) uygula(sonuc.degerlendirme, { kirli: false });
@@ -257,6 +294,7 @@
     bos: (d) => window.RiskPrime.disari.pdfIndir(d, 'bos'),
     xlsx: (d) => window.RiskPrime.disari.excelIndir(d),
     docx: (d) => window.RiskPrime.disari.wordIndir(d),
+    sablon: () => window.RiskPrime.disari.sablonIndir(),
   };
 
   /** PDF/Excel/Word üretir; JSON indirilmemişse uyarı (#kirli) zaten görünür kalır. */
@@ -264,9 +302,9 @@
     if (bicim === 'json') return jsonIndir();
     const durumYazisi = $('#calisiyor');
     const dugmeler = document.querySelectorAll('#pdf-indir, #bicimler button');
-    durumYazisi.textContent = bicim === 'xlsx' || bicim === 'docx'
-      ? 'Dosya hazırlanıyor…'
-      : 'PDF hazırlanıyor… (ilk seferde derleyici indirilir, biraz sürebilir)';
+    durumYazisi.textContent = ['tam', 'kontrol', 'bos'].includes(bicim)
+      ? 'PDF hazırlanıyor… (ilk seferde derleyici indirilir, biraz sürebilir)'
+      : 'Dosya hazırlanıyor…';
     durumYazisi.hidden = false;
     dugmeler.forEach((b) => { b.disabled = true; });
     mesaj('');
@@ -403,6 +441,7 @@
     $('#yeni-mekan').tur.innerHTML = secenekler(TUR_SECENEKLERI, 'atolye');
     durum.d = depoOku() || kopya(window.RiskPrime.baslangic);
     durum.mekanId = durum.d.mekanlar[0] ? durum.d.mekanlar[0].id : null;
+    $('#okul').open = !durum.d.okul.okul; // okul bilgisi girilmişse kart katlı açılır, tablo ilk ekranda görünür
     okulOlaylari();
     mekanOlaylari();
     satirOlaylari();
@@ -410,5 +449,13 @@
     hepsiniCiz();
   }
 
-  baslat();
+  // Ek ekranlar (kontrol-ekrani.js) bu yardımcıları kullanır; app.js'ten sonra yüklenir.
+  window.RiskPrime = Object.assign({}, window.RiskPrime, {
+    arayuz: Object.freeze({
+      durum, $, kacis, secenekler, mesaj, dene, uygula, hepsiniCiz,
+      cizimEkle: (fn) => ekCizimler.push(fn),
+      mekanSec: (id) => { durum.mekanId = id; mekanlariCiz(); satirlariCiz(); },
+    }),
+  });
+  document.addEventListener('DOMContentLoaded', baslat);
 })();
