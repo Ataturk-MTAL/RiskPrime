@@ -1,0 +1,13 @@
+id: english-identifiers
+language: TypeScript
+severity: error
+message: "Identifier must be English (Turkish letters or Turkish word stem found). Turkish is allowed only inside user-facing strings."
+rule:
+  all:
+    - any:
+        - kind: identifier
+        - kind: property_identifier
+        - kind: type_identifier
+        - kind: shorthand_property_identifier
+        - kind: shorthand_property_identifier_pattern
+    - regex: '(?i)([çğıöşüÇĞİÖŞÜ]|mekan|satir|okul|donem|tehlike|onlem|sorumlu|madde|cevap|aciklama|kontrol|imzaci|gruplama|cikti|disari|kutuphane|baslik|guncelle|duzey|siddet|olasilik|tarih|ozet|uyari|indir)'

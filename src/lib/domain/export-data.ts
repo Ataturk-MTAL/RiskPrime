@@ -1,0 +1,147 @@
+// Pure data transforms shared by the PDF, Excel and Word exports.
+import { grouped } from './assessment';
+import { fileName } from './file';
+import { riskLevel, riskScore, type Level } from './matrix';
+import type { Answer, Assessment, Checklist, Location, RiskRow, RowStatus } from './types';
+
+export const PDF_KINDS = ['full', 'checklists', 'blank'] as const;
+export type PdfKind = (typeof PDF_KINDS)[number];
+
+const ANSWER_TEXT: Record<Answer, string> = { yes: 'Evet', no: 'Hayır', na: 'U.D.', '': '' };
+const STATUS_TEXT: Record<RowStatus, string> = { open: 'Açık', done: 'Tamamlandı' };
+
+const blankIfNull = <T>(value: T | null | undefined): T | '' => (value === null || value === undefined ? '' : value);
+
+export interface ExportRiskRow {
+  location: string;
+  building: string;
+  area: string;
+  no: number;
+  equipment: string;
+  hazard: string;
+  affected: string;
+  existingControls: string;
+  likelihood: number | '';
+  severity: number | '';
+  score: number | '';
+  level: string;
+  action: string;
+  responsible: string;
+  dueDate: string;
+  status: string;
+  likelihoodAfter: number | '';
+  severityAfter: number | '';
+  scoreAfter: number | '';
+  levelAfter: string;
+}
+
+export interface ExportChecklistRow {
+  code: string;
+  name: string;
+  no: string;
+  text: string;
+  answer: string;
+  note: string;
+}
+
+/** Flat risk rows for Excel/Word (location info repeated on every row). */
+export function riskRows(a: Assessment): ExportRiskRow[] {
+  return a.locations.flatMap((l) =>
+    l.rows.map((r, i) => ({
+      location: l.name,
+      building: l.building || '',
+      area: l.area || '',
+      no: i + 1,
+      equipment: r.equipment,
+      hazard: r.hazard,
+      affected: r.affected,
+      existingControls: r.existingControls,
+      likelihood: blankIfNull(r.likelihood),
+      severity: blankIfNull(r.severity),
+      score: blankIfNull(riskScore(r.likelihood, r.severity)),
+      level: riskLevel(r.likelihood, r.severity)?.label ?? '',
+      action: r.action,
+      responsible: r.responsible,
+      dueDate: r.dueDate,
+      status: STATUS_TEXT[r.status] || '',
+      likelihoodAfter: blankIfNull(r.likelihoodAfter),
+      severityAfter: blankIfNull(r.severityAfter),
+      scoreAfter: blankIfNull(riskScore(r.likelihoodAfter, r.severityAfter)),
+      levelAfter: riskLevel(r.likelihoodAfter, r.severityAfter)?.label ?? '',
+    })),
+  );
+}
+
+export function checklistRows(a: Assessment): ExportChecklistRow[] {
+  return (a.checklists || []).flatMap((l) =>
+    l.items.map((m) => ({
+      code: l.code,
+      name: l.name,
+      no: m.no,
+      text: m.text,
+      answer: ANSWER_TEXT[m.answer] || '',
+      note: m.note || '',
+    })),
+  );
+}
+
+export type PdfRow = Omit<RiskRow, never> & {
+  score: number | null;
+  level: Level | null;
+  scoreAfter: number | null;
+  levelAfter: Level | null;
+};
+export type PdfLocation = Omit<Location, 'rows'> & { rows: PdfRow[] };
+
+export interface PdfData {
+  kind: PdfKind;
+  school: Assessment['school'];
+  period: string;
+  assessmentDate: string;
+  validUntil: string;
+  groups: { title: string; locations: PdfLocation[] }[];
+  checklists: Checklist[];
+}
+
+function pdfRow(r: RiskRow, blank: boolean): PdfRow {
+  if (blank) {
+    return {
+      ...r, likelihood: null, severity: null, score: null, level: null,
+      likelihoodAfter: null, severityAfter: null, scoreAfter: null, levelAfter: null,
+    };
+  }
+  return {
+    ...r,
+    score: riskScore(r.likelihood, r.severity),
+    level: riskLevel(r.likelihood, r.severity),
+    scoreAfter: riskScore(r.likelihoodAfter, r.severityAfter),
+    levelAfter: riskLevel(r.likelihoodAfter, r.severityAfter),
+  };
+}
+
+/** Data handed to the Typst template. Does not mutate the input. */
+export function pdfData(a: Assessment, kind: PdfKind): PdfData {
+  if (!PDF_KINDS.includes(kind)) throw new Error(`Geçersiz çıktı türü: ${String(kind)}`);
+  const blank = kind === 'blank';
+  return {
+    kind,
+    school: a.school,
+    period: a.period,
+    assessmentDate: a.assessmentDate,
+    validUntil: a.validUntil,
+    groups: grouped(a).map((g) => ({
+      title: g.title,
+      locations: g.locations.map((l) => ({ ...l, rows: l.rows.map((r) => pdfRow(r, blank)) })),
+    })),
+    checklists: (a.checklists || []).map((l) => ({
+      ...l,
+      items: l.items.map((m) => (blank ? { ...m, answer: '' as Answer, note: '' } : m)),
+    })),
+  };
+}
+
+/** risk-<period>[-suffix].<ext> */
+export function outputName(a: Assessment, ext: string, suffix?: string): string {
+  const base = fileName(a).replace(/\.json$/, '');
+  return `${base}${suffix ? `-${suffix}` : ''}.${ext}`;
+}

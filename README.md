@@ -18,8 +18,24 @@ Veriler yalnız tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kişisel �
 
 ## Geliştirme
 
-- Testler: `npm test` (Node ≥ 20).
-- Başlangıç verisini yeniden üretmek: `node scripts/baslangic-uret.js <Planlar/RISK-ANALIZ klasörü>` (Typst 0.15 gerekir).
-- Hazır kütüphaneyi (MEB KL-01–KL-43 + elektrik-elektronik formu) yeniden üretmek: `node scripts/kl-uret.js <MEB-Risk-Degerlendirme-Kontrol-Listeleri-KL01-KL43.pdf>` (pdftotext gerekir; baslangic.js'ten sonra çalıştırın).
-- Yerelde çalıştırma: `python3 -m http.server 8766` ve `http://127.0.0.1:8766/`.
-- Tasarım: `docs/superpowers/specs/2026-11-11-riskprime-design.md`; plan: `docs/superpowers/plans/`.
+Yığın: Vite + Svelte 5 + TypeScript + Tailwind 4 + shadcn-svelte (bits-ui). Paket yöneticisi pnpm. Kod İngilizce, arayüz Türkçe.
+
+| Komut | İş |
+|---|---|
+| `pnpm install` | Bağımlılıklar (SheetJS `vendor/xlsx-0.20.3.tgz`'den gelir) |
+| `pnpm dev` | Geliştirme sunucusu |
+| `pnpm build` / `pnpm preview` | Statik derleme `dist/` (GitHub Pages) ve önizleme |
+| `pnpm test` | vitest: alan mantığı ve üreteç testleri |
+| `pnpm check` | svelte-check tip denetimi |
+| `pnpm lint:english` | ast-grep: kodda Türkçe tanımlayıcı yasak (`tools/ast-grep/`) |
+| `pnpm generate:starter <Planlar/RISK-ANALIZ>` | `src/lib/data/starter.json` (Typst 0.15 gerekir) |
+| `pnpm generate:library <KL01-KL43 PDF>` | `src/lib/data/library.json` (pdftotext gerekir; starter'dan sonra) |
+
+Yapı:
+
+- `src/lib/domain/`: veri modeli (`types.ts` = kayıt dosyası biçimi), matris, değerlendirme, kontrol listesi, dosya doğrulama, çıktı verisi, Excel içe alma. Saf, test edilir.
+- `src/lib/export/`: PDF (typst.ts, ilk kullanımda yüklenir), Excel, Word, indirme.
+- `src/lib/state.svelte.ts`: uygulama durumu, tarayıcı hafızası, dosya aç/indir.
+- `src/lib/components/`: ekranlar; `ui/` shadcn-svelte'ten üretilir (`pnpm dlx shadcn-svelte@1.8.0 add <ad> --yes --no-deps-install`).
+- `public/template/report.typ`: PDF şablonu; `public/fonts/`: IBM Plex Sans (OFL).
+- Tasarım: `docs/superpowers/specs/2026-11-11-riskprime-design.md`.
