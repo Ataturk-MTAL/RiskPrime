@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vite-plus/test";
-import { dateField, fromIso, isBefore, parseTrDate, storedDate, toIso, trToIso } from "./date";
+import { isBefore, normalizeTrDate, parseTrDate, toIso, trToIso } from "./date";
 
 describe("date", () => {
   test("parses DD.MM.YYYY", () => {
@@ -11,11 +11,8 @@ describe("date", () => {
       expect(parseTrDate(s)).toBeNull();
     }
   });
-  test("converts between ISO and DD.MM.YYYY", () => {
+  test("converts DD.MM.YYYY to ISO", () => {
     expect(toIso({ y: 2026, m: 9, d: 5 })).toBe("2026-09-05");
-    expect(fromIso("2026-09-05")).toBe("05.09.2026");
-    expect(fromIso("")).toBe("");
-    expect(fromIso("2026-02-31")).toBe("");
     expect(trToIso("5.9.2026")).toBe("2026-09-05");
     expect(trToIso("bozuk")).toBeNull();
   });
@@ -27,15 +24,17 @@ describe("date", () => {
   });
 });
 
-describe("date field", () => {
-  test("dateField shows valid and empty as date, legacy text as text", () => {
-    expect(dateField("")).toEqual({ type: "date", value: "", legacy: false });
-    expect(dateField("15.09.2026")).toEqual({ type: "date", value: "2026-09-15", legacy: false });
-    expect(dateField("Eylül sonu")).toEqual({ type: "text", value: "Eylül sonu", legacy: true });
+describe("normalizeTrDate", () => {
+  test("accepts digits, slashes, dashes and single-digit day/month", () => {
+    expect(normalizeTrDate("15092026")).toBe("15.09.2026");
+    expect(normalizeTrDate("15/9/2026")).toBe("15.09.2026");
+    expect(normalizeTrDate("5-9-2026")).toBe("05.09.2026");
+    expect(normalizeTrDate(" 15.09.2026 ")).toBe("15.09.2026");
   });
-  test("storedDate converts date input to DD.MM.YYYY and keeps typed text", () => {
-    expect(storedDate("date", "2026-09-15")).toBe("15.09.2026");
-    expect(storedDate("date", "")).toBe("");
-    expect(storedDate("text", " Eylül ")).toBe("Eylül");
+
+  test("keeps empty, impossible days and free text as typed", () => {
+    expect(normalizeTrDate("")).toBe("");
+    expect(normalizeTrDate("31.02.2026")).toBe("31.02.2026");
+    expect(normalizeTrDate("yarın")).toBe("yarın");
   });
 });

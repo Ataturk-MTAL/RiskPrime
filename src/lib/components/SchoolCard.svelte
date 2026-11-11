@@ -10,7 +10,8 @@
   import SelectField from './SelectField.svelte';
   import { addSignatory, removeSignatory, updateMeta, updateSchool, updateSignatory } from '$lib/domain/assessment';
   import type { Assessment, Grouping } from '$lib/domain/types';
-  import { dateField, isBefore, storedDate } from '$lib/domain/date';
+  import { isBefore } from '$lib/domain/date';
+  import DateField from './DateField.svelte';
   import { store } from '$lib/state.svelte';
 
   const GROUPING_OPTIONS = [
@@ -48,21 +49,11 @@
   );
 </script>
 
-<!-- Native date input; legacy free text that does not parse stays editable as text with an error. -->
 {#snippet dateInput(label: string, id: string, stored: string, make: (x: Assessment, v: string) => Assessment, extraError = '')}
-  {@const f = dateField(stored)}
-  {@const error = f.legacy ? 'Tarih GG.AA.YYYY olmalı' : extraError}
-  <Label class="flex flex-col items-start gap-1">{label}
-    <Input
-      type={f.type}
-      value={f.value}
-      placeholder="GG.AA.YYYY"
-      aria-invalid={error ? true : undefined}
-      aria-describedby={error ? `${id}-error` : undefined}
-      onchange={(e) => store.apply((x) => make(x, storedDate(e.currentTarget.type, e.currentTarget.value)))}
-    />
-    {#if error}<span id="{id}-error" class="text-xs text-destructive">{error}</span>{/if}
-  </Label>
+  <div class="flex flex-col items-start gap-1">
+    <Label for={id}>{label}</Label>
+    <DateField {id} value={stored} error={extraError} onchange={(v) => store.apply((x) => make(x, v))} />
+  </div>
 {/snippet}
 
 <Collapsible.Root bind:open bind:ref={root} class="scroll-mt-4 rounded-xl border bg-card">

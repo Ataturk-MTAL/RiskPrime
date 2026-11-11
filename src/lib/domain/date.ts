@@ -1,4 +1,4 @@
-// Dates are stored as free text "DD.MM.YYYY" (file format); the UI works with ISO "YYYY-MM-DD".
+// Dates are stored as text "DD.MM.YYYY" (file format); ISO "YYYY-MM-DD" is only used for comparison.
 export interface YMD {
   y: number;
   m: number;
@@ -23,15 +23,7 @@ export function parseTrDate(text: string): YMD | null {
 /** {y,m,d} -> "2026-09-15". */
 export const toIso = ({ y, m, d }: YMD): string => `${pad(y, 4)}-${pad(m)}-${pad(d)}`;
 
-/** "2026-09-15" -> "15.09.2026"; "" when not a valid ISO date. */
-export function fromIso(iso: string): string {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-  if (!m) return "";
-  const text = `${m[3]}.${m[2]}.${m[1]}`;
-  return parseTrDate(text) ? text : "";
-}
-
-/** Stored "DD.MM.YYYY" -> ISO for <input type=date>; null when it does not parse. */
+/** Stored "DD.MM.YYYY" -> ISO; null when it does not parse. */
 export function trToIso(text: string): string | null {
   const p = parseTrDate(text);
   return p ? toIso(p) : null;
@@ -43,16 +35,14 @@ export function isBefore(until: string, from: string): boolean {
   return u !== null && f !== null && u < f;
 }
 
-/** How a stored date is shown: native date input, or text when it is legacy free text. */
-export function dateField(text: string): { type: "date" | "text"; value: string; legacy: boolean } {
-  if (text.trim() === "") return { type: "date", value: "", legacy: false };
-  const iso = trToIso(text);
-  return iso
-    ? { type: "date", value: iso, legacy: false }
-    : { type: "text", value: text, legacy: true };
-}
+const LOOSE_DATE = /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/;
+const PACKED_DATE = /^(\d{2})(\d{2})(\d{4})$/;
 
-/** Input value (ISO from a date input, or typed text) -> stored text. */
-export function storedDate(inputType: string, raw: string): string {
-  return inputType === "date" ? fromIso(raw) : raw.trim();
+/** Typed date -> "DD.MM.YYYY" when it is a real day ("15092026", "15/9/2026", "5-9-2026"); otherwise the trimmed text. */
+export function normalizeTrDate(raw: string): string {
+  const text = raw.trim();
+  const m = LOOSE_DATE.exec(text) ?? PACKED_DATE.exec(text);
+  if (!m) return text;
+  const candidate = `${m[1].padStart(2, "0")}.${m[2].padStart(2, "0")}.${m[3]}`;
+  return parseTrDate(candidate) ? candidate : text;
 }

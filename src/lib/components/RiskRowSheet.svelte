@@ -4,7 +4,8 @@
 
 <script lang="ts">
   import { tick } from 'svelte';
-  import { dateField, storedDate } from '$lib/domain/date';  import Copy from '@lucide/svelte/icons/copy';
+  import DateField from './DateField.svelte';
+  import Copy from '@lucide/svelte/icons/copy';
   import ChevronLeft from '@lucide/svelte/icons/chevron-left';
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
   import Trash2 from '@lucide/svelte/icons/trash-2';
@@ -81,19 +82,10 @@
             <Textarea class="{areaClass} field-sizing-content" rows={1} value={row.responsible} onchange={text('responsible')} />
           </Label>
           <div class="grid grid-cols-2 gap-2">
-            <Label class={fieldClass}>Bitiş
-              {@const due = dateField(row.dueDate)}
-              <Input
-                class="text-foreground"
-                type={due.type}
-                value={due.value}
-                placeholder="GG.AA.YYYY"
-                aria-invalid={due.legacy ? true : undefined}
-                aria-describedby={due.legacy ? 'due-date-error' : undefined}
-                onchange={(e) => patch({ dueDate: storedDate(e.currentTarget.type, e.currentTarget.value) })}
-              />
-              {#if due.legacy}<span id="due-date-error" class="text-destructive">Tarih GG.AA.YYYY olmalı</span>{/if}
-            </Label>
+            <div class={fieldClass}>
+              <Label for="due-date">Bitiş</Label>
+              <DateField id="due-date" value={row.dueDate} onchange={(v) => patch({ dueDate: v })} />
+            </div>
             <Label class={fieldClass}>Durum
               <SelectField label="Durum" options={STATUS_OPTIONS} value={row.status} onValueChange={(v) => patch({ status: v as RowStatus })} />
             </Label>
