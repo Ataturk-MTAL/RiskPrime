@@ -27,7 +27,12 @@ function mapChecklist(a: Assessment, id: string, fn: (l: Checklist) => Checklist
   return { ...a, checklists: a.checklists.map((l) => (l.id === id ? fn(l) : l)) };
 }
 
-function newItem(no: number | string, text: string, added: boolean): ChecklistItem {
+export function newItem(
+  no: number | string,
+  text: string,
+  added: boolean,
+  ref?: string,
+): ChecklistItem {
   return {
     id: newId("m"),
     no: String(no),
@@ -35,6 +40,7 @@ function newItem(no: number | string, text: string, added: boolean): ChecklistIt
     answer: "",
     note: "",
     ...(added ? { added: true } : {}),
+    ...(ref ? { ref } : {}),
   };
 }
 
@@ -45,7 +51,7 @@ export function addChecklist(a: Assessment, tpl: Partial<ChecklistTemplate> = {}
     code: tpl.code || "",
     name: tpl.name || "Yeni kontrol listesi",
     source: tpl.source === "external" ? "external" : "internal",
-    items: (tpl.items || []).map((m) => newItem(m.no, m.text, false)),
+    items: (tpl.items || []).map((m) => newItem(m.no, m.text, false, m.ref)),
   };
   return { ...a, checklists: [...a.checklists, checklist] };
 }

@@ -1676,7 +1676,8 @@
           "no": "1",
           "text": "Pano kapağı kapalı/kilitli, enerjili parça açıkta değil; pano önü boş (KL-26.06).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-26.06"
         },
         {
           "id": "m-01-02",
@@ -1690,14 +1691,16 @@
           "no": "3",
           "text": "Makine ve aletlerin çıplak metal kısımları topraklı; topraklama ölçüm kaydı güncel (KL-26.02/26.03).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-26.02"
         },
         {
           "id": "m-01-04",
           "no": "4",
           "text": "Kollu ve çevirmeli şalterlerde 1 ve 0 konumu etiketli (KL-26.07).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-26.07"
         },
         {
           "id": "m-01-05",
@@ -1711,28 +1714,32 @@
           "no": "6",
           "text": "Acil durum alarmı ve acil çıkış levhası var, kaçış yolu boş (KL-35.08).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-35.08"
         },
         {
           "id": "m-01-07",
           "no": "7",
           "text": "İlk yardım dolabı erişilebilir yerde ve malzemesi tam (KL-35.05-35.07).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-35.05"
         },
         {
           "id": "m-01-08",
           "no": "8",
           "text": "Atölye sorumlusunun telefonu ve vaziyet planı panoda asılı (KL-35.20/35.22).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-35.20"
         },
         {
           "id": "m-01-09",
           "no": "9",
           "text": "Ders sonunda atölye ana şalteri kapatılıyor (KL-30.07); yangın alarmı ayrı kaynaktan besleniyor (KL-30.08).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-30.07"
         },
         {
           "id": "m-01-10",
@@ -1795,14 +1802,16 @@
           "no": "18",
           "text": "Acil aydınlatma çalışıyor; kesintide setler kapatılıyor (KL-20.02, KL-26.42).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-20.02"
         },
         {
           "id": "m-01-19",
           "no": "19",
           "text": "Atölyede yiyecek-içecek yok (KL-32.34).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-32.34"
         },
         {
           "id": "m-01-20",
@@ -1816,7 +1825,8 @@
           "no": "21",
           "text": "Deprem tahliye tatbikatı yapıldı; ağır ekipman sabit (KL-17.32).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-17.32"
         }
       ]
     },
@@ -1831,28 +1841,32 @@
           "no": "1",
           "text": "El aletleri yalıtımlı ve sağlam; kırık aletler ayrı muhafaza ediliyor (KL-34.21-34.23).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-34.21"
         },
         {
           "id": "m-02-02",
           "no": "2",
           "text": "Tesviyeci tezgâhında mengene sağlam; eğeler saplı (KL-34.04).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-34.04"
         },
         {
           "id": "m-02-03",
           "no": "3",
           "text": "Malzeme, modül ve camlı dolaplar duvara sabit; ağır modüller alt rafta (KL-35.23).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-35.23"
         },
         {
           "id": "m-02-04",
           "no": "4",
           "text": "Gerekli KKD var ve uygun şekilde muhafaza ediliyor (KL-35.13/35.14).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-35.13"
         },
         {
           "id": "m-02-05",
@@ -2011,14 +2025,16 @@
           "no": "1",
           "text": "Ekranlar ayarlanabilir, yansımasız; mesafe 50-80 cm (KL-27.01-27.04).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-27.01"
         },
         {
           "id": "m-08-02",
           "no": "2",
           "text": "Masa ve koltuk yeterli yükseklikte ve ergonomik (KL-27.08/27.09).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-27.08"
         },
         {
           "id": "m-08-03",
@@ -2099,7 +2115,8 @@
           "no": "4",
           "text": "Acil stop ders başında denendi; durdurma butonları kırmızı (KL-26.19/26.39).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-26.19"
         },
         {
           "id": "m-10-05",
@@ -2129,14 +2146,16 @@
           "no": "2",
           "text": "Kompresör kullanılıyorsa periyodik kontrol raporu var; emniyet ventili çalışıyor (KL-28.01/28.06).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-28.01"
         },
         {
           "id": "m-11-03",
           "no": "3",
           "text": "Basınçlı hava ile temizlikte basınç düşürücü uç ve KKD kullanılıyor (KL-26.43/26.44).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-26.43"
         },
         {
           "id": "m-11-04",
@@ -2159,7 +2178,8 @@
           "no": "1",
           "text": "Raflar duvara sabit; ağır malzeme alt rafta; yük sınırı etiketli (KL-35.23).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-35.23"
         },
         {
           "id": "m-12-02",
@@ -2173,7 +2193,8 @@
           "no": "3",
           "text": "Seyyar merdiven sağlam ve kullanım öncesi kontrol ediliyor (KL-25.04/25.06).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-25.04"
         },
         {
           "id": "m-12-04",
@@ -2224,7 +2245,8 @@
           "no": "2",
           "text": "Elektrik tesisatı kaçak akım rölesiyle korunuyor; priz ve anahtarlar su sıçramasına karşı korumalı (KL-11.07, KL-26.11).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-11.07"
         },
         {
           "id": "m-13-03",
@@ -2245,14 +2267,16 @@
           "no": "5",
           "text": "Kabin kilitleri dışarıdan acil açılabiliyor; kapılar dışarı açılıyor (KL-11.11).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-11.11"
         },
         {
           "id": "m-13-06",
           "no": "6",
           "text": "En az bir kabin engelli kullanımına uygun (KL-11.09).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-11.09"
         },
         {
           "id": "m-13-07",
@@ -2311,14 +2335,16 @@
           "no": "1",
           "text": "Öğrenciler dönem başında İSG ve atölye kuralları eğitimini aldı, kayıt var (KL-26.16).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-26.16"
         },
         {
           "id": "m-15-02",
           "no": "2",
           "text": "Makine kullanım talimatları ve uyarı levhaları asılı (KL-35.09/35.12).",
           "answer": "",
-          "note": ""
+          "note": "",
+          "ref": "KL-35.09"
         },
         {
           "id": "m-15-03",

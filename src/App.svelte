@@ -58,8 +58,8 @@
   <Tabs.Root class="flex-col" value={store.tab} onValueChange={(v) => (store.tab = v as Tab)}>
     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
       <Tabs.List class="max-w-full overflow-x-auto">
-        <Tabs.Trigger value="risk">Risk tablosu <Badge variant="secondary">{store.assessment.locations.length} mekân<span class="max-sm:hidden"> · {rowCount} satır</span></Badge></Tabs.Trigger>
-        <Tabs.Trigger value="checklists">Kontrol listeleri <Badge variant="secondary">{store.assessment.checklists.length}</Badge></Tabs.Trigger>
+        <Tabs.Trigger value="checklists">1. Kontrol listeleri <Badge variant="secondary">{store.assessment.checklists.length}</Badge></Tabs.Trigger>
+        <Tabs.Trigger value="risk">2. Risk tablosu <Badge variant="secondary">{store.assessment.locations.length} mekân<span class="max-sm:hidden"> · {rowCount} satır</span></Badge></Tabs.Trigger>
       </Tabs.List>
       <Button variant="outline" onclick={() => (libraryOpen = true)}>+ Hazır formdan ekle</Button>
     </div>

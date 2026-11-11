@@ -80,8 +80,13 @@ export function parseKlText(text) {
       const code = `KL-${m[1].padStart(2, "0")}`;
       if (!lists.has(code)) lists.set(code, { code, name: pendingTitle || code, items: [] });
       pendingTitle = null;
-      last = { no: itemNo(m[1], m[2]), text: leftPart(m[3]) };
-      lists.get(code).items.push(last);
+      const items = lists.get(code).items;
+      let no = itemNo(m[1], m[2]);
+      // The PDF numbers every KL-08 item "8.01"; keep numbers unique by continuing the sequence.
+      if (items.some((i) => i.no === no))
+        no = itemNo(m[1], String(Number(items.at(-1).no.split(".")[1]) + 1).padStart(2, "0"));
+      last = { no, text: leftPart(m[3]) };
+      items.push(last);
     } else if (last && CONTINUATION.test(line)) {
       last.text = `${last.text} ${leftPart(line)}`;
     }
@@ -92,6 +97,7 @@ export function parseKlText(text) {
 export function buildLibrary(klText, starter) {
   const meb = parseKlText(klText).map((l) => ({
     ...l,
+    items: l.items.map(({ no, text }) => ({ no, text, ref: `${l.code}.${no.split(".")[1]}` })),
     source: "external",
     group: "MEB Kontrol Listeleri",
   }));
@@ -100,7 +106,7 @@ export function buildLibrary(klText, starter) {
     name,
     source,
     group: "Elektrik-Elektronik hazır form",
-    items: items.map(({ no, text }) => ({ no, text })),
+    items: items.map(({ no, text, ref }) => ({ no, text, ...(ref ? { ref } : {}) })),
   }));
   const locations = starter.locations.map(({ name, type, building, area, rows }) => ({
     name,
@@ -121,7 +127,7 @@ function main() {
   const text = execFileSync("pdftotext", ["-layout", pdf, "-"], { encoding: "utf8" });
   const starter = JSON.parse(fs.readFileSync(STARTER_PATH, "utf8"));
   const lib = buildLibrary(text, starter);
-  fs.writeFileSync(LIBRARY_PATH, JSON.stringify(lib, null, 1) + "\n");
+  fs.writeFileSync(LIBRARY_PATH, JSON.stringify(lib, null, 2) + "\n");
   const meb = lib.checklists.filter((l) => l.source === "external");
   console.log(
     `${lib.locations.length} locations, ${lib.checklists.length - meb.length} internal lists, ${meb.length} MEB lists (${meb.reduce((t, l) => t + l.items.length, 0)} items)`,

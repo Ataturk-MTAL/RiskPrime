@@ -1,7 +1,7 @@
 import { isBefore } from "./date";
-import { hazardOf } from "./checklist-risk";
-import { rowsForItem, sourceLabel, sourcesOf } from "./links";
+import { sourceLabel, sourcesOf } from "./links";
 import { riskLevel } from "./matrix";
+import { isUntransferred } from "./transfer";
 import type { Assessment, RiskRow } from "./types";
 
 export interface GapEntry {
@@ -25,9 +25,9 @@ export interface Readiness {
   doneWithoutAfter: GapEntry[];
   /** Locations with rows whose hazard text is empty. */
   emptyHazard: GapEntry[];
-  /** Checklists with "Hayır" items that have no risk row ("Hayır cevaplı, risk satırı açılmamış"). */
+  /** Checklists with deficiencies ("Hayır" items) that have no risk row ("Risk tablosuna aktarılmamış eksikler"). */
   noWithoutRow: GapEntry[];
-  /** Locations with open rows whose source item is now "Evet" ("Madde 'Evet' oldu, satırı kontrol edin"). */
+  /** Locations with open rows whose source item is now "Evet" ("Eksiği giderilmiş (Evet olmuş) ama açık satırlar"). */
   sourceNowYes: GapEntry[];
   /** validUntil is earlier than assessmentDate. */
   invalidDates: boolean;
@@ -80,15 +80,7 @@ export function readiness(a: Assessment): Readiness {
     a.checklists.map((c) => ({
       id: c.id,
       name: `${c.code} ${c.name}`.trim(),
-      count: c.items.filter(
-        (i) =>
-          i.answer === "no" &&
-          rowsForItem(a, c.id, i.id).length === 0 &&
-          // Rows made before sources existed are matched by their hazard text.
-          !a.locations.some((l) =>
-            l.rows.some((r) => !r.sources?.length && r.hazard === hazardOf(c, i)),
-          ),
-      ).length,
+      count: c.items.filter((i) => isUntransferred(a, c, i)).length,
     })),
   );
   const sourceNowYes = withCount(

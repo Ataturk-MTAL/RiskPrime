@@ -71,6 +71,8 @@ const LOCATION_KEY_HEADER = "Mekân No";
 const SOURCE_HEADER = "Kaynak Madde";
 // Optional last column of "Kontrol Listeleri": comma list of the "Mekân No" values the list applies to.
 const LIST_LOCATIONS_HEADER = "Mekân Nolar";
+/** Question bank key of an item (e.g. KL-26.06, EE-03); optional, older backups lack it. */
+const ITEM_REF_HEADER = "Soru Anahtarı";
 
 /** Index of an optional column in a header row, or -1. */
 const optionalColumn = (header: unknown[] | undefined, name: string) =>
@@ -179,10 +181,11 @@ function checklistSheet(a: Assessment): Table {
           m.note,
           m.added ? ADDED_TEXT : "",
           locationNos(l),
+          m.ref ?? "",
         ])
-      : [[...head(l, i), "", "", "", "", "", locationNos(l)]],
+      : [[...head(l, i), "", "", "", "", "", locationNos(l), ""]],
   );
-  return [[...LIST_COLUMNS.map(([, h]) => h), LIST_LOCATIONS_HEADER], ...rows];
+  return [[...LIST_COLUMNS.map(([, h]) => h), LIST_LOCATIONS_HEADER, ITEM_REF_HEADER], ...rows];
 }
 
 /** All backup sheets in file order. */
@@ -368,6 +371,7 @@ function readLists(aoa: unknown[][], errors: string[]): KeyedList[] {
     return [];
   }
   const locationsAt = optionalColumn(aoa[0], LIST_LOCATIONS_HEADER);
+  const refAt = optionalColumn(aoa[0], ITEM_REF_HEADER);
   const locationNos = new Map<string, string[]>();
   const lists = new Map<string, Checklist>();
   for (const { rowNo, cells: v } of dataRows(aoa, cols.positions, "listNo")) {
@@ -397,6 +401,7 @@ function readLists(aoa: unknown[][], errors: string[]): KeyedList[] {
           .filter(Boolean),
       );
     const hasItem = v.no !== "" || v.text !== "" || v.added !== "";
+    const ref = refAt < 0 ? "" : cell(aoa[rowNo - 1][refAt]);
     lists.set(v.listNo, {
       ...list,
       items: hasItem
@@ -409,6 +414,7 @@ function readLists(aoa: unknown[][], errors: string[]): KeyedList[] {
               answer: answer as Answer,
               note: v.note,
               ...(v.added ? { added: true } : {}),
+              ...(ref ? { ref } : {}),
             },
           ]
         : list.items,

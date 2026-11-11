@@ -50,10 +50,10 @@
           <span class="min-w-0">
             {#if list.code}<b>{list.code}</b>{' '}{/if}{list.name}
             {#if places}<span class="block truncate text-xs opacity-70" title={places}>{places}</span>{/if}
-            {#if orphan}<span class="block text-xs opacity-80">{orphan} satırsız</span>{/if}
+            {#if orphan}<span class="block text-xs opacity-80">{orphan} eksik puanlanmadı</span>{/if}
           </span>
           <span class="flex shrink-0 items-center gap-1 text-xs">
-            {#if s.no}<span class="rounded-full bg-red-600 px-1.5 py-0.5 text-white" title="Hayır cevabı">{s.no}</span>{/if}
+            {#if s.no}<span class="rounded-full bg-red-600 px-1.5 py-0.5 text-white" title="Eksik (Hayır cevaplı)">{s.no}</span>{/if}
             <span class="opacity-70">{s.answered}/{s.total}</span>
           </span>
         </button>

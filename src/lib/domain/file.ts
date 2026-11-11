@@ -128,6 +128,7 @@ function validateChecklist(l: unknown, path: string, errors: string[]): void {
       return;
     }
     checkStrings(x, ["id", "no", "text", "note"], p, errors);
+    if (x.ref !== undefined && !isString(x.ref)) errors.push(`${p}.ref: metin olmalı.`);
     if (!ANSWERS.includes(x.answer as never))
       errors.push(`${p}.answer: yes, no, na ya da boş olmalı.`);
   });
@@ -167,23 +168,15 @@ export function serialize(a: Assessment): string {
   return `${JSON.stringify(a, null, 2)}\n`;
 }
 
-const TURKISH_ASCII: Record<string, string> = {
-  ç: "c",
-  ğ: "g",
-  ı: "i",
-  ö: "o",
-  ş: "s",
-  ü: "u",
-  Ç: "C",
-  Ğ: "G",
-  İ: "I",
-  Ö: "O",
-  Ş: "S",
-  Ü: "U",
-};
+// Turkish letters and their ASCII stand-ins, position by position.
+const TURKISH_LETTERS = "çğıöşüÇĞİÖŞÜ";
+const ASCII_LETTERS = "cgiosuCGIOSU";
 
 export function fileName(a: Assessment): string {
-  const ascii = (a.period || "").replace(/[çğıöşüÇĞİÖŞÜ]/g, (c) => TURKISH_ASCII[c]);
+  const ascii = (a.period || "").replace(
+    /[çğıöşüÇĞİÖŞÜ]/g,
+    (c) => ASCII_LETTERS[TURKISH_LETTERS.indexOf(c)],
+  );
   const period = ascii.replace(/[^0-9A-Za-z-]+/g, "-").replace(/^-+|-+$/g, "");
   return `risk-${period || "degerlendirme"}.json`;
 }

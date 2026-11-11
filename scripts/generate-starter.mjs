@@ -62,9 +62,36 @@ function suggestIds(locations, listName) {
   return [];
 }
 
+const LIBRARY_PATH = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "src",
+  "lib",
+  "data",
+  "library.json",
+);
+const MEB_REF = /KL-(\d+)\.(\d+)/;
+const EMPTY_INDEX = { byText: new Map(), keys: new Set() };
+
+/** MEB item keys and text -> key, from library.json (generate the library first). */
+export function mebIndex(library) {
+  const items = library.checklists.filter((c) => c.source === "external").flatMap((c) => c.items);
+  return {
+    keys: new Set(items.map((i) => i.ref)),
+    byText: new Map(items.map((i) => [i.text, i.ref])),
+  };
+}
+
+/** Bank key for a school item: the first "(KL-xx.yy)" in its text, else an exact MEB text match. */
+export function refOf(text, index) {
+  const m = text.match(MEB_REF);
+  const key = m && `KL-${m[1].padStart(2, "0")}.${m[2].padStart(2, "0")}`;
+  return key && index.keys.has(key) ? key : index.byText.get(text);
+}
+
 const two = (n) => String(n).padStart(2, "0");
 
-export function convert(data, school) {
+export function convert(data, school, index = EMPTY_INDEX) {
   const locations = data.labs.map(([name, rows], i) => ({
     id: `a-${two(i + 1)}`,
     name,
@@ -96,13 +123,17 @@ export function convert(data, school) {
     name,
     source: "internal",
     ...(suggestIds(locations, name).length ? { locationIds: suggestIds(locations, name) } : {}),
-    items: items.map((text, j) => ({
-      id: `m-${two(i + 1)}-${two(j + 1)}`,
-      no: String(j + 1),
-      text,
-      answer: "",
-      note: "",
-    })),
+    items: items.map((text, j) => {
+      const ref = refOf(text, index);
+      return {
+        id: `m-${two(i + 1)}-${two(j + 1)}`,
+        no: String(j + 1),
+        text,
+        answer: "",
+        note: "",
+        ...(ref ? { ref } : {}),
+      };
+    }),
   }));
   return {
     version: 1,
@@ -127,7 +158,8 @@ function main() {
     process.exit(1);
   }
   const school = JSON.parse(fs.readFileSync(path.join(source, "okul.json"), "utf8"));
-  const result = convert(readTypstData(source), school);
+  const library = JSON.parse(fs.readFileSync(LIBRARY_PATH, "utf8"));
+  const result = convert(readTypstData(source), school, mebIndex(library));
   const target = path.join(
     path.dirname(fileURLToPath(import.meta.url)),
     "..",
@@ -137,7 +169,7 @@ function main() {
     "starter.json",
   );
   fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.writeFileSync(target, JSON.stringify(result, null, 1) + "\n");
+  fs.writeFileSync(target, JSON.stringify(result, null, 2) + "\n");
   const rowCount = result.locations.reduce((t, l) => t + l.rows.length, 0);
   console.log(
     `${target}: ${result.locations.length} locations, ${rowCount} rows, ${result.checklists.length} checklists`,

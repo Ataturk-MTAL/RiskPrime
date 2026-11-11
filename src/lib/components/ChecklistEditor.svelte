@@ -11,6 +11,8 @@
   import ChecklistItemLinks from './ChecklistItemLinks.svelte';
   import ChecklistLocations from './ChecklistLocations.svelte';
   import ConfirmDialog from './ConfirmDialog.svelte';
+  import { countUntransferred } from '$lib/domain/transfer';
+  import QuestionBankDialog from './QuestionBankDialog.svelte';
   import { addItem, ANSWER_LABELS, removeChecklist, removeItem, summary, updateChecklist, updateItem } from '$lib/domain/checklist';
   import type { Answer, ChecklistItem } from '$lib/domain/types';
   import { focusFirstField, store } from '$lib/state.svelte';
@@ -22,7 +24,9 @@
   ];
   const ROW_GRID = '@3xl:grid-cols-[4rem_minmax(0,2fr)_auto_minmax(0,1.2fr)_2rem]';
 
+  let bankOpen = $state(false);
   const list = $derived(store.checklist);
+  const untransferred = $derived(list ? countUntransferred(store.assessment, list.id) : 0);
   const stats = $derived(list ? summary(list) : { total: 0, answered: 0, no: 0 });
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
 
@@ -71,8 +75,9 @@
     <div class="flex items-center gap-3">
       <Progress value={stats.answered} max={stats.total || 1} class="h-2 max-w-sm" aria-label="Cevaplanan madde oranı" />
       <span class="text-sm text-muted-foreground">
-        {stats.answered}/{stats.total} cevaplandı{#if stats.no}{" "}· <b class="text-red-600">{stats.no} hayır</b>{/if}
+        {stats.answered}/{stats.total} cevaplandı{#if stats.no}{" "}· <b class="text-red-600">{stats.no} eksik</b>{/if}
       </span>
+      <Button variant="outline" size="sm" disabled={untransferred === 0} onclick={() => store.transferMissing(listId)}>Eksikleri risk tablosuna aktar ({untransferred})</Button>
     </div>
 
     <div class="@container space-y-2">
@@ -104,8 +109,12 @@
         </div>
       {/each}
     </div>
-    <p class="text-sm text-muted-foreground">"Hayır" cevaplanan madde için risk tablosuna satır açın. U/D: uygulanamaz. Seçili cevaba tekrar basınca cevap silinir.</p>
-    <Button onclick={() => addNewItem(listId)}><Plus />Madde ekle</Button>
+    <p class="text-sm text-muted-foreground">"Hayır" cevaplanan her madde bir eksiktir; eksikler risk tablosunda puanlanır. U/D: uygulanamaz. Seçili cevaba tekrar basınca cevap silinir.</p>
+    <div class="flex flex-wrap gap-2">
+      <Button onclick={() => addNewItem(listId)}><Plus />Madde ekle</Button>
+      <Button variant="outline" onclick={() => (bankOpen = true)}>Bankadan soru ekle</Button>
+    </div>
+    <QuestionBankDialog bind:open={bankOpen} {listId} />
   {:else}
     <p class="py-8 text-center text-sm text-muted-foreground">Soldan bir liste seçin ya da "+ Hazır formdan ekle" ile liste ekleyin.</p>
   {/if}

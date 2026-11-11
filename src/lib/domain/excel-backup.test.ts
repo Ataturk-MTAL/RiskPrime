@@ -170,3 +170,12 @@ describe("excel-backup", () => {
     expect(stripIds(ok(restoreBackup(legacy)))).toEqual(stripIds(a));
   });
 });
+
+describe("excel-backup question refs", () => {
+  test("keeps bank question refs through a backup round trip", () => {
+    const a = starter as unknown as Assessment;
+    const refs = (x: Assessment) => x.checklists.flatMap((l) => l.items.map((m) => m.ref ?? ""));
+    expect(refs(a).some(Boolean)).toBe(true);
+    expect(refs(ok(restoreBackup(sheetsOf(a))))).toEqual(refs(a));
+  });
+});

@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as AlertDialog from '$lib/components/ui/alert-dialog';
   import { Button } from '$lib/components/ui/button';
+  import { countUntransferred } from '$lib/domain/transfer';
   import type { GapEntry, MetaField } from '$lib/domain/readiness';
   import { store } from '$lib/state.svelte';
 
@@ -12,6 +13,7 @@
   };
 
   const gaps = $derived(store.readinessGaps);
+  const untransferred = $derived(countUntransferred(store.assessment));
 
   function close() {
     store.readinessGaps = null;
@@ -96,13 +98,14 @@
         {/if}
         {#if gaps.noWithoutRow.length}
           <section>
-            <h3 class="font-semibold">Hayır cevaplı, risk satırı açılmamış maddeler</h3>
-            {@render entries(gaps.noWithoutRow, 'madde', (id) => store.selectChecklist(id))}
+            <h3 class="font-semibold">Risk tablosuna aktarılmamış eksikler</h3>
+            {@render entries(gaps.noWithoutRow, 'eksik', (id) => store.selectChecklist(id))}
+            <Button variant="outline" size="sm" class="mt-1" disabled={untransferred === 0} onclick={() => { store.transferMissing(); close(); }}>Tüm eksikleri aktar ({untransferred})</Button>
           </section>
         {/if}
         {#if gaps.sourceNowYes.length}
           <section>
-            <h3 class="font-semibold">Maddesi 'Evet' olan açık satırlar</h3>
+            <h3 class="font-semibold">Eksiği giderilmiş (Evet olmuş) ama açık satırlar</h3>
             {@render entries(gaps.sourceNowYes, 'satır', (id) => store.selectLocation(id))}
           </section>
         {/if}

@@ -63,6 +63,8 @@ export interface ChecklistItem {
   note: string;
   /** Item added by the school to an external (MEB) list; its text stays editable. */
   added?: boolean;
+  /** Question bank key this item came from, e.g. "KL-26.06" or "EE-03". */
+  ref?: string;
 }
 
 export interface Checklist {
@@ -91,7 +93,22 @@ export interface ChecklistTemplate {
   name: string;
   source: ChecklistSource;
   group?: string;
-  items: { no: string; text: string }[];
+  items: { no: string; text: string; ref?: string }[];
+}
+
+export type BankSource = "meb" | "riskprime";
+
+/** A reusable checklist question. MEB texts are verbatim; "riskprime" ones are the app's extension. */
+export interface BankQuestion {
+  key: string;
+  text: string;
+  source: BankSource;
+  /** MEB list code, e.g. "KL-26"; MEB questions only. */
+  listCode?: string;
+  /** Location types the question fits; empty = not tagged. */
+  tags: LocationType[];
+  /** Regulation or standard the question rests on; RiskPrime questions only. */
+  basis?: string;
 }
 
 export type RowTemplate = Partial<Omit<RiskRow, "id">>;

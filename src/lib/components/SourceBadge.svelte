@@ -1,7 +1,7 @@
 <script lang="ts" module>
   import type { Answer } from '$lib/domain/types';
 
-  export const SOURCE_ANSWER_TEXT: Record<Answer, string> = { yes: 'Evet', no: 'Hayır', na: 'U.D.', '': 'cevapsız' };
+  export const SOURCE_ANSWER_TEXT: Record<Answer, string> = { yes: 'uygun', no: 'eksik', na: 'U.D.', '': 'cevapsız' };
 </script>
 
 <script lang="ts">

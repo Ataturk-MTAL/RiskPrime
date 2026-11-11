@@ -9,6 +9,7 @@ import { fileName, parse, serialize } from "$lib/domain/file";
 import { isBackup, restoreBackup } from "$lib/domain/excel-backup";
 import { conflictingCodes, read as readExcel } from "$lib/domain/excel-import";
 import { readiness, type Readiness } from "$lib/domain/readiness";
+import { transferMissing } from "$lib/domain/transfer";
 import { downloadBlob } from "$lib/export/download";
 // Heavy export libraries (xlsx, docx, typst.ts loader) load on first use, not on page load.
 const pdfModule = () => import("$lib/export/pdf");
@@ -65,7 +66,7 @@ class Store {
   busy = $state("");
   /** Gaps found before a full PDF; non-null opens the readiness dialog. */
   readinessGaps = $state.raw<Readiness | null>(null);
-  tab = $state<Tab>("risk");
+  tab = $state<Tab>("checklists");
   locationId = $state<string | null>(null);
   checklistId = $state<string | null>(null);
   /** Set by openRow; LocationEditor opens that row's sheet, then clears it. */
@@ -289,6 +290,30 @@ class Store {
   /** Applies a destructive edit without a dialog; the toast offers undo instead. */
   applyWithUndo(update: (a: Assessment) => Assessment, message: string) {
     this.#applyUndoable(update, message);
+  }
+
+  /** Moves untransferred deficiencies into the risk table (undoable) and offers a jump to it. */
+  transferMissing(listId?: string) {
+    const result = transferMissing(this.assessment, listId);
+    if (!result.created) {
+      toast.info(
+        result.skippedNoLocation
+          ? "Risk satırı açılacak mekân yok; önce bir mekân ekleyin."
+          : "Aktarılacak eksik yok.",
+      );
+      return;
+    }
+    this.#applyUndoable(
+      () => result.assessment,
+      `${result.created} risk satırı oluşturuldu; puanlamak için risk tablosuna geçin.`,
+      {
+        notify: ((message, options) =>
+          toast.success(message, {
+            ...options,
+            cancel: { label: "Risk tablosu", onClick: () => (this.tab = "risk") },
+          })) as typeof toast.success,
+      },
+    );
   }
 
   async newFromStarter() {

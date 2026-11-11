@@ -33,7 +33,7 @@
       <div class="flex flex-wrap items-center justify-between gap-2">
         <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={() => store.selectChecklist(s.id)}>{s.label}</Button>
         <span class="text-xs text-muted-foreground">
-          {s.answered}/{s.total} cevaplı · Hayır: {s.no}{#if s.noWithoutRow} · satırı açılmamış: {s.noWithoutRow}{/if}
+          {s.answered}/{s.total} cevaplı · {s.no} eksik{#if s.noWithoutRow}, {s.noWithoutRow} aktarılmadı{/if}
         </span>
       </div>
     {:else}

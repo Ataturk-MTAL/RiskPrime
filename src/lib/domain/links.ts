@@ -17,6 +17,8 @@ export interface SourceInfo {
   no: string;
   answer: ChecklistItem["answer"];
   text: string;
+  /** Question bank key of the item, when it has one. */
+  ref?: string;
 }
 
 const SHORT_NAME_LENGTH = 12;
@@ -24,6 +26,7 @@ const MEB_REF = /KL-\d+\.\d+/;
 
 /** "KL-26.06": list code + item no; for codeless lists the first MEB reference in the item text, else "<short name> md.<no>". */
 export function sourceLabel(info: SourceInfo): string {
+  if (info.ref) return info.ref;
   if (info.code) return `${info.code}.${info.no}`;
   return (
     info.text.match(MEB_REF)?.[0] ??
@@ -63,6 +66,7 @@ export function sourcesOf(a: Assessment, row: RiskRow): SourceInfo[] {
         no: item.no,
         answer: item.answer,
         text: item.text,
+        ...(item.ref ? { ref: item.ref } : {}),
       },
     ];
   });
