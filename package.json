@@ -35,6 +35,8 @@
     "vitest": "^3.1.0"
   },
   "dependencies": {
+    "@myriaddreamin/typst-ts-web-compiler": "0.7.0",
+    "@myriaddreamin/typst.ts": "0.7.0",
     "docx": "^9.5.0",
     "xlsx": "file:vendor/xlsx-0.20.3.tgz"
   }
