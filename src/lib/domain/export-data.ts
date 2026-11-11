@@ -31,6 +31,8 @@ export interface ExportRiskRow {
   responsible: string;
   dueDate: string;
   status: string;
+  /** Checklist reference such as "KL-26.06"; "" when not linked. */
+  source: string;
   likelihoodAfter: number | "";
   severityAfter: number | "";
   scoreAfter: number | "";
@@ -66,6 +68,7 @@ export function riskRows(a: Assessment): ExportRiskRow[] {
       responsible: r.responsible,
       dueDate: r.dueDate,
       status: STATUS_TEXT[r.status] || "",
+      source: sourceText(a, r),
       likelihoodAfter: blankIfNull(r.likelihoodAfter),
       severityAfter: blankIfNull(r.severityAfter),
       scoreAfter: blankIfNull(riskScore(r.likelihoodAfter, r.severityAfter)),
@@ -102,12 +105,12 @@ export type PdfChecklist = Checklist & { locationNames: string };
 const SHORT_NAME_LENGTH = 12;
 
 /** "KL-26.06": list code (else a short list name) + "." + item no. */
-function sourceText(a: Assessment, r: RiskRow): string {
+export function sourceText(a: Assessment, r: RiskRow): string {
   const info = sourceOf(a, r);
   if (!info) return "";
   const list = a.checklists.find((c) => c.id === info.listId);
   const label = info.code || (list?.name ?? "").trim().slice(0, SHORT_NAME_LENGTH);
-  return `${label}.${info.no}`;
+  return info.code ? `${label}.${info.no}` : `${label} md.${info.no}`;
 }
 
 export interface PdfData {

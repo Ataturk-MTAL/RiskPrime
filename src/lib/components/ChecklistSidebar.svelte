@@ -3,7 +3,17 @@
   import { Button } from '$lib/components/ui/button';
   import SelectField from './SelectField.svelte';
   import { summary } from '$lib/domain/checklist';
+  import { liveLocationIds, rowsForItem } from '$lib/domain/links';
+  import type { Checklist } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
+
+  // "Hayır" items that still have no risk row.
+  const unlinked = (list: Checklist) =>
+    list.items.filter((i) => i.answer === 'no' && !rowsForItem(store.assessment, list.id, i.id).length).length;
+  const locationText = (list: Checklist) =>
+    liveLocationIds(store.assessment, list)
+      .map((id) => store.assessment.locations.find((l) => l.id === id)?.name || 'Adsız mekân')
+      .join(', ');
 
   const options = $derived(
     store.assessment.checklists.map((list) => {
@@ -28,6 +38,8 @@
   <ul class="space-y-0.5">
     {#each store.assessment.checklists as list (list.id)}
       {@const s = summary(list)}
+      {@const places = locationText(list)}
+      {@const orphan = unlinked(list)}
       <li>
         <button
           type="button"
@@ -35,7 +47,11 @@
           class="flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-muted aria-[current=true]:bg-primary aria-[current=true]:text-primary-foreground"
           onclick={() => store.selectChecklist(list.id)}
         >
-          <span class="min-w-0">{#if list.code}<b>{list.code}</b>{' '}{/if}{list.name}</span>
+          <span class="min-w-0">
+            {#if list.code}<b>{list.code}</b>{' '}{/if}{list.name}
+            {#if places}<span class="block truncate text-xs opacity-70" title={places}>{places}</span>{/if}
+            {#if orphan}<span class="block text-xs opacity-80">{orphan} satırsız</span>{/if}
+          </span>
           <span class="flex shrink-0 items-center gap-1 text-xs">
             {#if s.no}<span class="rounded-full bg-red-600 px-1.5 py-0.5 text-white" title="Hayır cevabı">{s.no}</span>{/if}
             <span class="opacity-70">{s.answered}/{s.total}</span>

@@ -4,6 +4,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import LevelBadge from './LevelBadge.svelte';
   import SelectField from './SelectField.svelte';
+  import SourceBadge from './SourceBadge.svelte';
   import { LIKELIHOOD_OPTIONS, parseScore, scoreValue, SEVERITY_OPTIONS } from './score-options';
   import { isOverdue, updateRow } from '$lib/domain/assessment';
   import { riskLevel } from '$lib/domain/matrix';
@@ -25,6 +26,7 @@
     </span>
     <ChevronRight class="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
   </button>
+  <div class="px-3 pb-2 empty:hidden"><SourceBadge {row} /></div>
   <div class="grid grid-cols-[4.5rem_4.5rem_minmax(0,1fr)] items-end gap-2 px-3 pb-3">
     <div class="space-y-1 text-xs text-muted-foreground">
       <span aria-hidden="true">O</span>

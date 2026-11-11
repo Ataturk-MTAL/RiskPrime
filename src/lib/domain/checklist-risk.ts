@@ -14,8 +14,9 @@ function find(
   return { list, item };
 }
 
+/** Item text plus its MEB reference when the list has a code; the link itself is kept in row.source. */
 export const hazardOf = (list: Checklist, item: ChecklistItem) =>
-  `${item.text} (${list.code}.${item.no})`;
+  list.code.trim() ? `${item.text} (${list.code.trim()}.${item.no})` : item.text;
 
 export function hasChecklistRisk(
   a: Assessment,

@@ -67,6 +67,8 @@ class Store {
   tab = $state<Tab>("risk");
   locationId = $state<string | null>(null);
   checklistId = $state<string | null>(null);
+  /** Set by openRow; LocationEditor opens that row's sheet, then clears it. */
+  openRowRequest = $state<{ locationId: string; rowId: string } | null>(null);
   /** Incremented to ask the school card to open and take focus. */
   schoolRequest = $state(0);
   /** Incremented whenever a whole assessment is loaded (not on edits). */
@@ -307,6 +309,11 @@ class Store {
   selectLocation(id: string) {
     this.locationId = id;
     this.tab = "risk";
+  }
+
+  openRow(locationId: string, rowId: string) {
+    this.selectLocation(locationId);
+    this.openRowRequest = { locationId, rowId };
   }
 
   selectChecklist(id: string) {

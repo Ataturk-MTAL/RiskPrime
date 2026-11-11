@@ -16,6 +16,7 @@
   import ConfirmDialog from './ConfirmDialog.svelte';
   import SelectField from './SelectField.svelte';
   import RiskScoreBox from './RiskScoreBox.svelte';
+  import RowSourceSection from './RowSourceSection.svelte';
   import { duplicateRow, newId, removeRow, STATUS_LABELS, STATUSES, updateRow } from '$lib/domain/assessment';
   import type { RiskRow, RowStatus } from '$lib/domain/types';
   import { focusFirstField, store } from '$lib/state.svelte';
@@ -59,6 +60,7 @@
       </Sheet.Header>
       {#key row.id}
         <div id="row-sheet-body" class="flex-1 space-y-3 overflow-y-auto px-4 pb-2">
+          <RowSourceSection {row} {locationId} />
           <Label class={fieldClass}>Alet / ekipman grubu
             <Textarea class="{areaClass} field-sizing-content font-semibold" rows={1} value={row.equipment} placeholder="ör. Havya istasyonu" onchange={text('equipment')} />
           </Label>

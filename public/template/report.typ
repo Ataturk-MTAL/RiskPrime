@@ -196,13 +196,13 @@
   let cells = ()
   let no = 0
   for g in V.groups {
-    if g.title != "" { cells.push(table.cell(colspan: 17, fill: COLOR-GROUP)[*#g.title*]) }
+    if g.title != "" { cells.push(table.cell(colspan: 18, fill: COLOR-GROUP)[*#g.title*]) }
     for m in g.locations {
-      cells.push(table.cell(colspan: 17, fill: COLOR-LOCATION)[*#m.name*])
+      cells.push(table.cell(colspan: 18, fill: COLOR-LOCATION)[*#m.name*])
       for s in m.rows {
         no += 1
         cells += (
-          [#no], [*#s.equipment*], s.hazard, s.affected, s.existingControls,
+          [#no], [*#s.equipment*], s.hazard, text(size: 6.5pt, s.source), s.affected, s.existingControls,
           ..scores(s.likelihood, s.severity, s.score, s.level),
           s.action, s.responsible, date-or-blank(s.dueDate), status-cell(s),
           ..scores(s.likelihoodAfter, s.severityAfter, s.scoreAfter, s.levelAfter),
@@ -210,10 +210,10 @@
       }
     }
   }
-  cells.push(table.cell(colspan: 17, fill: COLOR-LOCATION)[*Ekip tarafından eklenen tehlikeler*])
+  cells.push(table.cell(colspan: 18, fill: COLOR-LOCATION)[*Ekip tarafından eklenen tehlikeler*])
   for _ in range(6) {
     no += 1
-    cells += ([#no], [#v(0.9cm)]) + ([],) * 15
+    cells += ([#no], [#v(0.9cm)]) + ([],) * 16
   }
   cells
 }
@@ -221,12 +221,13 @@
 #[
 #show table.cell: set text(size: 7.5pt)
 #table(
-  columns: (0.6cm, 2.6cm, 3.8cm, 1.5cm, 1.6cm, 0.75cm, 0.75cm, 0.95cm, 1.5cm, 1fr, 1.9cm, 1.2cm, 1.5cm, 0.75cm, 0.75cm, 0.95cm, 1.5cm),
+  columns: (0.6cm, 2.5cm, 3.6cm, 1.5cm, 1.5cm, 1.6cm, 0.75cm, 0.75cm, 0.95cm, 1.5cm, 1fr, 1.9cm, 1.2cm, 1.5cm, 0.75cm, 0.75cm, 0.95cm, 1.5cm),
   inset: (x: 2.5pt, y: 2.5pt),
   table.header(
     table.cell(rowspan: 2, fill: COLOR-LABEL)[*No*],
     table.cell(rowspan: 2, fill: COLOR-LABEL)[*Alet / ekipman grubu*],
     table.cell(rowspan: 2, fill: COLOR-LABEL)[*Tehlike ve risk*],
+    table.cell(rowspan: 2, fill: COLOR-LABEL)[*Kaynak*],
     table.cell(rowspan: 2, fill: COLOR-LABEL)[*Etkilenen*],
     table.cell(rowspan: 2, fill: COLOR-LABEL)[*Mevcut önlem*],
     table.cell(colspan: 4, fill: COLOR-LABEL, align: center)[*Mevcut risk*],
@@ -258,7 +259,7 @@
     columns: (0.9cm, 1fr, 1cm, 1cm, 1cm, 5cm),
     align: (center + horizon, left + horizon, center + horizon, center + horizon, center + horizon, left + horizon),
     table.header(
-      table.cell(colspan: 6, fill: COLOR-LABEL)[*#k.code #if not is-blank(k.code) [—] #k.name*],
+      table.cell(colspan: 6, fill: COLOR-LABEL)[*#k.code #if not is-blank(k.code) [—] #k.name*#if not is-blank(k.locationNames) [ #h(1fr) Mekân: #k.locationNames]],
       cell-label[No], cell-label[Kontrol maddesi], cell-label[Evet], cell-label[Hayır], cell-label[U/D], cell-label[Açıklama / tarih / sorumlu],
     ),
     ..k.items.map(m => (

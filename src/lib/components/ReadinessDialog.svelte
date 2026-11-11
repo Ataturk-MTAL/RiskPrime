@@ -94,6 +94,18 @@
             {@render entries(gaps.doneWithoutAfter, 'satır', (id) => store.selectLocation(id))}
           </section>
         {/if}
+        {#if gaps.noWithoutRow.length}
+          <section>
+            <h3 class="font-semibold">Hayır cevaplı, risk satırı açılmamış maddeler</h3>
+            {@render entries(gaps.noWithoutRow, 'madde', (id) => store.selectChecklist(id))}
+          </section>
+        {/if}
+        {#if gaps.sourceNowYes.length}
+          <section>
+            <h3 class="font-semibold">Maddesi 'Evet' olan açık satırlar</h3>
+            {@render entries(gaps.sourceNowYes, 'satır', (id) => store.selectLocation(id))}
+          </section>
+        {/if}
         {#if gaps.unanswered.length}
           <section>
             <h3 class="font-semibold">Cevaplanmamış kontrol listesi maddeleri</h3>

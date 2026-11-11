@@ -20,6 +20,7 @@ export const RISK_COLUMNS: Column<ExportRiskRow>[] = [
   ["responsible", "Sorumlu"],
   ["dueDate", "Bitiş tarihi"],
   ["status", "Durum"],
+  ["source", "Kaynak"],
   ["likelihoodAfter", "O (sonra)"],
   ["severityAfter", "Ş (sonra)"],
   ["scoreAfter", "Skor (sonra)"],

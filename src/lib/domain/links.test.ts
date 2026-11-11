@@ -50,6 +50,34 @@ describe("links", () => {
     expect(linked().locations[0].rows[0].source).toEqual({ listId: "k1", itemId: "m1" });
   });
 
+  test("hazard keeps the MEB reference only for coded lists; source text for codeless lists", () => {
+    const withCodeless: Assessment = {
+      ...sample(),
+      checklists: [
+        sample().checklists[0],
+        {
+          ...sample().checklists[1],
+          items: [{ id: "x1", no: "1", text: "Dolap sabit mi?", answer: "no", note: "" }],
+        },
+      ],
+    };
+    const a = riskRowFromChecklistItem(
+      riskRowFromChecklistItem(withCodeless, "k1", "m1", "l1"),
+      "k2",
+      "x1",
+      "l1",
+    );
+    expect(a.locations[0].rows.map((r) => r.hazard)).toEqual([
+      "Pano kapalı mı? (KL-26.06)",
+      "Dolap sabit mi?",
+    ]);
+    expect(
+      pdfData(a, "full").groups.flatMap((g) =>
+        g.locations.flatMap((l) => l.rows.map((r) => r.source)),
+      ),
+    ).toEqual(["KL-26.06", "Okul içi lis md.1"]);
+  });
+
   test("rowsForItem lists every row across locations", () => {
     const rows = rowsForItem(linked(), "k1", "m1");
     expect(rows.map((r) => [r.locationId, r.locationName, r.number])).toEqual([
@@ -217,7 +245,7 @@ describe("pdf data", () => {
     const d = pdfData(a, "full");
     expect(d.groups[0].locations[0].rows.map((r) => r.source)).toEqual([
       "KL-26.06",
-      "Okul içi lis.3",
+      "Okul içi lis md.3",
     ]);
     expect(d.checklists.map((c) => c.locationNames)).toEqual(["Depo, Atölye", ""]);
     const unlinked = pdfData(linkRow(a, "l1", a.locations[0].rows[0].id, null), "full");

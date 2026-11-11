@@ -8,7 +8,8 @@
   import { Progress } from '$lib/components/ui/progress';
   import { Textarea } from '$lib/components/ui/textarea';
   import * as ToggleGroup from '$lib/components/ui/toggle-group';
-  import ChecklistRiskButton from './ChecklistRiskButton.svelte';
+  import ChecklistItemLinks from './ChecklistItemLinks.svelte';
+  import ChecklistLocations from './ChecklistLocations.svelte';
   import ConfirmDialog from './ConfirmDialog.svelte';
   import { addItem, ANSWER_LABELS, removeChecklist, removeItem, summary, updateChecklist, updateItem } from '$lib/domain/checklist';
   import type { Answer, ChecklistItem } from '$lib/domain/types';
@@ -56,6 +57,7 @@
           </Label>
         {/key}
       {/if}
+      <ChecklistLocations {list} />
       <ConfirmDialog
         label="Listeyi sil"
         variant="destructive"
@@ -93,7 +95,7 @@
                 <ToggleGroup.Item value={choice.value} class={choice.tone}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
               {/each}
             </ToggleGroup.Root>
-            {#if item.answer === 'no'}<ChecklistRiskButton {list} itemId={item.id} />{/if}
+            <ChecklistItemLinks {list} {item} />
           </div>
           <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Açıklama" placeholder="Açıklama / tarih / sorumlu" value={item.note} onchange={(e) => patchItem(listId, item.id, { note: value(e) })} />
           <ConfirmDialog label="Maddeyi sil" title="Madde silinsin mi?" description="Bu kontrol maddesi silinecek." onconfirm={() => store.apply((a) => removeItem(a, listId, item.id))}>

@@ -12,6 +12,7 @@
   import RiskRowCard from './RiskRowCard.svelte';
   import RiskRowSheet, { ADD_ROW_BUTTON_ID } from './RiskRowSheet.svelte';
   import RiskTable from './RiskTable.svelte';
+  import LocationChecklistsPanel from './LocationChecklistsPanel.svelte';
   import { addRow, duplicateLocation, filterRows, ROW_FILTERS, ROW_FILTER_LABELS, LOCATION_TYPES, LOCATION_TYPE_LABELS, groupNeighbourId, moveLocation, newId, removeLocation, updateLocation, type RowFilter } from '$lib/domain/assessment';
   import type { LocationType } from '$lib/domain/types';
   import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
@@ -40,6 +41,14 @@
     void store.locationId;
     query = '';
     filter = 'all';
+  });
+
+  // store.openRow asks for a row sheet; a request for another location stays until that one is shown.
+  $effect(() => {
+    const req = store.openRowRequest;
+    if (!req || req.locationId !== loc?.id) return;
+    openId = req.rowId;
+    store.openRowRequest = null;
   });
 
   function duplicateCurrentLocation(locationId: string) {
@@ -96,6 +105,7 @@
       </Collapsible.Root>
     {/key}
 
+    <LocationChecklistsPanel locationId={locId} />
     {#if loc.rows.length === 0}
       <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda risk satırı yok. "Satır ekle" ile başlayın ya da "+ Hazır formdan ekle".</p>
     {/if}
