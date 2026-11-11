@@ -1,6 +1,7 @@
 <script lang="ts">
   import ChevronDown from '@lucide/svelte/icons/chevron-down';
   import Download from '@lucide/svelte/icons/download';
+  import LoaderCircle from '@lucide/svelte/icons/loader-circle';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Button, buttonVariants } from '$lib/components/ui/button';
   import { store, type ExportKind } from '$lib/state.svelte';
@@ -17,7 +18,9 @@
 </script>
 
 <div class="flex">
-  <Button class="rounded-r-none" disabled={busy} onclick={() => store.requestFullPdf()}><Download />PDF indir</Button>
+  <Button class="rounded-r-none" disabled={busy} aria-busy={busy} onclick={() => store.requestFullPdf()}>
+    {#if busy}<LoaderCircle class="animate-spin motion-reduce:animate-none" />{:else}<Download />{/if}PDF indir
+  </Button>
   <DropdownMenu.Root>
     <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline' }) + ' rounded-l-none'} disabled={busy}>
       Diğer biçimler <ChevronDown />

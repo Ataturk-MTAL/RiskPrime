@@ -63,10 +63,23 @@ describe("assessment", () => {
   });
 
   test("moving a location at an edge returns the same object", () => {
-    let a = sample();
+    let a = m.updateSchool(sample(), { grouping: "none" });
     a = m.moveLocation(a, "a-2", -1);
     expect(a.locations.map((l) => l.id)).toEqual(["a-2", "a-1"]);
     expect(m.moveLocation(a, "a-2", -1)).toBe(a);
+  });
+
+  test("moving swaps with the neighbour in the same group, skipping other groups", () => {
+    let a = m.updateSchool(sample(), { grouping: "building" });
+    a = m.addLocation(a, { id: "a-3", name: "ELE2", building: "C Blok" });
+    // order: a-1 (C), a-2 (A), a-3 (C)
+    expect(m.groupNeighbourId(a, "a-3", -1)).toBe("a-1");
+    expect(m.groupNeighbourId(a, "a-2", -1)).toBeNull();
+    expect(m.groupNeighbourId(a, "a-2", 1)).toBeNull();
+    expect(m.moveLocation(a, "a-2", 1)).toBe(a);
+    const moved = m.moveLocation(a, "a-3", -1);
+    expect(moved.locations.map((l) => l.id)).toEqual(["a-3", "a-2", "a-1"]);
+    expect(m.grouped(moved)[0].locations.map((l) => l.id)).toEqual(["a-3", "a-1"]);
   });
 
   test("row scores must be 1-5 or null; status must be valid", () => {

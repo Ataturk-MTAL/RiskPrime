@@ -1,5 +1,10 @@
+<script lang="ts" module>
+  export const ADD_ROW_BUTTON_ID = 'add-row-button';
+</script>
+
 <script lang="ts">
-  import ChevronLeft from '@lucide/svelte/icons/chevron-left';
+  import { tick } from 'svelte';
+  import { dateField, storedDate } from '$lib/domain/date';  import ChevronLeft from '@lucide/svelte/icons/chevron-left';
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
   import Trash2 from '@lucide/svelte/icons/trash-2';
   import { Button } from '$lib/components/ui/button';
@@ -24,9 +29,16 @@
   const index = $derived(rows.findIndex((r) => r.id === openId));
   const row = $derived(rows[index]);
   const patch = (changes: Partial<RiskRow>) => store.apply((a) => updateRow(a, locationId, row.id, changes));
-  const text = (field: 'equipment' | 'hazard' | 'affected' | 'existingControls' | 'action' | 'responsible' | 'dueDate') =>
+  const text = (field: 'equipment' | 'hazard' | 'affected' | 'existingControls' | 'action' | 'responsible') =>
     (e: Event) => patch({ [field]: (e.currentTarget as HTMLInputElement).value.trim() });
   const go = (step: -1 | 1) => (openId = rows[index + step]?.id ?? openId);
+  // Deleting closes the sheet first, then focus returns to the add button (the sheet's own restore targets a removed trigger).
+  function deleteRow() {
+    const id = row.id;
+    openId = null;
+    store.apply((a) => removeRow(a, locationId, id));
+    void tick().then(() => document.getElementById(ADD_ROW_BUTTON_ID)?.focus());
+  }
   const fieldClass = 'flex flex-col items-start gap-1 text-xs text-muted-foreground';
   const areaClass = 'min-h-9 py-1.5 text-foreground';
 </script>
@@ -61,7 +73,17 @@
           </Label>
           <div class="grid grid-cols-2 gap-2">
             <Label class={fieldClass}>Bitiş
-              <Input class="text-foreground" value={row.dueDate} placeholder="GG.AA.YYYY" onchange={text('dueDate')} />
+              {@const due = dateField(row.dueDate)}
+              <Input
+                class="text-foreground"
+                type={due.type}
+                value={due.value}
+                placeholder="GG.AA.YYYY"
+                aria-invalid={due.legacy ? true : undefined}
+                aria-describedby={due.legacy ? 'due-date-error' : undefined}
+                onchange={(e) => patch({ dueDate: storedDate(e.currentTarget.type, e.currentTarget.value) })}
+              />
+              {#if due.legacy}<span id="due-date-error" class="text-destructive">Tarih GG.AA.YYYY olmalı</span>{/if}
             </Label>
             <Label class={fieldClass}>Durum
               <SelectField label="Durum" options={STATUS_OPTIONS} value={row.status} onValueChange={(v) => patch({ status: v as RowStatus })} />
@@ -82,7 +104,7 @@
           size="default"
           title="Satır silinsin mi?"
           description="Bu risk satırı kalıcı olarak silinecek."
-          onconfirm={() => store.apply((a) => removeRow(a, locationId, row.id))}
+          onconfirm={deleteRow}
         ><Trash2 />Satırı sil</ConfirmDialog>
         <div class="flex gap-1">
           <Button variant="outline" disabled={index === 0} onclick={() => go(-1)}><ChevronLeft /><span class="max-sm:sr-only">Önceki</span></Button>

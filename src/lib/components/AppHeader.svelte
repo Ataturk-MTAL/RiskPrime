@@ -13,6 +13,9 @@
 
   let fileInput: HTMLInputElement;
 
+  /** Lets the menu finish closing (and restore focus) before a dialog opens. */
+  const afterMenuCloses = (action: () => void) => setTimeout(action, 0);
+
   const savedLabel = $derived.by(() => {
     if (!store.savedAt) return '';
     const d = new Date(store.savedAt);
@@ -34,8 +37,8 @@
     <DropdownMenu.Root>
       <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline' })}>Yeni <ChevronDown /></DropdownMenu.Trigger>
       <DropdownMenu.Content align="start">
-        <DropdownMenu.Item onSelect={() => store.newFromStarter()}>Yeni (okul verisiyle)</DropdownMenu.Item>
-        <DropdownMenu.Item onSelect={() => store.newEmpty()}>Yeni (boş)</DropdownMenu.Item>
+        <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newFromStarter())}>Yeni (okul verisiyle)</DropdownMenu.Item>
+        <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newEmpty())}>Yeni (boş)</DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
     <div class="flex">

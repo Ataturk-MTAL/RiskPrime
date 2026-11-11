@@ -13,15 +13,30 @@
   import LocationSidebar from '$lib/components/LocationSidebar.svelte';
   import Notices from '$lib/components/Notices.svelte';
   import SchoolCard from '$lib/components/SchoolCard.svelte';
+  import { dragHasFiles, isOpenableFile, UNSUPPORTED_DROP_MESSAGE } from '$lib/drop';
   import { store, type Tab } from '$lib/state.svelte';
 
   let libraryOpen = $state(false);
   const rowCount = $derived(store.assessment.locations.reduce((sum, l) => sum + l.rows.length, 0));
 
+  const dialogOpen = () =>
+    store.discard !== null ||
+    store.conflict !== null ||
+    store.readinessGaps !== null ||
+    document.querySelector('[role=dialog],[role=alertdialog]') !== null;
+
+  function onDragOver(event: DragEvent) {
+    if (dragHasFiles(event.dataTransfer?.types)) event.preventDefault();
+  }
+
   function onDrop(event: DragEvent) {
+    if (!dragHasFiles(event.dataTransfer?.types)) return;
     event.preventDefault();
+    if (dialogOpen()) return;
     const file = event.dataTransfer?.files[0];
-    if (file) store.openFile(file);
+    if (!file) return;
+    if (isOpenableFile(file.name)) store.openFile(file);
+    else store.fail([UNSUPPORTED_DROP_MESSAGE]);
   }
 
   function onBeforeUnload(event: BeforeUnloadEvent) {
@@ -31,7 +46,7 @@
   }
 </script>
 
-<svelte:window ondragover={(e) => e.preventDefault()} ondrop={onDrop} onbeforeunload={onBeforeUnload} />
+<svelte:window ondragover={onDragOver} ondrop={onDrop} onbeforeunload={onBeforeUnload} />
 
 <div class="mx-auto flex min-h-screen max-w-[1400px] flex-col gap-4 p-4">
   <AppHeader />

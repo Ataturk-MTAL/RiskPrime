@@ -112,7 +112,14 @@ describe("excel-import", () => {
     expect(a.locations[1].type).toBe("storage");
     expect(a.locations[1].building).toBe("C Blok");
     expect(a.locations[1].rows[0].likelihood).toBeNull();
-    expect(r.summary).toEqual({ lists: 0, items: 0, locations: 1, rows: 2, school: false });
+    expect(r.summary).toEqual({
+      lists: 0,
+      items: 0,
+      locations: 1,
+      rows: 2,
+      skippedRows: 0,
+      school: false,
+    });
   });
 
   test("a bad row adds nothing and errors carry sheet and row number", () => {
@@ -150,5 +157,33 @@ describe("excel-import", () => {
     expect(replaced.checklists).toHaveLength(1);
     expect(replaced.checklists[0].name).toBe("Yeni ad");
     expect(ok(read(first, sheets, { sameCode: "append" })).assessment.checklists).toHaveLength(2);
+  });
+
+  test("same-named locations in different buildings stay separate", () => {
+    const sheets = {
+      "Risk Satırları": [
+        RISK_HEADER,
+        ["Atölye", "Atölye", "A Blok", "", "", "Tehlike", "", "", "", "", 2, 2],
+        ["Atölye", "Atölye", "B Blok", "", "", "Tehlike", "", "", "", "", 2, 2],
+      ],
+    };
+    const r = ok(read(empty(), sheets));
+    expect(r.assessment.locations.map((l) => l.building)).toEqual(["A Blok", "B Blok"]);
+    expect(r.summary.locations).toBe(2);
+  });
+
+  test("importing the same template twice skips the existing risk rows", () => {
+    const sheets = {
+      "Risk Satırları": [
+        RISK_HEADER,
+        ["ELE1", "Atölye", "", "", "Matkap", "Saç kapılması", "", "", "", "", 3, 4],
+        ["ELE1", "Atölye", "", "", "Pense", "Kesik", "", "", "", "", 2, 2],
+      ],
+    };
+    const first = ok(read(empty(), sheets));
+    const second = ok(read(first.assessment, sheets));
+    expect(second.assessment.locations).toHaveLength(1);
+    expect(second.assessment.locations[0].rows).toHaveLength(2);
+    expect(second.summary).toMatchObject({ rows: 0, skippedRows: 2, locations: 0 });
   });
 });

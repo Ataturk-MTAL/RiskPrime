@@ -9,14 +9,33 @@ const TEMPLATE_FILE = "riskprime-ice-alma-sablonu.xlsx";
 const MIN_COLUMN_WIDTH = 10;
 const MAX_COLUMN_WIDTH = 60;
 
-/** Reads a workbook as {sheetName: array of arrays} (input of excel-import read()). */
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
+/** Date-formatted cells would otherwise print in the file's own (often US) format. */
+function useTurkishDates(sheet: XLSX.WorkSheet): void {
+  for (const [ref, c] of Object.entries(sheet)) {
+    if (ref.startsWith("!") || c.t !== "n" || !c.z || !XLSX.SSF.is_date(c.z)) continue;
+    const d = XLSX.SSF.parse_date_code(c.v);
+    c.w = `${pad2(d.d)}.${pad2(d.m)}.${d.y}`;
+  }
+}
+
+/**
+ * Reads a workbook as {sheetName: array of arrays} (input of excel-import read()).
+ * Cells are read as the text Excel shows (26.10 stays "26.10", dates become dd.mm.yyyy).
+ */
 export async function readWorkbook(file: File): Promise<Record<string, unknown[][]>> {
-  const book = XLSX.read(new Uint8Array(await file.arrayBuffer()), { type: "array" });
+  const book = XLSX.read(new Uint8Array(await file.arrayBuffer()), { type: "array", cellNF: true });
   return Object.fromEntries(
-    book.SheetNames.map((name) => [
-      name,
-      XLSX.utils.sheet_to_json<unknown[]>(book.Sheets[name], { header: 1, defval: "", raw: true }),
-    ]),
+    book.SheetNames.map((name) => {
+      useTurkishDates(book.Sheets[name]);
+      const rows = XLSX.utils.sheet_to_json<unknown[]>(book.Sheets[name], {
+        header: 1,
+        defval: "",
+        raw: false,
+      });
+      return [name, rows];
+    }),
   );
 }
 

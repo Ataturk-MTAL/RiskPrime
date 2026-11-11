@@ -61,6 +61,13 @@ const BACKUP_RISK_COLUMNS: ColumnDef[] = [
 ];
 // Read-only columns for people reading the sheet in Excel; ignored on restore.
 const COMPUTED_HEADERS = ["Skor", "Düzey", "Skor (önlem sonrası)", "Düzey (önlem sonrası)"];
+// Optional last column of "Mekânlar" and "Risk Satırları": ties a risk row to its location even
+// when names repeat. Older backups lack it; those are matched by name.
+const LOCATION_KEY_HEADER = "Mekân No";
+
+/** Index of the optional location-key column in a header row, or -1. */
+const keyColumn = (header: unknown[] | undefined) =>
+  (header || []).findIndex((h) => norm(cell(h)) === norm(LOCATION_KEY_HEADER));
 const LIST_COLUMNS: ColumnDef[] = [
   ["listNo", "Liste No"],
   ["code", "Liste Kodu"],
@@ -90,8 +97,12 @@ const ANSWER_LOOKUP = lookup(ANSWER_OUT, [
 const orBlank = (n: number | null) => (n === null ? "" : n);
 
 function riskSheet(a: Assessment): Table {
-  const header = [...BACKUP_RISK_COLUMNS.map(([, h]) => h), ...COMPUTED_HEADERS];
-  const rows = a.locations.flatMap((l) =>
+  const header = [
+    ...BACKUP_RISK_COLUMNS.map(([, h]) => h),
+    ...COMPUTED_HEADERS,
+    LOCATION_KEY_HEADER,
+  ];
+  const rows = a.locations.flatMap((l, locationIndex) =>
     l.rows.map((r) => {
       const level = (x: ReturnType<typeof riskLevel>) => x?.label ?? "";
       return [
@@ -115,6 +126,7 @@ function riskSheet(a: Assessment): Table {
         level(riskLevel(r.likelihood, r.severity)),
         orBlank(riskScore(r.likelihoodAfter, r.severityAfter)),
         level(riskLevel(r.likelihoodAfter, r.severityAfter)),
+        locationIndex + 1,
       ];
     }),
   );
@@ -148,8 +160,14 @@ export function backupSheets(a: Assessment): Record<string, Table> {
     ],
     [SHEET_SCHOOL]: schoolSheet(a),
     [SHEET_LOCATIONS]: [
-      LOCATION_COLUMNS.map(([, h]) => h),
-      ...a.locations.map((l) => [l.name, LOCATION_TYPE_LABELS[l.type], l.building, l.area]),
+      [...LOCATION_COLUMNS.map(([, h]) => h), LOCATION_KEY_HEADER],
+      ...a.locations.map((l, i) => [
+        l.name,
+        LOCATION_TYPE_LABELS[l.type],
+        l.building,
+        l.area,
+        i + 1,
+      ]),
     ],
     [SHEET_RISK]: riskSheet(a),
     [SHEET_CHECKLIST]: checklistSheet(a),
@@ -167,47 +185,55 @@ function sheet(sheets: Sheets, name: string, errors: string[]): unknown[][] {
   return key ? sheets[key] : [];
 }
 
-function readLocations(aoa: unknown[][], errors: string[]): Location[] {
+type KeyedLocation = { key: string; location: Location };
+
+function readLocations(aoa: unknown[][], errors: string[]): KeyedLocation[] {
   const cols = columns(aoa[0], LOCATION_COLUMNS, SHEET_LOCATIONS);
   if ("errors" in cols) {
     errors.push(...cols.errors);
     return [];
   }
+  const keyAt = keyColumn(aoa[0]);
   return dataRows(aoa, cols.positions, "location").flatMap(({ rowNo, cells: v }) => {
     const type = TYPE_LOOKUP.get(norm(v.type));
-    const bad = [
-      ...(v.location ? [] : ["Mekân boş."]),
-      ...(type ? [] : [`Mekân Türü '${v.type}' tanınmadı.`]),
-    ];
-    errors.push(...bad.map((m) => `${SHEET_LOCATIONS}, satır ${rowNo}: ${m}`));
-    return bad.length
-      ? []
-      : [
+    if (!type) errors.push(`${SHEET_LOCATIONS}, satır ${rowNo}: Mekân Türü '${v.type}' tanınmadı.`);
+    return type
+      ? [
           {
-            id: newId("a"),
-            name: v.location,
-            type: type as LocationType,
-            building: v.building,
-            area: v.area,
-            rows: [],
+            key: keyAt < 0 ? "" : cell(aoa[rowNo - 1][keyAt]),
+            location: {
+              id: newId("a"),
+              name: v.location,
+              type: type as LocationType,
+              building: v.building,
+              area: v.area,
+              rows: [],
+            },
           },
-        ];
+        ]
+      : [];
   });
 }
 
-/** Attaches risk rows to their locations (matched by name), in sheet order. */
-function readRiskRows(aoa: unknown[][], locations: Location[], errors: string[]): Location[] {
+/** Attaches risk rows to their locations (by key column, else by name), in sheet order. */
+function readRiskRows(aoa: unknown[][], keyed: KeyedLocation[], errors: string[]): Location[] {
+  const locations = keyed.map((k) => k.location);
   const cols = columns(aoa[0], BACKUP_RISK_COLUMNS, SHEET_RISK);
   if ("errors" in cols) {
     errors.push(...cols.errors);
     return locations;
   }
+  const keyAt = keyColumn(aoa[0]);
   const rowsByName = new Map<string, Location["rows"]>();
   for (const { rowNo, cells: v } of dataRows(aoa, cols.positions, "location")) {
     const local: string[] = [];
-    const location = locations.find((l) => norm(l.name) === norm(v.location));
+    const key = keyAt < 0 ? "" : cell(aoa[rowNo - 1][keyAt]);
+    const location = (
+      key
+        ? keyed.find((k) => k.key === key)
+        : keyed.find((k) => norm(k.location.name) === norm(v.location))
+    )?.location;
     if (!location) local.push(`Mekân '${v.location}' "${SHEET_LOCATIONS}" sayfasında yok.`);
-    if (!v.hazard) local.push("Tehlike ve Risk boş.");
     const status = v.status ? STATUS_LOOKUP.get(norm(v.status)) : "open";
     if (!status) local.push(`Durum '${v.status}' tanınmadı; Açık ya da Tamam yazın.`);
     const [likelihood, severity, likelihoodAfter, severityAfter] = [
@@ -262,7 +288,7 @@ function readLists(aoa: unknown[][], errors: string[]): Checklist[] {
       source: source as ChecklistSource,
       items: [],
     };
-    const hasItem = v.no !== "" || v.text !== "";
+    const hasItem = v.no !== "" || v.text !== "" || v.added !== "";
     lists.set(v.listNo, {
       ...list,
       items: hasItem

@@ -35,6 +35,26 @@
       </Alert.Description>
     </Alert.Root>
   {/if}
+  {#if store.hasUnreadable}
+    <Alert.Root class="border-amber-400 bg-amber-50 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100">
+      <Info />
+      <Alert.Description class="flex flex-wrap items-center gap-2 text-inherit">
+        <span>Kayıtlı çalışma açılamadı; örnek çalışma açıldı. Eski veri tarayıcıda yedeklendi.</span>
+        <Button size="sm" variant="outline" onclick={() => store.downloadUnreadable()}>Eski veriyi indir</Button>
+        <Button size="sm" variant="ghost" onclick={() => store.dismissUnreadable()}>Kapat</Button>
+      </Alert.Description>
+    </Alert.Root>
+  {/if}
+  {#if store.changedElsewhere}
+    <Alert.Root role="status" class="border-amber-400 bg-amber-50 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100">
+      <Info />
+      <Alert.Description class="flex flex-wrap items-center gap-2 text-inherit">
+        <span>Bu çalışma başka bir sekmede değiştirildi.</span>
+        <Button size="sm" variant="outline" onclick={() => store.loadFromOtherTab()}>O sürümü yükle</Button>
+        <Button size="sm" variant="ghost" onclick={() => store.dismissChangedElsewhere()}>Kapat</Button>
+      </Alert.Description>
+    </Alert.Root>
+  {/if}
   {#if !store.storageOk}
     <Alert.Root class="border-amber-400 bg-amber-50 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100">
       <Info />

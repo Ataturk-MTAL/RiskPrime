@@ -31,6 +31,9 @@ const STORAGE_KEY = "riskprime.assessment";
 /** Survives reloads so New/Open still warn about work that was never downloaded. */
 const DIRTY_KEY = "riskprime.dirty";
 const SAVED_AT_KEY = "riskprime.savedAt";
+/** Raw text of a stored assessment that failed validation, kept so it can be recovered. */
+const UNREADABLE_KEY = "riskprime.assessment.unreadable";
+const RECOVERY_FILE = "riskprime-kurtarma.json";
 const UNDO_TOAST_MS = 10_000;
 const MAX_SHOWN_ERRORS = 8;
 const PDF_KINDS = {
@@ -71,6 +74,11 @@ class Store {
     null,
   );
   discard = $state.raw<{ resolve: (choice: DiscardChoice) => void } | null>(null);
+  /** True while an unreadable stored assessment is backed up under UNREADABLE_KEY. */
+  hasUnreadable = $state(false);
+  /** Another tab wrote the assessment; offered, never applied automatically. */
+  changedElsewhere = $state(false);
+  #undoToast: string | number | null = null;
 
   constructor() {
     const saved = this.#readStorage();
@@ -81,7 +89,65 @@ class Store {
     } catch {
       this.storageOk = false;
     }
+    try {
+      this.hasUnreadable = localStorage.getItem(UNREADABLE_KEY) !== null;
+    } catch {
+      this.storageOk = false;
+    }
     this.#settle();
+    if (typeof window !== "undefined") window.addEventListener("storage", this.#onStorage);
+  }
+
+  #onStorage = (event: StorageEvent) => {
+    if (event.storageArea === localStorage && event.key === STORAGE_KEY && event.newValue)
+      this.changedElsewhere = true;
+  };
+
+  /** Loads what another tab saved (no undo: the other tab holds that version). */
+  loadFromOtherTab() {
+    this.changedElsewhere = false;
+    try {
+      const result = parse(localStorage.getItem(STORAGE_KEY) ?? "");
+      if ("errors" in result)
+        return this.fail(errorList("Diğer sekmedeki çalışma açılamadı:", result.errors));
+      this.dismissUndo();
+      this.assessment = result.assessment;
+      this.dirty = localStorage.getItem(DIRTY_KEY) === "1";
+      this.savedAt = localStorage.getItem(SAVED_AT_KEY);
+      this.errors = [];
+      this.loadCount += 1;
+      this.#settle();
+    } catch {
+      this.storageOk = false;
+    }
+  }
+
+  dismissChangedElsewhere() {
+    this.changedElsewhere = false;
+  }
+
+  downloadUnreadable() {
+    try {
+      const text = localStorage.getItem(UNREADABLE_KEY);
+      if (text !== null)
+        downloadBlob(new Blob([text], { type: "application/json" }), RECOVERY_FILE);
+    } catch {
+      this.fail(["Eski veri tarayıcıdan okunamadı."]);
+    }
+  }
+
+  dismissUnreadable() {
+    try {
+      localStorage.removeItem(UNREADABLE_KEY);
+    } catch {
+      this.storageOk = false;
+    }
+    this.hasUnreadable = false;
+  }
+
+  dismissUndo() {
+    if (this.#undoToast !== null) toast.dismiss(this.#undoToast);
+    this.#undoToast = null;
   }
 
   get location() {
@@ -97,7 +163,10 @@ class Store {
       const text = localStorage.getItem(STORAGE_KEY);
       if (!text) return null;
       const result = parse(text);
-      return "assessment" in result ? result.assessment : null;
+      if ("assessment" in result) return result.assessment;
+      // Never silently replace a stored work: keep the raw text once.
+      if (localStorage.getItem(UNREADABLE_KEY) === null) localStorage.setItem(UNREADABLE_KEY, text);
+      return null;
     } catch {
       this.storageOk = false;
       return null;
@@ -106,11 +175,13 @@ class Store {
 
   #persist() {
     try {
-      localStorage.setItem(STORAGE_KEY, serialize(this.assessment));
+      // Small keys first: they must land even when the big write hits the quota.
       if (this.dirty) localStorage.setItem(DIRTY_KEY, "1");
       else localStorage.removeItem(DIRTY_KEY);
       if (this.savedAt) localStorage.setItem(SAVED_AT_KEY, this.savedAt);
       else localStorage.removeItem(SAVED_AT_KEY);
+      localStorage.setItem(STORAGE_KEY, serialize(this.assessment));
+      this.storageOk = true;
     } catch {
       this.storageOk = false;
     }
@@ -134,7 +205,11 @@ class Store {
   }
 
   /** Runs a domain update; on a thrown Error the data stays untouched and the message is shown. */
-  apply(update: (a: Assessment) => Assessment, { dirty = true } = {}): boolean {
+  apply(
+    update: (a: Assessment) => Assessment,
+    { dirty = true, savedAt }: { dirty?: boolean; savedAt?: string | null } = {},
+  ): boolean {
+    this.dismissUndo(); // a pending undo would drop edits made after its action
     try {
       this.assessment = update(this.assessment);
     } catch (error) {
@@ -142,6 +217,7 @@ class Store {
       return false;
     }
     this.dirty = dirty;
+    if (savedAt !== undefined) this.savedAt = savedAt;
     this.errors = [];
     this.#settle();
     this.#persist();
@@ -157,6 +233,7 @@ class Store {
   /** Resolves true when the current work may be replaced (nothing unsaved, saved first, or discarded). */
   async #confirmDiscard(): Promise<boolean> {
     if (!this.dirty) return true;
+    if (this.discard) return false; // a prompt is already open
     const choice = await new Promise<DiscardChoice>((resolve) => {
       this.discard = {
         resolve: (c) => {
@@ -169,34 +246,45 @@ class Store {
     return choice !== null;
   }
 
-  /** Replaces the whole assessment and offers a one-step undo. */
-  #load(next: Assessment, message: string) {
+  /**
+   * Applies an edit and offers a one-step undo toast. A document replacement also resets
+   * savedAt (the new document was never saved) and restores it on undo.
+   */
+  #applyUndoable(
+    update: (a: Assessment) => Assessment,
+    message: string,
+    { replacesDocument = false, notify = toast as typeof toast.success } = {},
+  ): boolean {
     const previous = this.assessment;
     const previousDirty = this.dirty;
-    if (!this.apply(() => next, { dirty: false })) return;
-    this.loadCount += 1;
-    toast.success(message, {
+    const previousSavedAt = this.savedAt;
+    if (!this.apply(update, replacesDocument ? { dirty: false, savedAt: null } : {})) return false;
+    if (replacesDocument) this.loadCount += 1;
+    const savedAtAtAction = this.savedAt;
+    this.#undoToast = notify(message, {
       duration: UNDO_TOAST_MS,
-      action: { label: "Geri al", onClick: () => this.#restore(previous, previousDirty) },
+      action: {
+        label: "Geri al",
+        onClick: () => {
+          const savedSince = this.savedAt !== savedAtAtAction;
+          const ok = this.apply(() => previous, {
+            dirty: previousDirty || savedSince,
+            savedAt: replacesDocument ? previousSavedAt : undefined,
+          });
+          if (ok && replacesDocument) this.loadCount += 1;
+        },
+      },
     });
+    return true;
   }
 
-  #restore(previous: Assessment, wasDirty: boolean) {
-    if (this.apply(() => previous, { dirty: wasDirty })) this.loadCount += 1;
+  #load(next: Assessment, message: string) {
+    this.#applyUndoable(() => next, message, { replacesDocument: true, notify: toast.success });
   }
 
   /** Applies a destructive edit without a dialog; the toast offers undo instead. */
   applyWithUndo(update: (a: Assessment) => Assessment, message: string) {
-    const previous = this.assessment;
-    const previousDirty = this.dirty;
-    if (!this.apply(update)) return;
-    toast(message, {
-      duration: UNDO_TOAST_MS,
-      action: {
-        label: "Geri al",
-        onClick: () => this.apply(() => previous, { dirty: previousDirty }),
-      },
-    });
+    this.#applyUndoable(update, message);
   }
 
   async newFromStarter() {
@@ -296,10 +384,14 @@ class Store {
       return this.fail(
         errorList(`"${file.name}" içe alınamadı, hiçbir şey eklenmedi:`, result.errors),
       );
-    if (!this.apply(() => result.assessment)) return;
     const s = result.summary;
-    toast.info(
-      `İçe alındı: ${s.school ? "okul ve imzacı bilgileri, " : ""}${s.lists} kontrol listesi (${s.items} madde), ${s.rows} risk satırı, ${s.locations} yeni mekân.`,
+    const skipped = (s as { skippedRows?: number }).skippedRows ?? 0;
+    if (!s.school && !s.lists && !s.rows && !s.locations)
+      return void toast.info("Dosyada içe alınacak veri yok.");
+    this.#applyUndoable(
+      () => result.assessment,
+      `İçe alındı: ${s.school ? "okul ve imzacı bilgileri, " : ""}${s.lists} kontrol listesi (${s.items} madde), ${s.rows} risk satırı, ${s.locations} yeni mekân.${skipped > 0 ? ` ${skipped} satır zaten vardı, atlandı.` : ""}`,
+      { notify: toast.info },
     );
   }
 

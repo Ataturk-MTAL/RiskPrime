@@ -137,7 +137,23 @@ export function serialize(a: Assessment): string {
   return `${JSON.stringify(a, null, 2)}\n`;
 }
 
+const TURKISH_ASCII: Record<string, string> = {
+  ç: "c",
+  ğ: "g",
+  ı: "i",
+  ö: "o",
+  ş: "s",
+  ü: "u",
+  Ç: "C",
+  Ğ: "G",
+  İ: "I",
+  Ö: "O",
+  Ş: "S",
+  Ü: "U",
+};
+
 export function fileName(a: Assessment): string {
-  const period = (a.period || "").replace(/[^0-9A-Za-z-]+/g, "-").replace(/^-+|-+$/g, "");
+  const ascii = (a.period || "").replace(/[çğıöşüÇĞİÖŞÜ]/g, (c) => TURKISH_ASCII[c]);
+  const period = ascii.replace(/[^0-9A-Za-z-]+/g, "-").replace(/^-+|-+$/g, "");
   return `risk-${period || "degerlendirme"}.json`;
 }

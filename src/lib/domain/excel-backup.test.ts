@@ -127,4 +127,44 @@ describe("excel-backup", () => {
     const r = restoreBackup(rest);
     expect("errors" in r && r.errors[0]).toMatch(/Mekânlar/);
   });
+
+  test("round-trips empty names, hazards and fields", () => {
+    const a = fullAssessment();
+    const blank = { ...a.locations[0].rows[0], equipment: "", hazard: "", affected: "" };
+    const odd: Assessment = {
+      ...a,
+      locations: [
+        { ...a.locations[0], name: "", building: "", area: "", rows: [blank] },
+        { ...a.locations[1], name: "", rows: [] },
+      ],
+    };
+    expect(validate(odd)).toEqual([]);
+    expect(stripIds(ok(restoreBackup(sheetsOf(odd))))).toEqual(stripIds(odd));
+  });
+
+  test("keeps locations with the same name distinct", () => {
+    const a = fullAssessment();
+    const [one, two] = a.locations;
+    const dup: Assessment = {
+      ...a,
+      locations: [
+        { ...one, name: "Atölye", rows: [one.rows[0]] },
+        { ...two, name: "Atölye", rows: [one.rows[0]] },
+      ],
+    };
+    const restored = ok(restoreBackup(sheetsOf(dup)));
+    expect(stripIds(restored.locations)).toEqual(stripIds(dup.locations));
+  });
+
+  test("restores older backups without the location key column", () => {
+    const a = fullAssessment();
+    const sheets = sheetsOf(a);
+    const dropKey = (rows: unknown[][]) => rows.map((r) => r.slice(0, -1));
+    const legacy = {
+      ...sheets,
+      Mekânlar: dropKey(sheets["Mekânlar"]),
+      "Risk Satırları": dropKey(sheets["Risk Satırları"]),
+    };
+    expect(stripIds(ok(restoreBackup(legacy)))).toEqual(stripIds(a));
+  });
 });

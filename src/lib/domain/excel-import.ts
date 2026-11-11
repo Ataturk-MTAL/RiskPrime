@@ -201,12 +201,27 @@ export function conflictingCodes(a: Assessment, sheets: Sheets): string[] {
 function applyRisks(
   a: Assessment,
   risks: ParsedRisk[],
-): { assessment: Assessment; newLocations: number } {
+): { assessment: Assessment; newLocations: number; skippedRows: number } {
   let result = a;
   let newLocations = 0;
+  let skippedRows = 0;
+  const rowKey = (hazard: string, equipment: string) => `${norm(hazard)}\n${norm(equipment)}`;
+  // Rows that existed before this import; duplicates inside the file itself are kept.
+  const before = new Map(
+    a.locations.map((l) => [l.id, l.rows.map((x) => rowKey(x.hazard, x.equipment))]),
+  );
   for (const r of risks) {
     const { cells: v } = r;
-    let loc = result.locations.find((x) => norm(x.name) === norm(v.location));
+    let loc = result.locations.find(
+      (x) =>
+        norm(x.name) === norm(v.location) &&
+        norm(x.building) === norm(v.building) &&
+        norm(x.area) === norm(v.area),
+    );
+    if (loc && before.get(loc.id)?.includes(rowKey(v.hazard, v.equipment))) {
+      skippedRows += 1;
+      continue;
+    }
     if (!loc) {
       result = addLocation(result, {
         name: v.location,
@@ -228,14 +243,17 @@ function applyRisks(
       severity: r.severity as never,
     });
   }
-  return { assessment: result, newLocations };
+  return { assessment: result, newLocations, skippedRows };
 }
 
 export interface ImportSummary {
   lists: number;
   items: number;
   locations: number;
+  /** Risk rows added (skipped duplicates not counted). */
   rows: number;
+  /** Risk rows ignored because the same location + hazard + equipment already existed. */
+  skippedRows: number;
   /** True when an "Okul Bilgileri" sheet was read (school info / signatories updated). */
   school: boolean;
 }
@@ -272,14 +290,15 @@ export function read(
       : a;
   const withSchool = schoolPatch ? applySchoolPatch(base, schoolPatch) : base;
   const withLists = lists.reduce((acc, l) => addChecklist(acc, l), withSchool);
-  const { assessment, newLocations } = applyRisks(withLists, risks);
+  const { assessment, newLocations, skippedRows } = applyRisks(withLists, risks);
   return {
     assessment,
     summary: {
       lists: lists.length,
       items: lists.reduce((t, l) => t + l.items.length, 0),
       locations: newLocations,
-      rows: risks.length,
+      rows: risks.length - skippedRows,
+      skippedRows,
       school: schoolPatch !== null && hasChanges(schoolPatch),
     },
   };

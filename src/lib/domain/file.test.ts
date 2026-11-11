@@ -55,4 +55,11 @@ describe("file", () => {
     expect(fileName(valid())).toBe("risk-2026-2027.json");
     expect(fileName(emptyAssessment(""))).toBe("risk-degerlendirme.json");
   });
+
+  test("file name transliterates Turkish letters", () => {
+    expect(fileName({ ...emptyAssessment(""), period: "Güz-2026" })).toBe("risk-Guz-2026.json");
+    expect(fileName({ ...emptyAssessment(""), period: "ÇĞİÖŞÜ çğıöşü" })).toBe(
+      "risk-CGIOSU-cgiosu.json",
+    );
+  });
 });

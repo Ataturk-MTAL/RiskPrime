@@ -9,9 +9,9 @@
   import ConfirmDialog from './ConfirmDialog.svelte';
   import SelectField from './SelectField.svelte';
   import RiskRowCard from './RiskRowCard.svelte';
-  import RiskRowSheet from './RiskRowSheet.svelte';
+  import RiskRowSheet, { ADD_ROW_BUTTON_ID } from './RiskRowSheet.svelte';
   import RiskTable from './RiskTable.svelte';
-  import { addRow, LOCATION_TYPES, LOCATION_TYPE_LABELS, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
+  import { addRow, LOCATION_TYPES, LOCATION_TYPE_LABELS, groupNeighbourId, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
   import type { LocationType } from '$lib/domain/types';
   import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
   import { MediaQuery } from 'svelte/reactivity';
@@ -26,6 +26,8 @@
   let metaOpen = $state(false);
   const isDesktop = new MediaQuery('min-width: 48rem');
   const typeLabel = $derived(loc ? LOCATION_TYPE_LABELS[loc.type] : '');
+  const canMoveUp = $derived(loc ? groupNeighbourId(store.assessment, loc.id, -1) !== null : false);
+  const canMoveDown = $derived(loc ? groupNeighbourId(store.assessment, loc.id, 1) !== null : false);
 
   function addNewRow(locationId: string) {
     const id = newId('r');
@@ -59,8 +61,8 @@
           <Input list="area-list" value={loc.area} onchange={(e) => store.apply((a) => updateLocation(a, locId, { area: value(e) }))} />
         </Label>
         <div class="flex gap-1">
-          <Button variant="outline" size="icon" aria-label="Mekânı yukarı taşı" onclick={() => store.apply((a) => moveLocation(a, locId, -1))}><ArrowUp /></Button>
-          <Button variant="outline" size="icon" aria-label="Mekânı aşağı taşı" onclick={() => store.apply((a) => moveLocation(a, locId, 1))}><ArrowDown /></Button>
+          <Button variant="outline" size="icon" aria-label="Mekânı yukarı taşı" disabled={!canMoveUp} onclick={() => store.apply((a) => moveLocation(a, locId, -1))}><ArrowUp /></Button>
+          <Button variant="outline" size="icon" aria-label="Mekânı aşağı taşı" disabled={!canMoveDown} onclick={() => store.apply((a) => moveLocation(a, locId, 1))}><ArrowDown /></Button>
           <ConfirmDialog
             label="Mekânı sil"
             variant="destructive"
@@ -87,7 +89,7 @@
       {/each}
     </div>
     <RiskRowSheet rows={loc.rows} locationId={locId} bind:openId />
-    <Button onclick={() => addNewRow(locId)}><Plus />Satır ekle</Button>
+    <Button id={ADD_ROW_BUTTON_ID} onclick={() => addNewRow(locId)}><Plus />Satır ekle</Button>
   {:else}
     <p class="py-8 text-center text-sm text-muted-foreground">Soldan bir mekân seçin ya da yeni mekân ekleyin.</p>
   {/if}

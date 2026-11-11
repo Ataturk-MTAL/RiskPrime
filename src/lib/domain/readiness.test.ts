@@ -6,7 +6,7 @@ import type { Assessment, RiskRow } from "./types";
 const row = (over: Partial<RiskRow> = {}): RiskRow => ({
   id: "r",
   equipment: "",
-  hazard: "",
+  hazard: "tehlike",
   affected: "",
   existingControls: "",
   likelihood: 1,
@@ -24,7 +24,8 @@ function complete(): Assessment {
   const a = emptyAssessment("2026-2027");
   return {
     ...a,
-    assessmentDate: "2026-09-01",
+    assessmentDate: "01.09.2026",
+    validUntil: "01.09.2027",
     school: { ...a.school, name: "Okul", signatories: [{ title: "Müdür", name: "Ali" }] },
     locations: [
       { id: "l1", name: "Atölye", type: "workshop", building: "", area: "", rows: [row()] },
@@ -82,5 +83,33 @@ describe("readiness", () => {
     const r = readiness(a);
     expect(r.emptySignatories).toBe(1);
     expect(r.missingMeta).toEqual(["school", "period", "assessmentDate"]);
+  });
+
+  test("flags empty validUntil and validUntil before assessmentDate", () => {
+    const a = complete();
+    a.validUntil = "";
+    expect(readiness(a).missingMeta).toEqual(["validUntil"]);
+    a.validUntil = "01.08.2026";
+    const r = readiness(a);
+    expect(r.invalidDates).toBe(true);
+    expect(r.missingMeta).toEqual([]);
+    expect(r.hasGaps).toBe(true);
+  });
+
+  test("done rows need after-action scores", () => {
+    const a = complete();
+    a.locations[0].rows = [
+      row({ status: "done" }),
+      row({ status: "done", likelihoodAfter: 1, severityAfter: 1 }),
+      row({ status: "open" }),
+    ];
+    expect(readiness(a).doneWithoutAfter).toEqual([{ id: "l1", name: "Atölye", count: 1 }]);
+  });
+
+  test("rows with empty hazard are listed per location", () => {
+    const a = complete();
+    a.locations[0].rows = [row({ hazard: " " }), row()];
+    expect(readiness(a).emptyHazard).toEqual([{ id: "l1", name: "Atölye", count: 1 }]);
+    expect(readiness(a).hasGaps).toBe(true);
   });
 });

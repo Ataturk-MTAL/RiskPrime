@@ -8,6 +8,7 @@
     school: 'Okul adı',
     period: 'Dönem',
     assessmentDate: 'Değerlendirme tarihi',
+    validUntil: 'Geçerlilik tarihi',
   };
 
   const gaps = $derived(store.readinessGaps);
@@ -53,6 +54,14 @@
             </Button>
           </section>
         {/if}
+        {#if gaps.invalidDates}
+          <section>
+            <h3 class="font-semibold">Tarihler</h3>
+            <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={() => go(() => store.openSchool())}>
+              Geçerlilik tarihi değerlendirme tarihinden önce
+            </Button>
+          </section>
+        {/if}
         {#if gaps.emptySignatories}
           <section>
             <h3 class="font-semibold">İmza</h3>
@@ -71,6 +80,18 @@
           <section>
             <h3 class="font-semibold">Yüksek/tolere edilemez riskte önlem ya da sorumlu boş</h3>
             {@render entries(gaps.missingAction, 'satır', (id) => store.selectLocation(id))}
+          </section>
+        {/if}
+        {#if gaps.emptyHazard.length}
+          <section>
+            <h3 class="font-semibold">Tehlike ve risk alanı boş satırlar</h3>
+            {@render entries(gaps.emptyHazard, 'satır', (id) => store.selectLocation(id))}
+          </section>
+        {/if}
+        {#if gaps.doneWithoutAfter.length}
+          <section>
+            <h3 class="font-semibold">Tamamlandı ama önlem sonrası puanı yok</h3>
+            {@render entries(gaps.doneWithoutAfter, 'satır', (id) => store.selectLocation(id))}
           </section>
         {/if}
         {#if gaps.unanswered.length}

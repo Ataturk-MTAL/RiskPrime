@@ -1,5 +1,6 @@
+import { isBefore } from "./date";
 import { riskLevel } from "./matrix";
-import type { Assessment } from "./types";
+import type { Assessment, RiskRow } from "./types";
 
 export interface GapEntry {
   id: string;
@@ -7,7 +8,7 @@ export interface GapEntry {
   count: number;
 }
 
-export type MetaField = "school" | "period" | "assessmentDate";
+export type MetaField = "school" | "period" | "assessmentDate" | "validUntil";
 
 export interface Readiness {
   /** Locations with rows missing likelihood or severity. */
@@ -16,6 +17,12 @@ export interface Readiness {
   missingAction: GapEntry[];
   /** Checklists with unanswered items. */
   unanswered: GapEntry[];
+  /** Locations with rows marked done but missing likelihoodAfter or severityAfter. */
+  doneWithoutAfter: GapEntry[];
+  /** Locations with rows whose hazard text is empty. */
+  emptyHazard: GapEntry[];
+  /** validUntil is earlier than assessmentDate. */
+  invalidDates: boolean;
   emptySignatories: number;
   missingMeta: MetaField[];
   totals: { scoredRows: number; totalRows: number };
@@ -45,6 +52,15 @@ export function readiness(a: Assessment): Readiness {
       }).length,
     })),
   );
+  const perLocation = (pred: (r: RiskRow) => boolean) =>
+    withCount(
+      a.locations.map((l) => ({ id: l.id, name: l.name, count: l.rows.filter(pred).length })),
+    );
+  const doneWithoutAfter = perLocation(
+    (r) => r.status === "done" && (r.likelihoodAfter === null || r.severityAfter === null),
+  );
+  const emptyHazard = perLocation((r) => blank(r.hazard));
+  const invalidDates = isBefore(a.validUntil, a.assessmentDate);
   const unanswered = withCount(
     a.checklists.map((c) => ({
       id: c.id,
@@ -57,6 +73,7 @@ export function readiness(a: Assessment): Readiness {
   if (blank(a.school.name)) missingMeta.push("school");
   if (blank(a.period)) missingMeta.push("period");
   if (blank(a.assessmentDate)) missingMeta.push("assessmentDate");
+  if (blank(a.validUntil)) missingMeta.push("validUntil");
   const totals = {
     scoredRows: rows.reduce((n, { scored }) => n + scored.length, 0),
     totalRows: a.locations.reduce((n, l) => n + l.rows.length, 0),
@@ -65,6 +82,9 @@ export function readiness(a: Assessment): Readiness {
     unscored,
     missingAction,
     unanswered,
+    doneWithoutAfter,
+    emptyHazard,
+    invalidDates,
     emptySignatories,
     missingMeta,
     totals,
@@ -72,6 +92,9 @@ export function readiness(a: Assessment): Readiness {
       unscored.length +
         missingAction.length +
         unanswered.length +
+        doneWithoutAfter.length +
+        emptyHazard.length +
+        Number(invalidDates) +
         emptySignatories +
         missingMeta.length >
       0,

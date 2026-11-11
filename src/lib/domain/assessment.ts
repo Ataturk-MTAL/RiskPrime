@@ -199,12 +199,27 @@ export function removeLocation(a: Assessment, id: string): Assessment {
   return { ...a, locations: a.locations.filter((l) => l.id !== id) };
 }
 
-/** dir: -1 up, +1 down. Returns the same object when already at the edge. */
-export function moveLocation(a: Assessment, id: string, dir: -1 | 1): Assessment {
+/** Group key of a location under school.grouping (same buckets as grouped()). */
+function groupKey(a: Assessment, l: Location): string {
+  const key = a.school.grouping;
+  return key === "none" ? "" : l[key] || "(Belirtilmemiş)";
+}
+
+/** Id of the previous (-1) / next (+1) location in the same group, or null. */
+export function groupNeighbourId(a: Assessment, id: string, dir: -1 | 1): string | null {
   const i = a.locations.findIndex((l) => l.id === id);
   if (i < 0) throw new Error(`Mekân bulunamadı: ${id}`);
-  const j = i + dir;
-  if (j < 0 || j >= a.locations.length) return a;
+  const key = groupKey(a, a.locations[i]);
+  const peers = a.locations.filter((l) => groupKey(a, l) === key);
+  return peers[peers.findIndex((l) => l.id === id) + dir]?.id ?? null;
+}
+
+/** dir: -1 up, +1 down within the location's group. Returns the same object at the group edge. */
+export function moveLocation(a: Assessment, id: string, dir: -1 | 1): Assessment {
+  const otherId = groupNeighbourId(a, id, dir);
+  if (otherId === null) return a;
+  const i = a.locations.findIndex((l) => l.id === id);
+  const j = a.locations.findIndex((l) => l.id === otherId);
   const next = [...a.locations];
   [next[i], next[j]] = [next[j], next[i]];
   return { ...a, locations: next };
@@ -288,7 +303,7 @@ export function grouped(a: Assessment): { title: string; locations: Location[] }
   if (key === "none") return [{ title: "", locations: a.locations }];
   const groups = new Map<string, Location[]>();
   for (const l of a.locations) {
-    const title = l[key] || "(Belirtilmemiş)";
+    const title = groupKey(a, l);
     groups.set(title, [...(groups.get(title) || []), l]);
   }
   return [...groups].map(([title, locations]) => ({ title, locations }));

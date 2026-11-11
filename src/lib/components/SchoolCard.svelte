@@ -9,7 +9,8 @@
   import { Label } from '$lib/components/ui/label';
   import SelectField from './SelectField.svelte';
   import { addSignatory, removeSignatory, updateMeta, updateSchool, updateSignatory } from '$lib/domain/assessment';
-  import type { Grouping } from '$lib/domain/types';
+  import type { Assessment, Grouping } from '$lib/domain/types';
+  import { dateField, isBefore, storedDate } from '$lib/domain/date';
   import { store } from '$lib/state.svelte';
 
   const GROUPING_OPTIONS = [
@@ -25,7 +26,7 @@
     store.loadCount;
     open = !untrack(() => store.assessment.school.name);
   });
-  let root = $state<HTMLElement>();
+  let root = $state<HTMLElement | null>(null);
   // Opened from elsewhere (readiness list): expand, scroll into view, focus the first empty field.
   $effect(() => {
     if (!store.schoolRequest) return;
@@ -42,7 +43,27 @@
     [a.school.name, a.period, `${filled}/${a.school.signatories.length} imzacı`].filter(Boolean).join(' · '),
   );
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
+  const validUntilError = $derived(
+    isBefore(a.validUntil, a.assessmentDate) ? 'Geçerlilik tarihi değerlendirme tarihinden önce olamaz' : '',
+  );
 </script>
+
+<!-- Native date input; legacy free text that does not parse stays editable as text with an error. -->
+{#snippet dateInput(label: string, id: string, stored: string, make: (x: Assessment, v: string) => Assessment, extraError = '')}
+  {@const f = dateField(stored)}
+  {@const error = f.legacy ? 'Tarih GG.AA.YYYY olmalı' : extraError}
+  <Label class="flex flex-col items-start gap-1">{label}
+    <Input
+      type={f.type}
+      value={f.value}
+      placeholder="GG.AA.YYYY"
+      aria-invalid={error ? true : undefined}
+      aria-describedby={error ? `${id}-error` : undefined}
+      onchange={(e) => store.apply((x) => make(x, storedDate(e.currentTarget.type, e.currentTarget.value)))}
+    />
+    {#if error}<span id="{id}-error" class="text-xs text-destructive">{error}</span>{/if}
+  </Label>
+{/snippet}
 
 <Collapsible.Root bind:open bind:ref={root} class="scroll-mt-4 rounded-xl border bg-card">
   <Collapsible.Trigger class="flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/70 data-[state=open]:rounded-b-none">
@@ -66,12 +87,8 @@
       <Label class="flex flex-col items-start gap-1">Dönem
         <Input value={a.period} placeholder="2026-2027" onchange={(e) => store.apply((x) => updateMeta(x, { period: value(e) }))} />
       </Label>
-      <Label class="flex flex-col items-start gap-1">Değerlendirme tarihi
-        <Input value={a.assessmentDate} placeholder="GG.AA.YYYY" onchange={(e) => store.apply((x) => updateMeta(x, { assessmentDate: value(e) }))} />
-      </Label>
-      <Label class="flex flex-col items-start gap-1">Geçerlilik tarihi
-        <Input value={a.validUntil} placeholder="GG.AA.YYYY" onchange={(e) => store.apply((x) => updateMeta(x, { validUntil: value(e) }))} />
-      </Label>
+      {@render dateInput('Değerlendirme tarihi', 'assessment-date', a.assessmentDate, (x, v) => updateMeta(x, { assessmentDate: v }))}
+      {@render dateInput('Geçerlilik tarihi', 'valid-until', a.validUntil, (x, v) => updateMeta(x, { validUntil: v }), validUntilError)}
     </div>
     <div class="max-w-3xl space-y-2">
       <h3 class="text-sm font-semibold">İmzacılar</h3>

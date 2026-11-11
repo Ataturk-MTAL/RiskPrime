@@ -190,28 +190,30 @@
 
 #let score-cell(x) = if x == none { [] } else { align(center)[#x] }
 #let scores(l, s, score, d) = (score-cell(l), score-cell(s), score-cell(score), level-cell(d))
+// Blank form: status is filled by hand, so leave it empty.
+#let status-cell(s) = if KIND == "blank" { [] } else if s.status == "done" { [Tamam] } else { [Açık] }
 #let body-cells = {
   let cells = ()
   let no = 0
   for g in V.groups {
-    if g.title != "" { cells.push(table.cell(colspan: 16, fill: COLOR-GROUP)[*#g.title*]) }
+    if g.title != "" { cells.push(table.cell(colspan: 17, fill: COLOR-GROUP)[*#g.title*]) }
     for m in g.locations {
-      cells.push(table.cell(colspan: 16, fill: COLOR-LOCATION)[*#m.name*])
+      cells.push(table.cell(colspan: 17, fill: COLOR-LOCATION)[*#m.name*])
       for s in m.rows {
         no += 1
         cells += (
           [#no], [*#s.equipment*], s.hazard, s.affected, s.existingControls,
           ..scores(s.likelihood, s.severity, s.score, s.level),
-          s.action, s.responsible, date-or-blank(s.dueDate),
+          s.action, s.responsible, date-or-blank(s.dueDate), status-cell(s),
           ..scores(s.likelihoodAfter, s.severityAfter, s.scoreAfter, s.levelAfter),
         )
       }
     }
   }
-  cells.push(table.cell(colspan: 16, fill: COLOR-LOCATION)[*Ekip tarafından eklenen tehlikeler*])
+  cells.push(table.cell(colspan: 17, fill: COLOR-LOCATION)[*Ekip tarafından eklenen tehlikeler*])
   for _ in range(6) {
     no += 1
-    cells += ([#no], [#v(0.9cm)]) + ([],) * 14
+    cells += ([#no], [#v(0.9cm)]) + ([],) * 15
   }
   cells
 }
@@ -219,7 +221,7 @@
 #[
 #show table.cell: set text(size: 7.5pt)
 #table(
-  columns: (0.6cm, 2.6cm, 3.8cm, 1.5cm, 1.6cm, 0.75cm, 0.75cm, 0.95cm, 1.5cm, 1fr, 1.9cm, 1.5cm, 0.75cm, 0.75cm, 0.95cm, 1.5cm),
+  columns: (0.6cm, 2.6cm, 3.8cm, 1.5cm, 1.6cm, 0.75cm, 0.75cm, 0.95cm, 1.5cm, 1fr, 1.9cm, 1.2cm, 1.5cm, 0.75cm, 0.75cm, 0.95cm, 1.5cm),
   inset: (x: 2.5pt, y: 2.5pt),
   table.header(
     table.cell(rowspan: 2, fill: COLOR-LABEL)[*No*],
@@ -231,6 +233,7 @@
     table.cell(rowspan: 2, fill: COLOR-LABEL)[*Düzeltici / önleyici faaliyet*],
     table.cell(rowspan: 2, fill: COLOR-LABEL)[*Sorumlu*],
     table.cell(rowspan: 2, fill: COLOR-LABEL)[*Bitiş tarihi*],
+    table.cell(rowspan: 2, fill: COLOR-LABEL)[*Durum*],
     table.cell(colspan: 4, fill: COLOR-LABEL, align: center)[*Önlem sonrası risk*],
     cell-label[O], cell-label[Ş], cell-label[Skor], cell-label[Düzey],
     cell-label[O], cell-label[Ş], cell-label[Skor], cell-label[Düzey],
