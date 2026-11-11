@@ -17,7 +17,7 @@
 </script>
 
 <div class="flex">
-  <Button class="rounded-r-none" disabled={busy} onclick={() => store.exportAs('pdf-full')}><Download />PDF indir</Button>
+  <Button class="rounded-r-none" disabled={busy} onclick={() => store.requestFullPdf()}><Download />PDF indir</Button>
   <DropdownMenu.Root>
     <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline' }) + ' rounded-l-none'} disabled={busy}>
       Diğer biçimler <ChevronDown />

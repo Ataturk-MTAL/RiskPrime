@@ -6,6 +6,7 @@ import { addChecklist as addChecklistFromTemplate } from "$lib/domain/checklist"
 import { fileName, parse, serialize } from "$lib/domain/file";
 import { isBackup, restoreBackup } from "$lib/domain/excel-backup";
 import { conflictingCodes, read as readExcel } from "$lib/domain/excel-import";
+import { readiness, type Readiness } from "$lib/domain/readiness";
 import { downloadBlob } from "$lib/export/download";
 // Heavy export libraries (xlsx, docx, typst.ts loader) load on first use, not on page load.
 const pdfModule = () => import("$lib/export/pdf");
@@ -57,6 +58,8 @@ class Store {
   storageOk = $state(true);
   errors = $state.raw<string[]>([]);
   busy = $state("");
+  /** Gaps found before a full PDF; non-null opens the readiness dialog. */
+  readinessGaps = $state.raw<Readiness | null>(null);
   tab = $state<Tab>("risk");
   locationId = $state<string | null>(null);
   checklistId = $state<string | null>(null);
@@ -292,6 +295,13 @@ class Store {
     toast.info(
       `İçe alındı: ${s.school ? "okul ve imzacı bilgileri, " : ""}${s.lists} kontrol listesi (${s.items} madde), ${s.rows} risk satırı, ${s.locations} yeni mekân.`,
     );
+  }
+
+  /** Full PDF: ask first when the assessment has gaps. */
+  requestFullPdf() {
+    const gaps = readiness(this.assessment);
+    if (gaps.hasGaps) this.readinessGaps = gaps;
+    else void this.exportAs("pdf-full");
   }
 
   async exportAs(kind: ExportKind) {
