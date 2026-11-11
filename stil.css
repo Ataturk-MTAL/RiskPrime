@@ -171,7 +171,9 @@ td.no { text-align: center; vertical-align: middle; }
 .rs-uclu input, .rs-uclu select { min-width: 0; width: 100%; }
 .puanlar { display: flex; align-items: center; gap: 6px; }
 .puan { flex-direction: row; align-items: center; gap: 2px; font-weight: 600; color: var(--yazi); font-size: 13px; }
-.skor { min-width: 22px; text-align: center; font-weight: 700; color: var(--ikincil); }
+.skor { font-weight: 700; color: var(--ikincil); }
+.skor:empty { display: none; }
+.rs-uclu { align-items: start; }
 
 /* Dar alanda iki sıra: üstte tehlike + mevcut risk, altta önlem + önlem sonrası. */
 @container (max-width: 980px) {

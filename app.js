@@ -161,13 +161,13 @@
       </div>
       <div class="rs-risk">
         <span class="rs-baslik">Mevcut risk</span>
-        <div class="puanlar">${puanSecimi(satir, 'o')}${puanSecimi(satir, 's')}<span class="skor" data-skor title="Skor = O × Ş">${matris.skor(satir.o, satir.s) ?? ''}</span></div>
-        <div data-duzey="1">${duzeyHtml(satir.o, satir.s)}</div>
+        <div class="puanlar">${puanSecimi(satir, 'o')}${puanSecimi(satir, 's')}</div>
+        <div class="puanlar"><span class="skor" data-skor title="Skor = O × Ş">${matris.skor(satir.o, satir.s) ?? ''}</span><span data-duzey="1">${duzeyHtml(satir.o, satir.s)}</span></div>
       </div>
       <div class="rs-onlem">
         ${girdiAlani(satir, 'onlem', 'Düzeltici / önleyici faaliyet')}
         <div class="rs-uclu">
-          ${girdiAlani(satir, 'sorumlu', 'Sorumlu', { tek: true })}
+          ${girdiAlani(satir, 'sorumlu', 'Sorumlu')}
           ${girdiAlani(satir, 'bitis', 'Bitiş', { tek: true, ipucu: 'GG.AA.YYYY' })}
           <label class="rs-alan"><span>Durum</span><select data-satir="${id}" data-k="durum">${secenekler([['acik', 'Açık'], ['tamam', 'Tamam']], satir.durum)}</select></label>
         </div>
