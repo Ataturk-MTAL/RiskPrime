@@ -4,6 +4,7 @@ import { isScore } from "./matrix";
 import {
   SCHEMA_VERSION,
   type Assessment,
+  type Checklist,
   type Grouping,
   type Location,
   type LocationTemplate,
@@ -51,6 +52,7 @@ const ROW_KEYS = [
   "status",
   "likelihoodAfter",
   "severityAfter",
+  "source",
 ] as const;
 const SCORE_KEYS = ["likelihood", "severity", "likelihoodAfter", "severityAfter"] as const;
 
@@ -195,9 +197,21 @@ export function updateLocation(
   return { ...a, locations: a.locations.map((l) => (l.id === id ? { ...l, ...next } : l)) };
 }
 
+/** Drops a location id from a list's locationIds (the key goes away when nothing is left). */
+function withoutLocation(c: Checklist, id: string): Checklist {
+  if (!c.locationIds?.includes(id)) return c;
+  const { locationIds, ...rest } = c;
+  const left = locationIds.filter((x) => x !== id);
+  return left.length ? { ...rest, locationIds: left } : rest;
+}
+
 export function removeLocation(a: Assessment, id: string): Assessment {
   findLocation(a, id);
-  return { ...a, locations: a.locations.filter((l) => l.id !== id) };
+  return {
+    ...a,
+    locations: a.locations.filter((l) => l.id !== id),
+    checklists: a.checklists.map((c) => withoutLocation(c, id)),
+  };
 }
 
 /** Group key of a location under school.grouping (same buckets as grouped()). */
@@ -332,7 +346,13 @@ export function duplicateLocation(a: Assessment, id: string, newLocationId?: str
     name: `${source.name} (kopya)`,
     rows: source.rows.map((r) => ({ ...r, id: newId("r") })),
   };
-  return { ...a, locations: a.locations.flatMap((l) => (l.id === id ? [l, copy] : [l])) };
+  return {
+    ...a,
+    locations: a.locations.flatMap((l) => (l.id === id ? [l, copy] : [l])),
+    checklists: a.checklists.map((c) =>
+      c.locationIds?.includes(id) ? { ...c, locationIds: [...c.locationIds, copy.id] } : c,
+    ),
+  };
 }
 
 /** True for an open row whose due date (DD.MM.YYYY) is before `today` (injected for tests). */

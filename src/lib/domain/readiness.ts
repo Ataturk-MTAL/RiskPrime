@@ -1,4 +1,6 @@
 import { isBefore } from "./date";
+import { hazardOf } from "./checklist-risk";
+import { rowsForItem } from "./links";
 import { riskLevel } from "./matrix";
 import type { Assessment, RiskRow } from "./types";
 
@@ -21,6 +23,10 @@ export interface Readiness {
   doneWithoutAfter: GapEntry[];
   /** Locations with rows whose hazard text is empty. */
   emptyHazard: GapEntry[];
+  /** Checklists with "Hayır" items that have no risk row ("Hayır cevaplı, risk satırı açılmamış"). */
+  noWithoutRow: GapEntry[];
+  /** Locations with open rows whose source item is now "Evet" ("Madde 'Evet' oldu, satırı kontrol edin"). */
+  sourceNowYes: GapEntry[];
   /** validUntil is earlier than assessmentDate. */
   invalidDates: boolean;
   emptySignatories: number;
@@ -68,6 +74,27 @@ export function readiness(a: Assessment): Readiness {
       count: c.items.filter((i) => i.answer === "").length,
     })),
   );
+  const noWithoutRow = withCount(
+    a.checklists.map((c) => ({
+      id: c.id,
+      name: `${c.code} ${c.name}`.trim(),
+      count: c.items.filter(
+        (i) =>
+          i.answer === "no" &&
+          rowsForItem(a, c.id, i.id).length === 0 &&
+          // Rows made before sources existed are matched by their hazard text.
+          !a.locations.some((l) => l.rows.some((r) => !r.source && r.hazard === hazardOf(c, i))),
+      ).length,
+    })),
+  );
+  const sourceNowYes = perLocation(
+    (r) =>
+      r.status === "open" &&
+      !!r.source &&
+      a.checklists
+        .find((c) => c.id === r.source?.listId)
+        ?.items.find((i) => i.id === r.source?.itemId)?.answer === "yes",
+  );
   const emptySignatories = a.school.signatories.filter((s) => blank(s.name)).length;
   const missingMeta: MetaField[] = [];
   if (blank(a.school.name)) missingMeta.push("school");
@@ -84,6 +111,8 @@ export function readiness(a: Assessment): Readiness {
     unanswered,
     doneWithoutAfter,
     emptyHazard,
+    noWithoutRow,
+    sourceNowYes,
     invalidDates,
     emptySignatories,
     missingMeta,
@@ -94,6 +123,8 @@ export function readiness(a: Assessment): Readiness {
         unanswered.length +
         doneWithoutAfter.length +
         emptyHazard.length +
+        noWithoutRow.length +
+        sourceNowYes.length +
         Number(invalidDates) +
         emptySignatories +
         missingMeta.length >

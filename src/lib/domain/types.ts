@@ -22,6 +22,12 @@ export interface School {
   signatories: Signatory[];
 }
 
+/** The checklist item a risk row came from. Ids may dangle after edits; helpers treat that as unlinked. */
+export interface RiskSource {
+  listId: string;
+  itemId: string;
+}
+
 export interface RiskRow {
   id: string;
   equipment: string;
@@ -36,6 +42,7 @@ export interface RiskRow {
   status: RowStatus;
   likelihoodAfter: Score | null;
   severityAfter: Score | null;
+  source?: RiskSource;
 }
 
 export interface Location {
@@ -63,6 +70,8 @@ export interface Checklist {
   name: string;
   source: ChecklistSource;
   items: ChecklistItem[];
+  /** Locations this list applies to; missing or empty = general (all locations). */
+  locationIds?: string[];
 }
 
 export interface Assessment {

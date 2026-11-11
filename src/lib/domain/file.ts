@@ -61,6 +61,10 @@ function validateRow(r: unknown, path: string, errors: string[]): void {
   }
   if (!STATUSES.includes(r.status as never))
     errors.push(`${path}.status: ${STATUSES.join(" ya da ")} olmalı.`);
+  const s = r.source;
+  if (s !== undefined && !(isObject(s) && isString(s.listId) && isString(s.itemId))) {
+    errors.push(`${path}.source: listId ve itemId metin olmalı.`);
+  }
 }
 
 function validateLocation(l: unknown, path: string, errors: string[]): void {
@@ -87,6 +91,9 @@ function validateChecklist(l: unknown, path: string, errors: string[]): void {
   checkStrings(l, ["id", "code", "name"], path, errors);
   if (!SOURCES.includes(l.source as string))
     errors.push(`${path}.source: internal ya da external olmalı.`);
+  const ids = l.locationIds;
+  if (ids !== undefined && !(Array.isArray(ids) && ids.every(isString)))
+    errors.push(`${path}.locationIds: metin listesi olmalı.`);
   if (!Array.isArray(l.items)) {
     errors.push(`${path}.items: liste olmalı.`);
     return;

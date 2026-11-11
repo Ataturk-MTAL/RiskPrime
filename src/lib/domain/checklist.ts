@@ -2,6 +2,7 @@
 // On an external (MEB) list the name/code and the ready-made item texts are locked; items may still be
 // added and removed, as the MEB form itself allows.
 import { newId, pick } from "./assessment";
+import { clearSources } from "./links";
 import type { Answer, Assessment, Checklist, ChecklistItem, ChecklistTemplate } from "./types";
 
 export const ANSWERS: Answer[] = ["yes", "no", "na", ""];
@@ -63,7 +64,8 @@ export function updateChecklist(
 
 export function removeChecklist(a: Assessment, id: string): Assessment {
   findChecklist(a, id);
-  return { ...a, checklists: a.checklists.filter((l) => l.id !== id) };
+  const next = clearSources(a, (s) => s.listId === id);
+  return { ...next, checklists: next.checklists.filter((l) => l.id !== id) };
 }
 
 export function addItem(a: Assessment, listId: string): Assessment {
@@ -107,7 +109,11 @@ export function updateItem(
 
 export function removeItem(a: Assessment, listId: string, itemId: string): Assessment {
   findItem(findChecklist(a, listId), itemId);
-  return mapChecklist(a, listId, (l) => ({ ...l, items: l.items.filter((x) => x.id !== itemId) }));
+  const next = clearSources(a, (s) => s.listId === listId && s.itemId === itemId);
+  return mapChecklist(next, listId, (l) => ({
+    ...l,
+    items: l.items.filter((x) => x.id !== itemId),
+  }));
 }
 
 /** Answer progress of one list. */

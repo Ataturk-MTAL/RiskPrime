@@ -1,6 +1,7 @@
 // Pure data transforms shared by the PDF, Excel and Word exports.
 import { grouped } from "./assessment";
 import { fileName } from "./file";
+import { liveLocationIds, sourceOf } from "./links";
 import { riskLevel, riskScore, type Level } from "./matrix";
 import type { Answer, Assessment, Checklist, Location, RiskRow, RowStatus } from "./types";
 
@@ -86,13 +87,28 @@ export function checklistRows(a: Assessment): ExportChecklistRow[] {
   );
 }
 
-export type PdfRow = Omit<RiskRow, never> & {
+export type PdfRow = Omit<RiskRow, "source"> & {
+  /** Checklist reference such as "KL-26.06"; "" when the row has no (valid) source. */
+  source: string;
   score: number | null;
   level: Level | null;
   scoreAfter: number | null;
   levelAfter: Level | null;
 };
 export type PdfLocation = Omit<Location, "rows"> & { rows: PdfRow[] };
+/** Names of the locations the list applies to, joined with ", "; "" for a general list. */
+export type PdfChecklist = Checklist & { locationNames: string };
+
+const SHORT_NAME_LENGTH = 12;
+
+/** "KL-26.06": list code (else a short list name) + "." + item no. */
+function sourceText(a: Assessment, r: RiskRow): string {
+  const info = sourceOf(a, r);
+  if (!info) return "";
+  const list = a.checklists.find((c) => c.id === info.listId);
+  const label = info.code || (list?.name ?? "").trim().slice(0, SHORT_NAME_LENGTH);
+  return `${label}.${info.no}`;
+}
 
 export interface PdfData {
   kind: PdfKind;
@@ -101,13 +117,16 @@ export interface PdfData {
   assessmentDate: string;
   validUntil: string;
   groups: { title: string; locations: PdfLocation[] }[];
-  checklists: Checklist[];
+  checklists: PdfChecklist[];
 }
 
-function pdfRow(r: RiskRow, blank: boolean): PdfRow {
+function pdfRow(a: Assessment, r: RiskRow, blank: boolean): PdfRow {
+  const { source: _source, ...plain } = r;
+  const source = sourceText(a, r);
   if (blank) {
     return {
-      ...r,
+      ...plain,
+      source,
       likelihood: null,
       severity: null,
       score: null,
@@ -119,7 +138,8 @@ function pdfRow(r: RiskRow, blank: boolean): PdfRow {
     };
   }
   return {
-    ...r,
+    ...plain,
+    source,
     score: riskScore(r.likelihood, r.severity),
     level: riskLevel(r.likelihood, r.severity),
     scoreAfter: riskScore(r.likelihoodAfter, r.severityAfter),
@@ -149,11 +169,14 @@ export function pdfData(a: Assessment, kind: PdfKind, locationId?: string): PdfD
         title: g.title,
         locations: g.locations
           .filter((l) => !single || l.id === locationId)
-          .map((l) => ({ ...l, rows: l.rows.map((r) => pdfRow(r, blank)) })),
+          .map((l) => ({ ...l, rows: l.rows.map((r) => pdfRow(a, r, blank)) })),
       }))
       .filter((g) => !single || g.locations.length > 0),
     checklists: (single ? [] : a.checklists || []).map((l) => ({
       ...l,
+      locationNames: liveLocationIds(a, l)
+        .map((id) => a.locations.find((x) => x.id === id)?.name ?? "")
+        .join(", "),
       items: l.items.map((m) => (blank ? { ...m, answer: "" as Answer, note: "" } : m)),
     })),
   };

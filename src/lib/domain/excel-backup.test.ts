@@ -159,11 +159,13 @@ describe("excel-backup", () => {
   test("restores older backups without the location key column", () => {
     const a = fullAssessment();
     const sheets = sheetsOf(a);
-    const dropKey = (rows: unknown[][]) => rows.map((r) => r.slice(0, -1));
+    const drop = (rows: unknown[][], n: number) => rows.map((r) => r.slice(0, -n));
     const legacy = {
       ...sheets,
-      Mekânlar: dropKey(sheets["Mekânlar"]),
-      "Risk Satırları": dropKey(sheets["Risk Satırları"]),
+      Mekânlar: drop(sheets["Mekânlar"], 1),
+      // Last two columns: Mekân No and Kaynak Madde.
+      "Risk Satırları": drop(sheets["Risk Satırları"], 2),
+      "Kontrol Listesi": drop(sheets["Kontrol Listesi"], 1),
     };
     expect(stripIds(ok(restoreBackup(legacy)))).toEqual(stripIds(a));
   });

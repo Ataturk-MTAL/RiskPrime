@@ -21,6 +21,7 @@ import {
   type Sheets,
 } from "./excel-import";
 import { validate } from "./file";
+import { liveLocationIds } from "./links";
 import { riskLevel, riskScore } from "./matrix";
 import { applySchoolPatch, readSchoolSheet, SHEET_SCHOOL, schoolSheet } from "./school-sheet";
 import {
@@ -64,10 +65,27 @@ const COMPUTED_HEADERS = ["Skor", "Düzey", "Skor (önlem sonrası)", "Düzey (�
 // Optional last column of "Mekânlar" and "Risk Satırları": ties a risk row to its location even
 // when names repeat. Older backups lack it; those are matched by name.
 const LOCATION_KEY_HEADER = "Mekân No";
+// Optional last column of "Risk Satırları": "<Liste No>/<Madde No>" of the checklist item the row
+// came from ("<Liste No>/#<sıra>" when the item number is blank or repeats within its list).
+const SOURCE_HEADER = "Kaynak Madde";
+// Optional last column of "Kontrol Listeleri": comma list of the "Mekân No" values the list applies to.
+const LIST_LOCATIONS_HEADER = "Mekân Nolar";
 
-/** Index of the optional location-key column in a header row, or -1. */
-const keyColumn = (header: unknown[] | undefined) =>
-  (header || []).findIndex((h) => norm(cell(h)) === norm(LOCATION_KEY_HEADER));
+/** Index of an optional column in a header row, or -1. */
+const optionalColumn = (header: unknown[] | undefined, name: string) =>
+  (header || []).findIndex((h) => norm(cell(h)) === norm(name));
+const keyColumn = (header: unknown[] | undefined) => optionalColumn(header, LOCATION_KEY_HEADER);
+
+/** "<Liste No>/<Madde No>" for a row's source, or "" when unlinked or dangling. */
+function sourceRef(a: Assessment, r: RiskRow): string {
+  const listIndex = a.checklists.findIndex((c) => c.id === r.source?.listId);
+  const items = a.checklists[listIndex]?.items ?? [];
+  const position = items.findIndex((m) => m.id === r.source?.itemId);
+  if (position < 0) return "";
+  const no = items[position].no.trim();
+  const unique = no !== "" && items.filter((m) => m.no.trim() === no).length === 1;
+  return `${listIndex + 1}/${unique ? no : `#${position + 1}`}`;
+}
 const LIST_COLUMNS: ColumnDef[] = [
   ["listNo", "Liste No"],
   ["code", "Liste Kodu"],
@@ -101,6 +119,7 @@ function riskSheet(a: Assessment): Table {
     ...BACKUP_RISK_COLUMNS.map(([, h]) => h),
     ...COMPUTED_HEADERS,
     LOCATION_KEY_HEADER,
+    SOURCE_HEADER,
   ];
   const rows = a.locations.flatMap((l, locationIndex) =>
     l.rows.map((r) => {
@@ -127,6 +146,7 @@ function riskSheet(a: Assessment): Table {
         orBlank(riskScore(r.likelihoodAfter, r.severityAfter)),
         level(riskLevel(r.likelihoodAfter, r.severityAfter)),
         locationIndex + 1,
+        sourceRef(a, r),
       ];
     }),
   );
@@ -135,6 +155,10 @@ function riskSheet(a: Assessment): Table {
 
 function checklistSheet(a: Assessment): Table {
   const head = (l: Checklist, i: number) => [i + 1, l.code, l.name, SOURCE_LABELS[l.source]];
+  const locationNos = (l: Checklist) =>
+    liveLocationIds(a, l)
+      .map((id) => a.locations.findIndex((x) => x.id === id) + 1)
+      .join(", ");
   const rows = a.checklists.flatMap((l, i) =>
     l.items.length
       ? l.items.map((m) => [
@@ -144,10 +168,11 @@ function checklistSheet(a: Assessment): Table {
           ANSWER_OUT[m.answer],
           m.note,
           m.added ? ADDED_TEXT : "",
+          locationNos(l),
         ])
-      : [[...head(l, i), "", "", "", "", ""]],
+      : [[...head(l, i), "", "", "", "", "", locationNos(l)]],
   );
-  return [LIST_COLUMNS.map(([, h]) => h), ...rows];
+  return [[...LIST_COLUMNS.map(([, h]) => h), LIST_LOCATIONS_HEADER], ...rows];
 }
 
 /** All backup sheets in file order. */
@@ -216,14 +241,20 @@ function readLocations(aoa: unknown[][], errors: string[]): KeyedLocation[] {
 }
 
 /** Attaches risk rows to their locations (by key column, else by name), in sheet order. */
-function readRiskRows(aoa: unknown[][], keyed: KeyedLocation[], errors: string[]): Location[] {
+function readRiskRows(
+  aoa: unknown[][],
+  keyed: KeyedLocation[],
+  errors: string[],
+): { locations: Location[]; refs: Map<string, { ref: string; rowNo: number }> } {
   const locations = keyed.map((k) => k.location);
+  const refs = new Map<string, { ref: string; rowNo: number }>();
   const cols = columns(aoa[0], BACKUP_RISK_COLUMNS, SHEET_RISK);
   if ("errors" in cols) {
     errors.push(...cols.errors);
-    return locations;
+    return { locations, refs };
   }
   const keyAt = keyColumn(aoa[0]);
+  const sourceAt = optionalColumn(aoa[0], SOURCE_HEADER);
   const rowsByName = new Map<string, Location["rows"]>();
   for (const { rowNo, cells: v } of dataRows(aoa, cols.positions, "location")) {
     const local: string[] = [];
@@ -260,16 +291,66 @@ function readRiskRows(aoa: unknown[][], keyed: KeyedLocation[], errors: string[]
       severityAfter: severityAfter as Score | null,
     };
     rowsByName.set(location.id, [...(rowsByName.get(location.id) ?? []), row]);
+    const ref = sourceAt < 0 ? "" : cell(aoa[rowNo - 1][sourceAt]);
+    if (ref) refs.set(row.id, { ref, rowNo });
   }
-  return locations.map((l) => ({ ...l, rows: rowsByName.get(l.id) ?? [] }));
+  return { locations: locations.map((l) => ({ ...l, rows: rowsByName.get(l.id) ?? [] })), refs };
 }
 
-function readLists(aoa: unknown[][], errors: string[]): Checklist[] {
+type KeyedList = { key: string; list: Checklist; locationNos: string[] };
+
+/** Finds the item named by a "<Liste No>/<Madde No>" reference. */
+function resolveRef(lists: KeyedList[], ref: string): { listId: string; itemId: string } | null {
+  const slash = ref.indexOf("/");
+  const list = lists.find((l) => l.key === ref.slice(0, slash))?.list;
+  const rest = ref.slice(slash + 1);
+  const item = rest.startsWith("#")
+    ? list?.items[Number(rest.slice(1)) - 1]
+    : list?.items.find((m) => m.no.trim() === rest);
+  return slash > 0 && list && item ? { listId: list.id, itemId: item.id } : null;
+}
+
+/** Turns the sheets' Mekân No / Kaynak Madde references into ids. Unknown references are errors. */
+function linkBackup(
+  rowLocations: Location[],
+  keyed: KeyedLocation[],
+  lists: KeyedList[],
+  refs: Map<string, { ref: string; rowNo: number }>,
+  errors: string[],
+): { locations: Location[]; checklists: Checklist[] } {
+  const locations = rowLocations.map((l) => ({
+    ...l,
+    rows: l.rows.map((r) => {
+      const hit = refs.get(r.id);
+      if (!hit) return r;
+      const source = resolveRef(lists, hit.ref);
+      if (!source)
+        errors.push(`${SHEET_RISK}, satır ${hit.rowNo}: Kaynak Madde '${hit.ref}' bulunamadı.`);
+      return source ? { ...r, source } : r;
+    }),
+  }));
+  const checklists = lists.map(({ list, locationNos }) => {
+    const ids = locationNos.flatMap((no) => {
+      const id = keyed.find((k) => k.key === no)?.location.id;
+      if (!id)
+        errors.push(
+          `${SHEET_CHECKLIST}: ${list.name} listesinin Mekân No '${no}' değeri bulunamadı.`,
+        );
+      return id ? [id] : [];
+    });
+    return ids.length ? { ...list, locationIds: ids } : list;
+  });
+  return { locations, checklists };
+}
+
+function readLists(aoa: unknown[][], errors: string[]): KeyedList[] {
   const cols = columns(aoa[0], LIST_COLUMNS, SHEET_CHECKLIST);
   if ("errors" in cols) {
     errors.push(...cols.errors);
     return [];
   }
+  const locationsAt = optionalColumn(aoa[0], LIST_LOCATIONS_HEADER);
+  const locationNos = new Map<string, string[]>();
   const lists = new Map<string, Checklist>();
   for (const { rowNo, cells: v } of dataRows(aoa, cols.positions, "listNo")) {
     const local: string[] = [];
@@ -288,6 +369,15 @@ function readLists(aoa: unknown[][], errors: string[]): Checklist[] {
       source: source as ChecklistSource,
       items: [],
     };
+    const nos = locationsAt < 0 ? "" : cell(aoa[rowNo - 1][locationsAt]);
+    if (nos && !locationNos.has(v.listNo))
+      locationNos.set(
+        v.listNo,
+        nos
+          .split(",")
+          .map((n) => n.trim())
+          .filter(Boolean),
+      );
     const hasItem = v.no !== "" || v.text !== "" || v.added !== "";
     lists.set(v.listNo, {
       ...list,
@@ -306,7 +396,7 @@ function readLists(aoa: unknown[][], errors: string[]): Checklist[] {
         : list.items,
     });
   }
-  return [...lists.values()];
+  return [...lists].map(([key, list]) => ({ key, list, locationNos: locationNos.get(key) ?? [] }));
 }
 
 /** Rebuilds a fresh assessment (new ids) from backup sheets. All-or-nothing. */
@@ -318,8 +408,10 @@ export function restoreBackup(sheets: Sheets): { assessment: Assessment } | { er
   const listAoa = sheet(sheets, SHEET_CHECKLIST, errors);
   if (errors.length) return { errors };
   const patch = readSchoolSheet(schoolAoa, errors, true);
-  const locations = readRiskRows(riskAoa, readLocations(locationAoa, errors), errors);
-  const checklists = readLists(listAoa, errors);
+  const keyed = readLocations(locationAoa, errors);
+  const risk = readRiskRows(riskAoa, keyed, errors);
+  const lists = readLists(listAoa, errors);
+  const { locations, checklists } = linkBackup(risk.locations, keyed, lists, risk.refs, errors);
   if (errors.length) return { errors };
   const assessment = {
     ...applySchoolPatch(emptyAssessment(""), patch),
