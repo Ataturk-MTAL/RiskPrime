@@ -1,11 +1,29 @@
 <script lang="ts">
   import Plus from '@lucide/svelte/icons/plus';
   import { Button } from '$lib/components/ui/button';
+  import SelectField from './SelectField.svelte';
   import { summary } from '$lib/domain/checklist';
   import { store } from '$lib/state.svelte';
+
+  const options = $derived(
+    store.assessment.checklists.map((list) => {
+      const s = summary(list);
+      return { value: list.id, label: `${list.code ? `${list.code} ` : ''}${list.name}`, hint: `${s.answered}/${s.total}` };
+    }),
+  );
 </script>
 
-<aside class="space-y-3 rounded-xl border bg-card p-3 max-md:max-h-[45vh] max-md:overflow-y-auto md:sticky md:top-4">
+<aside class="space-y-3 rounded-xl border bg-card p-3 md:hidden">
+  <h2 class="sr-only">Kontrol listeleri</h2>
+  {#if options.length}
+    <SelectField label="Kontrol listesi" {options} value={store.checklistId ?? ''} onValueChange={(v) => store.selectChecklist(v)} />
+  {:else}
+    <p class="text-sm text-muted-foreground">Henüz kontrol listesi yok.</p>
+  {/if}
+  <Button variant="outline" class="w-full" onclick={() => store.addBlankChecklist()}><Plus />Boş liste ekle</Button>
+</aside>
+
+<aside class="hidden space-y-3 rounded-xl border bg-card p-3 md:sticky md:top-4 md:block">
   <h2 class="font-semibold">Kontrol listeleri</h2>
   <ul class="space-y-0.5">
     {#each store.assessment.checklists as list (list.id)}

@@ -26,7 +26,9 @@ function complete(): Assessment {
     ...a,
     assessmentDate: "2026-09-01",
     school: { ...a.school, name: "Okul", signatories: [{ title: "Müdür", name: "Ali" }] },
-    locations: [{ id: "l1", name: "Atölye", type: "workshop", building: "", area: "", rows: [row()] }],
+    locations: [
+      { id: "l1", name: "Atölye", type: "workshop", building: "", area: "", rows: [row()] },
+    ],
     checklists: [
       {
         id: "c1",

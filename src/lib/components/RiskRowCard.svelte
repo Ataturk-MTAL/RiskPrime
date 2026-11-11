@@ -1,73 +1,37 @@
 <script lang="ts">
-  import Trash2 from '@lucide/svelte/icons/trash-2';
-  import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
-  import { Textarea } from '$lib/components/ui/textarea';
-  import ConfirmDialog from './ConfirmDialog.svelte';
+  import ChevronRight from '@lucide/svelte/icons/chevron-right';
+  import LevelBadge from './LevelBadge.svelte';
   import SelectField from './SelectField.svelte';
-  import RiskScoreBox from './RiskScoreBox.svelte';
-  import { removeRow, STATUS_LABELS, STATUSES, updateRow } from '$lib/domain/assessment';
+  import { LIKELIHOOD_OPTIONS, parseScore, scoreValue, SEVERITY_OPTIONS } from './score-options';
+  import { updateRow } from '$lib/domain/assessment';
   import { riskLevel } from '$lib/domain/matrix';
-  import type { RiskRow, RowStatus } from '$lib/domain/types';
+  import type { RiskRow } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
 
-  let { row, index, locationId }: { row: RiskRow; index: number; locationId: string } = $props();
+  let { row, index, locationId, onopen }: { row: RiskRow; index: number; locationId: string; onopen: (rowId: string) => void } = $props();
 
-  const STATUS_OPTIONS = STATUSES.map((value) => ({ value, label: STATUS_LABELS[value] }));
   const level = $derived(riskLevel(row.likelihood, row.severity));
   const patch = (changes: Partial<RiskRow>) => store.apply((a) => updateRow(a, locationId, row.id, changes));
-  const text = (field: 'equipment' | 'hazard' | 'affected' | 'existingControls' | 'action' | 'responsible' | 'dueDate') =>
-    (e: Event) => patch({ [field]: (e.currentTarget as HTMLInputElement).value.trim() });
-  const fieldClass = 'flex flex-col items-start gap-1 text-xs text-muted-foreground';
-  const areaClass = 'min-h-9 py-1.5 text-foreground';
 </script>
 
-<article id="row-{row.id}" class="@container rounded-lg border border-l-4 bg-background p-3" style:border-left-color={level?.background}>
-  <div class="mb-2 flex items-center justify-between">
-    <span class="text-xs font-semibold text-muted-foreground">Satır {index}</span>
-    <ConfirmDialog label="Satır {index}: sil" title="Satır silinsin mi?" description="Bu risk satırı kalıcı olarak silinecek." onconfirm={() => store.apply((a) => removeRow(a, locationId, row.id))}>
-      <Trash2 />
-    </ConfirmDialog>
-  </div>
-  <div class="grid gap-3 @md:grid-cols-[minmax(0,1fr)_11rem] @3xl:grid-cols-[minmax(0,1.5fr)_10rem_minmax(0,1fr)_10rem]">
-    <div class="space-y-2">
-      <Label class={fieldClass}>Alet / ekipman grubu
-        <Textarea class="{areaClass} font-semibold" rows={1} value={row.equipment} placeholder="ör. Havya istasyonu" onchange={text('equipment')} />
-      </Label>
-      <Label class={fieldClass}>Tehlike ve risk
-        <Textarea class={areaClass} rows={1} value={row.hazard} placeholder="Ne olabilir? Sonucu?" onchange={text('hazard')} />
-      </Label>
-      <div class="grid gap-2 @lg:grid-cols-2">
-        <Label class={fieldClass}>Etkilenen
-          <Textarea class={areaClass} rows={1} value={row.affected} placeholder="Öğrenci, öğretmen" onchange={text('affected')} />
-        </Label>
-        <Label class={fieldClass}>Mevcut önlem
-          <Textarea class={areaClass} rows={1} value={row.existingControls} onchange={text('existingControls')} />
-        </Label>
-      </div>
+<article id="row-{row.id}" class="rounded-lg border border-l-4 bg-background" style:border-left-color={level?.background}>
+  <button type="button" class="flex min-h-11 w-full items-start gap-2 rounded-t-lg p-3 text-left hover:bg-muted" aria-label="Satır {index} düzenle" onclick={() => onopen(row.id)}>
+    <span class="text-xs font-semibold text-muted-foreground">{index}</span>
+    <span class="min-w-0 flex-1">
+      <span class="line-clamp-1 block text-sm font-semibold">{row.equipment || 'Ekipman girilmedi'}</span>
+      <span class="line-clamp-2 block text-sm text-muted-foreground">{row.hazard || 'Tehlike girilmedi'}</span>
+    </span>
+    <ChevronRight class="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+  </button>
+  <div class="grid grid-cols-[4.5rem_4.5rem_minmax(0,1fr)] items-end gap-2 px-3 pb-3">
+    <div class="space-y-1 text-xs text-muted-foreground">
+      <span aria-hidden="true">O</span>
+      <SelectField label="Satır {index}: olasılık" options={LIKELIHOOD_OPTIONS} value={scoreValue(row.likelihood)} onValueChange={(v) => patch({ likelihood: parseScore(v) })} />
     </div>
-    <RiskScoreBox title="Mevcut risk" likelihood={row.likelihood} severity={row.severity} onchange={patch} />
-    <div class="space-y-2">
-      <Label class={fieldClass}>Düzeltici / önleyici faaliyet
-        <Textarea class={areaClass} rows={1} value={row.action} onchange={text('action')} />
-      </Label>
-      <div class="grid grid-cols-2 gap-2">
-        <Label class="{fieldClass} col-span-2">Sorumlu
-          <Textarea class={areaClass} rows={1} value={row.responsible} onchange={text('responsible')} />
-        </Label>
-        <Label class={fieldClass}>Bitiş
-          <Input class="text-foreground" value={row.dueDate} placeholder="GG.AA.YYYY" onchange={text('dueDate')} />
-        </Label>
-        <Label class={fieldClass}>Durum
-          <SelectField label="Durum" options={STATUS_OPTIONS} value={row.status} onValueChange={(v) => patch({ status: v as RowStatus })} />
-        </Label>
-      </div>
+    <div class="space-y-1 text-xs text-muted-foreground">
+      <span aria-hidden="true">Ş</span>
+      <SelectField label="Satır {index}: şiddet" options={SEVERITY_OPTIONS} value={scoreValue(row.severity)} onValueChange={(v) => patch({ severity: parseScore(v) })} />
     </div>
-    <RiskScoreBox
-      title="Önlem sonrası"
-      likelihood={row.likelihoodAfter}
-      severity={row.severityAfter}
-      onchange={(p) => patch('likelihood' in p ? { likelihoodAfter: p.likelihood } : { severityAfter: p.severity })}
-    />
+    <div class="flex min-h-9 items-center justify-end"><LevelBadge likelihood={row.likelihood} severity={row.severity} showScore /></div>
   </div>
 </article>

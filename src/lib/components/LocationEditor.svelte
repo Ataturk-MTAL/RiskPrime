@@ -13,6 +13,9 @@
   import RiskTable from './RiskTable.svelte';
   import { addRow, LOCATION_TYPES, LOCATION_TYPE_LABELS, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
   import type { LocationType } from '$lib/domain/types';
+  import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
+  import { MediaQuery } from 'svelte/reactivity';
+  import * as Collapsible from '$lib/components/ui/collapsible';
   import { focusFirstField, store } from '$lib/state.svelte';
 
   const TYPE_OPTIONS = LOCATION_TYPES.map((value) => ({ value, label: LOCATION_TYPE_LABELS[value] }));
@@ -20,16 +23,15 @@
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
 
   let openId = $state<string | null>(null);
-  let tableView = $state<HTMLElement>();
+  let metaOpen = $state(false);
+  const isDesktop = new MediaQuery('min-width: 48rem');
+  const typeLabel = $derived(loc ? LOCATION_TYPE_LABELS[loc.type] : '');
 
   function addNewRow(locationId: string) {
     const id = newId('r');
     if (!store.apply((a) => addRow(a, locationId, { id }))) return;
-    // The table view is display:none on narrow containers; then the card view owns editing.
-    if (tableView?.getClientRects().length) {
-      openId = id;
-      focusFirstField('row-sheet-body', 300);
-    } else focusFirstField(`row-${id}`);
+    openId = id;
+    focusFirstField('row-sheet-body', 300);
   }
 </script>
 
@@ -37,6 +39,12 @@
   {#if loc}
     {@const locId = loc.id}
     {#key locId}
+      <Collapsible.Root open={isDesktop.current || metaOpen} onOpenChange={(o) => (metaOpen = o)}>
+      <Collapsible.Trigger class="flex min-h-11 w-full items-center justify-between gap-2 rounded-md border px-3 text-left text-sm md:hidden">
+        <span class="min-w-0 truncate"><b>{loc.name}</b> · {typeLabel}{loc.building ? ` · ${loc.building}` : ''}{loc.area ? ` · ${loc.area}` : ''}</span>
+        <span class="flex shrink-0 items-center gap-1 text-xs text-muted-foreground">Mekân bilgileri<ChevronsUpDown class="size-4" aria-hidden="true" /></span>
+      </Collapsible.Trigger>
+      <Collapsible.Content class="mt-2 md:mt-0">
       <div class="grid items-end gap-2 @lg:grid-cols-2 @3xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
         <Label class="flex flex-col items-start gap-1 @lg:col-span-2 @3xl:col-span-1">Mekân adı
           <Input value={loc.name} onchange={(e) => store.apply((a) => updateLocation(a, locId, { name: value(e) }))} />
@@ -63,17 +71,19 @@
           ><Trash2 />Mekânı sil</ConfirmDialog>
         </div>
       </div>
+      </Collapsible.Content>
+      </Collapsible.Root>
     {/key}
 
     {#if loc.rows.length === 0}
       <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda risk satırı yok. "Satır ekle" ile başlayın ya da "+ Hazır formdan ekle".</p>
     {/if}
-    <div bind:this={tableView} class="hidden @3xl:block">
+    <div class="hidden @3xl:block">
       {#if loc.rows.length}<RiskTable rows={loc.rows} locationId={locId} {openId} onopen={(id) => (openId = id)} />{/if}
     </div>
     <div class="space-y-3 @3xl:hidden">
       {#each loc.rows as row, i (row.id)}
-        <RiskRowCard {row} index={i + 1} locationId={locId} />
+        <RiskRowCard {row} index={i + 1} locationId={locId} onopen={(id) => (openId = id)} />
       {/each}
     </div>
     <RiskRowSheet rows={loc.rows} locationId={locId} bind:openId />

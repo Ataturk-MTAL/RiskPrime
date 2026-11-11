@@ -39,7 +39,9 @@ export function readiness(a: Assessment): Readiness {
       name: l.name,
       count: scored.filter((r) => {
         const key = riskLevel(r.likelihood, r.severity)?.key;
-        return (key === "high" || key === "intolerable") && (blank(r.action) || blank(r.responsible));
+        return (
+          (key === "high" || key === "intolerable") && (blank(r.action) || blank(r.responsible))
+        );
       }).length,
     })),
   );
@@ -67,6 +69,11 @@ export function readiness(a: Assessment): Readiness {
     missingMeta,
     totals,
     hasGaps:
-      unscored.length + missingAction.length + unanswered.length + emptySignatories + missingMeta.length > 0,
+      unscored.length +
+        missingAction.length +
+        unanswered.length +
+        emptySignatories +
+        missingMeta.length >
+      0,
   };
 }

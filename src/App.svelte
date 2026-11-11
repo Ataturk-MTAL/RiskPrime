@@ -41,23 +41,23 @@
   <Tabs.Root class="flex-col" value={store.tab} onValueChange={(v) => (store.tab = v as Tab)}>
     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
       <Tabs.List class="max-w-full overflow-x-auto">
-        <Tabs.Trigger value="risk">Risk tablosu <Badge variant="secondary">{store.assessment.locations.length} mekân · {rowCount} satır</Badge></Tabs.Trigger>
+        <Tabs.Trigger value="risk">Risk tablosu <Badge variant="secondary">{store.assessment.locations.length} mekân<span class="max-sm:hidden"> · {rowCount} satır</span></Badge></Tabs.Trigger>
         <Tabs.Trigger value="checklists">Kontrol listeleri <Badge variant="secondary">{store.assessment.checklists.length}</Badge></Tabs.Trigger>
       </Tabs.List>
       <Button variant="outline" onclick={() => (libraryOpen = true)}>+ Hazır formdan ekle</Button>
     </div>
-    <Tabs.Content value="risk" class="grid items-start gap-4 md:grid-cols-[250px_minmax(0,1fr)]">
+    <Tabs.Content value="risk" class="grid grid-cols-[minmax(0,1fr)] items-start gap-4 md:grid-cols-[250px_minmax(0,1fr)]">
       <LocationSidebar />
       <LocationEditor />
     </Tabs.Content>
-    <Tabs.Content value="checklists" class="grid items-start gap-4 md:grid-cols-[250px_minmax(0,1fr)]">
+    <Tabs.Content value="checklists" class="grid grid-cols-[minmax(0,1fr)] items-start gap-4 md:grid-cols-[250px_minmax(0,1fr)]">
       <ChecklistSidebar />
       <ChecklistEditor />
     </Tabs.Content>
   </Tabs.Root>
 
   <footer class="mt-auto pt-4 text-xs text-muted-foreground">
-    Veriler yalnız bu tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kalıcı kayıt indirilen .json ya da Excel (.xlsx) dosyasıdır; ikisi de "Dosya aç" ile geri yüklenir. PDF derleyicisi ilk kullanımda bir kez indirilir.
+    Veriler yalnız bu tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kalıcı kayıt indirilen .json ya da Excel (.xlsx) dosyasıdır; ikisi de "Dosya aç" ile geri yüklenir. PDF derleyicisi uygulamayla birlikte gelir; internet gerekmez.
   </footer>
 </div>
 
