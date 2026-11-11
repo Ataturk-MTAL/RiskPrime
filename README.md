@@ -6,7 +6,8 @@ Okul mekânlarının (atölye, depo, oda, ıslak hacim) iş sağlığı ve güve
 
 1. `index.html` dosyasını açın (ya da yayınlanmış sayfayı).
 2. Mekânları (bina ve alan etiketiyle) ve risk satırlarını ekleyin, düzenleyin, silin. O ve Ş seçince skor ve renkli düzey görünür.
-3. "Değerlendirmeyi indir" ile `risk-<dönem>.json` dosyasını alın. Kalıcı kayıt bu dosyadır; sonraki sefer "Dosya aç" ile ya da sayfaya sürükleyerek açın.
+3. "PDF indir" tam belgeyi verir. "▾ diğer biçimler" menüsünde: kayıt dosyası (`risk-<dönem>.json`), yalnız kontrol listeleri PDF'i, boş form PDF'i, Excel ve Word. Uygulamada tekrar açılabilen tek biçim `.json`'dur; sonraki sefer "Dosya aç" ile ya da sayfaya sürükleyerek açın.
+4. PDF tarayıcıda Typst (typst.ts) ile üretilir; sayfa bir adresle açılmalıdır (GitHub Pages ya da yerel sunucu). İlk PDF'te derleyici (~28 MB) bir kez indirilir.
 
 ## Gizlilik
 

@@ -27,6 +27,20 @@ button, .dugme {
 button:hover, .dugme:hover { border-color: var(--lacivert); }
 .birincil { background: var(--lacivert); color: #fff; border-color: var(--lacivert); }
 .tehlikeli { color: #b91c1c; }
+button:disabled { opacity: .6; cursor: progress; }
+.indirme { display: flex; gap: 4px; position: relative; }
+.bicimler summary { list-style: none; }
+.bicimler summary::-webkit-details-marker { display: none; }
+.bicimler .menu {
+  position: absolute; right: 0; top: calc(100% + 4px); z-index: 10; width: 300px;
+  display: grid; background: #fff; border: 1px solid var(--cizgi); border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .12); padding: 4px;
+}
+.bicimler .menu button { border: 0; text-align: left; display: flex; flex-direction: column; gap: 1px; }
+.bicimler .menu button:hover { background: var(--gri); }
+.bicimler .menu button:first-child { border-bottom: 1px solid var(--cizgi); border-radius: 6px 6px 0 0; }
+.bicimler .menu small { color: var(--soluk); font-size: 11px; }
+#kirli button { margin-left: 8px; }
 .uyari, .hata { margin: 8px 20px; padding: 8px 12px; border-radius: 6px; white-space: pre-line; }
 .uyari { background: #fff7ed; border-left: 4px solid var(--turuncu); }
 .hata { background: #fef2f2; border-left: 4px solid #b91c1c; }

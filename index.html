@@ -13,11 +13,25 @@
       <button id="yeni-baslangic" type="button">Yeni (okul verisiyle)</button>
       <button id="yeni-bos" type="button">Yeni (boş)</button>
       <label class="dugme">Dosya aç<input id="dosya-ac" type="file" accept=".json,application/json" hidden></label>
-      <button id="indir" type="button" class="birincil">Değerlendirmeyi indir (.json)</button>
+      <div class="indirme">
+        <button id="pdf-indir" type="button" class="birincil">PDF indir</button>
+        <details id="bicimler" class="bicimler">
+          <summary class="dugme">▾ diğer biçimler</summary>
+          <div class="menu">
+            <button type="button" data-bicim="json"><b>Kayıt dosyası (.json)</b><small>Uygulamada tekrar açılabilen tek biçim</small></button>
+            <button type="button" data-bicim="kontrol">PDF: yalnız kontrol listeleri</button>
+            <button type="button" data-bicim="bos">PDF: boş form<small>Puan ve cevap kutuları boş, elle doldurmak için</small></button>
+            <button type="button" data-bicim="xlsx">Excel (.xlsx)<small>Yalnız çıktı, uygulamada açılmaz</small></button>
+            <button type="button" data-bicim="docx">Word (.docx)<small>Yalnız çıktı, uygulamada açılmaz</small></button>
+          </div>
+        </details>
+      </div>
     </nav>
   </header>
 
-  <p id="kirli" class="uyari" hidden>İndirilmemiş değişiklik var. Kalıcı kayıt için "Değerlendirmeyi indir" düğmesini kullanın.</p>
+  <p id="kirli" class="uyari" hidden>Kayıt dosyası indirilmemiş değişiklik var. PDF, Excel ve Word uygulamada tekrar açılamaz; kalıcı kayıt .json dosyasıdır.
+    <button id="json-indir" type="button">Kayıt dosyasını indir (.json)</button></p>
+  <p id="calisiyor" class="uyari" hidden></p>
   <p id="depo-kapali" class="uyari" hidden>Tarayıcı hafızası kullanılamıyor; sayfa kapanınca değişiklikler kaybolur. Dosyayı indirin.</p>
   <p id="mesaj" class="hata" role="alert" hidden></p>
 
@@ -61,12 +75,16 @@
   </main>
 
   <footer>
-    Veriler yalnız bu tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kalıcı kayıt indirilen .json dosyasıdır.
+    Veriler yalnız bu tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kalıcı kayıt indirilen .json dosyasıdır. PDF derleyicisi ilk kullanımda bir kez indirilir.
   </footer>
 
   <script src="lib/matris.js"></script>
   <script src="lib/model.js"></script>
   <script src="lib/dosya.js"></script>
+  <script src="lib/cikti.js"></script>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="vendor/docx.umd.js"></script>
+  <script src="lib/disari.js"></script>
   <script src="veri/baslangic.js"></script>
   <script src="app.js"></script>
 </body>

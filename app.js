@@ -245,15 +245,40 @@
     if (kayipOnayi()) uygula(sonuc.degerlendirme, { kirli: false });
   }
 
-  function indir() {
-    const url = URL.createObjectURL(new Blob([dosya.yaz(durum.d)], { type: 'application/json' }));
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = dosya.dosyaAdi(durum.d);
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  function jsonIndir() {
+    window.RiskPrime.disari.indirBlob(new Blob([dosya.yaz(durum.d)], { type: 'application/json' }), dosya.dosyaAdi(durum.d));
     durum.kirli = false;
     bayraklariCiz();
+  }
+
+  const CIKTI_ISLERI = {
+    tam: (d) => window.RiskPrime.disari.pdfIndir(d, 'tam'),
+    kontrol: (d) => window.RiskPrime.disari.pdfIndir(d, 'kontrol'),
+    bos: (d) => window.RiskPrime.disari.pdfIndir(d, 'bos'),
+    xlsx: (d) => window.RiskPrime.disari.excelIndir(d),
+    docx: (d) => window.RiskPrime.disari.wordIndir(d),
+  };
+
+  /** PDF/Excel/Word üretir; JSON indirilmemişse uyarı (#kirli) zaten görünür kalır. */
+  async function ciktiAl(bicim) {
+    if (bicim === 'json') return jsonIndir();
+    const durumYazisi = $('#calisiyor');
+    const dugmeler = document.querySelectorAll('#pdf-indir, #bicimler button');
+    durumYazisi.textContent = bicim === 'xlsx' || bicim === 'docx'
+      ? 'Dosya hazırlanıyor…'
+      : 'PDF hazırlanıyor… (ilk seferde derleyici indirilir, biraz sürebilir)';
+    durumYazisi.hidden = false;
+    dugmeler.forEach((b) => { b.disabled = true; });
+    mesaj('');
+    try {
+      await CIKTI_ISLERI[bicim](durum.d);
+    } catch (hata) {
+      mesaj(`Çıktı alınamadı: ${hata.message}`);
+    } finally {
+      durumYazisi.hidden = true;
+      dugmeler.forEach((b) => { b.disabled = false; });
+    }
+    return undefined;
   }
 
   // ─── Olaylar ────────────────────────────────────────────
@@ -343,7 +368,17 @@
   }
 
   function dosyaOlaylari() {
-    $('#indir').addEventListener('click', indir);
+    $('#pdf-indir').addEventListener('click', () => ciktiAl('tam'));
+    $('#json-indir').addEventListener('click', jsonIndir);
+    $('#bicimler').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-bicim]');
+      if (!b) return;
+      $('#bicimler').open = false;
+      ciktiAl(b.dataset.bicim);
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#bicimler')) $('#bicimler').open = false;
+    });
     $('#yeni-baslangic').addEventListener('click', () => yeniAc(() => kopya(window.RiskPrime.baslangic)));
     $('#yeni-bos').addEventListener('click', () => yeniAc(() => model.bosDegerlendirme('')));
     $('#dosya-ac').addEventListener('change', (e) => {
