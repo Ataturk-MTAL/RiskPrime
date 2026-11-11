@@ -7,7 +7,7 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
-  import NativeSelect from './NativeSelect.svelte';
+  import SelectField from './SelectField.svelte';
   import { addSignatory, removeSignatory, updateMeta, updateSchool, updateSignatory } from '$lib/domain/assessment';
   import type { Grouping } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
@@ -50,7 +50,7 @@
         <Input value={a.school.scope} placeholder="ör. Elektrik-Elektronik Teknolojisi Alanı" onchange={(e) => store.apply((x) => updateSchool(x, { scope: value(e) }))} />
       </Label>
       <Label class="flex flex-col items-start gap-1">Gruplama
-        <NativeSelect options={GROUPING_OPTIONS} value={a.school.grouping} onchange={(e) => store.apply((x) => updateSchool(x, { grouping: e.currentTarget.value as Grouping }))} />
+        <SelectField label="Gruplama" options={GROUPING_OPTIONS} value={a.school.grouping} onValueChange={(v) => store.apply((x) => updateSchool(x, { grouping: v as Grouping }))} />
       </Label>
       <Label class="flex flex-col items-start gap-1">Dönem
         <Input value={a.period} placeholder="2026-2027" onchange={(e) => store.apply((x) => updateMeta(x, { period: value(e) }))} />

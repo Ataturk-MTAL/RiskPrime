@@ -3,7 +3,7 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Badge } from '$lib/components/ui/badge';
-  import NativeSelect from './NativeSelect.svelte';
+  import SelectField from './SelectField.svelte';
   import { addLocation, grouped, labels, LOCATION_TYPES, LOCATION_TYPE_LABELS, newId } from '$lib/domain/assessment';
   import type { LocationType } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
@@ -52,7 +52,7 @@
   <form class="space-y-2 border-t pt-3" onsubmit={submit}>
     <h3 class="text-sm font-semibold">Yeni mekân</h3>
     <Input bind:value={name} required placeholder="Mekân adı, ör. ELE16" aria-label="Mekân adı" />
-    <NativeSelect options={TYPE_OPTIONS} value={type} aria-label="Mekân türü" onchange={(e) => (type = e.currentTarget.value as LocationType)} />
+    <SelectField label="Mekân türü" options={TYPE_OPTIONS} value={type} onValueChange={(v) => (type = v as LocationType)} />
     <Input bind:value={building} list="building-list" placeholder="Bina, ör. C Blok" aria-label="Bina" />
     <Input bind:value={area} list="area-list" placeholder="Alan" aria-label="Alan" />
     <Button type="submit" variant="outline" class="w-full"><Plus />Mekân ekle</Button>

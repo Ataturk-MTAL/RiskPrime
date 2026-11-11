@@ -3,8 +3,8 @@
   import { Button } from '$lib/components/ui/button';
   import * as Table from '$lib/components/ui/table';
   import LevelBadge from './LevelBadge.svelte';
-  import NativeSelect from './NativeSelect.svelte';
-  import { readScore, SCORE_OPTIONS } from './score-options';
+  import SelectField from './SelectField.svelte';
+  import { LIKELIHOOD_OPTIONS, parseScore, scoreValue, SEVERITY_OPTIONS } from './score-options';
   import { STATUS_LABELS, updateRow } from '$lib/domain/assessment';
   import { riskLevel } from '$lib/domain/matrix';
   import type { RiskRow } from '$lib/domain/types';
@@ -43,10 +43,10 @@
           <Table.Cell class="font-medium"><div class={clamp} title={row.equipment}>{row.equipment}</div></Table.Cell>
           <Table.Cell><div class={clamp} title={row.hazard}>{row.hazard}</div></Table.Cell>
           <Table.Cell class="px-1">
-            <NativeSelect class="px-1" aria-label="Satır {i + 1}: olasılık" options={SCORE_OPTIONS} value={String(row.likelihood ?? '')} onchange={(e) => patch(row.id, { likelihood: readScore(e) })} />
+            <SelectField size="sm" class="px-1.5" label="Satır {i + 1}: olasılık" options={LIKELIHOOD_OPTIONS} value={scoreValue(row.likelihood)} onValueChange={(v) => patch(row.id, { likelihood: parseScore(v) })} />
           </Table.Cell>
           <Table.Cell class="px-1">
-            <NativeSelect class="px-1" aria-label="Satır {i + 1}: şiddet" options={SCORE_OPTIONS} value={String(row.severity ?? '')} onchange={(e) => patch(row.id, { severity: readScore(e) })} />
+            <SelectField size="sm" class="px-1.5" label="Satır {i + 1}: şiddet" options={SEVERITY_OPTIONS} value={scoreValue(row.severity)} onValueChange={(v) => patch(row.id, { severity: parseScore(v) })} />
           </Table.Cell>
           <Table.Cell><LevelBadge likelihood={row.likelihood} severity={row.severity} showScore /></Table.Cell>
           <Table.Cell><div class={clamp} title={row.action}>{row.action}</div></Table.Cell>

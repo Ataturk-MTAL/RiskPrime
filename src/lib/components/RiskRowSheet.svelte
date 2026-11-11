@@ -7,7 +7,7 @@
   import * as Sheet from '$lib/components/ui/sheet';
   import { Textarea } from '$lib/components/ui/textarea';
   import ConfirmDialog from './ConfirmDialog.svelte';
-  import NativeSelect from './NativeSelect.svelte';
+  import SelectField from './SelectField.svelte';
   import RiskScoreBox from './RiskScoreBox.svelte';
   import { removeRow, STATUS_LABELS, STATUSES, updateRow } from '$lib/domain/assessment';
   import type { RiskRow, RowStatus } from '$lib/domain/types';
@@ -63,7 +63,7 @@
               <Input class="text-foreground" value={row.dueDate} placeholder="GG.AA.YYYY" onchange={text('dueDate')} />
             </Label>
             <Label class={fieldClass}>Durum
-              <NativeSelect options={STATUS_OPTIONS} value={row.status} onchange={(e) => patch({ status: e.currentTarget.value as RowStatus })} />
+              <SelectField label="Durum" options={STATUS_OPTIONS} value={row.status} onValueChange={(v) => patch({ status: v as RowStatus })} />
             </Label>
           </div>
           <RiskScoreBox

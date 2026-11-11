@@ -6,7 +6,7 @@
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import ConfirmDialog from './ConfirmDialog.svelte';
-  import NativeSelect from './NativeSelect.svelte';
+  import SelectField from './SelectField.svelte';
   import RiskRowCard from './RiskRowCard.svelte';
   import RiskRowSheet from './RiskRowSheet.svelte';
   import RiskTable from './RiskTable.svelte';
@@ -41,7 +41,7 @@
           <Input value={loc.name} onchange={(e) => store.apply((a) => updateLocation(a, locId, { name: value(e) }))} />
         </Label>
         <Label class="flex flex-col items-start gap-1">Tür
-          <NativeSelect options={TYPE_OPTIONS} value={loc.type} onchange={(e) => store.apply((a) => updateLocation(a, locId, { type: e.currentTarget.value as LocationType }))} />
+          <SelectField label="Tür" options={TYPE_OPTIONS} value={loc.type} onValueChange={(v) => store.apply((a) => updateLocation(a, locId, { type: v as LocationType }))} />
         </Label>
         <Label class="flex flex-col items-start gap-1">Bina
           <Input list="building-list" value={loc.building} placeholder="ör. C Blok" onchange={(e) => store.apply((a) => updateLocation(a, locId, { building: value(e) }))} />

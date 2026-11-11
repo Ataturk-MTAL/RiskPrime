@@ -1,7 +1,7 @@
 <script lang="ts">
   import LevelBadge from './LevelBadge.svelte';
-  import NativeSelect from './NativeSelect.svelte';
-  import { readScore, SCORE_OPTIONS } from './score-options';
+  import SelectField from './SelectField.svelte';
+  import { LIKELIHOOD_OPTIONS, parseScore, scoreValue, SEVERITY_OPTIONS } from './score-options';
   import { riskScore } from '$lib/domain/matrix';
   import type { Score } from '$lib/domain/types';
 
@@ -22,10 +22,10 @@
   <span class="text-xs font-semibold text-muted-foreground">{title}</span>
   <div class="grid grid-cols-2 gap-2">
     <label class="flex items-center gap-1.5 text-sm font-medium">O
-      <NativeSelect aria-label="{title}: olasılık" options={SCORE_OPTIONS} value={String(likelihood ?? '')} onchange={(e) => onchange({ likelihood: readScore(e) })} />
+      <SelectField label="{title}: olasılık" options={LIKELIHOOD_OPTIONS} value={scoreValue(likelihood)} onValueChange={(v) => onchange({ likelihood: parseScore(v) })} />
     </label>
     <label class="flex items-center gap-1.5 text-sm font-medium">Ş
-      <NativeSelect aria-label="{title}: şiddet" options={SCORE_OPTIONS} value={String(severity ?? '')} onchange={(e) => onchange({ severity: readScore(e) })} />
+      <SelectField label="{title}: şiddet" options={SEVERITY_OPTIONS} value={scoreValue(severity)} onValueChange={(v) => onchange({ severity: parseScore(v) })} />
     </label>
   </div>
   <div class="flex items-center gap-2">
