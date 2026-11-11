@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RiskPrime — İSG Risk Değerlendirmesi</title>
+  <link rel="stylesheet" href="stil.css">
+</head>
+<body>
+  <header class="ust">
+    <h1>RiskPrime <small>İSG risk değerlendirmesi</small></h1>
+    <nav class="islemler">
+      <button id="yeni-baslangic" type="button">Yeni (okul verisiyle)</button>
+      <button id="yeni-bos" type="button">Yeni (boş)</button>
+      <label class="dugme">Dosya aç<input id="dosya-ac" type="file" accept=".json,application/json" hidden></label>
+      <button id="indir" type="button" class="birincil">Değerlendirmeyi indir (.json)</button>
+    </nav>
+  </header>
+
+  <p id="kirli" class="uyari" hidden>İndirilmemiş değişiklik var. Kalıcı kayıt için "Değerlendirmeyi indir" düğmesini kullanın.</p>
+  <p id="depo-kapali" class="uyari" hidden>Tarayıcı hafızası kullanılamıyor; sayfa kapanınca değişiklikler kaybolur. Dosyayı indirin.</p>
+  <p id="mesaj" class="hata" role="alert" hidden></p>
+
+  <section id="okul" class="kart">
+    <h2>Okul ve kapsam</h2>
+    <div class="izgara">
+      <label>Okul <input data-okul="okul"></label>
+      <label>Kapsam (kapak başlığı) <input data-okul="kapsam" placeholder="ör. Elektrik-Elektronik Teknolojisi Alanı"></label>
+      <label>Gruplama
+        <select data-okul="gruplama">
+          <option value="alan">Alana göre</option>
+          <option value="bina">Binaya göre</option>
+          <option value="yok">Gruplama yok</option>
+        </select>
+      </label>
+      <label>Dönem <input data-ust="donem" placeholder="2026-2027"></label>
+      <label>Değerlendirme tarihi <input data-ust="degerlendirmeTarihi" placeholder="GG.AA.YYYY"></label>
+      <label>Geçerlilik tarihi <input data-ust="gecerlilikTarihi" placeholder="GG.AA.YYYY"></label>
+    </div>
+    <h3>İmzacılar</h3>
+    <div id="imzacilar"></div>
+    <button id="imzaci-ekle" type="button">İmzacı ekle</button>
+  </section>
+
+  <main class="duzen">
+    <aside class="kart yan">
+      <h2>Mekânlar</h2>
+      <div id="mekan-listesi"></div>
+      <form id="yeni-mekan" class="yeni-mekan">
+        <h3>Yeni mekân</h3>
+        <input name="ad" placeholder="Mekân adı, ör. ELE16" required aria-label="Mekân adı">
+        <select name="tur" aria-label="Mekân türü"></select>
+        <input name="bina" list="bina-listesi" placeholder="Bina, ör. C Blok" aria-label="Bina">
+        <input name="alan" list="alan-listesi" placeholder="Alan" aria-label="Alan">
+        <button type="submit">Mekân ekle</button>
+      </form>
+      <datalist id="bina-listesi"></datalist>
+      <datalist id="alan-listesi"></datalist>
+    </aside>
+    <section id="satirlar" class="kart ana"></section>
+  </main>
+
+  <footer>
+    Veriler yalnız bu tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kalıcı kayıt indirilen .json dosyasıdır.
+  </footer>
+
+  <script src="lib/matris.js"></script>
+  <script src="lib/model.js"></script>
+  <script src="lib/dosya.js"></script>
+  <script src="veri/baslangic.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
