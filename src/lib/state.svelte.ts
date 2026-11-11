@@ -4,6 +4,7 @@ import type { Assessment, ChecklistTemplate, LocationTemplate } from "$lib/domai
 import { addLocationFromTemplate, emptyAssessment } from "$lib/domain/assessment";
 import { addChecklist as addChecklistFromTemplate } from "$lib/domain/checklist";
 import { fileName, parse, serialize } from "$lib/domain/file";
+import { isBackup, restoreBackup } from "$lib/domain/excel-backup";
 import { conflictingCodes, read as readExcel } from "$lib/domain/excel-import";
 import { downloadBlob } from "$lib/export/download";
 // Heavy export libraries (xlsx, docx, typst.ts loader) load on first use, not on page load.
@@ -198,6 +199,15 @@ class Store {
     });
   }
 
+  /** Opens an Excel backup like a .json file: confirm, then replace everything. */
+  #restoreExcel(fileName: string, sheets: Record<string, unknown[][]>) {
+    const result = restoreBackup(sheets);
+    if ("errors" in result) return this.fail(errorList(`"" geri yüklenemedi:`, result.errors));
+    if (!this.#confirmDiscard()) return;
+    this.#load(result.assessment);
+    toast.info(`Kayıt dosyası geri yüklendi: `);
+  }
+
   async #importExcel(file: File) {
     let sheets: Record<string, unknown[][]>;
     try {
@@ -207,6 +217,7 @@ class Store {
         `"${file.name}" okunamadı: ${error instanceof Error ? error.message : ""}`,
       ]);
     }
+    if (isBackup(sheets)) return this.#restoreExcel(file.name, sheets);
     const codes = conflictingCodes(this.assessment, sheets);
     const choice = codes.length ? await this.askConflict(codes) : "append";
     if (!choice) return;
@@ -247,6 +258,7 @@ class Store {
     this.clearErrors();
     try {
       await jobs[kind]();
+      if (kind === "xlsx") this.dirty = false; // the Excel file is a full backup, like .json
     } catch (error) {
       this.fail([`Çıktı alınamadı: ${error instanceof Error ? error.message : ""}`]);
     } finally {

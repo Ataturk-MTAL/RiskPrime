@@ -10,7 +10,7 @@ Okul mekânlarının (atölye, depo, oda, ıslak hacim) iş sağlığı ve güve
    - "Kontrol listeleri" sekmesi: Evet / Hayır / U-D işaretleyin, açıklama yazın. MEB listesinin hazır metni kilitlidir; madde eklenip çıkarılabilir.
    - Excel üç sayfadır: "Okul Bilgileri" (okul, dönem, tarihler, gruplama, imzacılar), "Kontrol Listesi", "Risk Satırları". Menüdeki "Excel şablonu: MEB KL-01–KL-43" dosyasında MEB kontrol listelerinin tamamı hazır; okul sayfasını doldurup "Dosya aç" ile yükleyin.
    - Kendi listeniz ya da risk satırlarınız için "diğer biçimler → Excel içe alma şablonu"nu doldurup "Dosya aç" ile yükleyin.
-3. "PDF indir" tam belgeyi verir. "▾ diğer biçimler" menüsünde: kayıt dosyası (`risk-<dönem>.json`), yalnız kontrol listeleri PDF'i, boş form PDF'i, Excel ve Word. Uygulamada tekrar açılabilen tek biçim `.json`'dur; sonraki sefer "Dosya aç" ile ya da sayfaya sürükleyerek açın.
+3. "PDF indir" tam belgeyi verir. "▾ diğer biçimler" menüsünde: kayıt dosyası (`risk-<dönem>.json`), yalnız kontrol listeleri PDF'i, boş form PDF'i, Excel ve Word. Kayıt olarak iki biçim tekrar açılabilir: `.json` ve Excel (`.xlsx`); ikisi de çalışmayı eksiksiz geri yükler (Excel, sayfa ve sütun adları değiştirilmeden Excel'de de düzenlenebilir). Sonraki sefer "Dosya aç" ile ya da sayfaya sürükleyerek açın; açılan kayıt mevcut çalışmanın yerine geçer. PDF ve Word yalnız çıktıdır.
 4. PDF tarayıcıda Typst (typst.ts) ile üretilir; sayfa bir adresle açılmalıdır (GitHub Pages ya da yerel sunucu). İlk PDF'te derleyici (~28 MB) bir kez indirilir.
 
 ## Gizlilik

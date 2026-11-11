@@ -15,14 +15,14 @@ export const SHEET_CHECKLIST = "Kontrol Listesi";
 export const SHEET_RISK = "Risk Satırları";
 export { SHEET_SCHOOL };
 
-type ColumnDef = readonly [key: string, header: string];
+export type ColumnDef = readonly [key: string, header: string];
 const CHECKLIST_COLUMNS: ColumnDef[] = [
   ["code", "Liste Kodu"],
   ["name", "Liste Adı"],
   ["no", "Madde No"],
   ["text", "Madde"],
 ];
-const RISK_COLUMNS: ColumnDef[] = [
+export const RISK_COLUMNS: ColumnDef[] = [
   ["location", "Mekân"],
   ["type", "Mekân Türü"],
   ["building", "Bina"],
@@ -38,20 +38,20 @@ const RISK_COLUMNS: ColumnDef[] = [
 ];
 const EXAMPLE = /^ÖRNEK/i;
 
-type Sheets = Record<string, unknown[][]>;
-type Cells = Record<string, string>;
-type NumberedRow = { rowNo: number; cells: Cells };
+export type Sheets = Record<string, unknown[][]>;
+export type Cells = Record<string, string>;
+export type NumberedRow = { rowNo: number; cells: Cells };
 
-const norm = (x: unknown) =>
+export const norm = (x: unknown) =>
   String(x)
     .toLocaleLowerCase("tr")
     .replace(/\s*\/\s*/g, "/")
     .replace(/\s+/g, " ")
     .trim();
-const cell = (x: unknown) => (x === null || x === undefined ? "" : String(x).trim());
+export const cell = (x: unknown) => (x === null || x === undefined ? "" : String(x).trim());
 
 // Turkish label or code -> type ("Ofis / oda" and "ofis" both match).
-const TYPE_LOOKUP = new Map<string, LocationType>(
+export const TYPE_LOOKUP = new Map<string, LocationType>(
   (Object.entries(LOCATION_TYPE_LABELS) as [LocationType, string][]).flatMap(([code, label]) => [
     [norm(code), code],
     [norm(label), code],
@@ -92,7 +92,7 @@ export function template(): Record<string, (string | number)[][]> {
 }
 
 /** Column positions from the header row, or an error list when headers are missing. */
-function columns(
+export function columns(
   header: unknown[] | undefined,
   defs: ColumnDef[],
   sheet: string,
@@ -105,7 +105,7 @@ function columns(
 }
 
 /** Data rows; blank rows and rows whose first key starts with "ÖRNEK" are skipped. */
-function dataRows(
+export function dataRows(
   aoa: unknown[][],
   positions: Record<string, number>,
   firstKey: string,
@@ -121,7 +121,7 @@ function dataRows(
     .filter(({ cells }) => Object.values(cells).some(Boolean) && !EXAMPLE.test(cells[firstKey]));
 }
 
-function score(text: string, label: string, errors: string[]): number | null {
+export function score(text: string, label: string, errors: string[]): number | null {
   if (text === "") return null;
   const n = Number(text);
   if (!Number.isInteger(n) || n < 1 || n > 5)
@@ -185,7 +185,7 @@ function readRisks(aoa: unknown[][], errors: string[]): ParsedRisk[] {
   });
 }
 
-function findSheet(sheets: Sheets, name: string): unknown[][] | null {
+export function findSheet(sheets: Sheets, name: string): unknown[][] | null {
   const key = Object.keys(sheets).find((k) => norm(k) === norm(name));
   return key ? sheets[key] : null;
 }

@@ -56,7 +56,7 @@
   </Tabs.Root>
 
   <footer class="mt-auto pt-4 text-xs text-muted-foreground">
-    Veriler yalnız bu tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kalıcı kayıt indirilen .json dosyasıdır. PDF derleyicisi ilk kullanımda bir kez indirilir.
+    Veriler yalnız bu tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kalıcı kayıt indirilen .json ya da Excel (.xlsx) dosyasıdır; ikisi de "Dosya aç" ile geri yüklenir. PDF derleyicisi ilk kullanımda bir kez indirilir.
   </footer>
 </div>
 

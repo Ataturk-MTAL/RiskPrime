@@ -1,12 +1,13 @@
-// Excel export, import template and workbook reading (SheetJS).
+// Excel export (full backup), import template and workbook reading (SheetJS).
 import * as XLSX from "xlsx";
+import { backupSheets } from "../domain/excel-backup";
 import { template } from "../domain/excel-import";
-import { checklistRows, outputName, riskRows } from "../domain/export-data";
-import { SHEET_SCHOOL, schoolSheet } from "../domain/school-sheet";
+import { outputName } from "../domain/export-data";
 import type { Assessment } from "../domain/types";
-import { CHECKLIST_COLUMNS, RISK_COLUMNS, toTable } from "./columns";
 
 const TEMPLATE_FILE = "riskprime-ice-alma-sablonu.xlsx";
+const MIN_COLUMN_WIDTH = 10;
+const MAX_COLUMN_WIDTH = 60;
 
 /** Reads a workbook as {sheetName: array of arrays} (input of excel-import read()). */
 export async function readWorkbook(file: File): Promise<Record<string, unknown[][]>> {
@@ -29,12 +30,22 @@ export function downloadImportTemplate(): void {
   XLSX.writeFile(book, TEMPLATE_FILE);
 }
 
+/** Column widths from the longest cell of each column, within sane limits. */
+function columnWidths(rows: (string | number)[][]): { wch: number }[] {
+  const columnCount = Math.max(...rows.map((r) => r.length));
+  return Array.from({ length: columnCount }, (_, i) => {
+    const longest = Math.max(...rows.map((r) => String(r[i] ?? "").length));
+    return { wch: Math.min(MAX_COLUMN_WIDTH, Math.max(MIN_COLUMN_WIDTH, longest + 2)) };
+  });
+}
+
+/** Full backup workbook: "Dosya aç" restores it (see domain/excel-backup). */
 export function downloadExcel(a: Assessment): void {
   const book = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(book, XLSX.utils.aoa_to_sheet(schoolSheet(a)), SHEET_SCHOOL);
-  const risks = XLSX.utils.aoa_to_sheet(toTable(riskRows(a), RISK_COLUMNS));
-  const checklists = XLSX.utils.aoa_to_sheet(toTable(checklistRows(a), CHECKLIST_COLUMNS));
-  XLSX.utils.book_append_sheet(book, risks, "Risk Tablosu");
-  XLSX.utils.book_append_sheet(book, checklists, "Kontrol Listeleri");
+  for (const [name, rows] of Object.entries(backupSheets(a))) {
+    const sheet = XLSX.utils.aoa_to_sheet(rows);
+    sheet["!cols"] = columnWidths(rows);
+    XLSX.utils.book_append_sheet(book, sheet, name);
+  }
   XLSX.writeFile(book, outputName(a, "xlsx"));
 }

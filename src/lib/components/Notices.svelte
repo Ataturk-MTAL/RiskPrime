@@ -30,7 +30,7 @@
     <Alert.Root class="border-amber-400 bg-amber-50 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100">
       <Info />
       <Alert.Description class="flex flex-wrap items-center gap-2 text-inherit">
-        <span>Kayıt dosyası indirilmemiş değişiklik var. PDF, Excel ve Word uygulamada tekrar açılamaz; kalıcı kayıt .json dosyasıdır.</span>
+        <span>Çalışma henüz JSON ya da Excel olarak kaydedilmedi. PDF ve Word uygulamada tekrar açılamaz.</span>
         <Button size="sm" variant="outline" onclick={() => store.exportAs('json')}>Kayıt dosyasını indir (.json)</Button>
       </Alert.Description>
     </Alert.Root>

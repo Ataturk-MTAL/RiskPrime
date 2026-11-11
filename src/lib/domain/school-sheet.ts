@@ -80,8 +80,13 @@ function readInfoRow(
   }
 }
 
-/** Reads the sheet; empty values leave the current value unchanged. Errors carry row numbers. */
-export function readSchoolSheet(aoa: unknown[][], errors: string[]): SchoolPatch {
+/** Reads the sheet; empty values leave the current value unchanged. Errors carry row numbers.
+ * keepEmptySignatories (backup restore) keeps every signatory row, even without names. */
+export function readSchoolSheet(
+  aoa: unknown[][],
+  errors: string[],
+  keepEmptySignatories = false,
+): SchoolPatch {
   const patch: SchoolPatch = { school: {}, meta: {}, signatories: null };
   const signatories: Signatory[] = [];
   let inSignatories = false;
@@ -100,7 +105,7 @@ export function readSchoolSheet(aoa: unknown[][], errors: string[]): SchoolPatch
     readInfoRow(patch, first, second, (m) => errors.push(`${SHEET_SCHOOL}, satır ${i + 1}: ${m}`));
   });
   // A list of titles without any names is an unfilled template: keep the current signatories.
-  if (signatories.some((s) => s.name)) patch.signatories = signatories;
+  if (keepEmptySignatories || signatories.some((s) => s.name)) patch.signatories = signatories;
   return patch;
 }
 

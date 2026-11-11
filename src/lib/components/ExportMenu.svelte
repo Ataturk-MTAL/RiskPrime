@@ -5,12 +5,12 @@
   import { Button, buttonVariants } from '$lib/components/ui/button';
   import { store, type ExportKind } from '$lib/state.svelte';
 
-  // Outputs only; Excel templates live in the "Dosya aç" menu (AppHeader).
+  // JSON and Excel are restorable backups; Excel templates live in the "Dosya aç" menu (AppHeader).
   const ITEMS: { kind: ExportKind; label: string; hint?: string }[] = [
-    { kind: 'json', label: 'Kayıt dosyası (.json)', hint: 'Uygulamada tekrar açılabilen tek biçim' },
+    { kind: 'json', label: 'Kayıt dosyası (.json)', hint: 'Kayıt: uygulamada tekrar açılır' },
     { kind: 'pdf-checklists', label: 'PDF: yalnız kontrol listeleri' },
     { kind: 'pdf-blank', label: 'PDF: boş form', hint: 'Puan ve cevap kutuları boş, elle doldurmak için' },
-    { kind: 'xlsx', label: 'Excel (.xlsx)', hint: 'Okul bilgileri, risk tablosu, kontrol listeleri' },
+    { kind: 'xlsx', label: 'Excel (.xlsx)', hint: "Kayıt: tekrar açılabilir, Excel'de düzenlenebilir" },
     { kind: 'docx', label: 'Word (.docx)', hint: 'Yalnız çıktı, uygulamada açılmaz' },
   ];
   const busy = $derived(store.busy !== '');
