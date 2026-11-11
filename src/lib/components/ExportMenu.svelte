@@ -15,6 +15,21 @@
     { kind: 'docx', label: 'Word (.docx)', hint: 'Yalnız çıktı, uygulamada açılmaz' },
   ];
   const busy = $derived(store.busy !== '');
+
+  // The shared store has no per-location export kind, so this one drives the PDF module itself.
+  async function exportLocationPdf() {
+    const loc = store.location;
+    if (!loc) return;
+    store.busy = 'PDF hazırlanıyor… (ilk seferde derleyici indirilir, biraz sürebilir)';
+    store.clearErrors();
+    try {
+      await (await import('$lib/export/pdf')).downloadPdf(store.assessment, 'full', loc.id);
+    } catch (error) {
+      store.fail([`Çıktı alınamadı: ${error instanceof Error ? error.message : ''}`]);
+    } finally {
+      store.busy = '';
+    }
+  }
 </script>
 
 <div class="flex">
@@ -32,6 +47,10 @@
           {#if item.hint}<span class="text-xs text-muted-foreground">{item.hint}</span>{/if}
         </DropdownMenu.Item>
       {/each}
+      <DropdownMenu.Item class="flex-col items-start gap-0" disabled={!store.location} onSelect={exportLocationPdf}>
+        <span>PDF: yalnız bu mekân</span>
+        <span class="text-xs text-muted-foreground">Kapak, bu mekânın risk tablosu ve imzalar; kontrol listeleri yok</span>
+      </DropdownMenu.Item>
     </DropdownMenu.Content>
   </DropdownMenu.Root>
 </div>

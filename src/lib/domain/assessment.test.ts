@@ -139,3 +139,73 @@ describe("assessment", () => {
     expect(a.locations[0].rows[0].id).toBeTruthy();
   });
 });
+
+describe("duplicate", () => {
+  test("duplicateRow inserts a copy with a fresh id right after the original", () => {
+    let a = sample();
+    a = m.addRow(a, "a-1", { id: "r-2", hazard: "Yangın" });
+    const next = m.duplicateRow(a, "a-1", "r-1", "r-copy");
+    expect(next.locations[0].rows.map((r) => r.id)).toEqual(["r-1", "r-copy", "r-2"]);
+    expect(next.locations[0].rows[1]).toEqual({ ...a.locations[0].rows[0], id: "r-copy" });
+    expect(a.locations[0].rows).toHaveLength(2);
+  });
+
+  test("duplicateRow generates a new id when none is given and rejects unknown rows", () => {
+    const next = m.duplicateRow(sample(), "a-1", "r-1");
+    expect(next.locations[0].rows[1].id).not.toBe("r-1");
+    expect(() => m.duplicateRow(sample(), "a-1", "nope")).toThrow();
+  });
+
+  test("duplicateLocation copies rows under new ids, adds (kopya) and inserts after the original", () => {
+    const a = sample();
+    const next = m.duplicateLocation(a, "a-1", "a-copy");
+    expect(next.locations.map((l) => l.id)).toEqual(["a-1", "a-copy", "a-2"]);
+    const copy = next.locations[1];
+    expect(copy.name).toBe("ELE1 (kopya)");
+    expect(copy.rows).toHaveLength(1);
+    expect(copy.rows[0].id).not.toBe("r-1");
+    expect(copy.rows[0].hazard).toBe("Çarpma");
+    expect(a.locations).toHaveLength(2);
+    expect(() => m.duplicateLocation(a, "nope")).toThrow();
+  });
+});
+
+describe("isOverdue", () => {
+  const today = new Date(2026, 8, 15); // 15.09.2026
+  const row = (over: object) => ({ ...m.emptyRow("r"), ...over });
+
+  test("open row with a past due date is overdue", () => {
+    expect(m.isOverdue(row({ dueDate: "14.09.2026" }), today)).toBe(true);
+  });
+  test("due today or later is not overdue", () => {
+    expect(m.isOverdue(row({ dueDate: "15.09.2026" }), today)).toBe(false);
+    expect(m.isOverdue(row({ dueDate: "01.01.2027" }), today)).toBe(false);
+  });
+  test("done rows, empty and unparsable dates are not overdue", () => {
+    expect(m.isOverdue(row({ dueDate: "01.01.2020", status: "done" }), today)).toBe(false);
+    expect(m.isOverdue(row({ dueDate: "" }), today)).toBe(false);
+    expect(m.isOverdue(row({ dueDate: "yakında" }), today)).toBe(false);
+  });
+});
+
+describe("filterRows", () => {
+  const today = new Date(2026, 8, 15);
+  const rows = [
+    { ...m.emptyRow("1"), equipment: "Işık", likelihood: 2 as const, severity: 2 as const },
+    { ...m.emptyRow("2"), hazard: "IŞIK kaçağı", dueDate: "01.01.2026" },
+    { ...m.emptyRow("3"), responsible: "Ali", status: "done" as const },
+  ];
+
+  test("matches case-insensitively with Turkish casing and keeps original numbers", () => {
+    const out = m.filterRows(rows, "ışık", "all", today);
+    expect(out.map((x) => x.number)).toEqual([1, 2]);
+  });
+  test("searches responsible and action", () => {
+    expect(m.filterRows(rows, "ali", "all", today).map((x) => x.number)).toEqual([3]);
+  });
+  test("status filters: unscored, open, overdue", () => {
+    expect(m.filterRows(rows, "", "unscored", today).map((x) => x.number)).toEqual([2, 3]);
+    expect(m.filterRows(rows, "", "open", today).map((x) => x.number)).toEqual([1, 2]);
+    expect(m.filterRows(rows, "", "overdue", today).map((x) => x.number)).toEqual([2]);
+  });
+});

@@ -1,9 +1,11 @@
 <script lang="ts">
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
+  import CircleAlert from '@lucide/svelte/icons/circle-alert';
+  import { Badge } from '$lib/components/ui/badge';
   import LevelBadge from './LevelBadge.svelte';
   import SelectField from './SelectField.svelte';
   import { LIKELIHOOD_OPTIONS, parseScore, scoreValue, SEVERITY_OPTIONS } from './score-options';
-  import { updateRow } from '$lib/domain/assessment';
+  import { isOverdue, updateRow } from '$lib/domain/assessment';
   import { riskLevel } from '$lib/domain/matrix';
   import type { RiskRow } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
@@ -32,6 +34,8 @@
       <span aria-hidden="true">Ş</span>
       <SelectField label="Satır {index}: şiddet" options={SEVERITY_OPTIONS} value={scoreValue(row.severity)} onValueChange={(v) => patch({ severity: parseScore(v) })} />
     </div>
-    <div class="flex min-h-9 items-center justify-end"><LevelBadge likelihood={row.likelihood} severity={row.severity} showScore /></div>
+    <div class="flex min-h-9 items-center justify-end">
+      {#if isOverdue(row, new Date())}<Badge variant="destructive" class="mr-2"><CircleAlert aria-hidden="true" />Süresi geçti</Badge>{/if}
+      <LevelBadge likelihood={row.likelihood} severity={row.severity} showScore /></div>
   </div>
 </article>

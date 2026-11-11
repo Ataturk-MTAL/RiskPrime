@@ -4,7 +4,8 @@
 
 <script lang="ts">
   import { tick } from 'svelte';
-  import { dateField, storedDate } from '$lib/domain/date';  import ChevronLeft from '@lucide/svelte/icons/chevron-left';
+  import { dateField, storedDate } from '$lib/domain/date';  import Copy from '@lucide/svelte/icons/copy';
+  import ChevronLeft from '@lucide/svelte/icons/chevron-left';
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
   import Trash2 from '@lucide/svelte/icons/trash-2';
   import { Button } from '$lib/components/ui/button';
@@ -15,9 +16,9 @@
   import ConfirmDialog from './ConfirmDialog.svelte';
   import SelectField from './SelectField.svelte';
   import RiskScoreBox from './RiskScoreBox.svelte';
-  import { removeRow, STATUS_LABELS, STATUSES, updateRow } from '$lib/domain/assessment';
+  import { duplicateRow, newId, removeRow, STATUS_LABELS, STATUSES, updateRow } from '$lib/domain/assessment';
   import type { RiskRow, RowStatus } from '$lib/domain/types';
-  import { store } from '$lib/state.svelte';
+  import { focusFirstField, store } from '$lib/state.svelte';
 
   let {
     rows,
@@ -38,6 +39,12 @@
     openId = null;
     store.apply((a) => removeRow(a, locationId, id));
     void tick().then(() => document.getElementById(ADD_ROW_BUTTON_ID)?.focus());
+  }
+  function duplicateCurrent() {
+    const id = newId('r');
+    if (!store.apply((a) => duplicateRow(a, locationId, row.id, id))) return;
+    openId = id;
+    focusFirstField('row-sheet-body', 300);
   }
   const fieldClass = 'flex flex-col items-start gap-1 text-xs text-muted-foreground';
   const areaClass = 'min-h-9 py-1.5 text-foreground';
@@ -107,6 +114,7 @@
           onconfirm={deleteRow}
         ><Trash2 />Satırı sil</ConfirmDialog>
         <div class="flex gap-1">
+          <Button variant="outline" onclick={duplicateCurrent}><Copy />Satırı çoğalt</Button>
           <Button variant="outline" disabled={index === 0} onclick={() => go(-1)}><ChevronLeft /><span class="max-sm:sr-only">Önceki</span></Button>
           <Button variant="outline" disabled={index === rows.length - 1} onclick={() => go(1)}><span class="max-sm:sr-only">Sonraki</span><ChevronRight /></Button>
         </div>

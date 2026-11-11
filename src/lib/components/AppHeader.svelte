@@ -31,14 +31,22 @@
   }
 </script>
 
-<header class="flex flex-wrap items-center justify-between gap-3">
-  <h1 class="text-xl font-bold">RiskPrime <span class="text-sm font-normal text-muted-foreground">İSG risk değerlendirmesi</span></h1>
+<header class="border-b bg-background/95 backdrop-blur md:sticky md:top-0 md:z-40 supports-[backdrop-filter]:bg-background/80">
+  <div class="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-4 py-2">
+  <div class="flex min-w-0 items-center gap-3">
+    <img src="{import.meta.env.BASE_URL}logo.png" alt="" width="40" height="40" class="size-10 shrink-0" />
+    <div class="min-w-0">
+      <h1 class="text-lg leading-tight font-bold">RiskPrime <span class="text-sm font-normal text-muted-foreground">İSG risk değerlendirmesi</span></h1>
+      <p class="text-xs text-muted-foreground">Mersin Atatürk MTAL · Elektrik-Elektronik Teknolojisi Alanı</p>
+    </div>
+  </div>
   <nav class="flex flex-wrap items-center gap-2" aria-label="Dosya işlemleri">
     <DropdownMenu.Root>
       <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline' })}>Yeni <ChevronDown /></DropdownMenu.Trigger>
       <DropdownMenu.Content align="start">
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newFromStarter())}>Yeni (okul verisiyle)</DropdownMenu.Item>
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newEmpty())}>Yeni (boş)</DropdownMenu.Item>
+        <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newPeriod())}>Yeni dönem (bu çalışmadan)</DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
     <div class="flex">
@@ -76,5 +84,6 @@
     </div>
     <ExportMenu />
   </nav>
+  </div>
   <ReadinessDialog />
 </header>

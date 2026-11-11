@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vite-plus/test";
 import { addLocation, addRow, emptyAssessment, updateRow, updateSchool } from "./assessment";
-import { checklistRows, outputName, pdfData, riskRows } from "./export-data";
+import { checklistRows, locationSuffix, outputName, pdfData, riskRows } from "./export-data";
 import type { Assessment } from "./types";
 
 function sample(): Assessment {
@@ -86,5 +86,33 @@ describe("export-data", () => {
     expect(outputName(sample(), "xlsx")).toBe("risk-2026-2027.xlsx");
     expect(outputName(sample(), "pdf", "bos-form")).toBe("risk-2026-2027-bos-form.pdf");
     expect(outputName(emptyAssessment(""), "docx")).toBe("risk-degerlendirme.docx");
+  });
+});
+
+describe("pdfData for one location", () => {
+  const two = (): Assessment =>
+    addLocation(sample(), { id: "a-2", name: "ELE2", building: "D Blok" });
+
+  test("keeps only the chosen location and drops checklists and empty groups", () => {
+    const data = pdfData(two(), "full", "a-1");
+    expect(data.groups.flatMap((g) => g.locations.map((l) => l.id))).toEqual(["a-1"]);
+    expect(data.groups.every((g) => g.locations.length > 0)).toBe(true);
+    expect(data.checklists).toEqual([]);
+  });
+
+  test("throws for an unknown location", () => {
+    expect(() => pdfData(sample(), "full", "yok")).toThrow("Mekân bulunamadı");
+  });
+
+  test("without locationId keeps everything", () => {
+    const data = pdfData(two(), "full");
+    expect(data.groups.flatMap((g) => g.locations)).toHaveLength(2);
+    expect(data.checklists).toHaveLength(1);
+  });
+});
+
+describe("locationSuffix", () => {
+  test("transliterates the location name for the file name", () => {
+    expect(locationSuffix("Elektrik Atölyesi İ/1")).toBe("mekan-Elektrik-Atolyesi-I-1");
   });
 });

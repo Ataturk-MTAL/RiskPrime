@@ -8,6 +8,7 @@
   import { Progress } from '$lib/components/ui/progress';
   import { Textarea } from '$lib/components/ui/textarea';
   import * as ToggleGroup from '$lib/components/ui/toggle-group';
+  import ChecklistRiskButton from './ChecklistRiskButton.svelte';
   import ConfirmDialog from './ConfirmDialog.svelte';
   import { addItem, ANSWER_LABELS, removeChecklist, removeItem, summary, updateChecklist, updateItem } from '$lib/domain/checklist';
   import type { Answer, ChecklistItem } from '$lib/domain/types';
@@ -86,11 +87,14 @@
             <Input class="w-16" aria-label="Madde no" value={item.no} onchange={(e) => patchItem(listId, item.id, { no: value(e) })} />
             <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Madde metni" placeholder="Kontrol maddesi" value={item.text} onchange={(e) => patchItem(listId, item.id, { text: value(e) })} />
           {/if}
-          <ToggleGroup.Root type="single" variant="outline" aria-label="Madde {item.no} cevabı" value={item.answer} onValueChange={(v) => patchItem(listId, item.id, { answer: v as Answer })}>
-            {#each CHOICES as choice (choice.value)}
-              <ToggleGroup.Item value={choice.value} class={choice.tone}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
-            {/each}
-          </ToggleGroup.Root>
+          <div class="flex flex-col items-start gap-1.5">
+            <ToggleGroup.Root type="single" variant="outline" aria-label="Madde {item.no} cevabı" value={item.answer} onValueChange={(v) => patchItem(listId, item.id, { answer: v as Answer })}>
+              {#each CHOICES as choice (choice.value)}
+                <ToggleGroup.Item value={choice.value} class={choice.tone}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
+              {/each}
+            </ToggleGroup.Root>
+            {#if item.answer === 'no'}<ChecklistRiskButton {list} itemId={item.id} />{/if}
+          </div>
           <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Açıklama" placeholder="Açıklama / tarih / sorumlu" value={item.note} onchange={(e) => patchItem(listId, item.id, { note: value(e) })} />
           <ConfirmDialog label="Maddeyi sil" title="Madde silinsin mi?" description="Bu kontrol maddesi silinecek." onconfirm={() => store.apply((a) => removeItem(a, listId, item.id))}>
             <Trash2 />

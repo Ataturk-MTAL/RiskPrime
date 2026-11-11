@@ -284,3 +284,7 @@
     )
   ]
 }
+
+// Source repository, once, small and without text (scripts/generate-qr.mjs).
+#v(6pt)
+#align(right, image("github-qr.svg", width: 1.4cm, alt: "RiskPrime kaynak kodu: github.com/Ataturk-MTAL/RiskPrime"))

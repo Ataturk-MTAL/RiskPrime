@@ -127,21 +127,32 @@ function pdfRow(r: RiskRow, blank: boolean): PdfRow {
   };
 }
 
-/** Data handed to the Typst template. Does not mutate the input. */
-export function pdfData(a: Assessment, kind: PdfKind): PdfData {
+/**
+ * Data handed to the Typst template. Does not mutate the input.
+ * With locationId: only that location, no checklists, no empty group headings.
+ */
+export function pdfData(a: Assessment, kind: PdfKind, locationId?: string): PdfData {
   if (!PDF_KINDS.includes(kind)) throw new Error(`Geçersiz çıktı türü: ${String(kind)}`);
+  if (locationId !== undefined && !a.locations.some((l) => l.id === locationId)) {
+    throw new Error(`Mekân bulunamadı: ${locationId}`);
+  }
   const blank = kind === "blank";
+  const single = locationId !== undefined;
   return {
     kind,
     school: a.school,
     period: a.period,
     assessmentDate: a.assessmentDate,
     validUntil: a.validUntil,
-    groups: grouped(a).map((g) => ({
-      title: g.title,
-      locations: g.locations.map((l) => ({ ...l, rows: l.rows.map((r) => pdfRow(r, blank)) })),
-    })),
-    checklists: (a.checklists || []).map((l) => ({
+    groups: grouped(a)
+      .map((g) => ({
+        title: g.title,
+        locations: g.locations
+          .filter((l) => !single || l.id === locationId)
+          .map((l) => ({ ...l, rows: l.rows.map((r) => pdfRow(r, blank)) })),
+      }))
+      .filter((g) => !single || g.locations.length > 0),
+    checklists: (single ? [] : a.checklists || []).map((l) => ({
       ...l,
       items: l.items.map((m) => (blank ? { ...m, answer: "" as Answer, note: "" } : m)),
     })),
@@ -152,4 +163,10 @@ export function pdfData(a: Assessment, kind: PdfKind): PdfData {
 export function outputName(a: Assessment, ext: string, suffix?: string): string {
   const base = fileName(a).replace(/\.json$/, "");
   return `${base}${suffix ? `-${suffix}` : ""}.${ext}`;
+}
+
+/** File-name suffix for a single-location PDF, e.g. "mekan-Elektrik-Atolyesi". */
+export function locationSuffix(name: string): string {
+  // Reuses fileName's Turkish transliteration: risk-<slug>.json
+  return `mekan-${fileName({ period: name } as Assessment).slice("risk-".length, -".json".length)}`;
 }

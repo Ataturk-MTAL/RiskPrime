@@ -1,4 +1,5 @@
 // Immutable operations on an Assessment. Every function returns a new copy and never mutates its input.
+import { parseTrDate, toIso } from "./date";
 import { isScore } from "./matrix";
 import {
   SCHEMA_VERSION,
@@ -307,4 +308,70 @@ export function grouped(a: Assessment): { title: string; locations: Location[] }
     groups.set(title, [...(groups.get(title) || []), l]);
   }
   return [...groups].map(([title, locations]) => ({ title, locations }));
+}
+
+/** Copy of a row (fresh id) placed right after the original. */
+export function duplicateRow(
+  a: Assessment,
+  locationId: string,
+  rowId: string,
+  newRowId?: string,
+): Assessment {
+  return mapRows(a, locationId, (rows) => {
+    assertRowExists(rows, rowId);
+    return rows.flatMap((r) => (r.id === rowId ? [r, { ...r, id: newRowId || newId("r") }] : [r]));
+  });
+}
+
+/** Copy of a location with all rows under new ids, named "<name> (kopya)", placed right after it. */
+export function duplicateLocation(a: Assessment, id: string, newLocationId?: string): Assessment {
+  const source = findLocation(a, id);
+  const copy: Location = {
+    ...source,
+    id: newLocationId || newId("a"),
+    name: `${source.name} (kopya)`,
+    rows: source.rows.map((r) => ({ ...r, id: newId("r") })),
+  };
+  return { ...a, locations: a.locations.flatMap((l) => (l.id === id ? [l, copy] : [l])) };
+}
+
+/** True for an open row whose due date (DD.MM.YYYY) is before `today` (injected for tests). */
+export function isOverdue(row: RiskRow, today: Date): boolean {
+  if (row.status !== "open") return false;
+  const due = parseTrDate(row.dueDate);
+  if (!due) return false;
+  const now = toIso({ y: today.getFullYear(), m: today.getMonth() + 1, d: today.getDate() });
+  return toIso(due) < now;
+}
+
+export type RowFilter = "all" | "unscored" | "open" | "overdue";
+export const ROW_FILTERS: RowFilter[] = ["all", "unscored", "open", "overdue"];
+export const ROW_FILTER_LABELS: Record<RowFilter, string> = {
+  all: "Tümü",
+  unscored: "Puansız",
+  open: "Açık",
+  overdue: "Süresi geçmiş",
+};
+
+/** Rows matching a text query and a status filter, each with its original 1-based number. */
+export function filterRows(
+  rows: RiskRow[],
+  query: string,
+  filter: RowFilter,
+  today: Date,
+): { row: RiskRow; number: number }[] {
+  const q = query.trim().toLocaleLowerCase("tr");
+  const matchesFilter = (r: RiskRow) =>
+    filter === "all" ||
+    (filter === "unscored" && !(isScore(r.likelihood) && isScore(r.severity))) ||
+    (filter === "open" && r.status === "open") ||
+    (filter === "overdue" && isOverdue(r, today));
+  const matchesText = (r: RiskRow) =>
+    !q ||
+    [r.equipment, r.hazard, r.action, r.responsible].some((t) =>
+      t.toLocaleLowerCase("tr").includes(q),
+    );
+  return rows
+    .map((row, i) => ({ row, number: i + 1 }))
+    .filter(({ row }) => matchesFilter(row) && matchesText(row));
 }

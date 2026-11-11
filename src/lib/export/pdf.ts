@@ -2,13 +2,14 @@
 // bundled and served from our own origin — nothing is executed from a third-party CDN.
 import { $typst, TypstSnippet } from "@myriaddreamin/typst.ts/contrib/all-in-one-lite";
 import compilerWasmUrl from "@myriaddreamin/typst-ts-web-compiler/pkg/typst_ts_web_compiler_bg.wasm?url";
-import { outputName, pdfData, type PdfKind } from "../domain/export-data";
+import { locationSuffix, outputName, pdfData, type PdfKind } from "../domain/export-data";
 import type { Assessment } from "../domain/types";
 import { downloadBlob } from "./download";
 
 const BASE = import.meta.env.BASE_URL;
 const FONT_URLS = [`${BASE}fonts/IBMPlexSans-Regular.ttf`, `${BASE}fonts/IBMPlexSans-Bold.ttf`];
 const TEMPLATE_URL = `${BASE}template/report.typ`;
+const QR_URL = `${BASE}template/github-qr.svg`;
 const FILE_SUFFIXES: Record<PdfKind, string> = {
   full: "",
   checklists: "kontrol-listeleri",
@@ -36,6 +37,7 @@ async function loadCompiler(): Promise<typeof $typst> {
   // Only our bundled fonts: no default font download from a CDN.
   $typst.use(TypstSnippet.disableDefaultFontAssets(), TypstSnippet.preloadFonts(fonts));
   await $typst.addSource("/report.typ", await fetchResource(TEMPLATE_URL, "text"));
+  await $typst.mapShadow("/github-qr.svg", await fetchResource(QR_URL, "bytes"));
   return $typst;
 }
 
@@ -50,14 +52,25 @@ function getCompiler(): Promise<typeof $typst> {
   return compilerPromise;
 }
 
-export async function downloadPdf(a: Assessment, kind: PdfKind): Promise<void> {
-  const data = pdfData(a, kind);
+/** With locationId the report is restricted to that location (no checklists). */
+export async function downloadPdf(
+  a: Assessment,
+  kind: PdfKind,
+  locationId?: string,
+): Promise<void> {
+  const data = pdfData(a, kind, locationId);
   const typst = await getCompiler();
   await typst.mapShadow("/data.json", new TextEncoder().encode(JSON.stringify(data)));
   const pdf = await typst.pdf({ mainFilePath: "/report.typ" });
   if (!pdf) throw new Error("PDF derlenemedi; ayrıntı tarayıcı konsolunda.");
   downloadBlob(
     new Blob([pdf as BlobPart], { type: "application/pdf" }),
-    outputName(a, "pdf", FILE_SUFFIXES[kind]),
+    outputName(
+      a,
+      "pdf",
+      locationId === undefined
+        ? FILE_SUFFIXES[kind]
+        : locationSuffix(a.locations.find((l) => l.id === locationId)?.name ?? ""),
+    ),
   );
 }

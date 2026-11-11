@@ -3,6 +3,7 @@ import { tick } from "svelte";
 import type { Assessment, ChecklistTemplate, LocationTemplate } from "$lib/domain/types";
 import { addLocationFromTemplate, emptyAssessment } from "$lib/domain/assessment";
 import { addChecklist as addChecklistFromTemplate } from "$lib/domain/checklist";
+import { rollover } from "$lib/domain/rollover";
 import { fileName, parse, serialize } from "$lib/domain/file";
 import { isBackup, restoreBackup } from "$lib/domain/excel-backup";
 import { conflictingCodes, read as readExcel } from "$lib/domain/excel-import";
@@ -289,6 +290,10 @@ class Store {
 
   async newFromStarter() {
     if (await this.#confirmDiscard()) this.#load(starterAssessment(), "Örnek çalışma açıldı.");
+  }
+
+  async newPeriod() {
+    if (await this.#confirmDiscard()) this.#load(rollover(this.assessment), "Yeni dönem açıldı.");
   }
 
   async newEmpty() {

@@ -3,6 +3,7 @@
   import { Button } from '$lib/components/ui/button';
   import * as Tabs from '$lib/components/ui/tabs';
   import { Toaster } from '$lib/components/ui/sonner';
+  import AboutFooter from '$lib/components/AboutFooter.svelte';
   import AppHeader from '$lib/components/AppHeader.svelte';
   import ChecklistEditor from '$lib/components/ChecklistEditor.svelte';
   import ChecklistSidebar from '$lib/components/ChecklistSidebar.svelte';
@@ -48,8 +49,9 @@
 
 <svelte:window ondragover={onDragOver} ondrop={onDrop} onbeforeunload={onBeforeUnload} />
 
-<div class="mx-auto flex min-h-screen max-w-[1400px] flex-col gap-4 p-4">
-  <AppHeader />
+<div class="flex min-h-screen flex-col">
+<AppHeader />
+<div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col gap-4 p-4">
   <Notices />
   <SchoolCard />
 
@@ -71,9 +73,8 @@
     </Tabs.Content>
   </Tabs.Root>
 
-  <footer class="mt-auto pt-4 text-xs text-muted-foreground">
-    Veriler yalnız bu tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kalıcı kayıt indirilen .json ya da Excel (.xlsx) dosyasıdır; ikisi de "Dosya aç" ile geri yüklenir. PDF derleyicisi uygulamayla birlikte gelir; internet gerekmez.
-  </footer>
+  <AboutFooter />
+</div>
 </div>
 
 <LibraryDialog bind:open={libraryOpen} />

@@ -5,7 +5,7 @@
   import * as Collapsible from '$lib/components/ui/collapsible';
   import { Input } from '$lib/components/ui/input';
   import SelectField from './SelectField.svelte';
-  import { addLocation, grouped, labels, LOCATION_TYPES, LOCATION_TYPE_LABELS, newId } from '$lib/domain/assessment';
+  import { addLocation, grouped, isOverdue, labels, LOCATION_TYPES, LOCATION_TYPE_LABELS, newId } from '$lib/domain/assessment';
   import { isScore } from '$lib/domain/matrix';
   import type { Location, LocationType } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
@@ -23,6 +23,8 @@
   let area = $state('');
   let addOpen = $state(false);
 
+  const today = new Date();
+  const overdueCount = (loc: Location) => loc.rows.filter((r) => isOverdue(r, today)).length;
   const scoredCount = (loc: Location) => loc.rows.filter((r) => isScore(r.likelihood) && isScore(r.severity)).length;
   const isComplete = (loc: Location) => loc.rows.length > 0 && scoredCount(loc) === loc.rows.length;
   const progressText = (loc: Location) => `${scoredCount(loc)}/${loc.rows.length}`;
@@ -83,6 +85,7 @@
               <span class="truncate">{loc.name}</span>
               <span class="flex shrink-0 items-center gap-1 text-xs opacity-70">
                 {#if isComplete(loc)}<Check class="size-3.5" aria-hidden="true" /><span class="sr-only">tamamlandı</span>{/if}
+                {#if overdueCount(loc) > 0}<span class="font-semibold opacity-100">{overdueCount(loc)} süresi geçmiş</span>{/if}
                 {progressText(loc)}
               </span>
             </button>

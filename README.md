@@ -2,6 +2,8 @@
 
 Okul mekânlarının (atölye, depo, oda, ıslak hacim) iş sağlığı ve güvenliği risk değerlendirmesini tarayıcıda hazırlamak için tek sayfalık araç. Yöntem: MEB Risk Değerlendirme Rehberi L tipi matris (Risk = Olasılık × Şiddet).
 
+Mersin Atatürk Mesleki ve Teknik Anadolu Lisesi Elektrik-Elektronik Teknolojisi Alanı'nda geliştirildi. Her MEB okulu ve alanı kendi verisiyle kullanabilir.
+
 ## Kullanım
 
 1. Yayınlanmış sayfayı açın (ya da yerelde `pnpm dev`).
