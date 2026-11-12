@@ -13,7 +13,8 @@
   import ConfirmDialog from './ConfirmDialog.svelte';
   import { countUntransferred } from '$lib/domain/transfer';
   import QuestionBankDialog from './QuestionBankDialog.svelte';
-  import { addItem, ANSWER_LABELS, removeChecklist, removeItem, summary, updateChecklist, updateItem } from '$lib/domain/checklist';
+  import { addItem, ANSWER_LABELS, removeChecklist, removeItem, setAnswer, setNote, updateChecklist, updateItem } from '$lib/domain/checklist';
+  import { answerOf, inspectionsForList, inspectionSummary, scopeName } from '$lib/domain/inspections';
   import type { Answer, ChecklistItem } from '$lib/domain/types';
   import { focusFirstField, store } from '$lib/state.svelte';
 
@@ -27,10 +28,13 @@
   let bankOpen = $state(false);
   const list = $derived(store.checklist);
   const untransferred = $derived(list ? countUntransferred(store.assessment, list.id) : 0);
-  const stats = $derived(list ? summary(list) : { total: 0, answered: 0, no: 0 });
+  // Until the next phase adds a location picker, the editor works on the list's first inspection.
+  const inspection = $derived(list ? inspectionsForList(store.assessment, list.id)[0] : undefined);
+  const scopeId = $derived(inspection?.locationId ?? null);
+  const stats = $derived(inspection ? inspectionSummary(store.assessment, inspection) : { total: 0, answered: 0, no: 0 });
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
 
-  const patchItem = (listId: string, itemId: string, patch: Partial<Pick<ChecklistItem, 'no' | 'text' | 'answer' | 'note'>>) =>
+  const patchItem = (listId: string, itemId: string, patch: Partial<Pick<ChecklistItem, 'no' | 'text'>>) =>
     store.apply((a) => updateItem(a, listId, itemId, patch));
 
   function addNewItem(listId: string) {
@@ -77,6 +81,7 @@
       <span class="text-sm text-muted-foreground">
         {stats.answered}/{stats.total} cevaplandı{#if stats.no}{" "}· <b class="text-red-600">{stats.no} eksik</b>{/if}
       </span>
+      <span class="text-sm text-muted-foreground">Mekân: {scopeName(store.assessment, scopeId)}</span>
       <Button variant="outline" size="sm" disabled={untransferred === 0} onclick={() => store.transferMissing(listId)}>Eksikleri risk tablosuna aktar ({untransferred})</Button>
     </div>
 
@@ -86,6 +91,7 @@
       </div>
       {#each list.items as item (item.id)}
         {@const textLocked = locked && !item.added}
+        {@const current = answerOf(store.assessment, listId, scopeId, item.id)}
         <div id="item-{item.id}" class="grid items-start gap-2 rounded-lg border p-2 {ROW_GRID}">
           {#if textLocked}
             <span class="pt-1.5 text-sm">{item.no}</span>
@@ -95,14 +101,14 @@
             <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Madde metni" placeholder="Kontrol maddesi" value={item.text} onchange={(e) => patchItem(listId, item.id, { text: value(e) })} />
           {/if}
           <div class="flex flex-col items-start gap-1.5">
-            <ToggleGroup.Root type="single" variant="outline" aria-label="Madde {item.no} cevabı" value={item.answer} onValueChange={(v) => patchItem(listId, item.id, { answer: v as Answer })}>
+            <ToggleGroup.Root type="single" variant="outline" aria-label="Madde {item.no} cevabı" value={current.answer} onValueChange={(v) => store.apply((a) => setAnswer(a, listId, scopeId, item.id, v as Answer))}>
               {#each CHOICES as choice (choice.value)}
                 <ToggleGroup.Item value={choice.value} class={choice.tone}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
               {/each}
             </ToggleGroup.Root>
-            <ChecklistItemLinks {list} {item} />
+            <ChecklistItemLinks {list} {item} locationId={scopeId} />
           </div>
-          <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Açıklama" placeholder="Açıklama / tarih / sorumlu" value={item.note} onchange={(e) => patchItem(listId, item.id, { note: value(e) })} />
+          <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Açıklama" placeholder="Açıklama / tarih / sorumlu" value={current.note} onchange={(e) => store.apply((a) => setNote(a, listId, scopeId, item.id, value(e)))} />
           <ConfirmDialog label="Maddeyi sil" title="Madde silinsin mi?" description="Bu kontrol maddesi silinecek." onconfirm={() => store.apply((a) => removeItem(a, listId, item.id))}>
             <Trash2 />
           </ConfirmDialog>

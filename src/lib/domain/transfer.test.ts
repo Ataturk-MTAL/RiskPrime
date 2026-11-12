@@ -1,23 +1,30 @@
 import { describe, expect, test } from "vite-plus/test";
 import { addLocation, addRow, emptyAssessment } from "./assessment";
 import { hazardOf } from "./checklist-risk";
+import { ensureInspections } from "./inspections";
 import { rowsForItem } from "./links";
 import { countUntransferred, transferMissing } from "./transfer";
+import { withAnswers } from "./test-helpers";
 import type { Answer, Assessment, ChecklistItem } from "./types";
 
-const item = (id: string, answer: Answer): ChecklistItem => ({
-  id,
-  no: id,
-  text: `Madde ${id}`,
-  answer,
-  note: "",
-});
+const item = (id: string): ChecklistItem => ({ id, no: id, text: `Madde ${id}` });
+const ANSWERS: Record<string, Answer> = { m1: "no", m2: "yes", m3: "no" };
+
+/** Every inspection of every list answered m1 no, m2 yes, m3 no. */
+const answerAll = (a: Assessment): Assessment =>
+  a.checklists.reduce(
+    (acc, list) =>
+      acc.inspections
+        .filter((i) => i.checklistId === list.id)
+        .reduce((x, i) => withAnswers(x, list.id, i.locationId, ANSWERS), acc),
+    ensureInspections(a),
+  );
 
 function sample(locationIds?: string[]): Assessment {
   let a = emptyAssessment("2026-2027");
   a = addLocation(a, { id: "l1", name: "Depo" });
   a = addLocation(a, { id: "l2", name: "Atölye" });
-  return {
+  return answerAll({
     ...a,
     checklists: [
       {
@@ -25,11 +32,11 @@ function sample(locationIds?: string[]): Assessment {
         code: "KL-1",
         name: "Liste",
         source: "external",
-        items: [item("m1", "no"), item("m2", "yes"), item("m3", "no")],
+        items: [item("m1"), item("m2"), item("m3")],
         ...(locationIds ? { locationIds } : {}),
       },
     ],
-  };
+  });
 }
 
 describe("transferMissing", () => {
@@ -37,8 +44,11 @@ describe("transferMissing", () => {
     const { assessment, created, skippedNoLocation } = transferMissing(sample(["l1", "l2"]));
     expect(created).toBe(4);
     expect(skippedNoLocation).toBe(0);
-    expect(rowsForItem(assessment, "k1", "m1")).toHaveLength(2);
-    expect(rowsForItem(assessment, "k1", "m2")).toHaveLength(0);
+    expect(rowsForItem(assessment, "k1", "m1", "l1")).toHaveLength(1);
+    expect(rowsForItem(assessment, "k1", "m1", "l2")).toHaveLength(1);
+    expect(rowsForItem(assessment, "k1", "m2", "l1")).toHaveLength(0);
+    // each inspection's row lives in its own location
+    expect(assessment.locations.map((l) => l.rows.length)).toEqual([2, 2]);
   });
 
   test("treats an unlinked row with the same hazard text as already transferred", () => {
@@ -52,12 +62,11 @@ describe("transferMissing", () => {
 
   test("skips items that already have a linked row", () => {
     const first = transferMissing(sample(["l1"]), "k1").assessment;
-    const withNew = {
+    const extended = {
       ...first,
-      checklists: [
-        { ...first.checklists[0], items: [...first.checklists[0].items, item("m4", "no")] },
-      ],
+      checklists: [{ ...first.checklists[0], items: [...first.checklists[0].items, item("m4")] }],
     };
+    const withNew = withAnswers(extended, "k1", "l1", { m4: "no" });
     expect(transferMissing(withNew).created).toBe(1);
   });
 
@@ -73,6 +82,9 @@ describe("transferMissing", () => {
     const { assessment, created } = transferMissing(sample());
     expect(created).toBe(2);
     expect(assessment.locations[0].rows).toHaveLength(2);
+    expect(assessment.locations[0].rows[0].sources).toEqual([
+      { listId: "k1", itemId: "m1", locationId: null },
+    ]);
   });
 
   test("counts items as skipped when there is no location", () => {
@@ -84,10 +96,12 @@ describe("transferMissing", () => {
 
   test("limits work to the given list", () => {
     const a = sample();
-    const two = {
-      ...a,
-      checklists: [...a.checklists, { ...a.checklists[0], id: "k2" }],
-    };
+    const two = answerAll(
+      ensureInspections({
+        ...a,
+        checklists: [...a.checklists, { ...a.checklists[0], id: "k2" }],
+      }),
+    );
     expect(transferMissing(two, "k2").created).toBe(2);
     expect(countUntransferred(two, "k2")).toBe(2);
     expect(countUntransferred(two)).toBe(4);

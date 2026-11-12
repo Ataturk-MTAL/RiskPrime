@@ -1,9 +1,10 @@
 // Pure data transforms shared by the PDF, Excel and Word exports.
 import { grouped } from "./assessment";
 import { fileName } from "./file";
-import { liveLocationIds, sourceLabel, sourcesOf } from "./links";
+import { answerOf, scopeName } from "./inspections";
+import { sourceLabel, sourcesOf } from "./links";
 import { riskLevel, riskScore, type Level } from "./matrix";
-import type { Answer, Assessment, Checklist, Location, RiskRow, RowStatus } from "./types";
+import type { Answer, Assessment, ChecklistItem, Location, RiskRow, RowStatus } from "./types";
 
 export const PDF_KINDS = ["full", "checklists", "blank"] as const;
 export type PdfKind = (typeof PDF_KINDS)[number];
@@ -42,6 +43,8 @@ export interface ExportRiskRow {
 export interface ExportChecklistRow {
   code: string;
   name: string;
+  /** Inspection scope: location name, or "Okul geneli". */
+  location: string;
   no: string;
   text: string;
   answer: string;
@@ -77,17 +80,23 @@ export function riskRows(a: Assessment): ExportRiskRow[] {
   );
 }
 
+/** One row per item per inspection. */
 export function checklistRows(a: Assessment): ExportChecklistRow[] {
-  return (a.checklists || []).flatMap((l) =>
-    l.items.map((m) => ({
-      code: l.code,
-      name: l.name,
-      no: m.no,
-      text: m.text,
-      answer: ANSWER_TEXT[m.answer] || "",
-      note: m.note || "",
-    })),
-  );
+  return a.inspections.flatMap((insp) => {
+    const list = a.checklists.find((c) => c.id === insp.checklistId);
+    return (list?.items ?? []).map((m) => {
+      const { answer, note } = answerOf(a, insp.checklistId, insp.locationId, m.id);
+      return {
+        code: list?.code ?? "",
+        name: list?.name ?? "",
+        location: scopeName(a, insp.locationId),
+        no: m.no,
+        text: m.text,
+        answer: ANSWER_TEXT[answer] || "",
+        note,
+      };
+    });
+  });
 }
 
 export type PdfRow = Omit<RiskRow, "sources"> & {
@@ -99,8 +108,15 @@ export type PdfRow = Omit<RiskRow, "sources"> & {
   levelAfter: Level | null;
 };
 export type PdfLocation = Omit<Location, "rows"> & { rows: PdfRow[] };
-/** Names of the locations the list applies to, joined with ", "; "" for a general list. */
-export type PdfChecklist = Checklist & { locationNames: string };
+/** One checklist block of the PDF = one inspection; `name` is "<list> — <location or Okul geneli>". */
+export interface PdfChecklist {
+  id: string;
+  code: string;
+  name: string;
+  /** Kept for the template; empty because `name` already carries the location. */
+  locationNames: string;
+  items: (ChecklistItem & { answer: Answer; note: string })[];
+}
 
 /** "KL-26.06, KL-26.07": one label per linked item (see sourceLabel); "" when none. */
 export function sourceText(a: Assessment, r: RiskRow): string {
@@ -169,14 +185,29 @@ export function pdfData(a: Assessment, kind: PdfKind, locationId?: string): PdfD
           .map((l) => ({ ...l, rows: l.rows.map((r) => pdfRow(a, r, blank)) })),
       }))
       .filter((g) => !single || g.locations.length > 0),
-    checklists: (single ? [] : a.checklists || []).map((l) => ({
-      ...l,
-      locationNames: liveLocationIds(a, l)
-        .map((id) => a.locations.find((x) => x.id === id)?.name ?? "")
-        .join(", "),
-      items: l.items.map((m) => (blank ? { ...m, answer: "" as Answer, note: "" } : m)),
-    })),
+    checklists: single ? [] : pdfChecklists(a, blank),
   };
+}
+
+function pdfChecklists(a: Assessment, blank: boolean): PdfChecklist[] {
+  return a.inspections.flatMap((insp) => {
+    const list = a.checklists.find((c) => c.id === insp.checklistId);
+    if (!list) return [];
+    return [
+      {
+        id: insp.id,
+        code: list.code,
+        name: `${list.name} — ${scopeName(a, insp.locationId)}`,
+        locationNames: "",
+        items: list.items.map((m) => ({
+          ...m,
+          ...(blank
+            ? { answer: "" as Answer, note: "" }
+            : answerOf(a, list.id, insp.locationId, m.id)),
+        })),
+      },
+    ];
+  });
 }
 
 /** risk-<period>[-suffix].<ext> */

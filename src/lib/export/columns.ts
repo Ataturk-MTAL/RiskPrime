@@ -30,6 +30,7 @@ export const RISK_COLUMNS: Column<ExportRiskRow>[] = [
 export const CHECKLIST_COLUMNS: Column<ExportChecklistRow>[] = [
   ["code", "Liste kodu"],
   ["name", "Liste adı"],
+  ["location", "Mekân"],
   ["no", "Madde no"],
   ["text", "Madde"],
   ["answer", "Cevap"],

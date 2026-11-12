@@ -11,13 +11,13 @@
 
   const LABEL_LENGTH = 40;
 
-  let { list, itemId }: { list: Checklist; itemId: string } = $props();
+  let { list, itemId, locationId: scope }: { list: Checklist; itemId: string; locationId: string | null } = $props();
 
   let open = $state(false);
   let locationId = $state('');
   const locationOptions = $derived(store.assessment.locations.map((l) => ({ value: l.id, label: l.name || 'Adsız mekân' })));
   const rowOptions = $derived.by(() => {
-    const linked = new Set(rowsForItem(store.assessment, list.id, itemId).map((r) => r.rowId));
+    const linked = new Set(rowsForItem(store.assessment, list.id, itemId, scope).map((r) => r.rowId));
     const rows = store.assessment.locations.find((l) => l.id === locationId)?.rows ?? [];
     return rows.flatMap((r, i) =>
       linked.has(r.id) ? [] : [{ value: r.id, label: `#${i + 1} · ${(r.equipment || r.hazard || 'Boş satır').slice(0, LABEL_LENGTH)}` }],
@@ -26,12 +26,12 @@
 
   function onOpenChange(next: boolean) {
     open = next;
-    if (next) locationId = defaultLocationId(store.assessment, list);
+    if (next) locationId = scope ?? defaultLocationId(store.assessment, list);
   }
 
   function link(rowId: string) {
     open = false;
-    if (!store.apply((a) => addRowSource(a, locationId, rowId, { listId: list.id, itemId }))) return;
+    if (!store.apply((a) => addRowSource(a, locationId, rowId, { listId: list.id, itemId, locationId: scope }))) return;
     toast.success('Madde var olan satıra bağlandı');
   }
 </script>

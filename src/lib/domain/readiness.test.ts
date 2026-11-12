@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vite-plus/test";
 import { emptyAssessment } from "./assessment";
 import { readiness } from "./readiness";
+import { withAnswers } from "./test-helpers";
 import type { Assessment, RiskRow } from "./types";
 
 const row = (over: Partial<RiskRow> = {}): RiskRow => ({
@@ -22,24 +23,29 @@ const row = (over: Partial<RiskRow> = {}): RiskRow => ({
 
 function complete(): Assessment {
   const a = emptyAssessment("2026-2027");
-  return {
-    ...a,
-    assessmentDate: "01.09.2026",
-    validUntil: "01.09.2027",
-    school: { ...a.school, name: "Okul", signatories: [{ title: "Müdür", name: "Ali" }] },
-    locations: [
-      { id: "l1", name: "Atölye", type: "workshop", building: "", area: "", rows: [row()] },
-    ],
-    checklists: [
-      {
-        id: "c1",
-        code: "KL-01",
-        name: "Liste",
-        source: "internal",
-        items: [{ id: "i", no: "1", text: "t", answer: "yes", note: "" }],
-      },
-    ],
-  };
+  return withAnswers(
+    {
+      ...a,
+      assessmentDate: "01.09.2026",
+      validUntil: "01.09.2027",
+      school: { ...a.school, name: "Okul", signatories: [{ title: "Müdür", name: "Ali" }] },
+      locations: [
+        { id: "l1", name: "Atölye", type: "workshop", building: "", area: "", rows: [row()] },
+      ],
+      checklists: [
+        {
+          id: "c1",
+          code: "KL-01",
+          name: "Liste",
+          source: "internal",
+          items: [{ id: "i", no: "1", text: "t" }],
+        },
+      ],
+    },
+    "c1",
+    null,
+    { i: "yes" },
+  );
 }
 
 describe("readiness", () => {
@@ -70,7 +76,7 @@ describe("readiness", () => {
 
   test("counts unanswered checklist items", () => {
     const a = complete();
-    a.checklists[0].items[0].answer = "";
+    a.inspections[0].answers = [];
     expect(readiness(a).unanswered).toEqual([{ id: "c1", name: "KL-01 Liste", count: 1 }]);
   });
 

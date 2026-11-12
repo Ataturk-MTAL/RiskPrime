@@ -1,3 +1,4 @@
+import { ensureInspections } from "./inspections";
 import { setChecklistLocations } from "./links";
 import type { Assessment, Checklist } from "./types";
 
@@ -24,9 +25,10 @@ export function suggestLocations(a: Assessment, list: Pick<Checklist, "name">): 
 
 /** Applies suggestions to lists that have no locations yet (optionally only the given lists). */
 export function autoAssign(a: Assessment, onlyListIds?: string[]): Assessment {
-  return a.checklists.reduce((acc, c) => {
+  const assigned = a.checklists.reduce((acc, c) => {
     if (c.locationIds?.length || (onlyListIds && !onlyListIds.includes(c.id))) return acc;
     const ids = suggestLocations(acc, c);
     return ids.length ? setChecklistLocations(acc, c.id, ids) : acc;
   }, a);
+  return ensureInspections(assigned);
 }

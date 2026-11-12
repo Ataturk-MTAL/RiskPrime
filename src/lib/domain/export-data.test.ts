@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vite-plus/test";
 import { addLocation, addRow, emptyAssessment, updateRow, updateSchool } from "./assessment";
 import { checklistRows, locationSuffix, outputName, pdfData, riskRows } from "./export-data";
+import { withAnswers } from "./test-helpers";
 import type { Assessment } from "./types";
 
 function sample(): Assessment {
@@ -17,18 +18,24 @@ function sample(): Assessment {
     likelihood: 3,
     severity: 5,
   });
-  return {
-    ...a,
-    checklists: [
-      {
-        id: "k1",
-        code: "KL-11",
-        name: "Elektrik",
-        source: "external",
-        items: [{ id: "m1", no: "1", text: "Pano kapalı mı?", answer: "yes", note: "" }],
-      },
-    ],
-  };
+  return withAnswers(
+    {
+      ...a,
+      checklists: [
+        {
+          id: "k1",
+          code: "KL-11",
+          name: "Elektrik",
+          source: "external",
+          items: [{ id: "m1", no: "1", text: "Pano kapalı mı?" }],
+        },
+      ],
+    },
+    "k1",
+    null,
+    { m1: "yes" },
+    { m1: "Tamam" },
+  );
 }
 
 describe("export-data", () => {
@@ -56,6 +63,19 @@ describe("export-data", () => {
     const [r] = checklistRows(sample());
     expect(r.code).toBe("KL-11");
     expect(r.answer).toBe("Evet");
+    expect(r.note).toBe("Tamam");
+    expect(r.location).toBe("Okul geneli");
+  });
+
+  test("checklist rows and pdf blocks come one per inspection, titled with the location", () => {
+    let a = sample();
+    a = { ...a, checklists: [{ ...a.checklists[0], locationIds: ["a-1"] }] };
+    a = withAnswers(a, "k1", "a-1", { m1: "no" });
+    expect(checklistRows(a).map((r) => [r.location, r.answer])).toEqual([["ELE1", "Hayır"]]);
+    const [block] = pdfData(a, "full").checklists;
+    expect(block.name).toBe("Elektrik — ELE1");
+    expect(block.items[0]).toMatchObject({ no: "1", answer: "no", note: "" });
+    expect(pdfData(a, "blank").checklists[0].items[0].answer).toBe("");
   });
 
   test("blank pdf data clears scores and answers without touching the source", () => {
@@ -67,8 +87,9 @@ describe("export-data", () => {
     expect(row.likelihood).toBeNull();
     expect(row.level).toBeNull();
     expect(v.checklists[0].items[0].answer).toBe("");
+    expect(v.checklists[0].name).toBe("Elektrik — Okul geneli");
     expect(a.locations[0].rows[0].likelihood).toBe(3);
-    expect(a.checklists[0].items[0].answer).toBe("yes");
+    expect(a.inspections[0].answers[0].answer).toBe("yes");
   });
 
   test("full pdf data carries level key and color", () => {

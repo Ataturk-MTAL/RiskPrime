@@ -39,16 +39,42 @@ describe("file", () => {
     expect(validate({ ...valid(), version: 99 })[0]).toMatch(/daha yeni bir RiskPrime/);
   });
 
-  test("checklists are validated", () => {
+  test("inspections are validated", () => {
     const a = addChecklist(valid(), {
       code: "KL-26",
       name: "Elektrik",
       source: "external",
       items: [{ no: "1", text: "x" }],
     });
-    const list = { ...a.checklists[0], items: [{ ...a.checklists[0].items[0], answer: "maybe" }] };
-    const e = validate({ ...a, checklists: [list] });
-    expect(e.some((x) => x.startsWith("checklists[0].items[0].answer:"))).toBe(true);
+    const bad = {
+      ...a,
+      inspections: [
+        {
+          ...a.inspections[0],
+          locationId: 5,
+          answers: [{ itemId: "m", answer: "maybe", note: "" }],
+        },
+      ],
+    };
+    const e = validate(bad);
+    expect(e.some((x) => x.startsWith("inspections[0].locationId:"))).toBe(true);
+    expect(e.some((x) => x.startsWith("inspections[0].answers[0].answer:"))).toBe(true);
+    expect(validate({ ...a, inspections: undefined })).toContain("inspections: liste olmalı.");
+  });
+
+  test("loading completes and cleans inspections", () => {
+    const a = addChecklist(valid(), { name: "Liste", items: [{ no: "1", text: "x" }] });
+    const stale = {
+      ...a,
+      inspections: [
+        { ...a.inspections[0], answers: [{ itemId: "gone", answer: "no", note: "" }] },
+        { id: "d-x", checklistId: "yok", locationId: null, answers: [] },
+      ],
+    };
+    const r = parse(serialize(stale as never));
+    expect("assessment" in r && r.assessment.inspections).toEqual([
+      { ...a.inspections[0], answers: [] },
+    ]);
   });
 
   test("file name derives from the period", () => {

@@ -30,9 +30,6 @@ export function rollover(a: Assessment): Assessment {
     assessmentDate: "",
     validUntil: "",
     locations: a.locations.map((l) => ({ ...l, rows: l.rows.map(rolloverRow) })),
-    checklists: a.checklists.map((c) => ({
-      ...c,
-      items: c.items.map((i) => ({ ...i, answer: "", note: "" })),
-    })),
+    inspections: a.inspections.map((i) => ({ ...i, answers: [] })),
   };
 }

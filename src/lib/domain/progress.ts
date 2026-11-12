@@ -1,5 +1,6 @@
 // Counts behind the "Genel bakış" page: one summary per MEB workflow step.
 import { isOverdue } from "./assessment";
+import { summary } from "./checklist";
 import { LEVELS, riskLevel, type LevelKey } from "./matrix";
 import { readiness } from "./readiness";
 import { countUntransferred } from "./transfer";
@@ -31,17 +32,19 @@ export function progress(a: Assessment, today: Date) {
     state: stateOf(metaFilled + signatoriesFilled, META_TOTAL + signatoriesTotal),
   };
 
-  const items = a.checklists.flatMap((c) => c.items);
-  const answered = items.filter((i) => i.answer !== "").length;
-  const incomplete = a.checklists.filter((c) => c.items.some((i) => i.answer === ""));
+  // Counted over inspections: every list counts once per location it is inspected in.
+  const stats = a.checklists.map((c) => ({ id: c.id, ...summary(a, c.id) }));
+  const answered = stats.reduce((n, s) => n + s.answered, 0);
+  const total = stats.reduce((n, s) => n + s.total, 0);
+  const incomplete = stats.filter((s) => s.answered < s.total);
   const checklists = {
     answered,
-    total: items.length,
-    missing: items.filter((i) => i.answer === "no").length,
+    total,
+    missing: stats.reduce((n, s) => n + s.no, 0),
     listsDone: a.checklists.length - incomplete.length,
     listsTotal: a.checklists.length,
     firstIncompleteId: incomplete[0]?.id ?? null,
-    state: stateOf(answered, items.length),
+    state: stateOf(answered, total),
   };
 
   const levels = Object.fromEntries(Object.keys(LEVELS).map((k) => [k, 0])) as Record<

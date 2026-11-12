@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vite-plus/test";
 import { addLocation, addRow, emptyAssessment, updateMeta, updateSignatory } from "./assessment";
 import { nextPeriod, rollover } from "./rollover";
+import { withAnswers } from "./test-helpers";
 
 function sample() {
   let a = updateMeta(emptyAssessment("2026-2027"), {
@@ -19,18 +20,24 @@ function sample() {
     status: "done",
   });
   a = addRow(a, "a-1", { id: "r-2", likelihood: 3, severity: 3, status: "done" });
-  return {
-    ...a,
-    checklists: [
-      {
-        id: "c-1",
-        code: "KL-01",
-        name: "Liste",
-        source: "external" as const,
-        items: [{ id: "i-1", no: "1", text: "Madde", answer: "yes" as const, note: "not" }],
-      },
-    ],
-  };
+  return withAnswers(
+    {
+      ...a,
+      checklists: [
+        {
+          id: "c-1",
+          code: "KL-01",
+          name: "Liste",
+          source: "external" as const,
+          items: [{ id: "i-1", no: "1", text: "Madde" }],
+        },
+      ],
+    },
+    "c-1",
+    null,
+    { "i-1": "yes" },
+    { "i-1": "not" },
+  );
 }
 
 describe("nextPeriod", () => {
@@ -66,9 +73,12 @@ describe("rollover", () => {
     expect(r2).toMatchObject({ likelihood: 3, severity: 3, status: "open" });
   });
 
-  test("clears checklist answers and notes but keeps items", () => {
-    const item = rollover(sample()).checklists[0].items[0];
-    expect(item).toMatchObject({ id: "i-1", text: "Madde", answer: "", note: "" });
+  test("clears every inspection's answers and notes but keeps items and inspections", () => {
+    const before = sample();
+    expect(before.inspections[0].answers).toHaveLength(1);
+    const next = rollover(before);
+    expect(next.checklists[0].items[0]).toMatchObject({ id: "i-1", text: "Madde" });
+    expect(next.inspections).toEqual([{ ...before.inspections[0], answers: [] }]);
   });
 
   test("does not mutate the input", () => {

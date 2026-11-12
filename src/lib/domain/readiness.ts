@@ -1,4 +1,6 @@
+import { summary } from "./checklist";
 import { isBefore } from "./date";
+import { inspectionsForList } from "./inspections";
 import { sourceLabel, sourcesOf } from "./links";
 import { riskLevel } from "./matrix";
 import { isUntransferred } from "./transfer";
@@ -69,18 +71,21 @@ export function readiness(a: Assessment): Readiness {
   );
   const emptyHazard = perLocation((r) => blank(r.hazard));
   const invalidDates = isBefore(a.validUntil, a.assessmentDate);
+  // Counted over each list's inspections (one per location, or one school-wide).
   const unanswered = withCount(
-    a.checklists.map((c) => ({
-      id: c.id,
-      name: `${c.code} ${c.name}`.trim(),
-      count: c.items.filter((i) => i.answer === "").length,
-    })),
+    a.checklists.map((c) => {
+      const { total, answered } = summary(a, c.id);
+      return { id: c.id, name: `${c.code} ${c.name}`.trim(), count: total - answered };
+    }),
   );
   const noWithoutRow = withCount(
     a.checklists.map((c) => ({
       id: c.id,
       name: `${c.code} ${c.name}`.trim(),
-      count: c.items.filter((i) => isUntransferred(a, c, i)).length,
+      count: inspectionsForList(a, c.id).reduce(
+        (n, insp) => n + c.items.filter((i) => isUntransferred(a, c, i, insp)).length,
+        0,
+      ),
     })),
   );
   const sourceNowYes = withCount(

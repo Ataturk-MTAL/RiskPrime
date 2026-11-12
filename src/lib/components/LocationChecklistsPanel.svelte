@@ -2,6 +2,7 @@
   import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
   import { Button } from '$lib/components/ui/button';
   import * as Collapsible from '$lib/components/ui/collapsible';
+  import { findInspection } from '$lib/domain/inspections';
   import { listsForLocation, rowsForItem } from '$lib/domain/links';
   import { store } from '$lib/state.svelte';
 
@@ -10,14 +11,15 @@
   const linked = $derived(listsForLocation(store.assessment, locationId));
   const summaries = $derived(
     linked.lists.map((c) => {
-      const noItems = c.items.filter((i) => i.answer === 'no');
+      const answers = findInspection(store.assessment, c.id, locationId)?.answers ?? [];
+      const noItems = answers.filter((x) => x.answer === 'no');
       return {
         id: c.id,
         label: `${c.code ? `${c.code} · ` : ''}${c.name || 'Adsız liste'}`,
-        answered: c.items.filter((i) => i.answer !== '').length,
+        answered: answers.filter((x) => x.answer !== '').length,
         total: c.items.length,
         no: noItems.length,
-        noWithoutRow: noItems.filter((i) => rowsForItem(store.assessment, c.id, i.id).length === 0).length,
+        noWithoutRow: noItems.filter((x) => rowsForItem(store.assessment, c.id, x.itemId, locationId).length === 0).length,
       };
     }),
   );

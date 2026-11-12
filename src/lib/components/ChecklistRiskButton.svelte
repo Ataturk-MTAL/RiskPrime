@@ -8,7 +8,8 @@
   import type { Checklist } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
 
-  let { list, itemId }: { list: Checklist; itemId: string } = $props();
+  /** locationId = the inspection's scope (null = okul geneli); the new row goes to the chosen location. */
+  let { list, itemId, locationId: scope }: { list: Checklist; itemId: string; locationId: string | null } = $props();
 
   let open = $state(false);
   let locationId = $state('');
@@ -16,18 +17,18 @@
 
   function onOpenChange(next: boolean) {
     open = next;
-    if (next) locationId = defaultLocationId(store.assessment, list);
+    if (next) locationId = scope ?? defaultLocationId(store.assessment, list);
   }
 
   function create() {
     const target = store.assessment.locations.find((l) => l.id === locationId);
     if (!target) return;
     open = false;
-    if (hasChecklistRisk(store.assessment, list.id, itemId, target.id)) {
+    if (hasChecklistRisk(store.assessment, list.id, itemId, scope, target.id)) {
       toast.info('Bu madde için satır zaten var');
       return;
     }
-    if (!store.apply((a) => riskRowFromChecklistItem(a, list.id, itemId, target.id))) return;
+    if (!store.apply((a) => riskRowFromChecklistItem(a, list.id, itemId, scope, target.id))) return;
     toast.success(`Risk satırı eklendi: ${target.name}`, {
       action: { label: 'Git', onClick: () => store.selectLocation(target.id) },
     });

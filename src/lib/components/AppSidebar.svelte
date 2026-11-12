@@ -94,7 +94,7 @@
                 <Collapsible.Content>
                   <Sidebar.MenuSub>
                     {#each store.assessment.checklists as list (list.id)}
-                      {@const s = summary(list)}
+                      {@const s = summary(store.assessment, list.id)}
                       <Sidebar.MenuSubItem>
                         <Sidebar.MenuSubButton class="w-full" isActive={store.tab === 'checklists' && list.id === store.checklistId}>
                           {#snippet child({ props })}

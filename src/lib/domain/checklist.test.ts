@@ -12,13 +12,14 @@ const MEB = {
 const ready = () => c.addChecklist(emptyAssessment("2026-2027"), MEB);
 
 describe("checklist", () => {
-  test("adds a library list with new ids, empty answers and kept source", () => {
+  test("adds a library list with new ids, an empty school-wide inspection and kept source", () => {
     const a = ready();
     const [l] = a.checklists;
     expect(l.code).toBe("KL-26");
     expect(l.source).toBe("external");
     expect(l.id && l.items[0].id).toBeTruthy();
-    expect(l.items[0].answer).toBe("");
+    expect(a.inspections).toHaveLength(1);
+    expect(a.inspections[0]).toMatchObject({ checklistId: l.id, locationId: null, answers: [] });
     expect(validate(a)).toEqual([]);
   });
 
@@ -27,15 +28,47 @@ describe("checklist", () => {
     expect(a.checklists[0].id).not.toBe(a.checklists[1].id);
   });
 
-  test("answer and note are set; invalid answer is rejected", () => {
+  test("answer and note are set per inspection; invalid answer is rejected", () => {
     let a = ready();
     const l = a.checklists[0];
-    a = c.updateItem(a, l.id, l.items[0].id, { answer: "no", note: "Pano 2" });
-    expect(a.checklists[0].items[0].answer).toBe("no");
-    expect(a.checklists[0].items[0].note).toBe("Pano 2");
-    expect(() => c.updateItem(a, l.id, l.items[0].id, { answer: "maybe" as never })).toThrow(
+    a = c.setAnswer(a, l.id, null, l.items[0].id, "no");
+    a = c.setNote(a, l.id, null, l.items[0].id, "Pano 2");
+    expect(a.inspections[0].answers).toEqual([
+      { itemId: l.items[0].id, answer: "no", note: "Pano 2" },
+    ]);
+    expect(() => c.setAnswer(a, l.id, null, l.items[0].id, "maybe" as never)).toThrow(
       /Geçersiz cevap/,
     );
+  });
+
+  test("an item without answer and note is not stored; unknown inspection or item throws", () => {
+    const base = ready();
+    const l = base.checklists[0];
+    let a = c.setAnswer(base, l.id, null, l.items[0].id, "yes");
+    a = c.setAnswer(a, l.id, null, l.items[0].id, "");
+    expect(a.inspections[0].answers).toEqual([]);
+    expect(() => c.setAnswer(base, l.id, "l9", l.items[0].id, "yes")).toThrow(/Denetim bulunamadı/);
+    expect(() => c.setNote(base, l.id, null, "none", "x")).toThrow(/Madde bulunamadı/);
+  });
+
+  test("removeItem drops that item's answers; removeChecklist drops the inspections", () => {
+    let a = c.addChecklist(emptyAssessment(), {
+      items: [
+        { no: "1", text: "a" },
+        { no: "2", text: "b" },
+      ],
+    });
+    const l = a.checklists[0];
+    a = c.setAnswer(
+      c.setAnswer(a, l.id, null, l.items[0].id, "yes"),
+      l.id,
+      null,
+      l.items[1].id,
+      "no",
+    );
+    a = c.removeItem(a, l.id, l.items[0].id);
+    expect(a.inspections[0].answers.map((x) => x.itemId)).toEqual([l.items[1].id]);
+    expect(c.removeChecklist(a, l.id).inspections).toEqual([]);
   });
 
   test("ready-made MEB item text and list name are locked", () => {
@@ -74,7 +107,7 @@ describe("checklist", () => {
     const l = a.checklists[0];
     expect(() => c.removeChecklist(a, "none")).toThrow(/Kontrol listesi bulunamadı/);
     expect(() => c.removeItem(a, l.id, "none")).toThrow(/Madde bulunamadı/);
-    c.updateItem(a, l.id, l.items[0].id, { answer: "yes" });
+    c.setAnswer(a, l.id, null, l.items[0].id, "yes");
     expect(JSON.stringify(a)).toBe(snapshot);
   });
 
@@ -100,8 +133,8 @@ describe("checklist", () => {
       ],
     });
     const l = a.checklists[0];
-    a = c.updateItem(a, l.id, l.items[0].id, { answer: "yes" });
-    a = c.updateItem(a, l.id, l.items[1].id, { answer: "no" });
-    expect(c.summary(a.checklists[0])).toEqual({ total: 3, answered: 2, no: 1 });
+    a = c.setAnswer(a, l.id, null, l.items[0].id, "yes");
+    a = c.setAnswer(a, l.id, null, l.items[1].id, "no");
+    expect(c.summary(a, l.id)).toEqual({ total: 3, answered: 2, no: 1 });
   });
 });

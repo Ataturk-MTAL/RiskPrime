@@ -129,14 +129,21 @@ export function convert(data, school, index = EMPTY_INDEX) {
         id: `m-${two(i + 1)}-${two(j + 1)}`,
         no: String(j + 1),
         text,
-        answer: "",
-        note: "",
         ...(ref ? { ref } : {}),
       };
     }),
   }));
+  // One empty inspection per location of each list, or one school-wide (locationId null).
+  const inspections = checklists.flatMap((c, i) =>
+    (c.locationIds ?? [null]).map((locationId) => ({
+      id: `d-${two(i + 1)}-${locationId ?? "all"}`,
+      checklistId: c.id,
+      locationId,
+      answers: [],
+    })),
+  );
   return {
-    version: 1,
+    version: 2,
     period: PERIOD,
     assessmentDate: "",
     validUntil: "",
@@ -148,6 +155,7 @@ export function convert(data, school, index = EMPTY_INDEX) {
     },
     locations,
     checklists,
+    inspections,
   };
 }
 

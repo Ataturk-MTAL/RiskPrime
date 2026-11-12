@@ -25,12 +25,22 @@ describe("starter.json", () => {
     expect(rows.every((r) => r.status === "open")).toBe(true);
   });
 
-  it("has 15 internal checklists with empty answers", () => {
+  it("is file version 2 with 15 internal checklists whose items carry no answers", () => {
+    expect(starter.version).toBe(2);
     expect(starter.checklists).toHaveLength(15);
     expect(starter.checklists.every((c) => c.source === "internal")).toBe(true);
     expect(
-      starter.checklists.flatMap((c) => c.items).every((i) => i.answer === "" && i.note === ""),
+      starter.checklists.flatMap((c) => c.items).every((i) => !("answer" in i) && !("note" in i)),
     ).toBe(true);
+  });
+
+  it("has one empty inspection per location of each list (school-wide when it has none)", () => {
+    const expected = starter.checklists.flatMap((c) =>
+      (c.locationIds ?? [null]).map((locationId) => `${c.id}|${locationId}`),
+    );
+    const actual = starter.inspections.map((i) => `${i.checklistId}|${i.locationId}`);
+    expect(actual).toEqual(expected);
+    expect(starter.inspections.every((i) => i.answers.length === 0)).toBe(true);
   });
 
   it("uses valid enums", () => {
@@ -43,6 +53,7 @@ describe("starter.json", () => {
     const ids = [
       ...starter.locations.flatMap((l) => [l.id, ...l.rows.map((r) => r.id)]),
       ...starter.checklists.flatMap((c) => [c.id, ...c.items.map((i) => i.id)]),
+      ...starter.inspections.map((i) => i.id),
     ];
     expect(new Set(ids).size).toBe(ids.length);
   });

@@ -125,6 +125,7 @@ describe("ref in the model", () => {
     const info = {
       listId: "k",
       itemId: "m",
+      locationId: null,
       code: "KL-26",
       listName: "x",
       no: "26.06",

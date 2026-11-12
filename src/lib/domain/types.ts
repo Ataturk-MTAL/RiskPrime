@@ -1,6 +1,6 @@
-// Assessment data model. This is also the saved .json file format (version 1).
+// Assessment data model. This is also the saved .json file format (version 2).
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export type Score = 1 | 2 | 3 | 4 | 5;
 export type LocationType = "workshop" | "storage" | "office" | "wet" | "common";
@@ -22,10 +22,14 @@ export interface School {
   signatories: Signatory[];
 }
 
-/** The checklist item a risk row came from. Ids may dangle after edits; helpers treat that as unlinked. */
+/**
+ * The checklist item a risk row came from, in one inspection (locationId = the inspection's scope,
+ * null = okul geneli). Ids may dangle after edits; helpers treat that as unlinked.
+ */
 export interface RiskSource {
   listId: string;
   itemId: string;
+  locationId: string | null;
 }
 
 export interface RiskRow {
@@ -59,12 +63,29 @@ export interface ChecklistItem {
   id: string;
   no: string;
   text: string;
-  answer: Answer;
-  note: string;
   /** Item added by the school to an external (MEB) list; its text stays editable. */
   added?: boolean;
   /** Question bank key this item came from, e.g. "KL-26.06" or "EE-03". */
   ref?: string;
+}
+
+/** One checklist template item answered in one inspection. */
+export interface InspectionAnswer {
+  itemId: string;
+  answer: Answer;
+  note: string;
+}
+
+/**
+ * A checklist (template) filled in for one location (denetim). locationId null = okul geneli, used
+ * when the list has no locations. Only answered or noted items are stored in `answers`; every other
+ * item counts as unanswered. A "no" answer is an eksik (deficiency).
+ */
+export interface Inspection {
+  id: string;
+  checklistId: string;
+  locationId: string | null;
+  answers: InspectionAnswer[];
 }
 
 export interface Checklist {
@@ -85,6 +106,8 @@ export interface Assessment {
   school: School;
   locations: Location[];
   checklists: Checklist[];
+  /** Exactly one per live location of each list (or one school-wide); see ensureInspections. */
+  inspections: Inspection[];
 }
 
 /** Library entries: templates without ids or answers. */

@@ -1,8 +1,10 @@
 // Reading, writing and validating the assessment file (JSON).
 import { GROUPINGS, LOCATION_TYPES, STATUSES } from "./assessment";
 import { ANSWERS } from "./checklist";
+import { migrateV1 } from "./file-migrate";
+import { ensureInspections } from "./inspections";
 import { isScore } from "./matrix";
-import { SCHEMA_VERSION, type Assessment, type RiskSource } from "./types";
+import { SCHEMA_VERSION, type Assessment } from "./types";
 
 const SOURCES = ["internal", "external"];
 
@@ -61,33 +63,41 @@ function validateRow(r: unknown, path: string, errors: string[]): void {
   }
   if (!STATUSES.includes(r.status as never))
     errors.push(`${path}.status: ${STATUSES.join(" ya da ")} olmalı.`);
-  // `source` is the pre-multi-link field; still accepted and converted by migrateRows.
-  if (r.source !== undefined && !isSourceRef(r.source))
-    errors.push(`${path}.source: listId ve itemId metin olmalı.`);
   const list = r.sources;
   if (list !== undefined && !(Array.isArray(list) && list.every(isSourceRef)))
-    errors.push(`${path}.sources: her kayıt için listId ve itemId metin olmalı.`);
+    errors.push(
+      `${path}.sources: her kayıt için listId, itemId metin; locationId metin ya da null olmalı.`,
+    );
 }
 
-const isSourceRef = (s: unknown) => isObject(s) && isString(s.listId) && isString(s.itemId);
+const isSourceRef = (s: unknown) =>
+  isObject(s) &&
+  isString(s.listId) &&
+  isString(s.itemId) &&
+  (s.locationId === null || isString(s.locationId));
 
-/** Converts the old single `source` of every row into `sources` (deduped). Input is not mutated. */
-function migrateRows(a: Assessment): Assessment {
-  return {
-    ...a,
-    locations: a.locations.map((l) => ({
-      ...l,
-      rows: l.rows.map((r) => {
-        const { source, ...rest } = r as typeof r & { source?: RiskSource };
-        if (!source) return r;
-        const all = [...(rest.sources ?? []), source];
-        const sources = all.filter(
-          (s, i) => all.findIndex((t) => t.listId === s.listId && t.itemId === s.itemId) === i,
-        );
-        return { ...rest, sources };
-      }),
-    })),
-  };
+function validateInspection(x: unknown, path: string, errors: string[]): void {
+  if (!isObject(x)) {
+    errors.push(`${path}: nesne olmalı.`);
+    return;
+  }
+  checkStrings(x, ["id", "checklistId"], path, errors);
+  if (x.locationId !== null && !isString(x.locationId))
+    errors.push(`${path}.locationId: metin ya da null olmalı.`);
+  if (!Array.isArray(x.answers)) {
+    errors.push(`${path}.answers: liste olmalı.`);
+    return;
+  }
+  x.answers.forEach((r, j) => {
+    const p = `${path}.answers[${j}]`;
+    if (!isObject(r)) {
+      errors.push(`${p}: nesne olmalı.`);
+      return;
+    }
+    checkStrings(r, ["itemId", "note"], p, errors);
+    if (!ANSWERS.includes(r.answer as never))
+      errors.push(`${p}.answer: yes, no, na ya da boş olmalı.`);
+  });
 }
 
 function validateLocation(l: unknown, path: string, errors: string[]): void {
@@ -127,10 +137,8 @@ function validateChecklist(l: unknown, path: string, errors: string[]): void {
       errors.push(`${p}: nesne olmalı.`);
       return;
     }
-    checkStrings(x, ["id", "no", "text", "note"], p, errors);
+    checkStrings(x, ["id", "no", "text"], p, errors);
     if (x.ref !== undefined && !isString(x.ref)) errors.push(`${p}.ref: metin olmalı.`);
-    if (!ANSWERS.includes(x.answer as never))
-      errors.push(`${p}.answer: yes, no, na ya da boş olmalı.`);
   });
 }
 
@@ -150,6 +158,8 @@ export function validate(value: unknown): string[] {
   else value.locations.forEach((l, i) => validateLocation(l, `locations[${i}]`, errors));
   if (!Array.isArray(value.checklists)) errors.push("checklists: liste olmalı.");
   else value.checklists.forEach((l, i) => validateChecklist(l, `checklists[${i}]`, errors));
+  if (!Array.isArray(value.inspections)) errors.push("inspections: liste olmalı.");
+  else value.inspections.forEach((x, i) => validateInspection(x, `inspections[${i}]`, errors));
   return errors;
 }
 
@@ -160,8 +170,11 @@ export function parse(text: string): { assessment: Assessment } | { errors: stri
   } catch {
     return { errors: ["Dosya okunamadı: geçerli bir JSON değil."] };
   }
-  const errors = validate(value);
-  return errors.length ? { errors } : { assessment: migrateRows(value as Assessment) };
+  // Version 1 files (answers on the items) are upgraded first; ensureInspections then completes
+  // the inspections of every other location and drops anything that no longer matches the lists.
+  const current = isObject(value) && value.version === 1 ? migrateV1(value) : value;
+  const errors = validate(current);
+  return errors.length ? { errors } : { assessment: ensureInspections(current as Assessment) };
 }
 
 export function serialize(a: Assessment): string {

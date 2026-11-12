@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "period": "2026-2027",
   "assessmentDate": "",
   "validUntil": "",
@@ -1675,157 +1675,115 @@
           "id": "m-01-01",
           "no": "1",
           "text": "Pano kapağı kapalı/kilitli, enerjili parça açıkta değil; pano önü boş (KL-26.06).",
-          "answer": "",
-          "note": "",
           "ref": "KL-26.06"
         },
         {
           "id": "m-01-02",
           "no": "2",
-          "text": "Kaçak akım rölesi ve sigortalar çalışıyor, test düğmesiyle denenmiş.",
-          "answer": "",
-          "note": ""
+          "text": "Kaçak akım rölesi ve sigortalar çalışıyor, test düğmesiyle denenmiş."
         },
         {
           "id": "m-01-03",
           "no": "3",
           "text": "Makine ve aletlerin çıplak metal kısımları topraklı; topraklama ölçüm kaydı güncel (KL-26.02/26.03).",
-          "answer": "",
-          "note": "",
           "ref": "KL-26.02"
         },
         {
           "id": "m-01-04",
           "no": "4",
           "text": "Kollu ve çevirmeli şalterlerde 1 ve 0 konumu etiketli (KL-26.07).",
-          "answer": "",
-          "note": "",
           "ref": "KL-26.07"
         },
         {
           "id": "m-01-05",
           "no": "5",
-          "text": "Elektrik yangınına uygun söndürücü var, tarihi geçmemiş, erişim açık.",
-          "answer": "",
-          "note": ""
+          "text": "Elektrik yangınına uygun söndürücü var, tarihi geçmemiş, erişim açık."
         },
         {
           "id": "m-01-06",
           "no": "6",
           "text": "Acil durum alarmı ve acil çıkış levhası var, kaçış yolu boş (KL-35.08).",
-          "answer": "",
-          "note": "",
           "ref": "KL-35.08"
         },
         {
           "id": "m-01-07",
           "no": "7",
           "text": "İlk yardım dolabı erişilebilir yerde ve malzemesi tam (KL-35.05-35.07).",
-          "answer": "",
-          "note": "",
           "ref": "KL-35.05"
         },
         {
           "id": "m-01-08",
           "no": "8",
           "text": "Atölye sorumlusunun telefonu ve vaziyet planı panoda asılı (KL-35.20/35.22).",
-          "answer": "",
-          "note": "",
           "ref": "KL-35.20"
         },
         {
           "id": "m-01-09",
           "no": "9",
           "text": "Ders sonunda atölye ana şalteri kapatılıyor (KL-30.07); yangın alarmı ayrı kaynaktan besleniyor (KL-30.08).",
-          "answer": "",
-          "note": "",
           "ref": "KL-30.07"
         },
         {
           "id": "m-01-10",
           "no": "10",
-          "text": "Atölyede duman dedektörü var; kablo kanalı kapakları tam.",
-          "answer": "",
-          "note": ""
+          "text": "Atölyede duman dedektörü var; kablo kanalı kapakları tam."
         },
         {
           "id": "m-01-11",
           "no": "11",
-          "text": "Atölye girişinde acil kesme butonu var ve çalışıyor.",
-          "answer": "",
-          "note": ""
+          "text": "Atölye girişinde acil kesme butonu var ve çalışıyor."
         },
         {
           "id": "m-01-12",
           "no": "12",
-          "text": "Arızalı cihazlar etiketli ve kullanım dışı; taşınabilir cihazların test etiketi güncel.",
-          "answer": "",
-          "note": ""
+          "text": "Arızalı cihazlar etiketli ve kullanım dışı; taşınabilir cihazların test etiketi güncel."
         },
         {
           "id": "m-01-13",
           "no": "13",
-          "text": "Öğrenci projeleri enerji öncesi öğretmen tarafından muayene ediliyor.",
-          "answer": "",
-          "note": ""
+          "text": "Öğrenci projeleri enerji öncesi öğretmen tarafından muayene ediliyor."
         },
         {
           "id": "m-01-14",
           "no": "14",
-          "text": "Ölçü aletleri ve problar uygun CAT sınıfında.",
-          "answer": "",
-          "note": ""
+          "text": "Ölçü aletleri ve problar uygun CAT sınıfında."
         },
         {
           "id": "m-01-15",
           "no": "15",
-          "text": "Yalıtkan eldiven ve paspas periyodik kontrol edilmiş ve etiketli.",
-          "answer": "",
-          "note": ""
+          "text": "Yalıtkan eldiven ve paspas periyodik kontrol edilmiş ve etiketli."
         },
         {
           "id": "m-01-16",
           "no": "16",
-          "text": "Pencerelerde açılma sınırlayıcı var; cam kapılar işaretli; kapı menteşeleri sağlam.",
-          "answer": "",
-          "note": ""
+          "text": "Pencerelerde açılma sınırlayıcı var; cam kapılar işaretli; kapı menteşeleri sağlam."
         },
         {
           "id": "m-01-17",
           "no": "17",
-          "text": "Pano durum (faz) lambaları çalışıyor; doğalgaz hattı varsa elektrik tesisatından yeterli uzaklıkta.",
-          "answer": "",
-          "note": ""
+          "text": "Pano durum (faz) lambaları çalışıyor; doğalgaz hattı varsa elektrik tesisatından yeterli uzaklıkta."
         },
         {
           "id": "m-01-18",
           "no": "18",
           "text": "Acil aydınlatma çalışıyor; kesintide setler kapatılıyor (KL-20.02, KL-26.42).",
-          "answer": "",
-          "note": "",
           "ref": "KL-20.02"
         },
         {
           "id": "m-01-19",
           "no": "19",
           "text": "Atölyede yiyecek-içecek yok (KL-32.34).",
-          "answer": "",
-          "note": "",
           "ref": "KL-32.34"
         },
         {
           "id": "m-01-20",
           "no": "20",
-          "text": "Temizlik enerji kesikken yapılıyor; temizlik personeli bilgilendirildi.",
-          "answer": "",
-          "note": ""
+          "text": "Temizlik enerji kesikken yapılıyor; temizlik personeli bilgilendirildi."
         },
         {
           "id": "m-01-21",
           "no": "21",
           "text": "Deprem tahliye tatbikatı yapıldı; ağır ekipman sabit (KL-17.32).",
-          "answer": "",
-          "note": "",
           "ref": "KL-17.32"
         }
       ]
@@ -1840,40 +1798,30 @@
           "id": "m-02-01",
           "no": "1",
           "text": "El aletleri yalıtımlı ve sağlam; kırık aletler ayrı muhafaza ediliyor (KL-34.21-34.23).",
-          "answer": "",
-          "note": "",
           "ref": "KL-34.21"
         },
         {
           "id": "m-02-02",
           "no": "2",
           "text": "Tesviyeci tezgâhında mengene sağlam; eğeler saplı (KL-34.04).",
-          "answer": "",
-          "note": "",
           "ref": "KL-34.04"
         },
         {
           "id": "m-02-03",
           "no": "3",
           "text": "Malzeme, modül ve camlı dolaplar duvara sabit; ağır modüller alt rafta (KL-35.23).",
-          "answer": "",
-          "note": "",
           "ref": "KL-35.23"
         },
         {
           "id": "m-02-04",
           "no": "4",
           "text": "Gerekli KKD var ve uygun şekilde muhafaza ediliyor (KL-35.13/35.14).",
-          "answer": "",
-          "note": "",
           "ref": "KL-35.13"
         },
         {
           "id": "m-02-05",
           "no": "5",
-          "text": "Klima filtre bakımı yapılmış; drenaj suyu zemine damlamıyor.",
-          "answer": "",
-          "note": ""
+          "text": "Klima filtre bakımı yapılmış; drenaj suyu zemine damlamıyor."
         }
       ]
     },
@@ -1887,30 +1835,22 @@
         {
           "id": "m-03-01",
           "no": "1",
-          "text": "TV setinde arıza yalnız test noktalarından yapılıyor.",
-          "answer": "",
-          "note": ""
+          "text": "TV setinde arıza yalnız test noktalarından yapılıyor."
         },
         {
           "id": "m-03-02",
           "no": "2",
-          "text": "Amplifikatör ve verici deneylerinde ses seviyesi sınırlı; verici çıkışı yüklü.",
-          "answer": "",
-          "note": ""
+          "text": "Amplifikatör ve verici deneylerinde ses seviyesi sınırlı; verici çıkışı yüklü."
         },
         {
           "id": "m-03-03",
           "no": "3",
-          "text": "Çanak antenler sabit sehpada; yüksekte çalışma yok.",
-          "answer": "",
-          "note": ""
+          "text": "Çanak antenler sabit sehpada; yüksekte çalışma yok."
         },
         {
           "id": "m-03-04",
           "no": "4",
-          "text": "Lehim istasyonu yuvalı; havalandırma var.",
-          "answer": "",
-          "note": ""
+          "text": "Lehim istasyonu yuvalı; havalandırma var."
         }
       ]
     },
@@ -1924,23 +1864,17 @@
         {
           "id": "m-04-01",
           "no": "1",
-          "text": "Tesisat setleri kaçak akım rölesinden besleniyor; RCD açma süresi ölçüldü.",
-          "answer": "",
-          "note": ""
+          "text": "Tesisat setleri kaçak akım rölesinden besleniyor; RCD açma süresi ölçüldü."
         },
         {
           "id": "m-04-02",
           "no": "2",
-          "text": "Bağlantılar enerjisiz yapılıyor; enerji öncesi öğretmen kontrolü var.",
-          "answer": "",
-          "note": ""
+          "text": "Bağlantılar enerjisiz yapılıyor; enerji öncesi öğretmen kontrolü var."
         },
         {
           "id": "m-04-03",
           "no": "3",
-          "text": "Topraklama ve kablo test deneyleri öğretmen gözetiminde.",
-          "answer": "",
-          "note": ""
+          "text": "Topraklama ve kablo test deneyleri öğretmen gözetiminde."
         }
       ]
     },
@@ -1954,23 +1888,17 @@
         {
           "id": "m-05-01",
           "no": "1",
-          "text": "Bina otomasyon setinin 230 V tarafı kapaklı.",
-          "answer": "",
-          "note": ""
+          "text": "Bina otomasyon setinin 230 V tarafı kapaklı."
         },
         {
           "id": "m-05-02",
           "no": "2",
-          "text": "Siren deneyleri kısık sesle ve kısa süreli.",
-          "answer": "",
-          "note": ""
+          "text": "Siren deneyleri kısık sesle ve kısa süreli."
         },
         {
           "id": "m-05-03",
           "no": "3",
-          "text": "Yangın algılama seti okul alarm sistemine bağlı değil; test spreyi havalandırmalı ortamda.",
-          "answer": "",
-          "note": ""
+          "text": "Yangın algılama seti okul alarm sistemine bağlı değil; test spreyi havalandırmalı ortamda."
         }
       ]
     },
@@ -1984,16 +1912,12 @@
         {
           "id": "m-06-01",
           "no": "1",
-          "text": "Pano setlerinin acil durdurma ve kaçak akım koruması ders başında denendi.",
-          "answer": "",
-          "note": ""
+          "text": "Pano setlerinin acil durdurma ve kaçak akım koruması ders başında denendi."
         },
         {
           "id": "m-06-02",
           "no": "2",
-          "text": "Ray ve kanal kesiminde gözlük ve eldiven kullanılıyor.",
-          "answer": "",
-          "note": ""
+          "text": "Ray ve kanal kesiminde gözlük ve eldiven kullanılıyor."
         }
       ]
     },
@@ -2007,9 +1931,7 @@
         {
           "id": "m-07-01",
           "no": "1",
-          "text": "Endüstriyel elektronik setlerinin şebeke tarafı kapaklı; soğutucular soğumadan dokunulmuyor.",
-          "answer": "",
-          "note": ""
+          "text": "Endüstriyel elektronik setlerinin şebeke tarafı kapaklı; soğutucular soğumadan dokunulmuyor."
         }
       ]
     },
@@ -2024,31 +1946,23 @@
           "id": "m-08-01",
           "no": "1",
           "text": "Ekranlar ayarlanabilir, yansımasız; mesafe 50-80 cm (KL-27.01-27.04).",
-          "answer": "",
-          "note": "",
           "ref": "KL-27.01"
         },
         {
           "id": "m-08-02",
           "no": "2",
           "text": "Masa ve koltuk yeterli yükseklikte ve ergonomik (KL-27.08/27.09).",
-          "answer": "",
-          "note": "",
           "ref": "KL-27.08"
         },
         {
           "id": "m-08-03",
           "no": "3",
-          "text": "3B yazıcı çalışırken içine el sokulmuyor; ortam havalandırılıyor.",
-          "answer": "",
-          "note": ""
+          "text": "3B yazıcı çalışırken içine el sokulmuyor; ortam havalandırılıyor."
         },
         {
           "id": "m-08-04",
           "no": "4",
-          "text": "Çoklu prizlerde zincirleme bağlantı yok; kablolar kanalda.",
-          "answer": "",
-          "note": ""
+          "text": "Çoklu prizlerde zincirleme bağlantı yok; kablolar kanalda."
         }
       ]
     },
@@ -2062,23 +1976,17 @@
         {
           "id": "m-09-01",
           "no": "1",
-          "text": "PLC setlerinin besleme tarafı kapaklı; çıkış gerilimleri etiketli.",
-          "answer": "",
-          "note": ""
+          "text": "PLC setlerinin besleme tarafı kapaklı; çıkış gerilimleri etiketli."
         },
         {
           "id": "m-09-02",
           "no": "2",
-          "text": "Servo, step ve konveyör hareketli kısımları kapaklı; acil stop devrede.",
-          "answer": "",
-          "note": ""
+          "text": "Servo, step ve konveyör hareketli kısımları kapaklı; acil stop devrede."
         },
         {
           "id": "m-09-03",
           "no": "3",
-          "text": "Program indirmeden önce hareket alanı boş ve PLC STOP konumunda.",
-          "answer": "",
-          "note": ""
+          "text": "Program indirmeden önce hareket alanı boş ve PLC STOP konumunda."
         }
       ]
     },
@@ -2092,38 +2000,28 @@
         {
           "id": "m-10-01",
           "no": "1",
-          "text": "Kumanda setlerinde enerji yalnız öğretmen kontrolünde veriliyor.",
-          "answer": "",
-          "note": ""
+          "text": "Kumanda setlerinde enerji yalnız öğretmen kontrolünde veriliyor."
         },
         {
           "id": "m-10-02",
           "no": "2",
-          "text": "Motor milleri ve kaplinler koruyuculu; motorlar sabit tabanda.",
-          "answer": "",
-          "note": ""
+          "text": "Motor milleri ve kaplinler koruyuculu; motorlar sabit tabanda."
         },
         {
           "id": "m-10-03",
           "no": "3",
-          "text": "Seri DC motor yüksüz çalıştırılmıyor.",
-          "answer": "",
-          "note": ""
+          "text": "Seri DC motor yüksüz çalıştırılmıyor."
         },
         {
           "id": "m-10-04",
           "no": "4",
           "text": "Acil stop ders başında denendi; durdurma butonları kırmızı (KL-26.19/26.39).",
-          "answer": "",
-          "note": "",
           "ref": "KL-26.19"
         },
         {
           "id": "m-10-05",
           "no": "5",
-          "text": "Kompanzasyon setinde deşarj süresi bekleniyor; akım trafosu sekonderi açık kalmıyor.",
-          "answer": "",
-          "note": ""
+          "text": "Kompanzasyon setinde deşarj süresi bekleniyor; akım trafosu sekonderi açık kalmıyor."
         }
       ]
     },
@@ -2137,32 +2035,24 @@
         {
           "id": "m-11-01",
           "no": "1",
-          "text": "Bağlantılar basınçsızken yapılıyor; hortum ve rakorlar sağlam.",
-          "answer": "",
-          "note": ""
+          "text": "Bağlantılar basınçsızken yapılıyor; hortum ve rakorlar sağlam."
         },
         {
           "id": "m-11-02",
           "no": "2",
           "text": "Kompresör kullanılıyorsa periyodik kontrol raporu var; emniyet ventili çalışıyor (KL-28.01/28.06).",
-          "answer": "",
-          "note": "",
           "ref": "KL-28.01"
         },
         {
           "id": "m-11-03",
           "no": "3",
           "text": "Basınçlı hava ile temizlikte basınç düşürücü uç ve KKD kullanılıyor (KL-26.43/26.44).",
-          "answer": "",
-          "note": "",
           "ref": "KL-26.43"
         },
         {
           "id": "m-11-04",
           "no": "4",
-          "text": "Process setinde elektrik kısımları sudan ayrı; yağ ve su kaçağına karşı tepsi var.",
-          "answer": "",
-          "note": ""
+          "text": "Process setinde elektrik kısımları sudan ayrı; yağ ve su kaçağına karşı tepsi var."
         }
       ]
     },
@@ -2177,52 +2067,38 @@
           "id": "m-12-01",
           "no": "1",
           "text": "Raflar duvara sabit; ağır malzeme alt rafta; yük sınırı etiketli (KL-35.23).",
-          "answer": "",
-          "note": "",
           "ref": "KL-35.23"
         },
         {
           "id": "m-12-02",
           "no": "2",
-          "text": "Yüksek rafa basamaklı merdivenle ulaşılıyor; sandalyeye çıkılmıyor (KL-25).",
-          "answer": "",
-          "note": ""
+          "text": "Yüksek rafa basamaklı merdivenle ulaşılıyor; sandalyeye çıkılmıyor (KL-25)."
         },
         {
           "id": "m-12-03",
           "no": "3",
           "text": "Seyyar merdiven sağlam ve kullanım öncesi kontrol ediliyor (KL-25.04/25.06).",
-          "answer": "",
-          "note": "",
           "ref": "KL-25.04"
         },
         {
           "id": "m-12-04",
           "no": "4",
-          "text": "Piller kutupları bantlı ve ayrı; kimyasallar etiketli ve kapalı; MSDS depoda.",
-          "answer": "",
-          "note": ""
+          "text": "Piller kutupları bantlı ve ayrı; kimyasallar etiketli ve kapalı; MSDS depoda."
         },
         {
           "id": "m-12-05",
           "no": "5",
-          "text": "Kırık lambalar ayrı kapalı kapta.",
-          "answer": "",
-          "note": ""
+          "text": "Kırık lambalar ayrı kapalı kapta."
         },
         {
           "id": "m-12-06",
           "no": "6",
-          "text": "Kapı yanında söndürücü var; ambalaj atığı birikmiyor.",
-          "answer": "",
-          "note": ""
+          "text": "Kapı yanında söndürücü var; ambalaj atığı birikmiyor."
         },
         {
           "id": "m-12-07",
           "no": "7",
-          "text": "Depo kilitli; öğrenci yalnız öğretmenle giriyor.",
-          "answer": "",
-          "note": ""
+          "text": "Depo kilitli; öğrenci yalnız öğretmenle giriyor."
         }
       ]
     },
@@ -2236,54 +2112,40 @@
         {
           "id": "m-13-01",
           "no": "1",
-          "text": "Zemin kaymaz veya paspaslı; ıslak zemin uyarısı var.",
-          "answer": "",
-          "note": ""
+          "text": "Zemin kaymaz veya paspaslı; ıslak zemin uyarısı var."
         },
         {
           "id": "m-13-02",
           "no": "2",
           "text": "Elektrik tesisatı kaçak akım rölesiyle korunuyor; priz ve anahtarlar su sıçramasına karşı korumalı (KL-11.07, KL-26.11).",
-          "answer": "",
-          "note": "",
           "ref": "KL-11.07"
         },
         {
           "id": "m-13-03",
           "no": "3",
-          "text": "Temizlik kimyasalları kilitli dolapta ve etiketli.",
-          "answer": "",
-          "note": ""
+          "text": "Temizlik kimyasalları kilitli dolapta ve etiketli."
         },
         {
           "id": "m-13-04",
           "no": "4",
-          "text": "Sabun, kâğıt havlu ve havalandırma yeterli.",
-          "answer": "",
-          "note": ""
+          "text": "Sabun, kâğıt havlu ve havalandırma yeterli."
         },
         {
           "id": "m-13-05",
           "no": "5",
           "text": "Kabin kilitleri dışarıdan acil açılabiliyor; kapılar dışarı açılıyor (KL-11.11).",
-          "answer": "",
-          "note": "",
           "ref": "KL-11.11"
         },
         {
           "id": "m-13-06",
           "no": "6",
           "text": "En az bir kabin engelli kullanımına uygun (KL-11.09).",
-          "answer": "",
-          "note": "",
           "ref": "KL-11.09"
         },
         {
           "id": "m-13-07",
           "no": "7",
-          "text": "Duman dedektörü var; teneffüste nöbet kontrolü yapılıyor.",
-          "answer": "",
-          "note": ""
+          "text": "Duman dedektörü var; teneffüste nöbet kontrolü yapılıyor."
         }
       ]
     },
@@ -2297,30 +2159,22 @@
         {
           "id": "m-14-01",
           "no": "1",
-          "text": "Koltuklar ayarlanabilir; ekranlar göz hizasında.",
-          "answer": "",
-          "note": ""
+          "text": "Koltuklar ayarlanabilir; ekranlar göz hizasında."
         },
         {
           "id": "m-14-02",
           "no": "2",
-          "text": "Su ısıtıcı ve çay makinesi ayrı sigortalı prize takılı; gün sonu fişler çekiliyor.",
-          "answer": "",
-          "note": ""
+          "text": "Su ısıtıcı ve çay makinesi ayrı sigortalı prize takılı; gün sonu fişler çekiliyor."
         },
         {
           "id": "m-14-03",
           "no": "3",
-          "text": "Dolaplar duvara sabit; ağır klasörler alt rafta.",
-          "answer": "",
-          "note": ""
+          "text": "Dolaplar duvara sabit; ağır klasörler alt rafta."
         },
         {
           "id": "m-14-04",
           "no": "4",
-          "text": "Arşiv ısı kaynağından uzak; söndürücü yakında.",
-          "answer": "",
-          "note": ""
+          "text": "Arşiv ısı kaynağından uzak; söndürücü yakında."
         }
       ]
     },
@@ -2334,33 +2188,153 @@
           "id": "m-15-01",
           "no": "1",
           "text": "Öğrenciler dönem başında İSG ve atölye kuralları eğitimini aldı, kayıt var (KL-26.16).",
-          "answer": "",
-          "note": "",
           "ref": "KL-26.16"
         },
         {
           "id": "m-15-02",
           "no": "2",
           "text": "Makine kullanım talimatları ve uyarı levhaları asılı (KL-35.09/35.12).",
-          "answer": "",
-          "note": "",
           "ref": "KL-35.09"
         },
         {
           "id": "m-15-03",
           "no": "3",
-          "text": "Öğretmen yokken atölye kilitli; okul saatleri dışı kullanım kuralı belirli.",
-          "answer": "",
-          "note": ""
+          "text": "Öğretmen yokken atölye kilitli; okul saatleri dışı kullanım kuralı belirli."
         },
         {
           "id": "m-15-04",
           "no": "4",
-          "text": "Kaza ve ramak kala olay kaydı tutuluyor; İSG kuruluna bildiriliyor.",
-          "answer": "",
-          "note": ""
+          "text": "Kaza ve ramak kala olay kaydı tutuluyor; İSG kuruluna bildiriliyor."
         }
       ]
+    }
+  ],
+  "inspections": [
+    {
+      "id": "d-01-all",
+      "checklistId": "k-01",
+      "locationId": null,
+      "answers": []
+    },
+    {
+      "id": "d-02-all",
+      "checklistId": "k-02",
+      "locationId": null,
+      "answers": []
+    },
+    {
+      "id": "d-03-a-02",
+      "checklistId": "k-03",
+      "locationId": "a-02",
+      "answers": []
+    },
+    {
+      "id": "d-04-a-03",
+      "checklistId": "k-04",
+      "locationId": "a-03",
+      "answers": []
+    },
+    {
+      "id": "d-04-a-04",
+      "checklistId": "k-04",
+      "locationId": "a-04",
+      "answers": []
+    },
+    {
+      "id": "d-04-a-07",
+      "checklistId": "k-04",
+      "locationId": "a-07",
+      "answers": []
+    },
+    {
+      "id": "d-04-a-10",
+      "checklistId": "k-04",
+      "locationId": "a-10",
+      "answers": []
+    },
+    {
+      "id": "d-05-a-05",
+      "checklistId": "k-05",
+      "locationId": "a-05",
+      "answers": []
+    },
+    {
+      "id": "d-06-a-06",
+      "checklistId": "k-06",
+      "locationId": "a-06",
+      "answers": []
+    },
+    {
+      "id": "d-07-a-07",
+      "checklistId": "k-07",
+      "locationId": "a-07",
+      "answers": []
+    },
+    {
+      "id": "d-08-a-08",
+      "checklistId": "k-08",
+      "locationId": "a-08",
+      "answers": []
+    },
+    {
+      "id": "d-09-a-09",
+      "checklistId": "k-09",
+      "locationId": "a-09",
+      "answers": []
+    },
+    {
+      "id": "d-10-a-11",
+      "checklistId": "k-10",
+      "locationId": "a-11",
+      "answers": []
+    },
+    {
+      "id": "d-10-a-13",
+      "checklistId": "k-10",
+      "locationId": "a-13",
+      "answers": []
+    },
+    {
+      "id": "d-11-a-12",
+      "checklistId": "k-11",
+      "locationId": "a-12",
+      "answers": []
+    },
+    {
+      "id": "d-12-a-14",
+      "checklistId": "k-12",
+      "locationId": "a-14",
+      "answers": []
+    },
+    {
+      "id": "d-12-a-15",
+      "checklistId": "k-12",
+      "locationId": "a-15",
+      "answers": []
+    },
+    {
+      "id": "d-13-a-16",
+      "checklistId": "k-13",
+      "locationId": "a-16",
+      "answers": []
+    },
+    {
+      "id": "d-14-a-17",
+      "checklistId": "k-14",
+      "locationId": "a-17",
+      "answers": []
+    },
+    {
+      "id": "d-14-a-18",
+      "checklistId": "k-14",
+      "locationId": "a-18",
+      "answers": []
+    },
+    {
+      "id": "d-15-all",
+      "checklistId": "k-15",
+      "locationId": null,
+      "answers": []
     }
   ]
 }

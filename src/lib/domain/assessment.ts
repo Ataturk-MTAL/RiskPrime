@@ -1,5 +1,8 @@
 // Immutable operations on an Assessment. Every function returns a new copy and never mutates its input.
 import { parseTrDate, toIso } from "./date";
+import { newId } from "./ids";
+import { ensureInspections } from "./inspections";
+import { clearSources } from "./links";
 import { isScore } from "./matrix";
 import {
   SCHEMA_VERSION,
@@ -56,14 +59,7 @@ const ROW_KEYS = [
 ] as const;
 const SCORE_KEYS = ["likelihood", "severity", "likelihoodAfter", "severityAfter"] as const;
 
-export function newId(prefix: string): string {
-  const c = globalThis.crypto;
-  const body =
-    c && typeof c.randomUUID === "function"
-      ? c.randomUUID()
-      : Date.now().toString(36) + Math.random().toString(36).slice(2);
-  return `${prefix}-${body}`;
-}
+export { newId };
 
 /** Copies only the allowed keys that are present in `source`. */
 export function pick<T extends object>(source: object, keys: readonly string[]): Partial<T> {
@@ -85,6 +81,7 @@ export function emptyAssessment(period = ""): Assessment {
     },
     locations: [],
     checklists: [],
+    inspections: [],
   };
 }
 
@@ -207,11 +204,12 @@ function withoutLocation(c: Checklist, id: string): Checklist {
 
 export function removeLocation(a: Assessment, id: string): Assessment {
   findLocation(a, id);
-  return {
-    ...a,
-    locations: a.locations.filter((l) => l.id !== id),
-    checklists: a.checklists.map((c) => withoutLocation(c, id)),
-  };
+  const next = clearSources(a, (s) => s.locationId === id);
+  return ensureInspections({
+    ...next,
+    locations: next.locations.filter((l) => l.id !== id),
+    checklists: next.checklists.map((c) => withoutLocation(c, id)),
+  });
 }
 
 /** Group key of a location under school.grouping (same buckets as grouped()). */
@@ -340,19 +338,29 @@ export function duplicateRow(
 /** Copy of a location with all rows under new ids, named "<name> (kopya)", placed right after it. */
 export function duplicateLocation(a: Assessment, id: string, newLocationId?: string): Assessment {
   const source = findLocation(a, id);
+  const copyId = newLocationId || newId("a");
   const copy: Location = {
     ...source,
-    id: newLocationId || newId("a"),
+    id: copyId,
     name: `${source.name} (kopya)`,
-    rows: source.rows.map((r) => ({ ...r, id: newId("r") })),
+    // Links into the original's inspections point at the copy's fresh (empty) ones instead.
+    rows: source.rows.map((r) => ({
+      ...r,
+      id: newId("r"),
+      ...(r.sources
+        ? {
+            sources: r.sources.map((s) => (s.locationId === id ? { ...s, locationId: copyId } : s)),
+          }
+        : {}),
+    })),
   };
-  return {
+  return ensureInspections({
     ...a,
     locations: a.locations.flatMap((l) => (l.id === id ? [l, copy] : [l])),
     checklists: a.checklists.map((c) =>
       c.locationIds?.includes(id) ? { ...c, locationIds: [...c.locationIds, copy.id] } : c,
     ),
-  };
+  });
 }
 
 /** True for an open row whose due date (DD.MM.YYYY) is before `today` (injected for tests). */

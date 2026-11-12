@@ -5,7 +5,8 @@
   import { Label } from '$lib/components/ui/label';
   import * as Popover from '$lib/components/ui/popover';
   import { grouped } from '$lib/domain/assessment';
-  import { liveLocationIds, setChecklistLocations } from '$lib/domain/links';
+  import { liveLocationIds } from '$lib/domain/inspections';
+  import { setChecklistLocations } from '$lib/domain/links';
   import type { Checklist } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
 

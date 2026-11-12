@@ -1,5 +1,6 @@
 // Links between checklist items and risk rows. Pure helpers; every change returns a new Assessment.
-import type { Assessment, Checklist, ChecklistItem, RiskRow, RiskSource } from "./types";
+import { answerOf, ensureInspections, findInspection, liveLocationIds } from "./inspections";
+import type { Answer, Assessment, Checklist, ChecklistItem, RiskRow, RiskSource } from "./types";
 
 export interface ItemRow {
   locationId: string;
@@ -12,10 +13,12 @@ export interface ItemRow {
 export interface SourceInfo {
   listId: string;
   itemId: string;
+  /** Inspection scope of the answer; null = okul geneli. */
+  locationId: string | null;
   code: string;
   listName: string;
   no: string;
-  answer: ChecklistItem["answer"];
+  answer: Answer;
   text: string;
   /** Question bank key of the item, when it has one. */
   ref?: string;
@@ -40,31 +43,41 @@ const itemOf = (a: Assessment, s: RiskSource): { list: Checklist; item: Checklis
   return list && item ? { list, item } : null;
 };
 
-/** Risk rows (in any location) that came from the given checklist item. */
-export function rowsForItem(a: Assessment, listId: string, itemId: string): ItemRow[] {
+const same = (x: RiskSource, y: RiskSource) =>
+  x.listId === y.listId && x.itemId === y.itemId && x.locationId === y.locationId;
+
+/** Risk rows (in any location) that came from the given item in the given inspection (null = okul geneli). */
+export function rowsForItem(
+  a: Assessment,
+  listId: string,
+  itemId: string,
+  locationId: string | null,
+): ItemRow[] {
+  const wanted: RiskSource = { listId, itemId, locationId };
   return a.locations.flatMap((l) =>
     l.rows.flatMap((r, i) =>
-      r.sources?.some((s) => s.listId === listId && s.itemId === itemId)
+      r.sources?.some((s) => same(s, wanted))
         ? [{ locationId: l.id, locationName: l.name, rowId: r.id, number: i + 1 }]
         : [],
     ),
   );
 }
 
-/** The items a row came from, in order; dangling references are dropped. */
+/** The items a row came from, in order, with their answer in the linked inspection; dangling references are dropped. */
 export function sourcesOf(a: Assessment, row: RiskRow): SourceInfo[] {
   return (row.sources ?? []).flatMap((s) => {
     const found = itemOf(a, s);
-    if (!found) return [];
+    if (!found || !findInspection(a, s.listId, s.locationId)) return [];
     const { list, item } = found;
     return [
       {
         listId: list.id,
         itemId: item.id,
+        locationId: s.locationId,
         code: list.code,
         listName: list.name,
         no: item.no,
-        answer: item.answer,
+        answer: answerOf(a, list.id, s.locationId, item.id).answer,
         text: item.text,
         ...(item.ref ? { ref: item.ref } : {}),
       },
@@ -72,13 +85,7 @@ export function sourcesOf(a: Assessment, row: RiskRow): SourceInfo[] {
   });
 }
 
-/** Location ids of a list that still exist, without duplicates. */
-export function liveLocationIds(a: Assessment, list: Checklist): string[] {
-  const live = (list.locationIds ?? []).filter((id) => a.locations.some((l) => l.id === id));
-  return [...new Set(live)];
-}
-
-/** Lists tied to the location, plus how many lists are general (apply to every location). */
+/** Lists tied to the location, plus how many lists are general (apply to every location, one school-wide inspection). */
 export function listsForLocation(
   a: Assessment,
   locationId: string,
@@ -89,6 +96,7 @@ export function listsForLocation(
   };
 }
 
+/** Sets the list's locations (dead ids dropped) and re-syncs its inspections. */
 export function setChecklistLocations(
   a: Assessment,
   listId: string,
@@ -96,7 +104,7 @@ export function setChecklistLocations(
 ): Assessment {
   if (!a.checklists.some((c) => c.id === listId))
     throw new Error(`Kontrol listesi bulunamadı: ${listId}`);
-  return {
+  return ensureInspections({
     ...a,
     checklists: a.checklists.map((c) => {
       if (c.id !== listId) return c;
@@ -104,17 +112,13 @@ export function setChecklistLocations(
       const ids = liveLocationIds(a, { ...c, locationIds });
       return ids.length ? { ...rest, locationIds: ids } : rest;
     }),
-  };
+  });
 }
 
 /** Row with the given sources; an empty list drops the key. Duplicates are removed, order kept. */
 function withSources(r: RiskRow, sources: RiskSource[]): RiskRow {
   const { sources: _old, ...rest } = r;
-  const seen = new Set<string>();
-  const unique = sources.filter((s) => {
-    const key = `${s.listId}\u0000${s.itemId}`;
-    return !seen.has(key) && !!seen.add(key);
-  });
+  const unique = sources.filter((s, i) => sources.findIndex((t) => same(s, t)) === i);
   return unique.length ? { ...rest, sources: unique.map((s) => ({ ...s })) } : rest;
 }
 
@@ -128,7 +132,7 @@ function updateSources(
   const location = a.locations.find((l) => l.id === locationId);
   if (!location) throw new Error(`Mekân bulunamadı: ${locationId}`);
   if (!location.rows.some((r) => r.id === rowId)) throw new Error(`Satır bulunamadı: ${rowId}`);
-  if (check && !itemOf(a, check))
+  if (check && !(itemOf(a, check) && findInspection(a, check.listId, check.locationId)))
     throw new Error(`Kontrol maddesi bulunamadı: ${check.listId}/${check.itemId}`);
   return {
     ...a,
@@ -143,9 +147,7 @@ function updateSources(
   };
 }
 
-const same = (x: RiskSource, y: RiskSource) => x.listId === y.listId && x.itemId === y.itemId;
-
-/** Adds an item to the row's sources (no-op when already linked). */
+/** Adds an item (in one inspection) to the row's sources (no-op when already linked). */
 export function addRowSource(
   a: Assessment,
   locationId: string,

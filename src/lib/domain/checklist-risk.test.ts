@@ -1,13 +1,14 @@
 import { describe, expect, test } from "vite-plus/test";
 import { addLocation, emptyAssessment } from "./assessment";
 import { defaultLocationId, hasChecklistRisk, riskRowFromChecklistItem } from "./checklist-risk";
+import { withAnswers } from "./test-helpers";
 import type { Assessment } from "./types";
 
 function sample(): Assessment {
   let a = emptyAssessment("2026-2027");
   a = addLocation(a, { id: "l1", name: "Depo" });
   a = addLocation(a, { id: "l2", name: "Elektrik Atölyesi" });
-  return {
+  const base: Assessment = {
     ...a,
     checklists: [
       {
@@ -20,21 +21,21 @@ function sample(): Assessment {
             id: "m1",
             no: "06",
             text: "Pano kapağı kapalı mı?",
-            answer: "no",
-            note: "Yarın kapatılacak",
           },
-          { id: "m2", no: "07", text: "Topraklama var mı?", answer: "no", note: "" },
+          { id: "m2", no: "07", text: "Topraklama var mı?" },
         ],
       },
     ],
   };
+  return withAnswers(base, "k1", null, { m1: "no", m2: "no" }, { m1: "Yarın kapatılacak" });
 }
 
 describe("riskRowFromChecklistItem", () => {
   test("adds a row with hazard, reference and note as action", () => {
     const a = sample();
-    const next = riskRowFromChecklistItem(a, "k1", "m1", "l2");
+    const next = riskRowFromChecklistItem(a, "k1", "m1", null, "l2");
     const row = next.locations[1].rows[0];
+    expect(row.sources).toEqual([{ listId: "k1", itemId: "m1", locationId: null }]);
     expect(row.hazard).toBe("Pano kapağı kapalı mı? (KL-26.06)");
     expect(row.action).toBe("Yarın kapatılacak");
     expect(row.existingControls).toBe("");
@@ -43,23 +44,39 @@ describe("riskRowFromChecklistItem", () => {
   });
 
   test("leaves action empty when the item has no note", () => {
-    const next = riskRowFromChecklistItem(sample(), "k1", "m2", "l1");
+    const next = riskRowFromChecklistItem(sample(), "k1", "m2", null, "l1");
     expect(next.locations[0].rows[0].action).toBe("");
   });
 
   test("throws for unknown list, item or location", () => {
-    expect(() => riskRowFromChecklistItem(sample(), "x", "m1", "l1")).toThrow();
-    expect(() => riskRowFromChecklistItem(sample(), "k1", "x", "l1")).toThrow();
-    expect(() => riskRowFromChecklistItem(sample(), "k1", "m1", "x")).toThrow();
+    expect(() => riskRowFromChecklistItem(sample(), "x", "m1", null, "l1")).toThrow();
+    expect(() => riskRowFromChecklistItem(sample(), "k1", "x", null, "l1")).toThrow();
+    expect(() => riskRowFromChecklistItem(sample(), "k1", "m1", null, "x")).toThrow();
+    expect(() => riskRowFromChecklistItem(sample(), "k1", "m1", null)).toThrow();
+  });
+
+  test("a location inspection puts the row in its own location", () => {
+    const a = withAnswers(
+      { ...sample(), checklists: [{ ...sample().checklists[0], locationIds: ["l1"] }] },
+      "k1",
+      "l1",
+      { m1: "no" },
+      { m1: "Not" },
+    );
+    const next = riskRowFromChecklistItem(a, "k1", "m1", "l1");
+    expect(next.locations[0].rows[0]).toMatchObject({
+      action: "Not",
+      sources: [{ listId: "k1", itemId: "m1", locationId: "l1" }],
+    });
   });
 });
 
 describe("hasChecklistRisk", () => {
   test("detects an existing row with the same hazard in that location only", () => {
-    const a = riskRowFromChecklistItem(sample(), "k1", "m1", "l2");
-    expect(hasChecklistRisk(a, "k1", "m1", "l2")).toBe(true);
-    expect(hasChecklistRisk(a, "k1", "m1", "l1")).toBe(false);
-    expect(hasChecklistRisk(a, "k1", "m2", "l2")).toBe(false);
+    const a = riskRowFromChecklistItem(sample(), "k1", "m1", null, "l2");
+    expect(hasChecklistRisk(a, "k1", "m1", null, "l2")).toBe(true);
+    expect(hasChecklistRisk(a, "k1", "m1", null, "l1")).toBe(false);
+    expect(hasChecklistRisk(a, "k1", "m2", null, "l2")).toBe(false);
   });
 });
 
