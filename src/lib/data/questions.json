@@ -1,5 +1,5 @@
 {
-  "version": "2026.1",
+  "version": "2026.2",
   "items": [
     {
       "key": "KL-01.01",
@@ -13,7 +13,8 @@
       "text": "Pencere açıldığında yaralanma ve düşme riski mevcutsa, açıklık 100 mm ile sınırlandırılmış mı?",
       "source": "meb",
       "listCode": "KL-01",
-      "tags": []
+      "tags": [],
+      "common": "OM-34"
     },
     {
       "key": "KL-01.03",
@@ -111,7 +112,8 @@
       "text": "Kayma ve düşmeye karşı zeminler uygun malzemelerden yapılmış mı?",
       "source": "meb",
       "listCode": "KL-01",
-      "tags": []
+      "tags": [],
+      "common": "OM-25"
     },
     {
       "key": "KL-01.18",
@@ -167,7 +169,8 @@
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-01",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-01.26",
@@ -594,35 +597,40 @@
       "text": "İlkyardım dolabı var mı?",
       "source": "meb",
       "listCode": "KL-04",
-      "tags": []
+      "tags": [],
+      "common": "OM-04"
     },
     {
       "key": "KL-04.04",
       "text": "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?",
       "source": "meb",
       "listCode": "KL-04",
-      "tags": []
+      "tags": [],
+      "common": "OM-02"
     },
     {
       "key": "KL-04.05",
       "text": "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?",
       "source": "meb",
       "listCode": "KL-04",
-      "tags": []
+      "tags": [],
+      "common": "OM-03"
     },
     {
       "key": "KL-04.06",
       "text": "Yangın için özel önlemler alınmış mı?",
       "source": "meb",
       "listCode": "KL-04",
-      "tags": []
+      "tags": [],
+      "common": "OM-35"
     },
     {
       "key": "KL-04.07",
       "text": "Zemin kaymaya, düşmeye karşı uygun malzemelerden yapılmış mı?",
       "source": "meb",
       "listCode": "KL-04",
-      "tags": []
+      "tags": [],
+      "common": "OM-25"
     },
     {
       "key": "KL-04.08",
@@ -671,7 +679,8 @@
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-04",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-04.15",
@@ -727,7 +736,8 @@
       "text": "Zemin kaymaya, düşmeye karşı uygun malzemeden yapılmış mı?",
       "source": "meb",
       "listCode": "KL-05",
-      "tags": []
+      "tags": [],
+      "common": "OM-25"
     },
     {
       "key": "KL-05.06",
@@ -790,7 +800,8 @@
       "text": "Zemin kaymaya, düşmeye karşı uygun malzemeden yapılmış mı?",
       "source": "meb",
       "listCode": "KL-06",
-      "tags": []
+      "tags": [],
+      "common": "OM-25"
     },
     {
       "key": "KL-06.02",
@@ -811,7 +822,8 @@
       "text": "Acil durum alarmı ve acil çıkış levhaları asılmış mı?",
       "source": "meb",
       "listCode": "KL-06",
-      "tags": []
+      "tags": [],
+      "common": "OM-28"
     },
     {
       "key": "KL-06.05",
@@ -839,21 +851,24 @@
       "text": "Duyuru panosu asılı mı?",
       "source": "meb",
       "listCode": "KL-06",
-      "tags": []
+      "tags": [],
+      "common": "OM-29"
     },
     {
       "key": "KL-06.09",
       "text": "Havalandırma yeterli mi?",
       "source": "meb",
       "listCode": "KL-06",
-      "tags": []
+      "tags": [],
+      "common": "OM-07"
     },
     {
       "key": "KL-06.10",
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-06",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-06.11",
@@ -867,21 +882,24 @@
       "text": "Sınıflarda öğrencilere zarar verebilecek (Kolon köşeleri, radyatör, metal direkler vb.) nesneler darbe emici izolasyon malzemeleri ile kaplanmış mı?",
       "source": "meb",
       "listCode": "KL-06",
-      "tags": []
+      "tags": [],
+      "common": "OM-30"
     },
     {
       "key": "KL-06.13",
       "text": "Pencereler açıldığında yaralanma ve düşme tehlikesi mevcutsa açıklık 100 mm ile sınırlandırılmış mı?",
       "source": "meb",
       "listCode": "KL-06",
-      "tags": []
+      "tags": [],
+      "common": "OM-34"
     },
     {
       "key": "KL-07.01",
       "text": "Zemin kaymaya veya düşmeye karşı uygun malzemeden yapılmış mı?",
       "source": "meb",
       "listCode": "KL-07",
-      "tags": []
+      "tags": [],
+      "common": "OM-25"
     },
     {
       "key": "KL-07.02",
@@ -902,28 +920,32 @@
       "text": "Acil durum alarmı var mı?",
       "source": "meb",
       "listCode": "KL-07",
-      "tags": []
+      "tags": [],
+      "common": "OM-27"
     },
     {
       "key": "KL-07.05",
       "text": "Acil çıkış levhaları asılmış mı?",
       "source": "meb",
       "listCode": "KL-07",
-      "tags": []
+      "tags": [],
+      "common": "OM-26"
     },
     {
       "key": "KL-07.06",
       "text": "Koridorlarda yangın için özel önlemler alınmış mı?",
       "source": "meb",
       "listCode": "KL-07",
-      "tags": []
+      "tags": [],
+      "common": "OM-35"
     },
     {
       "key": "KL-07.07",
       "text": "Uyarı levhaları asılmış mı?",
       "source": "meb",
       "listCode": "KL-07",
-      "tags": []
+      "tags": [],
+      "common": "OM-16"
     },
     {
       "key": "KL-07.08",
@@ -944,7 +966,8 @@
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-07",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-07.11",
@@ -958,7 +981,8 @@
       "text": "Koridorda öğrencilere zarar verebilecek (Kolon köşeleri, radyatör, metal direkler vb.) nesneler darbe emici izolasyon malzemeleri ile kaplanmış mı?",
       "source": "meb",
       "listCode": "KL-07",
-      "tags": []
+      "tags": [],
+      "common": "OM-30"
     },
     {
       "key": "KL-07.13",
@@ -1014,14 +1038,16 @@
       "text": "Zemin, kaymaya ve düşmeye karşı uygun malzemeden yapılmış mı?",
       "source": "meb",
       "listCode": "KL-08",
-      "tags": []
+      "tags": [],
+      "common": "OM-25"
     },
     {
       "key": "KL-08.07",
       "text": "Aydınlatma sistemi yeterli mi?",
       "source": "meb",
       "listCode": "KL-08",
-      "tags": []
+      "tags": [],
+      "common": "OM-24"
     },
     {
       "key": "KL-08.08",
@@ -1035,7 +1061,8 @@
       "text": "Acil durum alarmı var mı?",
       "source": "meb",
       "listCode": "KL-08",
-      "tags": []
+      "tags": [],
+      "common": "OM-27"
     },
     {
       "key": "KL-08.10",
@@ -1049,28 +1076,32 @@
       "text": "Acil çıkış yönlendirme levhaları asılmış mı?",
       "source": "meb",
       "listCode": "KL-08",
-      "tags": []
+      "tags": [],
+      "common": "OM-26"
     },
     {
       "key": "KL-08.12",
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-08",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-09.01",
       "text": "Yeterli aydınlatma sağlanmış mı?",
       "source": "meb",
       "listCode": "KL-09",
-      "tags": []
+      "tags": [],
+      "common": "OM-24"
     },
     {
       "key": "KL-09.02",
       "text": "Isıtma, havalandırma ve iklimlendirme şartları yeterli mi?",
       "source": "meb",
       "listCode": "KL-09",
-      "tags": []
+      "tags": [],
+      "common": "OM-05"
     },
     {
       "key": "KL-09.03",
@@ -1091,7 +1122,8 @@
       "text": "Zeminde kayma ve düşmeleri engelleyecek döşeme sistemi mevcut mu?",
       "source": "meb",
       "listCode": "KL-09",
-      "tags": []
+      "tags": [],
+      "common": "OM-08"
     },
     {
       "key": "KL-09.06",
@@ -1105,7 +1137,8 @@
       "text": "Odada oturma ve çalışma ergonomisi gözetilmiş mi?",
       "source": "meb",
       "listCode": "KL-09",
-      "tags": []
+      "tags": [],
+      "common": "OM-36"
     },
     {
       "key": "KL-09.08",
@@ -1126,49 +1159,56 @@
       "text": "Acil durumlar için acil çıkış yön levhaları var mı?",
       "source": "meb",
       "listCode": "KL-09",
-      "tags": []
+      "tags": [],
+      "common": "OM-26"
     },
     {
       "key": "KL-09.11",
       "text": "Yangın tesisatı ve gerekli alarm sistemi var mı?",
       "source": "meb",
       "listCode": "KL-09",
-      "tags": []
+      "tags": [],
+      "common": "OM-06"
     },
     {
       "key": "KL-09.12",
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-09",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-10.01",
       "text": "Yeterli aydınlatma sağlanmış mı?",
       "source": "meb",
       "listCode": "KL-10",
-      "tags": []
+      "tags": [],
+      "common": "OM-24"
     },
     {
       "key": "KL-10.02",
       "text": "Isıtma, havalandırma ve iklimlendirme şartları yeterli mi?",
       "source": "meb",
       "listCode": "KL-10",
-      "tags": []
+      "tags": [],
+      "common": "OM-05"
     },
     {
       "key": "KL-10.03",
       "text": "Odada oturma ve çalışma ergonomisi var mı?",
       "source": "meb",
       "listCode": "KL-10",
-      "tags": []
+      "tags": [],
+      "common": "OM-36"
     },
     {
       "key": "KL-10.04",
       "text": "Zeminde kayma ve düşmeleri engelleyecek döşeme sistemi mevcut mu?",
       "source": "meb",
       "listCode": "KL-10",
-      "tags": []
+      "tags": [],
+      "common": "OM-08"
     },
     {
       "key": "KL-10.05",
@@ -1210,14 +1250,16 @@
       "text": "Yangın tesisatı ve gerekli alarm sistemi var mı?",
       "source": "meb",
       "listCode": "KL-10",
-      "tags": []
+      "tags": [],
+      "common": "OM-06"
     },
     {
       "key": "KL-10.11",
       "text": "Acil durumlar için acil çıkış yön levhaları var mı?",
       "source": "meb",
       "listCode": "KL-10",
-      "tags": []
+      "tags": [],
+      "common": "OM-26"
     },
     {
       "key": "KL-10.12",
@@ -1238,21 +1280,24 @@
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-10",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-11.01",
       "text": "Yeterli aydınlatma sağlanmış mı?",
       "source": "meb",
       "listCode": "KL-11",
-      "tags": ["wet"]
+      "tags": ["wet"],
+      "common": "OM-24"
     },
     {
       "key": "KL-11.02",
       "text": "Isıtma, havalandırma ve iklimlendirme şartları yeterli mi?",
       "source": "meb",
       "listCode": "KL-11",
-      "tags": ["wet"]
+      "tags": ["wet"],
+      "common": "OM-05"
     },
     {
       "key": "KL-11.03",
@@ -1308,7 +1353,8 @@
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-11",
-      "tags": ["wet"]
+      "tags": ["wet"],
+      "common": "OM-01"
     },
     {
       "key": "KL-11.11",
@@ -1329,14 +1375,16 @@
       "text": "Yeterli aydınlatma sağlanmış mı?",
       "source": "meb",
       "listCode": "KL-12",
-      "tags": []
+      "tags": [],
+      "common": "OM-24"
     },
     {
       "key": "KL-12.02",
       "text": "Isıtma, havalandırma ve iklimlendirme şartları yeterli mi?",
       "source": "meb",
       "listCode": "KL-12",
-      "tags": []
+      "tags": [],
+      "common": "OM-05"
     },
     {
       "key": "KL-12.03",
@@ -1364,7 +1412,8 @@
       "text": "Yangın tesisatı ve gerekli alarm sistemi var mı?",
       "source": "meb",
       "listCode": "KL-12",
-      "tags": []
+      "tags": [],
+      "common": "OM-06"
     },
     {
       "key": "KL-12.07",
@@ -1378,42 +1427,48 @@
       "text": "Acil çıkış yön levhaları var mı?",
       "source": "meb",
       "listCode": "KL-12",
-      "tags": []
+      "tags": [],
+      "common": "OM-26"
     },
     {
       "key": "KL-12.09",
       "text": "Spor salonlarında sporculara zarar verebilecek (Kolon köşeleri, radyatör, metal direkler vb.) nesneler darbe emici izolasyon malzemeleri ile kaplanmış mı?",
       "source": "meb",
       "listCode": "KL-12",
-      "tags": []
+      "tags": [],
+      "common": "OM-30"
     },
     {
       "key": "KL-12.10",
       "text": "İlkyardım dolabı var mı?",
       "source": "meb",
       "listCode": "KL-12",
-      "tags": []
+      "tags": [],
+      "common": "OM-04"
     },
     {
       "key": "KL-12.11",
       "text": "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?",
       "source": "meb",
       "listCode": "KL-12",
-      "tags": []
+      "tags": [],
+      "common": "OM-02"
     },
     {
       "key": "KL-12.12",
       "text": "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?",
       "source": "meb",
       "listCode": "KL-12",
-      "tags": []
+      "tags": [],
+      "common": "OM-03"
     },
     {
       "key": "KL-12.13",
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-12",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-13.01",
@@ -1476,21 +1531,24 @@
       "text": "İlkyardım dolabı var mı?",
       "source": "meb",
       "listCode": "KL-13",
-      "tags": []
+      "tags": [],
+      "common": "OM-04"
     },
     {
       "key": "KL-13.10",
       "text": "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?",
       "source": "meb",
       "listCode": "KL-13",
-      "tags": []
+      "tags": [],
+      "common": "OM-02"
     },
     {
       "key": "KL-13.11",
       "text": "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?",
       "source": "meb",
       "listCode": "KL-13",
-      "tags": []
+      "tags": [],
+      "common": "OM-03"
     },
     {
       "key": "KL-14.01",
@@ -1518,14 +1576,16 @@
       "text": "Aydınlatma yeterli mi?",
       "source": "meb",
       "listCode": "KL-14",
-      "tags": []
+      "tags": [],
+      "common": "OM-24"
     },
     {
       "key": "KL-14.05",
       "text": "Havalandırma yeterli mi?",
       "source": "meb",
       "listCode": "KL-14",
-      "tags": []
+      "tags": [],
+      "common": "OM-07"
     },
     {
       "key": "KL-14.06",
@@ -1574,7 +1634,8 @@
       "text": "Yangın söndürme tüpü var mı?",
       "source": "meb",
       "listCode": "KL-14",
-      "tags": []
+      "tags": [],
+      "common": "OM-09"
     },
     {
       "key": "KL-14.13",
@@ -1637,28 +1698,32 @@
       "text": "İlkyardım dolabı var mı?",
       "source": "meb",
       "listCode": "KL-14",
-      "tags": []
+      "tags": [],
+      "common": "OM-04"
     },
     {
       "key": "KL-14.22",
       "text": "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?",
       "source": "meb",
       "listCode": "KL-14",
-      "tags": []
+      "tags": [],
+      "common": "OM-02"
     },
     {
       "key": "KL-14.23",
       "text": "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?",
       "source": "meb",
       "listCode": "KL-14",
-      "tags": []
+      "tags": [],
+      "common": "OM-03"
     },
     {
       "key": "KL-14.24",
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-14",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-14.25",
@@ -1812,7 +1877,8 @@
       "text": "Çalışma ortamında yeterli aydınlatma sağlanmış mı?",
       "source": "meb",
       "listCode": "KL-17",
-      "tags": []
+      "tags": [],
+      "common": "OM-24"
     },
     {
       "key": "KL-17.05",
@@ -1854,14 +1920,16 @@
       "text": "Laboratuvar elektrik panolarında gerekli önlemler alınmış mı?",
       "source": "meb",
       "listCode": "KL-17",
-      "tags": []
+      "tags": [],
+      "common": "OM-31"
     },
     {
       "key": "KL-17.11",
       "text": "Laboratuvardaki gaz, elektrik, sıhhi tesisat ve pis su tesisatları standartlara uygun mu?",
       "source": "meb",
       "listCode": "KL-17",
-      "tags": []
+      "tags": [],
+      "common": "OM-32"
     },
     {
       "key": "KL-17.12",
@@ -1875,35 +1943,40 @@
       "text": "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?",
       "source": "meb",
       "listCode": "KL-17",
-      "tags": []
+      "tags": [],
+      "common": "OM-02"
     },
     {
       "key": "KL-17.14",
       "text": "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?",
       "source": "meb",
       "listCode": "KL-17",
-      "tags": []
+      "tags": [],
+      "common": "OM-03"
     },
     {
       "key": "KL-17.15",
       "text": "Acil durum alarmı ve çıkış levhası var mı?",
       "source": "meb",
       "listCode": "KL-17",
-      "tags": []
+      "tags": [],
+      "common": "OM-28"
     },
     {
       "key": "KL-17.16",
       "text": "Laboratuvar zemini kaymaya, düşmeye karşı uygun malzemelerden yapılmış mı?",
       "source": "meb",
       "listCode": "KL-17",
-      "tags": []
+      "tags": [],
+      "common": "OM-25"
     },
     {
       "key": "KL-17.17",
       "text": "Laboratuvarda uyarı levhaları asılmış mı?",
       "source": "meb",
       "listCode": "KL-17",
-      "tags": []
+      "tags": [],
+      "common": "OM-16"
     },
     {
       "key": "KL-17.18",
@@ -2008,7 +2081,8 @@
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-17",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-18.01",
@@ -2029,7 +2103,8 @@
       "text": "Oturularak yapılan çalışmalarda çalışma yüksekliği uygun mu?",
       "source": "meb",
       "listCode": "KL-18",
-      "tags": []
+      "tags": [],
+      "common": "OM-10"
     },
     {
       "key": "KL-18.04",
@@ -2043,7 +2118,8 @@
       "text": "Çalışma alanı/boşluğu uygun mu?",
       "source": "meb",
       "listCode": "KL-18",
-      "tags": []
+      "tags": [],
+      "common": "OM-11"
     },
     {
       "key": "KL-18.06",
@@ -2120,14 +2196,16 @@
       "text": "Oturularak yapılan çalışmalarda çalışma yüksekliği uygun mu?",
       "source": "meb",
       "listCode": "KL-19",
-      "tags": ["office"]
+      "tags": ["office"],
+      "common": "OM-10"
     },
     {
       "key": "KL-19.02",
       "text": "Çalışma alanı/boşluğu uygun mu?",
       "source": "meb",
       "listCode": "KL-19",
-      "tags": ["office"]
+      "tags": ["office"],
+      "common": "OM-11"
     },
     {
       "key": "KL-19.03",
@@ -2148,7 +2226,8 @@
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-19",
-      "tags": ["office"]
+      "tags": ["office"],
+      "common": "OM-01"
     },
     {
       "key": "KL-19.06",
@@ -2365,7 +2444,8 @@
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-22",
-      "tags": []
+      "tags": [],
+      "common": "OM-01"
     },
     {
       "key": "KL-23.01",
@@ -2631,7 +2711,8 @@
       "text": "Basınçlı çivi çakma ve zımba gibi el aletleri kullanılırken gereken koruyucu tedbirler alınıyor mu?",
       "source": "meb",
       "listCode": "KL-26",
-      "tags": []
+      "tags": [],
+      "common": "OM-37"
     },
     {
       "key": "KL-26.24",
@@ -2778,7 +2859,8 @@
       "text": "Basınçlı havayla temizlik yapılırken KKD' ler kullanılıyor mu?",
       "source": "meb",
       "listCode": "KL-26",
-      "tags": []
+      "tags": [],
+      "common": "OM-12"
     },
     {
       "key": "KL-26.45",
@@ -3303,7 +3385,8 @@
       "text": "Acil çıkış kapıları var mı, yönetmeliğe uygun mu?",
       "source": "meb",
       "listCode": "KL-30",
-      "tags": []
+      "tags": [],
+      "common": "OM-38"
     },
     {
       "key": "KL-30.24",
@@ -3954,7 +4037,8 @@
       "text": "Basınçlı çivi ve çakma zımba gibi el aletleri kullanılırken gereken koruyucu tedbirler alınıyor mu?",
       "source": "meb",
       "listCode": "KL-34",
-      "tags": []
+      "tags": [],
+      "common": "OM-37"
     },
     {
       "key": "KL-34.16",
@@ -4031,63 +4115,72 @@
       "text": "Çalışma masaları, makineler ve tabureler ergonomik mi?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-13"
     },
     {
       "key": "KL-35.02",
       "text": "Çalışma masaları, makineler ve taburelerin yükseklikleri ayarlanabiliyor mu?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-14"
     },
     {
       "key": "KL-35.03",
       "text": "Aydınlatma yeterli mi?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-24"
     },
     {
       "key": "KL-35.04",
       "text": "Havalandırma ve baca tesisatı standartlara uygun mu?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-15"
     },
     {
       "key": "KL-35.05",
       "text": "İlkyardım dolabı var mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-04"
     },
     {
       "key": "KL-35.06",
       "text": "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-02"
     },
     {
       "key": "KL-35.07",
       "text": "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-03"
     },
     {
       "key": "KL-35.08",
       "text": "Acil durum alarmı ve acil çıkış levhası var mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-28"
     },
     {
       "key": "KL-35.09",
       "text": "Uyarı levhaları asılı mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-16"
     },
     {
       "key": "KL-35.10",
@@ -4101,28 +4194,32 @@
       "text": "Elektrik panolarında gerekli önlemler alınmış mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-31"
     },
     {
       "key": "KL-35.12",
       "text": "Makinelerin kullanım talimatları asılmış mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-17"
     },
     {
       "key": "KL-35.13",
       "text": "Çalışanlar için gerekli KKD var mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-18"
     },
     {
       "key": "KL-35.14",
       "text": "KKD uygun şekilde muhafaza ediliyor mu?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-33"
     },
     {
       "key": "KL-35.15",
@@ -4136,56 +4233,64 @@
       "text": "Kimyasal maddelerin zararlarına karşı gerekli önlemler alındı mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-19"
     },
     {
       "key": "KL-35.17",
       "text": "Gaz, elektrik, sıhhi tesisat ve pis su tesisatları standartlara uygun mu?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-32"
     },
     {
       "key": "KL-35.18",
       "text": "WC ve duş var mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-20"
     },
     {
       "key": "KL-35.19",
       "text": "Duyuru panosu var mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-29"
     },
     {
       "key": "KL-35.20",
       "text": "Atölye sorumlusunun telefonları panoda asılı mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-21"
     },
     {
       "key": "KL-35.21",
       "text": "Çalışan için soyunma dolapları var mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-22"
     },
     {
       "key": "KL-35.22",
       "text": "Çalışma planı (vaziyet planı) asılı mı?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-23"
     },
     {
       "key": "KL-35.23",
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-35",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-01"
     },
     {
       "key": "KL-35.24",
@@ -4220,63 +4325,72 @@
       "text": "Çalışma masaları, makineler ve tabureler ergonomik mi?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-13"
     },
     {
       "key": "KL-37.02",
       "text": "Çalışma masaları, makineler ve taburelerin yükseklikleri ayarlanabiliyor mu?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-14"
     },
     {
       "key": "KL-37.03",
       "text": "Aydınlatma yeterli mi?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-24"
     },
     {
       "key": "KL-37.04",
       "text": "Havalandırma ve baca tesisatı standartlara uygun mu?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-15"
     },
     {
       "key": "KL-37.05",
       "text": "İlkyardım dolabı var mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-04"
     },
     {
       "key": "KL-37.06",
       "text": "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-02"
     },
     {
       "key": "KL-37.07",
       "text": "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-03"
     },
     {
       "key": "KL-37.08",
       "text": "Acil durum alarmı ve acil çıkış levhası var mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-28"
     },
     {
       "key": "KL-37.09",
       "text": "Uyarı levhaları asılı mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-16"
     },
     {
       "key": "KL-37.10",
@@ -4290,28 +4404,32 @@
       "text": "Elektrik panolarında gerekli önlemler alınmış mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-31"
     },
     {
       "key": "KL-37.12",
       "text": "Makinelerin kullanım talimatları asılmış mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-17"
     },
     {
       "key": "KL-37.13",
       "text": "Çalışanlar için gerekli KKD var mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-18"
     },
     {
       "key": "KL-37.14",
       "text": "KKD uygun şekilde muhafaza ediliyor mu?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-33"
     },
     {
       "key": "KL-37.15",
@@ -4325,56 +4443,64 @@
       "text": "Kimyasal maddelerin zararlarına karşı gerekli önlemler alındı mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-19"
     },
     {
       "key": "KL-37.17",
       "text": "Gaz, elektrik, sıhhi tesisat ve pis su tesisatları standartlara uygun mu?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-32"
     },
     {
       "key": "KL-37.18",
       "text": "WC ve duş var mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-20"
     },
     {
       "key": "KL-37.19",
       "text": "Duyuru panosu var mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-29"
     },
     {
       "key": "KL-37.20",
       "text": "Atölye sorumlusunun telefonları panoda asılı mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-21"
     },
     {
       "key": "KL-37.21",
       "text": "Çalışan için soyunma dolapları var mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-22"
     },
     {
       "key": "KL-37.22",
       "text": "Çalışma planı (vaziyet planı) asılı mı?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-23"
     },
     {
       "key": "KL-37.23",
       "text": "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?",
       "source": "meb",
       "listCode": "KL-37",
-      "tags": ["workshop"]
+      "tags": ["workshop"],
+      "common": "OM-01"
     },
     {
       "key": "KL-37.24",
@@ -4479,7 +4605,8 @@
       "text": "Yangın söndürme tüpü var mı?",
       "source": "meb",
       "listCode": "KL-38",
-      "tags": []
+      "tags": [],
+      "common": "OM-09"
     },
     {
       "key": "KL-38.14",
@@ -4493,7 +4620,8 @@
       "text": "Acil çıkış kapısı yönetmeliğe uygun mu?",
       "source": "meb",
       "listCode": "KL-38",
-      "tags": []
+      "tags": [],
+      "common": "OM-38"
     },
     {
       "key": "KL-38.16",
@@ -4815,7 +4943,8 @@
       "text": "Basınçlı havayla temizlik yapılırken KKD' ler kullanılıyor mu?",
       "source": "meb",
       "listCode": "KL-39",
-      "tags": []
+      "tags": [],
+      "common": "OM-12"
     },
     {
       "key": "KL-39.11",
@@ -5810,6 +5939,224 @@
       "source": "riskprime",
       "tags": ["workshop"],
       "basis": "İşyerlerinde Acil Durumlar Hakkında Yönetmelik"
+    }
+  ],
+  "common": [
+    {
+      "id": "OM-01",
+      "title": "Devrilebilecek ekipman sabitlenmiş",
+      "keys": [
+        "KL-01.25",
+        "KL-04.14",
+        "KL-06.10",
+        "KL-07.10",
+        "KL-08.12",
+        "KL-09.12",
+        "KL-10.14",
+        "KL-11.10",
+        "KL-12.13",
+        "KL-14.24",
+        "KL-17.32",
+        "KL-19.05",
+        "KL-22.04",
+        "KL-35.23",
+        "KL-37.23"
+      ]
+    },
+    {
+      "id": "OM-02",
+      "title": "İlkyardım dolabına erişim",
+      "keys": ["KL-04.04", "KL-12.11", "KL-13.10", "KL-14.22", "KL-17.13", "KL-35.06", "KL-37.06"]
+    },
+    {
+      "id": "OM-03",
+      "title": "İlkyardım dolabı malzemesi",
+      "keys": ["KL-04.05", "KL-12.12", "KL-13.11", "KL-14.23", "KL-17.14", "KL-35.07", "KL-37.07"]
+    },
+    {
+      "id": "OM-04",
+      "title": "İlkyardım dolabı var",
+      "keys": ["KL-04.03", "KL-12.10", "KL-13.09", "KL-14.21", "KL-35.05", "KL-37.05"]
+    },
+    {
+      "id": "OM-05",
+      "title": "Isıtma, havalandırma, iklimlendirme",
+      "keys": ["KL-09.02", "KL-10.02", "KL-11.02", "KL-12.02"]
+    },
+    {
+      "id": "OM-06",
+      "title": "Yangın tesisatı ve alarm",
+      "keys": ["KL-09.11", "KL-10.10", "KL-12.06"]
+    },
+    {
+      "id": "OM-07",
+      "title": "Havalandırma",
+      "keys": ["KL-06.09", "KL-14.05"]
+    },
+    {
+      "id": "OM-08",
+      "title": "Kaymaz döşeme sistemi",
+      "keys": ["KL-09.05", "KL-10.04"]
+    },
+    {
+      "id": "OM-09",
+      "title": "Yangın söndürme tüpü",
+      "keys": ["KL-14.12", "KL-38.13"]
+    },
+    {
+      "id": "OM-10",
+      "title": "Oturarak çalışma yüksekliği",
+      "keys": ["KL-18.03", "KL-19.01"]
+    },
+    {
+      "id": "OM-11",
+      "title": "Çalışma alanı/boşluğu",
+      "keys": ["KL-18.05", "KL-19.02"]
+    },
+    {
+      "id": "OM-12",
+      "title": "Basınçlı havayla temizlikte KKD",
+      "keys": ["KL-26.44", "KL-39.10"]
+    },
+    {
+      "id": "OM-13",
+      "title": "Ergonomik masa, makine, tabure",
+      "keys": ["KL-35.01", "KL-37.01"]
+    },
+    {
+      "id": "OM-14",
+      "title": "Ayarlanabilir çalışma yüksekliği",
+      "keys": ["KL-35.02", "KL-37.02"]
+    },
+    {
+      "id": "OM-15",
+      "title": "Havalandırma ve baca tesisatı",
+      "keys": ["KL-35.04", "KL-37.04"]
+    },
+    {
+      "id": "OM-16",
+      "title": "Uyarı levhaları",
+      "keys": ["KL-35.09", "KL-37.09", "KL-07.07", "KL-17.17"]
+    },
+    {
+      "id": "OM-17",
+      "title": "Makine kullanım talimatları",
+      "keys": ["KL-35.12", "KL-37.12"]
+    },
+    {
+      "id": "OM-18",
+      "title": "Çalışanlar için KKD",
+      "keys": ["KL-35.13", "KL-37.13"]
+    },
+    {
+      "id": "OM-19",
+      "title": "Kimyasallara karşı önlem",
+      "keys": ["KL-35.16", "KL-37.16"]
+    },
+    {
+      "id": "OM-20",
+      "title": "WC ve duş",
+      "keys": ["KL-35.18", "KL-37.18"]
+    },
+    {
+      "id": "OM-21",
+      "title": "Atölye sorumlusunun telefonları",
+      "keys": ["KL-35.20", "KL-37.20"]
+    },
+    {
+      "id": "OM-22",
+      "title": "Soyunma dolapları",
+      "keys": ["KL-35.21", "KL-37.21"]
+    },
+    {
+      "id": "OM-23",
+      "title": "Çalışma (vaziyet) planı",
+      "keys": ["KL-35.22", "KL-37.22"]
+    },
+    {
+      "id": "OM-24",
+      "title": "Aydınlatma yeterli",
+      "keys": [
+        "KL-08.07",
+        "KL-09.01",
+        "KL-10.01",
+        "KL-11.01",
+        "KL-12.01",
+        "KL-14.04",
+        "KL-17.04",
+        "KL-35.03",
+        "KL-37.03"
+      ]
+    },
+    {
+      "id": "OM-25",
+      "title": "Kaymaz zemin malzemesi",
+      "keys": ["KL-01.17", "KL-04.07", "KL-05.05", "KL-06.01", "KL-07.01", "KL-08.06", "KL-17.16"]
+    },
+    {
+      "id": "OM-26",
+      "title": "Acil çıkış yön levhaları",
+      "keys": ["KL-07.05", "KL-08.11", "KL-09.10", "KL-10.11", "KL-12.08"]
+    },
+    {
+      "id": "OM-27",
+      "title": "Acil durum alarmı",
+      "keys": ["KL-07.04", "KL-08.09"]
+    },
+    {
+      "id": "OM-28",
+      "title": "Acil durum alarmı ve çıkış levhası",
+      "keys": ["KL-06.04", "KL-17.15", "KL-35.08", "KL-37.08"]
+    },
+    {
+      "id": "OM-29",
+      "title": "Duyuru panosu",
+      "keys": ["KL-06.08", "KL-35.19", "KL-37.19"]
+    },
+    {
+      "id": "OM-30",
+      "title": "Darbe emici kaplama",
+      "keys": ["KL-06.12", "KL-07.12", "KL-12.09"]
+    },
+    {
+      "id": "OM-31",
+      "title": "Elektrik panolarında önlem",
+      "keys": ["KL-17.10", "KL-35.11", "KL-37.11"]
+    },
+    {
+      "id": "OM-32",
+      "title": "Gaz, elektrik, su tesisatı standartlara uygun",
+      "keys": ["KL-17.11", "KL-35.17", "KL-37.17"]
+    },
+    {
+      "id": "OM-33",
+      "title": "KKD muhafazası",
+      "keys": ["KL-35.14", "KL-37.14"]
+    },
+    {
+      "id": "OM-34",
+      "title": "Pencere açıklığı 100 mm",
+      "keys": ["KL-01.02", "KL-06.13"]
+    },
+    {
+      "id": "OM-35",
+      "title": "Yangına karşı özel önlem",
+      "keys": ["KL-04.06", "KL-07.06"]
+    },
+    {
+      "id": "OM-36",
+      "title": "Oturma ve çalışma ergonomisi",
+      "keys": ["KL-09.07", "KL-10.03"]
+    },
+    {
+      "id": "OM-37",
+      "title": "Basınçlı çivi/zımba aletlerinde önlem",
+      "keys": ["KL-26.23", "KL-34.15"]
+    },
+    {
+      "id": "OM-38",
+      "title": "Acil çıkış kapısı yönetmeliğe uygun",
+      "keys": ["KL-30.23", "KL-38.15"]
     }
   ]
 }

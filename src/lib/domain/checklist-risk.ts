@@ -1,5 +1,6 @@
 // Turns a "Hayır" checklist item (an eksik of one inspection) into a risk row.
 import { addRow } from "./assessment";
+import { noSiblings } from "./common-items";
 import { answerOf, liveLocationIds, scopeName } from "./inspections";
 import type { Assessment, Checklist, ChecklistItem, RiskRow } from "./types";
 
@@ -63,7 +64,11 @@ export function riskRowFromChecklistItem(
   return addRow(a, target, {
     hazard: hazardOf(list, item),
     action: answerOf(a, listId, locationId, itemId).note,
-    sources: [{ listId, itemId, locationId }],
+    // common siblings answered "Hayır" at this location share the one row
+    sources: [{ listId, itemId }, ...noSiblings(a, listId, itemId, locationId)].map((t) => ({
+      ...t,
+      locationId,
+    })),
   });
 }
 

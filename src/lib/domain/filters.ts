@@ -1,5 +1,6 @@
 // Pure filters of the school-wide pages (Eksikler, Risk kaydı). Filter shapes live in nav.svelte.ts.
 import { isOverdue } from "./assessment";
+import { mergeCommonDeficiencies } from "./common-items";
 import { deficiencies, findInspection, type Deficiency, type RegisterEntry } from "./inspections";
 import { isUntransferred } from "./transfer";
 import type { Assessment } from "./types";
@@ -28,7 +29,7 @@ export const SCHOOL_WIDE_FILTER = "__school__";
 export type DeficiencyWithState = Deficiency & { transferred: boolean };
 
 export function deficienciesWithState(a: Assessment): DeficiencyWithState[] {
-  return deficiencies(a).map((d) => {
+  return mergeCommonDeficiencies(a, deficiencies(a)).map((d) => {
     const list = a.checklists.find((c) => c.id === d.listId);
     const item = list?.items.find((i) => i.id === d.itemId);
     const insp = findInspection(a, d.listId, d.locationId);

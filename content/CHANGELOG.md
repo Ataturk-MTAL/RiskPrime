@@ -2,6 +2,10 @@
 
 Her sürüm `content/questions/bank.toml` içindeki `version` ile eşleşen bir `## <sürüm>` başlığı taşımalıdır.
 
+## 2026.2
+
+38 ortak madde grubu eklendi: farklı listelerde aynı şeyi soran MEB maddeleri aynı mekânda bir kez cevaplanır. Metinler değişmedi.
+
 ## 2026.1
 
 İlk sürüm. MEB Risk Değerlendirme Kontrol Listeleri'nin 43 listesi (KL-01 – KL-43) metinleri değiştirilmeden alındı. Buna 47 RiskPrime Elektrik-Elektronik maddesi (EE-01 – EE-47) eklendi.

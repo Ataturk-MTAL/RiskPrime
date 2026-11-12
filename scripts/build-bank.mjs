@@ -16,6 +16,8 @@ const LIBRARY_JSON = path.join(ROOT, "src", "lib", "data", "library.json");
 const LOCATION_TYPES = ["workshop", "storage", "office", "wet", "common"];
 const KEY_PATTERNS = { meb: /^KL-\d{2}\.\d{2}$/, riskprime: /^[A-Z]{2,}-\d{2,}$/ };
 const BANK_FILE = "bank.toml";
+const COMMON_FILE = "common.toml";
+const COMMON_ID = /^OM-\d{2,}$/;
 
 /** Source implied by file name: meb.toml => "meb", riskprime-*.toml => "riskprime"; else null. */
 export function sourceOf(file) {
@@ -27,6 +29,7 @@ export function sourceOf(file) {
 export function parseSources(files) {
   const problems = [];
   const questions = [];
+  let common = [];
   let version;
   for (const { name, content } of files) {
     let doc;
@@ -40,6 +43,10 @@ export function parseSources(files) {
       version = doc.bank?.version;
       continue;
     }
+    if (name === COMMON_FILE) {
+      common = doc.common ?? [];
+      continue;
+    }
     const source = sourceOf(name);
     if (!source) {
       problems.push(`${name}: dosya adı meb.toml veya riskprime-*.toml olmalı`);
@@ -47,7 +54,7 @@ export function parseSources(files) {
     }
     questions.push(...(doc.question ?? []).map((q) => ({ ...q, file: name, source })));
   }
-  return { version, questions, problems };
+  return { version, questions, common, problems };
 }
 
 function questionProblems(q, where) {
@@ -69,7 +76,7 @@ function questionProblems(q, where) {
 }
 
 /** Returns every problem found; empty array means valid. */
-export function validate({ version, questions, problems }, changelog) {
+export function validate({ version, questions, common = [], problems }, changelog) {
   const out = [...problems];
   if (typeof version !== "string" || version === "") {
     out.push(`${BANK_FILE}: [bank] version eksik`);
@@ -82,13 +89,45 @@ export function validate({ version, questions, problems }, changelog) {
     if (seen.has(q.key)) out.push(`${q.file} ${q.key}: yinelenen anahtar`);
     seen.add(q.key);
   }
+  out.push(...commonProblems(common, questions));
+  return out;
+}
+
+function commonProblems(common, questions) {
+  const out = [];
+  const byQuestionKey = new Map(questions.map((q) => [q.key, q]));
+  const ids = new Set();
+  const owner = new Map();
+  for (const g of common) {
+    const where = `${COMMON_FILE} ${g.id}`;
+    if (typeof g.id !== "string" || !COMMON_ID.test(g.id)) {
+      out.push(`${where}: kimlik ${COMMON_ID} desenine uymuyor`);
+    }
+    if (ids.has(g.id)) out.push(`${where}: yinelenen kimlik`);
+    ids.add(g.id);
+    if (typeof g.title !== "string" || g.title.trim() === "") out.push(`${where}: başlık boş`);
+    const keys = Array.isArray(g.keys) ? g.keys : [];
+    if (keys.length < 2) out.push(`${where}: en az 2 anahtar gerekli`);
+    const lists = new Set();
+    for (const k of keys) {
+      const q = byQuestionKey.get(k);
+      if (!q) out.push(`${where}: ${k} bankada yok`);
+      else if (lists.has(q.list)) out.push(`${where}: ${k} aynı listeden (${q.list}) ikinci madde`);
+      else lists.add(q.list);
+      if (owner.has(k)) out.push(`${where}: ${k} zaten ${owner.get(k)} grubunda`);
+      else owner.set(k, g.id);
+    }
+  }
   return out;
 }
 
 const byKey = (a, b) => a.key.localeCompare(b.key, "en", { numeric: true });
 
-/** { version, items }: MEB items sorted by key, then riskprime items in file order. */
-export function buildBank({ version, questions }) {
+/** { version, items, common }: MEB items sorted by key, then riskprime items in file order. */
+export function buildBank({ version, questions, common = [] }) {
+  const groupOf = new Map(common.flatMap((g) => g.keys.map((k) => [k, g.id])));
+  const withCommon = (item) =>
+    groupOf.has(item.key) ? { ...item, common: groupOf.get(item.key) } : item;
   const meb = questions
     .filter((q) => q.source === "meb")
     .map((q) => ({ key: q.key, text: q.text, source: "meb", listCode: q.list, tags: q.tags }))
@@ -102,7 +141,11 @@ export function buildBank({ version, questions }) {
       tags: q.tags,
       ...(q.basis ? { basis: q.basis } : {}),
     }));
-  return { version, items: [...meb, ...own] };
+  return {
+    version,
+    items: [...meb, ...own].map(withCommon),
+    common: common.map(({ id, title, keys }) => ({ id, title, keys })),
+  };
 }
 
 /** Copy of the library with external item texts taken from the bank (by ref). */

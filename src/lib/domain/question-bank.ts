@@ -1,11 +1,11 @@
 // Question bank (compiled from content/questions/*.toml): MEB items plus RiskPrime's own. Pure helpers.
 import bankData from "../data/questions.json";
 import { newItem } from "./checklist";
-import type { Assessment, BankQuestion, BankSource, LocationType } from "./types";
+import type { Assessment, BankQuestion, BankSource, CommonItem, LocationType } from "./types";
 
 const norm = (s: string) => s.toLocaleLowerCase("tr");
 
-const bank = bankData as { version: string; items: BankQuestion[] };
+const bank = bankData as { version: string; items: BankQuestion[]; common?: CommonItem[] };
 
 export { BANK_VERSION } from "./bank-version";
 
@@ -15,6 +15,15 @@ let cached: BankQuestion[] | null = null;
 export function loadBank(): BankQuestion[] {
   cached ??= bank.items;
   return cached;
+}
+
+/** Common item groups (questions in different lists that ask the same thing). */
+export function loadCommon(): CommonItem[] {
+  return bank.common ?? [];
+}
+
+export function commonById(id: string): CommonItem | undefined {
+  return loadCommon().find((c) => c.id === id);
 }
 
 /** Questions matching every word of the query (key, text, basis), the tag and the source. */

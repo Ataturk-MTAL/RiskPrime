@@ -108,6 +108,8 @@ export interface Deficiency {
   note: string;
   /** Ids of the risk rows linked to this item in this inspection. */
   rowIds: string[];
+  /** Other lists' "Hayır" items at this location that ask the same common question. */
+  siblings?: { listId: string; itemId: string; ref: string }[];
 }
 
 /** Every "Hayır" answer of every inspection, in list, location and item order. */

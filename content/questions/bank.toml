@@ -4,4 +4,4 @@
 # sonra `pnpm bank:build` çalıştırın.
 
 [bank]
-version = "2026.1"
+version = "2026.2"

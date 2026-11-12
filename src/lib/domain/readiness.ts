@@ -3,7 +3,7 @@ import { isBefore } from "./date";
 import { inspectionsForList } from "./inspections";
 import { sourceLabel, sourcesOf } from "./links";
 import { riskLevel } from "./matrix";
-import { isUntransferred } from "./transfer";
+import { pending } from "./transfer";
 import type { Assessment, RiskRow } from "./types";
 
 export interface GapEntry {
@@ -82,10 +82,7 @@ export function readiness(a: Assessment): Readiness {
     a.checklists.map((c) => ({
       id: c.id,
       name: `${c.code} ${c.name}`.trim(),
-      count: inspectionsForList(a, c.id).reduce(
-        (n, insp) => n + c.items.filter((i) => isUntransferred(a, c, i, insp)).length,
-        0,
-      ),
+      count: inspectionsForList(a, c.id).reduce((n, insp) => n + pending(a, insp).length, 0),
     })),
   );
   const sourceNowYes = withCount(

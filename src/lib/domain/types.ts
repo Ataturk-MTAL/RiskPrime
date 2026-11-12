@@ -161,6 +161,15 @@ export interface BankQuestion {
   tags: LocationType[];
   /** Regulation or standard the question rests on; RiskPrime questions only. */
   basis?: string;
+  /** Common item id (e.g. "OM-04") shared with the same question in other lists. */
+  common?: string;
+}
+
+/** A group of questions in different lists that ask the same thing; answered once per location. */
+export interface CommonItem {
+  id: string;
+  title: string;
+  keys: string[];
 }
 
 export type RowTemplate = Partial<Omit<RiskRow, "id">>;

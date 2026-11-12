@@ -1,0 +1,221 @@
+# Ortak maddeler: farklı MEB listelerinde aynı şeyi soran maddeler.
+# Aynı mekânda birden çok liste denetlenirken ortak madde bir kez cevaplanır,
+# cevap o mekândaki bütün kardeş maddelere yazılır. MEB metinleri değişmez.
+# Kural: yalnız aynı konuyu soran maddeler gruplanır; farklı ekipmanın
+# (asansör / forklift / tezgâh) "periyodik bakım" maddeleri ayrı kalır.
+
+[[common]]
+id = "OM-01"
+title = "Devrilebilecek ekipman sabitlenmiş"
+keys = [
+  "KL-01.25",
+  "KL-04.14",
+  "KL-06.10",
+  "KL-07.10",
+  "KL-08.12",
+  "KL-09.12",
+  "KL-10.14",
+  "KL-11.10",
+  "KL-12.13",
+  "KL-14.24",
+  "KL-17.32",
+  "KL-19.05",
+  "KL-22.04",
+  "KL-35.23",
+  "KL-37.23",
+]
+
+[[common]]
+id = "OM-02"
+title = "İlkyardım dolabına erişim"
+keys = ["KL-04.04", "KL-12.11", "KL-13.10", "KL-14.22", "KL-17.13", "KL-35.06", "KL-37.06"]
+
+[[common]]
+id = "OM-03"
+title = "İlkyardım dolabı malzemesi"
+keys = ["KL-04.05", "KL-12.12", "KL-13.11", "KL-14.23", "KL-17.14", "KL-35.07", "KL-37.07"]
+
+[[common]]
+id = "OM-04"
+title = "İlkyardım dolabı var"
+keys = ["KL-04.03", "KL-12.10", "KL-13.09", "KL-14.21", "KL-35.05", "KL-37.05"]
+
+[[common]]
+id = "OM-05"
+title = "Isıtma, havalandırma, iklimlendirme"
+keys = ["KL-09.02", "KL-10.02", "KL-11.02", "KL-12.02"]
+
+[[common]]
+id = "OM-06"
+title = "Yangın tesisatı ve alarm"
+keys = ["KL-09.11", "KL-10.10", "KL-12.06"]
+
+[[common]]
+id = "OM-07"
+title = "Havalandırma"
+keys = ["KL-06.09", "KL-14.05"]
+
+[[common]]
+id = "OM-08"
+title = "Kaymaz döşeme sistemi"
+keys = ["KL-09.05", "KL-10.04"]
+
+[[common]]
+id = "OM-09"
+title = "Yangın söndürme tüpü"
+keys = ["KL-14.12", "KL-38.13"]
+
+[[common]]
+id = "OM-10"
+title = "Oturarak çalışma yüksekliği"
+keys = ["KL-18.03", "KL-19.01"]
+
+[[common]]
+id = "OM-11"
+title = "Çalışma alanı/boşluğu"
+keys = ["KL-18.05", "KL-19.02"]
+
+[[common]]
+id = "OM-12"
+title = "Basınçlı havayla temizlikte KKD"
+keys = ["KL-26.44", "KL-39.10"]
+
+[[common]]
+id = "OM-13"
+title = "Ergonomik masa, makine, tabure"
+keys = ["KL-35.01", "KL-37.01"]
+
+[[common]]
+id = "OM-14"
+title = "Ayarlanabilir çalışma yüksekliği"
+keys = ["KL-35.02", "KL-37.02"]
+
+[[common]]
+id = "OM-15"
+title = "Havalandırma ve baca tesisatı"
+keys = ["KL-35.04", "KL-37.04"]
+
+[[common]]
+id = "OM-16"
+title = "Uyarı levhaları"
+keys = ["KL-35.09", "KL-37.09", "KL-07.07", "KL-17.17"]
+
+[[common]]
+id = "OM-17"
+title = "Makine kullanım talimatları"
+keys = ["KL-35.12", "KL-37.12"]
+
+[[common]]
+id = "OM-18"
+title = "Çalışanlar için KKD"
+keys = ["KL-35.13", "KL-37.13"]
+
+[[common]]
+id = "OM-19"
+title = "Kimyasallara karşı önlem"
+keys = ["KL-35.16", "KL-37.16"]
+
+[[common]]
+id = "OM-20"
+title = "WC ve duş"
+keys = ["KL-35.18", "KL-37.18"]
+
+[[common]]
+id = "OM-21"
+title = "Atölye sorumlusunun telefonları"
+keys = ["KL-35.20", "KL-37.20"]
+
+[[common]]
+id = "OM-22"
+title = "Soyunma dolapları"
+keys = ["KL-35.21", "KL-37.21"]
+
+[[common]]
+id = "OM-23"
+title = "Çalışma (vaziyet) planı"
+keys = ["KL-35.22", "KL-37.22"]
+
+[[common]]
+id = "OM-24"
+title = "Aydınlatma yeterli"
+keys = [
+  "KL-08.07",
+  "KL-09.01",
+  "KL-10.01",
+  "KL-11.01",
+  "KL-12.01",
+  "KL-14.04",
+  "KL-17.04",
+  "KL-35.03",
+  "KL-37.03",
+]
+
+[[common]]
+id = "OM-25"
+title = "Kaymaz zemin malzemesi"
+keys = ["KL-01.17", "KL-04.07", "KL-05.05", "KL-06.01", "KL-07.01", "KL-08.06", "KL-17.16"]
+
+[[common]]
+id = "OM-26"
+title = "Acil çıkış yön levhaları"
+keys = ["KL-07.05", "KL-08.11", "KL-09.10", "KL-10.11", "KL-12.08"]
+
+[[common]]
+id = "OM-27"
+title = "Acil durum alarmı"
+keys = ["KL-07.04", "KL-08.09"]
+
+[[common]]
+id = "OM-28"
+title = "Acil durum alarmı ve çıkış levhası"
+keys = ["KL-06.04", "KL-17.15", "KL-35.08", "KL-37.08"]
+
+[[common]]
+id = "OM-29"
+title = "Duyuru panosu"
+keys = ["KL-06.08", "KL-35.19", "KL-37.19"]
+
+[[common]]
+id = "OM-30"
+title = "Darbe emici kaplama"
+keys = ["KL-06.12", "KL-07.12", "KL-12.09"]
+
+[[common]]
+id = "OM-31"
+title = "Elektrik panolarında önlem"
+keys = ["KL-17.10", "KL-35.11", "KL-37.11"]
+
+[[common]]
+id = "OM-32"
+title = "Gaz, elektrik, su tesisatı standartlara uygun"
+keys = ["KL-17.11", "KL-35.17", "KL-37.17"]
+
+[[common]]
+id = "OM-33"
+title = "KKD muhafazası"
+keys = ["KL-35.14", "KL-37.14"]
+
+[[common]]
+id = "OM-34"
+title = "Pencere açıklığı 100 mm"
+keys = ["KL-01.02", "KL-06.13"]
+
+[[common]]
+id = "OM-35"
+title = "Yangına karşı özel önlem"
+keys = ["KL-04.06", "KL-07.06"]
+
+[[common]]
+id = "OM-36"
+title = "Oturma ve çalışma ergonomisi"
+keys = ["KL-09.07", "KL-10.03"]
+
+[[common]]
+id = "OM-37"
+title = "Basınçlı çivi/zımba aletlerinde önlem"
+keys = ["KL-26.23", "KL-34.15"]
+
+[[common]]
+id = "OM-38"
+title = "Acil çıkış kapısı yönetmeliğe uygun"
+keys = ["KL-30.23", "KL-38.15"]

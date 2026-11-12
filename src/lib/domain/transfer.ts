@@ -1,6 +1,7 @@
 // Bulk "eksik -> risk satiri": every "Hayir" item of an inspection without a linked row gets a row,
 // in the inspection's own location (okul geneli inspections use the list's default location).
 import { defaultLocationId, hazardOf, riskRowFromChecklistItem } from "./checklist-risk";
+import { isDuplicateDeficiency, siblingTargets } from "./common-items";
 import { rowsForItem } from "./links";
 import type { Assessment, Checklist, ChecklistItem, Inspection } from "./types";
 
@@ -24,7 +25,12 @@ export const isUntransferred = (
   insp: Inspection,
 ): boolean => {
   if (insp.answers.find((x) => x.itemId === item.id)?.answer !== "no") return false;
-  if (rowsForItem(a, list.id, item.id, insp.locationId).length > 0) return false;
+  const linked = [
+    { listId: list.id, itemId: item.id },
+    ...siblingTargets(a, list.id, item.id, insp.locationId),
+  ];
+  if (linked.some((t) => rowsForItem(a, t.listId, t.itemId, insp.locationId).length > 0))
+    return false;
   const target = targetOf(a, list, insp);
   return !a.locations.some(
     (l) =>
@@ -33,16 +39,25 @@ export const isUntransferred = (
   );
 };
 
-/** Pending (inspection, item) pairs of one list's inspection. */
-const pending = (a: Assessment, insp: Inspection): ChecklistItem[] => {
+/** Untransferred items of one inspection. */
+const pendingRaw = (a: Assessment, insp: Inspection): ChecklistItem[] => {
   const list = a.checklists.find((c) => c.id === insp.checklistId);
   return list ? list.items.filter((i) => isUntransferred(a, list, i, insp)) : [];
 };
 
-/** Deficiencies ("Hayır" items) that have no risk row yet, over the given list's inspections or all. */
-export const countUntransferred = (a: Assessment, listId?: string): number =>
-  scope(a, listId).reduce((n, insp) => n + pending(a, insp).length, 0);
+/** Like pendingRaw, but a common item an earlier inspection already stands for is skipped (counted once). */
+export const pending = (a: Assessment, insp: Inspection): ChecklistItem[] =>
+  pendingRaw(a, insp).filter(
+    (i) => !isDuplicateDeficiency(a, insp.checklistId, i.id, insp.locationId),
+  );
 
+/** Deficiencies ("Hayır" items) that have no risk row yet, over the given list's inspections or all. */
+export const countUntransferred = (a: Assessment, listId?: string): number => {
+  const { created, skippedNoLocation } = transferMissing(a, listId);
+  return created + skippedNoLocation;
+};
+
+/** One risk row per pending deficiency; a common item's siblings share the row (they count as transferred after it). */
 export function transferMissing(a: Assessment, listId?: string): TransferResult {
   let assessment = a;
   let created = 0;
@@ -51,7 +66,7 @@ export function transferMissing(a: Assessment, listId?: string): TransferResult 
     const list = a.checklists.find((c) => c.id === insp.checklistId);
     if (!list) continue;
     const target = targetOf(a, list, insp);
-    for (const item of pending(a, insp)) {
+    for (const item of pendingRaw(assessment, insp)) {
       if (!target) {
         skippedNoLocation += 1;
         continue;

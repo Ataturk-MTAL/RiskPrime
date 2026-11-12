@@ -19,7 +19,12 @@
 
   const a = $derived(store.assessment);
   const list = $derived(a.checklists.find((c) => c.id === d.listId));
-  const linked = $derived(rowsForItem(a, d.listId, d.itemId, d.locationId));
+  const linked = $derived(
+    [{ listId: d.listId, itemId: d.itemId }, ...(d.siblings ?? [])]
+      .flatMap((t) => rowsForItem(a, t.listId, t.itemId, d.locationId))
+      .filter((r, i, all) => all.findIndex((x) => x.rowId === r.rowId) === i),
+  );
+  const refs = $derived([d.ref, ...(d.siblings ?? []).map((s) => s.ref)].filter(Boolean));
   const locationOptions = $derived(a.locations.map((l) => ({ value: l.id, label: l.name || 'Adsız mekân' })));
 
   let createOpen = $state(false);
@@ -49,7 +54,7 @@
 <article class="space-y-2 rounded-lg border bg-background p-3">
   <div class="flex flex-wrap items-start gap-2">
     <p class="min-w-0 flex-1 text-sm font-semibold"><span class="text-muted-foreground">{d.itemNo}.</span> {d.text}</p>
-    {#if d.ref}<Badge variant="outline">{d.ref}</Badge>{/if}
+    {#if refs.length}<Badge variant="outline">{refs.join(' · ')}</Badge>{/if}
   </div>
   <p class="text-xs text-muted-foreground">{d.listCode ? `${d.listCode} · ` : ''}{d.listName}</p>
   {#if d.note}<p class="text-sm">{d.note}</p>{/if}
