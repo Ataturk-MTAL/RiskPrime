@@ -1,7 +1,8 @@
 // Reading, writing and validating the assessment file (JSON).
 import { GROUPINGS, LOCATION_TYPES, STATUSES } from "./assessment";
 import { ANSWERS } from "./checklist";
-import { migrateV1 } from "./file-migrate";
+import { APP_VERSION, nowIso } from "./app-version";
+import { migrateV1, migrateV2 } from "./file-migrate";
 import { ensureInspections } from "./inspections";
 import { isScore } from "./matrix";
 import { SCHEMA_VERSION, type Assessment } from "./types";
@@ -16,6 +17,32 @@ const isScoreOrNull = (x: unknown) => x === null || isScore(x);
 function checkStrings(obj: Obj, keys: string[], path: string, errors: string[]): void {
   for (const k of keys)
     if (!isString(obj[k])) errors.push(`${path ? `${path}.` : ""}${k}: metin olmalı.`);
+}
+
+const PERIOD_STATUSES = ["draft", "signed"];
+const HEX_SHA256 = /^[0-9a-f]{64}$/;
+const isIsoTime = (x: unknown) => isString(x) && x !== "" && !Number.isNaN(Date.parse(x));
+const isHash = (x: unknown) => isString(x) && HEX_SHA256.test(x);
+
+function validateMeta(o: unknown, errors: string[]): void {
+  if (!isObject(o)) {
+    errors.push("meta: eksik.");
+    return;
+  }
+  for (const k of ["createdAt", "updatedAt"])
+    if (!isIsoTime(o[k])) errors.push(`meta.${k}: geçerli bir tarih-saat (ISO) olmalı.`);
+  checkStrings(o, ["appVersion", "bankVersion"], "meta", errors);
+  if (!PERIOD_STATUSES.includes(o.status as string))
+    errors.push(`meta.status: ${PERIOD_STATUSES.join(" ya da ")} olmalı.`);
+  if (!Number.isInteger(o.revision) || (o.revision as number) < 1)
+    errors.push("meta.revision: 1 ya da daha büyük tam sayı olmalı.");
+  if (o.signedAt !== undefined && !isIsoTime(o.signedAt))
+    errors.push("meta.signedAt: geçerli bir tarih-saat (ISO) olmalı.");
+  for (const k of ["contentHash", "previousHash"])
+    if (o[k] !== undefined && !isHash(o[k]))
+      errors.push(`meta.${k}: 64 karakterlik onaltılık (SHA-256) özet olmalı.`);
+  if (o.status === "signed" && (o.signedAt === undefined || o.contentHash === undefined))
+    errors.push("meta: imzalı dönemde signedAt ve contentHash bulunmalı.");
 }
 
 function validateSchool(o: unknown, errors: string[]): void {
@@ -153,6 +180,7 @@ export function validate(value: unknown): string[] {
   const errors: string[] = [];
   if (value.version !== SCHEMA_VERSION) errors.push(`version: ${SCHEMA_VERSION} olmalı.`);
   checkStrings(value, ["period", "assessmentDate", "validUntil"], "", errors);
+  validateMeta(value.meta, errors);
   validateSchool(value.school, errors);
   if (!Array.isArray(value.locations)) errors.push("locations: liste olmalı.");
   else value.locations.forEach((l, i) => validateLocation(l, `locations[${i}]`, errors));
@@ -163,16 +191,27 @@ export function validate(value: unknown): string[] {
   return errors;
 }
 
-export function parse(text: string): { assessment: Assessment } | { errors: string[] } {
+export interface ParseOptions {
+  /** Clock for the meta of migrated files. */
+  now?: () => string;
+  /** Version recorded in the meta of migrated files. */
+  appVersion?: string;
+}
+
+export function parse(
+  text: string,
+  { now = nowIso, appVersion = APP_VERSION }: ParseOptions = {},
+): { assessment: Assessment } | { errors: string[] } {
   let value: unknown;
   try {
     value = JSON.parse(text);
   } catch {
     return { errors: ["Dosya okunamadı: geçerli bir JSON değil."] };
   }
-  // Version 1 files (answers on the items) are upgraded first; ensureInspections then completes
-  // the inspections of every other location and drops anything that no longer matches the lists.
-  const current = isObject(value) && value.version === 1 ? migrateV1(value) : value;
+  // Older files are upgraded step by step (1 -> 2 -> 3); ensureInspections then completes the
+  // inspections of every other location and drops anything that no longer matches the lists.
+  const v2 = isObject(value) && value.version === 1 ? migrateV1(value) : value;
+  const current = isObject(v2) && v2.version === 2 ? migrateV2(v2, now(), appVersion) : v2;
   const errors = validate(current);
   return errors.length ? { errors } : { assessment: ensureInspections(current as Assessment) };
 }

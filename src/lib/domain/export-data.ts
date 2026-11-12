@@ -129,6 +129,8 @@ export interface PdfData {
   period: string;
   assessmentDate: string;
   validUntil: string;
+  /** Snapshot facts for the report (not used by report.typ yet). */
+  snapshot: { revision: number; status: string; signedAt: string; bankVersion: string };
   groups: { title: string; locations: PdfLocation[] }[];
   checklists: PdfChecklist[];
 }
@@ -177,6 +179,12 @@ export function pdfData(a: Assessment, kind: PdfKind, locationId?: string): PdfD
     period: a.period,
     assessmentDate: a.assessmentDate,
     validUntil: a.validUntil,
+    snapshot: {
+      revision: a.meta.revision,
+      status: a.meta.status,
+      signedAt: a.meta.signedAt ?? "",
+      bankVersion: a.meta.bankVersion,
+    },
     groups: grouped(a)
       .map((g) => ({
         title: g.title,

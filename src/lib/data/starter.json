@@ -1,5 +1,13 @@
 {
-  "version": 2,
+  "version": 3,
+  "meta": {
+    "createdAt": "2026-11-12T07:36:16.645Z",
+    "updatedAt": "2026-11-12T07:36:16.645Z",
+    "appVersion": "0.2.0",
+    "bankVersion": "2026.1",
+    "status": "draft",
+    "revision": 1
+  },
   "period": "2026-2027",
   "assessmentDate": "",
   "validUntil": "",

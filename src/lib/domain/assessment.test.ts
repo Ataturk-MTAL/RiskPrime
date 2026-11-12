@@ -16,7 +16,7 @@ function sample() {
 describe("assessment", () => {
   test("empty assessment has five default signatories", () => {
     const a = m.emptyAssessment("2026-2027");
-    expect(a.version).toBe(2);
+    expect(a.version).toBe(3);
     expect(a.inspections).toEqual([]);
     expect(a.period).toBe("2026-2027");
     expect(a.school.signatories).toHaveLength(5);

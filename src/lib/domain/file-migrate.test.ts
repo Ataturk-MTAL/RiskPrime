@@ -2,6 +2,7 @@ import { describe, expect, test } from "vite-plus/test";
 import { parse, serialize, validate } from "./file";
 import { sourcesOf } from "./links";
 import { deficiencies } from "./inspections";
+import { emptyAssessment } from "./assessment";
 
 const row = (id: string, over: object = {}) => ({
   id,
@@ -105,10 +106,10 @@ const open = (value: unknown) => {
 };
 
 describe("migration v1 -> v2", () => {
-  test("opens the file as version 2 and serializes version 2", () => {
+  test("opens the file as version 3 and serializes version 3", () => {
     const a = open(v1File());
-    expect(a.version).toBe(2);
-    expect(JSON.parse(serialize(a)).version).toBe(2);
+    expect(a.version).toBe(3);
+    expect(JSON.parse(serialize(a)).version).toBe(3);
     expect(validate(JSON.parse(serialize(a)))).toEqual([]);
   });
 
@@ -202,5 +203,58 @@ describe("migration v1 -> v2", () => {
       "locations[1].rows: liste olmalı.",
       "inspections[0].answers[0].answer: yes, no, na ya da boş olmalı.",
     ]);
+  });
+});
+
+describe("migration v2 -> v3 (snapshot meta)", () => {
+  const NOW = "2026-11-12T10:00:00.000Z";
+  const opts = { now: () => NOW, appVersion: "9.9.9" };
+  const v2File = () => {
+    const { meta: _meta, ...rest } = JSON.parse(serialize(emptyAssessment("2026-2027")));
+    return { ...rest, version: 2 };
+  };
+  const META = {
+    createdAt: NOW,
+    updatedAt: NOW,
+    appVersion: "9.9.9",
+    bankVersion: "",
+    status: "draft",
+    revision: 1,
+  };
+
+  test("adds an unsigned first-revision meta with the injected clock and app version", () => {
+    const r = parse(JSON.stringify(v2File()), opts);
+    expect("assessment" in r && r.assessment.meta).toEqual(META);
+    expect("assessment" in r && r.assessment.version).toBe(3);
+  });
+
+  test("a version 1 file migrates through v2 to v3", () => {
+    const r = parse(JSON.stringify(v1File()), opts);
+    expect("assessment" in r && r.assessment.meta).toEqual(META);
+    expect("assessment" in r && r.assessment.version).toBe(3);
+  });
+
+  test("a v3 file keeps its own meta", () => {
+    const a = emptyAssessment("2026-2027", "2026-01-01T00:00:00.000Z");
+    const r = parse(serialize(a), opts);
+    expect("assessment" in r && r.assessment.meta).toEqual(a.meta);
+  });
+
+  test("invalid meta is reported in Turkish", () => {
+    const bad = {
+      ...JSON.parse(serialize(emptyAssessment("x"))),
+      meta: { status: "x", revision: 0 },
+    };
+    const e = validate(bad);
+    expect(e).toContain("meta.createdAt: geçerli bir tarih-saat (ISO) olmalı.");
+    expect(e).toContain("meta.status: draft ya da signed olmalı.");
+    expect(e).toContain("meta.revision: 1 ya da daha büyük tam sayı olmalı.");
+    expect(validate({ ...bad, meta: undefined })).toContain("meta: eksik.");
+  });
+
+  test("a signed meta needs signedAt and contentHash", () => {
+    const a = emptyAssessment("x");
+    const e = validate({ ...a, meta: { ...a.meta, status: "signed" } });
+    expect(e).toContain("meta: imzalı dönemde signedAt ve contentHash bulunmalı.");
   });
 });

@@ -247,3 +247,36 @@ describe("excel-backup question refs", () => {
     expect(refs(ok(restoreBackup(sheetsOf(a))))).toEqual(refs(a));
   });
 });
+
+const a0 = () => "2026-10-01T08:00:00.000Z";
+
+describe("excel-backup snapshot meta", () => {
+  const HASH = "a".repeat(64);
+  const withMeta = (meta: Partial<Assessment["meta"]>): Assessment => {
+    const a = fullAssessment();
+    return { ...a, meta: { ...a.meta, ...meta } };
+  };
+
+  test("the marker sheet lists the meta and restore brings it back", () => {
+    const a = withMeta({ revision: 3, bankVersion: "2026.1", previousHash: HASH });
+    const marker = sheetsOf(a)["RiskPrime"];
+    expect(marker).toContainEqual(["Revizyon", 3]);
+    expect(marker).toContainEqual(["Önceki özet", HASH]);
+    const restored = ok(restoreBackup(sheetsOf(a)));
+    expect(restored.meta).toEqual(a.meta);
+  });
+
+  test("a signed period is restored as an unsigned draft (ids change, so the seal cannot hold)", () => {
+    const a = withMeta({ status: "signed", signedAt: a0(), contentHash: HASH, revision: 2 });
+    const restored = ok(restoreBackup(sheetsOf(a)));
+    expect(restored.meta).toMatchObject({ status: "draft", revision: 2 });
+    expect(restored.meta.signedAt).toBeUndefined();
+    expect(restored.meta.contentHash).toBeUndefined();
+  });
+
+  test("an older backup without meta rows still restores with a fresh draft meta", () => {
+    const sheets = sheetsOf(fullAssessment());
+    const old = { ...sheets, RiskPrime: sheets["RiskPrime"].slice(0, 3) };
+    expect(ok(restoreBackup(old)).meta).toMatchObject({ status: "draft", revision: 1 });
+  });
+});

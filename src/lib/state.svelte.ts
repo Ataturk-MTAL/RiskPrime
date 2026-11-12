@@ -4,7 +4,9 @@ import type { Assessment, ChecklistTemplate, LocationTemplate } from "$lib/domai
 import { addLocationFromTemplate, emptyAssessment } from "$lib/domain/assessment";
 import { addChecklist as addChecklistFromTemplate } from "$lib/domain/checklist";
 import { autoAssign } from "$lib/domain/auto-assign";
-import { rollover } from "$lib/domain/rollover";
+import { startNextPeriod } from "$lib/domain/rollover";
+import { APP_VERSION, nowIso } from "$lib/domain/app-version";
+import { isLocked, reviseDraft, signSnapshot, touch } from "$lib/domain/snapshot";
 import { fileName, parse, serialize } from "$lib/domain/file";
 import { isBackup, restoreBackup } from "$lib/domain/excel-backup";
 import { conflictingCodes, read as readExcel } from "$lib/domain/excel-import";
@@ -45,7 +47,15 @@ const PDF_KINDS = {
   "pdf-blank": "blank",
 } as const;
 
-const starterAssessment = (): Assessment => structuredClone(starter) as unknown as Assessment;
+const LOCKED_MESSAGE =
+  "Bu dönem imzalandı ve kilitli; değişiklik için Rapor sayfasından düzeltme taslağı açın.";
+
+/** The bundled starter as a new period created now. */
+const starterAssessment = (): Assessment => {
+  const a = structuredClone(starter) as unknown as Assessment;
+  const now = nowIso();
+  return { ...a, meta: { ...a.meta, createdAt: now, updatedAt: now, appVersion: APP_VERSION } };
+};
 
 function errorList(title: string, errors: string[]): string[] {
   const rest = errors.length - MAX_SHOWN_ERRORS;
@@ -202,11 +212,21 @@ class Store {
   /** Runs a domain update; on a thrown Error the data stays untouched and the message is shown. */
   apply(
     update: (a: Assessment) => Assessment,
-    { dirty = true, savedAt }: { dirty?: boolean; savedAt?: string | null } = {},
+    {
+      dirty = true,
+      savedAt,
+      restore = false,
+    }: { dirty?: boolean; savedAt?: string | null; restore?: boolean } = {},
   ): boolean {
+    // restore = loading a document, undo or a snapshot step: not an edit, so no lock check and no touch.
+    if (!restore && isLocked(this.assessment)) {
+      this.fail([LOCKED_MESSAGE]);
+      return false;
+    }
     this.dismissUndo(); // a pending undo would drop edits made after its action
     try {
-      this.assessment = update(this.assessment);
+      const next = update(this.assessment);
+      this.assessment = restore ? next : touch(next, nowIso(), APP_VERSION);
     } catch (error) {
       this.fail([error instanceof Error ? error.message : "Beklenmeyen hata."]);
       return false;
@@ -248,12 +268,13 @@ class Store {
   #applyUndoable(
     update: (a: Assessment) => Assessment,
     message: string,
-    { replacesDocument = false, notify = toast as typeof toast.success } = {},
+    { replacesDocument = false, restore = false, notify = toast as typeof toast.success } = {},
   ): boolean {
     const previous = this.assessment;
     const previousDirty = this.dirty;
     const previousSavedAt = this.savedAt;
-    if (!this.apply(update, replacesDocument ? { dirty: false, savedAt: null } : {})) return false;
+    const options = replacesDocument ? { dirty: false, savedAt: null } : {};
+    if (!this.apply(update, { ...options, restore: restore || replacesDocument })) return false;
     if (replacesDocument) this.loadCount += 1;
     const savedAtAtAction = this.savedAt;
     this.#undoToast = notify(message, {
@@ -265,6 +286,7 @@ class Store {
           const ok = this.apply(() => previous, {
             dirty: previousDirty || savedSince,
             savedAt: replacesDocument ? previousSavedAt : undefined,
+            restore: true,
           });
           if (ok && replacesDocument) this.loadCount += 1;
         },
@@ -320,7 +342,28 @@ class Store {
   }
 
   async newPeriod() {
-    if (await this.#confirmDiscard()) this.#load(rollover(this.assessment), "Yeni dönem açıldı.");
+    if (await this.#confirmDiscard())
+      this.#load(startNextPeriod(this.assessment, nowIso()), "Yeni dönem açıldı.");
+  }
+
+  /** Signs and locks the period (no undo: the seal must not be silently reverted); persists. */
+  async closePeriod() {
+    const current = this.assessment;
+    try {
+      const signed = await signSnapshot(touch(current, nowIso(), APP_VERSION), nowIso());
+      if (this.assessment !== current)
+        throw new Error("Çalışma imzalanırken değişti; yeniden deneyin.");
+      this.apply(() => signed, { restore: true });
+    } catch (error) {
+      this.fail([error instanceof Error ? error.message : "Beklenmeyen hata."]);
+    }
+  }
+
+  /** Opens a correction draft of the signed period (undoable). */
+  reviseLocked() {
+    this.#applyUndoable((a) => reviseDraft(a, nowIso()), "Düzeltme taslağı açıldı.", {
+      restore: true,
+    });
   }
 
   async newEmpty() {

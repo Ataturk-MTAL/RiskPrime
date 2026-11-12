@@ -59,6 +59,25 @@ function migrateRow(row: unknown, locationId: unknown, scopes: Map<unknown, List
 }
 
 /**
+ * v2 -> v3: adds the snapshot meta. A migrated file is an unsigned first revision of unknown bank
+ * version; createdAt/updatedAt are the migration time.
+ */
+export function migrateV2(value: Obj, now: string, appVersion: string): Obj {
+  return {
+    ...value,
+    version: 3,
+    meta: {
+      createdAt: now,
+      updatedAt: now,
+      appVersion,
+      bankVersion: "",
+      status: "draft",
+      revision: 1,
+    },
+  };
+}
+
+/**
  * v1 -> v2. Each list's item answers and notes move into the inspection of the list's first live
  * location (or the school-wide one); every other inspection is created later by ensureInspections.
  * A row source gets its row's location when that location is one of the list's inspections, else the

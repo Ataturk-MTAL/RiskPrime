@@ -1,5 +1,6 @@
 // Yearly rollover: a new period starting from the previous one's results.
-import type { Assessment, RiskRow } from "./types";
+import { BANK_VERSION } from "./bank-version";
+import type { Assessment, AssessmentMeta, RiskRow } from "./types";
 
 const PERIOD = /^(\d{4})-(\d{4})$/;
 
@@ -23,9 +24,29 @@ function rolloverRow(r: RiskRow): RiskRow {
   };
 }
 
-export function rollover(a: Assessment): Assessment {
+/**
+ * The next period as its own snapshot: a fresh draft (revision 1) on today's question bank version,
+ * chained to the source's hash when that was signed.
+ */
+export function startNextPeriod(
+  a: Assessment,
+  now: string,
+  bankVersion: string = BANK_VERSION,
+): Assessment {
+  const meta: AssessmentMeta = {
+    createdAt: now,
+    updatedAt: now,
+    appVersion: a.meta.appVersion,
+    bankVersion,
+    status: "draft",
+    revision: 1,
+    ...(a.meta.status === "signed" && a.meta.contentHash
+      ? { previousHash: a.meta.contentHash }
+      : {}),
+  };
   return {
     ...a,
+    meta,
     period: nextPeriod(a.period),
     assessmentDate: "",
     validUntil: "",

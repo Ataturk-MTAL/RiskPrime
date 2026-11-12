@@ -1,9 +1,11 @@
 // Immutable operations on an Assessment. Every function returns a new copy and never mutates its input.
+import { APP_VERSION, nowIso } from "./app-version";
 import { parseTrDate, toIso } from "./date";
 import { newId } from "./ids";
 import { ensureInspections } from "./inspections";
 import { clearSources } from "./links";
 import { isScore } from "./matrix";
+import { BANK_VERSION } from "./bank-version";
 import {
   SCHEMA_VERSION,
   type Assessment,
@@ -67,9 +69,17 @@ export function pick<T extends object>(source: object, keys: readonly string[]):
   return Object.fromEntries(keys.filter((k) => k in src).map((k) => [k, src[k]])) as Partial<T>;
 }
 
-export function emptyAssessment(period = ""): Assessment {
+export function emptyAssessment(period = "", now: string = nowIso()): Assessment {
   return {
     version: SCHEMA_VERSION,
+    meta: {
+      createdAt: now,
+      updatedAt: now,
+      appVersion: APP_VERSION,
+      bankVersion: BANK_VERSION,
+      status: "draft",
+      revision: 1,
+    },
     period,
     assessmentDate: "",
     validUntil: "",

@@ -24,7 +24,7 @@ import {
   sourcesOf,
 } from "./links";
 import { readiness } from "./readiness";
-import { rollover } from "./rollover";
+import { startNextPeriod } from "./rollover";
 import { withAnswers } from "./test-helpers";
 import type { Assessment } from "./types";
 
@@ -319,7 +319,7 @@ describe("link consistency", () => {
 
   test("rollover keeps sources and locationIds and clears the answers", () => {
     const a = perLocation();
-    const next = rollover(a);
+    const next = startNextPeriod(a, "2027-09-01T00:00:00.000Z");
     expect(next.locations[0].rows[0].sources).toEqual(a.locations[0].rows[0].sources);
     expect(next.checklists[0].locationIds).toEqual(["l1", "l2"]);
     expect(next.inspections.every((i) => i.answers.length === 0)).toBe(true);

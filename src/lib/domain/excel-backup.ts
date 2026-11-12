@@ -32,6 +32,7 @@ import {
   sourceRef,
   type KeyedList,
 } from "./excel-backup-lists";
+import { metaRows, readMeta } from "./excel-backup-meta";
 import { validate } from "./file";
 import { ensureInspections } from "./inspections";
 import { riskLevel, riskScore } from "./matrix";
@@ -136,6 +137,7 @@ export function backupSheets(a: Assessment): Record<string, Table> {
       ["Biçim", MARKER_VALUE],
       ["Sürüm", SCHEMA_VERSION],
       ["Not", NOTE],
+      ...metaRows(a),
     ],
     [SHEET_SCHOOL]: schoolSheet(a),
     [SHEET_LOCATIONS]: [
@@ -325,8 +327,11 @@ export function restoreBackup(sheets: Sheets): { assessment: Assessment } | { er
   const lists = readLists(listAoa, errors);
   const { locations, checklists } = linkBackup(risk.locations, keyed, lists, risk.refs, errors);
   if (errors.length) return { errors };
+  const base = applySchoolPatch(emptyAssessment(""), patch);
+  const markerKey = Object.keys(sheets).find((k) => norm(k) === norm(SHEET_MARKER));
   const assessment = ensureInspections({
-    ...applySchoolPatch(emptyAssessment(""), patch),
+    ...base,
+    meta: readMeta(markerKey ? sheets[markerKey] : [], base.meta),
     locations,
     checklists,
     inspections: inspectionsOf(

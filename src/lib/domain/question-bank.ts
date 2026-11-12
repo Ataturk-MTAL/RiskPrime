@@ -6,11 +6,15 @@ import type { Assessment, BankQuestion, BankSource, LocationType } from "./types
 
 const norm = (s: string) => s.toLocaleLowerCase("tr");
 
+const meb = mebData as { version: string; items: BankQuestion[] };
+
+export { BANK_VERSION } from "./bank-version";
+
 let cached: BankQuestion[] | null = null;
 
 /** MEB questions first, then the RiskPrime extension; each key appears once. */
 export function loadBank(): BankQuestion[] {
-  cached ??= [...(mebData as BankQuestion[]), ...(extensionData as BankQuestion[])];
+  cached ??= [...meb.items, ...(extensionData as BankQuestion[])];
   return cached;
 }
 

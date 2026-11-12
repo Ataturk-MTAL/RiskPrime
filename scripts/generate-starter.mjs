@@ -62,14 +62,8 @@ function suggestIds(locations, listName) {
   return [];
 }
 
-const LIBRARY_PATH = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "..",
-  "src",
-  "lib",
-  "data",
-  "library.json",
-);
+const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
+const LIBRARY_PATH = path.join(ROOT, "src", "lib", "data", "library.json");
 const MEB_REF = /KL-(\d+)\.(\d+)/;
 const EMPTY_INDEX = { byText: new Map(), keys: new Set() };
 
@@ -89,9 +83,16 @@ export function refOf(text, index) {
   return key && index.keys.has(key) ? key : index.byText.get(text);
 }
 
+const QUESTIONS_PATH = path.join(path.dirname(LIBRARY_PATH), "questions.json");
+
+/** Snapshot meta of a fresh period (revision 1, draft). */
+export function startMeta(bankVersion, appVersion, now) {
+  return { createdAt: now, updatedAt: now, appVersion, bankVersion, status: "draft", revision: 1 };
+}
+
 const two = (n) => String(n).padStart(2, "0");
 
-export function convert(data, school, index = EMPTY_INDEX) {
+export function convert(data, school, index = EMPTY_INDEX, meta = startMeta("", "", "")) {
   const locations = data.labs.map(([name, rows], i) => ({
     id: `a-${two(i + 1)}`,
     name,
@@ -143,7 +144,8 @@ export function convert(data, school, index = EMPTY_INDEX) {
     })),
   );
   return {
-    version: 2,
+    version: 3,
+    meta,
     period: PERIOD,
     assessmentDate: "",
     validUntil: "",
@@ -167,7 +169,10 @@ function main() {
   }
   const school = JSON.parse(fs.readFileSync(path.join(source, "okul.json"), "utf8"));
   const library = JSON.parse(fs.readFileSync(LIBRARY_PATH, "utf8"));
-  const result = convert(readTypstData(source), school, mebIndex(library));
+  const bankVersion = JSON.parse(fs.readFileSync(QUESTIONS_PATH, "utf8")).version;
+  const { version } = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
+  const meta = startMeta(bankVersion, version, new Date().toISOString());
+  const result = convert(readTypstData(source), school, mebIndex(library), meta);
   const target = path.join(
     path.dirname(fileURLToPath(import.meta.url)),
     "..",

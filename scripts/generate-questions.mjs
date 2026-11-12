@@ -5,6 +5,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Bump when the bank's content changes; periods record it as meta.bankVersion.
+export const BANK_VERSION = "2026.1";
+
 const DATA = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "src", "lib", "data");
 
 // Conservative: only lists that clearly belong to one kind of location.
@@ -35,7 +38,8 @@ export function buildQuestions(library) {
 function main() {
   const library = JSON.parse(fs.readFileSync(path.join(DATA, "library.json"), "utf8"));
   const questions = buildQuestions(library);
-  fs.writeFileSync(path.join(DATA, "questions.json"), JSON.stringify(questions, null, 2) + "\n");
+  const bank = { version: BANK_VERSION, items: questions };
+  fs.writeFileSync(path.join(DATA, "questions.json"), JSON.stringify(bank, null, 2) + "\n");
   console.log(`${questions.length} MEB questions`);
 }
 

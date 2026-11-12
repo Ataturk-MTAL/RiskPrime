@@ -1,7 +1,9 @@
 import { describe, expect, test } from "vite-plus/test";
 import { addLocation, addRow, emptyAssessment, updateMeta, updateSignatory } from "./assessment";
-import { nextPeriod, rollover } from "./rollover";
+import { nextPeriod, startNextPeriod } from "./rollover";
 import { withAnswers } from "./test-helpers";
+
+const NOW = "2027-09-01T08:00:00.000Z";
 
 function sample() {
   let a = updateMeta(emptyAssessment("2026-2027"), {
@@ -52,7 +54,7 @@ describe("nextPeriod", () => {
 describe("rollover", () => {
   test("sets the next period, clears dates and keeps school, signatories and locations", () => {
     const a = sample();
-    const r = rollover(a);
+    const r = startNextPeriod(a, NOW);
     expect(r.period).toBe("2027-2028");
     expect(r.assessmentDate).toBe("");
     expect(r.validUntil).toBe("");
@@ -61,7 +63,7 @@ describe("rollover", () => {
   });
 
   test("after-scores become current scores; status and due date reset", () => {
-    const [r1, r2] = rollover(sample()).locations[0].rows;
+    const [r1, r2] = startNextPeriod(sample(), NOW).locations[0].rows;
     expect(r1).toMatchObject({
       likelihood: 2,
       severity: 3,
@@ -76,14 +78,14 @@ describe("rollover", () => {
   test("clears every inspection's answers and notes but keeps items and inspections", () => {
     const before = sample();
     expect(before.inspections[0].answers).toHaveLength(1);
-    const next = rollover(before);
+    const next = startNextPeriod(before, NOW);
     expect(next.checklists[0].items[0]).toMatchObject({ id: "i-1", text: "Madde" });
     expect(next.inspections).toEqual([{ ...before.inspections[0], answers: [] }]);
   });
 
   test("does not mutate the input", () => {
     const a = sample();
-    rollover(a);
+    startNextPeriod(a, NOW);
     expect(a.period).toBe("2026-2027");
     expect(a.locations[0].rows[0].likelihood).toBe(4);
   });

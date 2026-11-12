@@ -25,8 +25,8 @@ describe("starter.json", () => {
     expect(rows.every((r) => r.status === "open")).toBe(true);
   });
 
-  it("is file version 2 with 15 internal checklists whose items carry no answers", () => {
-    expect(starter.version).toBe(2);
+  it("is file version 3 with 15 internal checklists whose items carry no answers", () => {
+    expect(starter.version).toBe(3);
     expect(starter.checklists).toHaveLength(15);
     expect(starter.checklists.every((c) => c.source === "internal")).toBe(true);
     expect(

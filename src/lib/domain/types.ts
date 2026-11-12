@@ -1,6 +1,6 @@
-// Assessment data model. This is also the saved .json file format (version 2).
+// Assessment data model. This is also the saved .json file format (version 3).
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 export type Score = 1 | 2 | 3 | 4 | 5;
 export type LocationType = "workshop" | "storage" | "office" | "wet" | "common";
@@ -98,8 +98,35 @@ export interface Checklist {
   locationIds?: string[];
 }
 
+export type PeriodStatus = "draft" | "signed";
+
+/**
+ * Snapshot bookkeeping of one assessment period (dönem). A signed period is locked; correcting it
+ * opens a new draft revision whose previousHash points back at the signed one.
+ */
+export interface AssessmentMeta {
+  /** ISO time the period was created. */
+  createdAt: string;
+  /** ISO time of the last edit. */
+  updatedAt: string;
+  /** RiskPrime version that last wrote the file. */
+  appVersion: string;
+  /** Question bank version the period started from; "" when unknown (migrated files). */
+  bankVersion: string;
+  status: PeriodStatus;
+  /** 1-based; grows with every correction of a signed period. */
+  revision: number;
+  /** ISO time of signing; signed periods only. */
+  signedAt?: string;
+  /** Hex SHA-256 of the canonical content, set when signing. */
+  contentHash?: string;
+  /** Hash of the signed revision this draft corrects, or of the last period's signed snapshot. */
+  previousHash?: string;
+}
+
 export interface Assessment {
   version: number;
+  meta: AssessmentMeta;
   period: string;
   assessmentDate: string;
   validUntil: string;
