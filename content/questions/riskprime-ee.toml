@@ -1,0 +1,283 @@
+# RiskPrime Elektrik-Elektronik soruları. basis: sorunun dayandığı mevzuat.
+
+[[question]]
+key = "EE-01"
+tags = ["workshop"]
+basis = "Kimyasal Maddelerle Çalışmalarda Sağlık ve Güvenlik Önlemleri Hakkında Yönetmelik"
+text = "Lehim yapılan tezgâhlarda lehim dumanını çalışma alanından uzaklaştıran duman emiş sistemi (emiş kolu veya filtreli fan) var ve çalışıyor mu?"
+
+[[question]]
+key = "EE-02"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Havya ve sıcak hava istasyonları kullanılmadığı zamanlarda ısıya dayanıklı, devrilmeyen sehpalarında duruyor mu?"
+
+[[question]]
+key = "EE-03"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Havya ve lehim istasyonlarının kablo ve fişlerinde yanık, erime veya yalıtım hasarı yok mu?"
+
+[[question]]
+key = "EE-04"
+tags = ["workshop"]
+basis = "Kimyasal Maddelerle Çalışmalarda Sağlık ve Güvenlik Önlemleri Hakkında Yönetmelik"
+text = "Lehim yapılan alanda yiyecek-içecek tüketilmiyor ve lehim işi sonrası eller yıkanıyor mu?"
+
+[[question]]
+key = "EE-05"
+tags = ["workshop"]
+basis = "Kişisel Koruyucu Donanımların İşyerlerinde Kullanılması Hakkında Yönetmelik"
+text = "Lehim, sıcak hava istasyonu ve kablo kesme işlerinde koruyucu gözlük kullanılıyor mu?"
+
+[[question]]
+key = "EE-06"
+tags = ["workshop"]
+basis = "TS EN 61340-5-1 (ESD)"
+text = "ESD'ye duyarlı kart ve bileşenlerle çalışılan tezgâhlarda topraklanmış ESD masası veya paspası var mı?"
+
+[[question]]
+key = "EE-07"
+tags = ["workshop"]
+basis = "TS EN 61340-5-1 (ESD)"
+text = "ESD bileklikleri sağlam, topraklama kablosu tezgâh noktasına bağlı ve bileklikler periyodik olarak test ediliyor mu?"
+
+[[question]]
+key = "EE-08"
+tags = ["workshop", "storage"]
+basis = "TS EN 61340-5-1 (ESD)"
+text = "ESD'ye duyarlı entegre ve kartlar antistatik poşet veya kutularda saklanıp taşınıyor mu?"
+
+[[question]]
+key = "EE-09"
+tags = ["workshop", "storage"]
+basis = "Binaların Yangından Korunması Hakkında Yönetmelik"
+text = "Lityum pil ve LiPo paketler yanmaz zeminde veya şarj güvenlik torbasında, gözetim altında şarj ediliyor mu?"
+
+[[question]]
+key = "EE-10"
+tags = ["workshop", "storage"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Lityum pil şarjında pil tipine ve hücre sayısına uygun şarj cihazı kullanılıyor mu?"
+
+[[question]]
+key = "EE-11"
+tags = ["workshop", "storage"]
+basis = "Binaların Yangından Korunması Hakkında Yönetmelik"
+text = "Şişmiş, ezilmiş veya delinmiş lityum piller ayrılıp kullanım dışı bırakılıyor mu?"
+
+[[question]]
+key = "EE-12"
+tags = ["storage"]
+basis = "Binaların Yangından Korunması Hakkında Yönetmelik"
+text = "Lityum piller kısa devre yapmayacak şekilde, ısı kaynaklarından uzakta ve ayrı bir kutuda saklanıyor mu?"
+
+[[question]]
+key = "EE-13"
+tags = ["workshop"]
+basis = "TS EN 61010-1"
+text = "Multimetre ve prob kabloları sağlam, yalıtımı çatlamamış ve uç koruyucuları takılı mı?"
+
+[[question]]
+key = "EE-14"
+tags = ["workshop"]
+basis = "TS EN 61010-1"
+text = "Şebeke gerilimi ölçümünde kullanılan ölçü aleti ve probların ölçüm kategorisi (CAT sınıfı) ölçülen devreye uygun mu?"
+
+[[question]]
+key = "EE-15"
+tags = ["workshop"]
+basis = "TS EN 61010-1"
+text = "Ölçü aletlerinin sigortaları üreticinin belirttiği değer ve tipte mi?"
+
+[[question]]
+key = "EE-16"
+tags = ["workshop"]
+basis = "TS EN 61010-1"
+text = "Şebekeye bağlı devrelerin osiloskopla ölçümünde ayırıcı trafo veya diferansiyel prob kullanılıyor mu?"
+
+[[question]]
+key = "EE-17"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Ölçü aletlerinin periyodik kontrol veya kalibrasyon kaydı var ve süresi geçmemiş mi?"
+
+[[question]]
+key = "EE-18"
+tags = ["workshop"]
+basis = "TS EN 50110-1 (LOTO, çalışma güvenliği)"
+text = "Büyük kondansatör içeren devrelerde (güç kaynağı, sürücü DC barası) çalışmadan önce kondansatör boşaltılıp gerilim ölçülerek doğrulanıyor mu?"
+
+[[question]]
+key = "EE-19"
+tags = ["workshop"]
+basis = "TS EN 50110-1 (LOTO, çalışma güvenliği)"
+text = "Kondansatör boşaltmada dirençli deşarj probu kullanılıyor, tornavida ile kısa devre yapılmıyor mu?"
+
+[[question]]
+key = "EE-20"
+tags = ["workshop"]
+basis = "TS EN 50110-1 (LOTO, çalışma güvenliği)"
+text = "Yüksek gerilim üreten devrelerle (flyback, bobin, ekranlı cihaz) yalnız öğretmen gözetiminde ve kapalı gövde içinde çalışılıyor mu?"
+
+[[question]]
+key = "EE-21"
+tags = ["workshop"]
+basis = "TS EN 50110-1 (LOTO, çalışma güvenliği)"
+text = "Pano veya devre üzerinde çalışmadan önce enerji kesilip kilitleme-etiketleme (LOTO) uygulanıyor mu?"
+
+[[question]]
+key = "EE-22"
+tags = ["workshop"]
+basis = "TS EN 50110-1 (LOTO, çalışma güvenliği)"
+text = "Atölyede kilitleme için kilit ve \"Çalışma var, enerji vermeyiniz\" etiketi bulunuyor mu?"
+
+[[question]]
+key = "EE-23"
+tags = ["workshop"]
+basis = "TS EN 50110-1 (LOTO, çalışma güvenliği)"
+text = "Çalışmaya başlamadan önce gerilimsizlik, uygun gerilim test cihazıyla (önce cihaz denenerek) ölçülüp doğrulanıyor mu?"
+
+[[question]]
+key = "EE-24"
+tags = ["workshop"]
+basis = "TS EN 50110-1 (LOTO, çalışma güvenliği)"
+text = "Enerji yeniden verilmeden önce tüm öğrencilerin devreden uzaklaştığı ve aletlerin toplandığı kontrol ediliyor mu?"
+
+[[question]]
+key = "EE-25"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Deney setlerinin besleme kabloları ve fişleri sağlam, açıkta iletken uç yok mu?"
+
+[[question]]
+key = "EE-26"
+tags = ["workshop"]
+basis = "TS EN 61010-1"
+text = "Ayarlı güç kaynaklarında akım sınırı, devre bağlanmadan önce uygun değere ayarlanıyor mu?"
+
+[[question]]
+key = "EE-27"
+tags = ["workshop"]
+basis = "TS EN 61010-1"
+text = "Deney bağlantı kabloları ve banana soketleri yalıtımlı, uçları sağlam mı?"
+
+[[question]]
+key = "EE-28"
+tags = ["workshop"]
+basis = "TS EN 50110-1 (LOTO, çalışma güvenliği)"
+text = "Öğrenciler deney devresini öğretmen kontrolü olmadan enerjilendirmiyor mu?"
+
+[[question]]
+key = "EE-29"
+tags = ["workshop"]
+basis = "Elektrik İç Tesisleri Yönetmeliği"
+text = "PLC ve otomasyon setlerinde 24 V DC ile 230 V AC devreler ayrı ve etiketli mi?"
+
+[[question]]
+key = "EE-30"
+tags = ["workshop"]
+basis = "Elektrik İç Tesisleri Yönetmeliği"
+text = "Panolarda her devrenin sigortası veya şalteri etiketli ve pano içinde güncel tek hat şeması var mı?"
+
+[[question]]
+key = "EE-31"
+tags = ["workshop"]
+basis = "Elektrik İç Tesisleri Yönetmeliği"
+text = "Pano içi iletken renkleri standarda uygun mu (koruma iletkeni sarı-yeşil, nötr mavi)?"
+
+[[question]]
+key = "EE-32"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Sürücü ve pano havalandırma ızgaraları ile fanları temiz ve tıkalı değil mi?"
+
+[[question]]
+key = "EE-33"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Frekans konvertörü ve servo sürücü kapakları, enerji kesildikten sonra üreticinin belirttiği deşarj süresi beklenmeden açılmıyor mu?"
+
+[[question]]
+key = "EE-34"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Motor milinde anahtar, kama veya gevşek parça bırakılmıyor ve deneme çalıştırması öncesi kontrol ediliyor mu?"
+
+[[question]]
+key = "EE-35"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Motorun ilk çalıştırmasında dönüş yönü ve devir denemesi öğrenciler güvenli mesafedeyken yapılıyor mu?"
+
+[[question]]
+key = "EE-36"
+tags = ["workshop"]
+basis = "Kişisel Koruyucu Donanımların İşyerlerinde Kullanılması Hakkında Yönetmelik"
+text = "Dönen aksam yakınında çalışırken bol giysi, takı ve açık uzun saç bulunmuyor mu?"
+
+[[question]]
+key = "EE-37"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Isınan trafo, bobin ve güç dirençleri temas edilmeyecek şekilde yerleştirilmiş veya uyarı işaretli mi?"
+
+[[question]]
+key = "EE-38"
+tags = ["workshop"]
+basis = "Elektrik İç Tesisleri Yönetmeliği"
+text = "Şebekeye bağlı elektronik devrelerin deneyleri ayırıcı trafo veya yalıtımlı deney setinden besleniyor mu?"
+
+[[question]]
+key = "EE-39"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "3D yazıcıların sıcak uç ve tablasına temas önlemi var ve yazıcılar çalışırken gözetimsiz bırakılmıyor mu?"
+
+[[question]]
+key = "EE-40"
+tags = ["workshop"]
+basis = "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği"
+text = "Lazer kesici veya kazıyıcı varsa kapağı kapalı çalışıyor, kapak emniyet anahtarı işliyor ve uygun lazer gözlüğü bulunuyor mu?"
+
+[[question]]
+key = "EE-41"
+tags = ["workshop"]
+basis = "Kimyasal Maddelerle Çalışmalarda Sağlık ve Güvenlik Önlemleri Hakkında Yönetmelik"
+text = "Baskılı devre dağlama kimyasalları etiketli kapta saklanıyor, eldiven ve gözlükle kullanılıyor mu?"
+
+[[question]]
+key = "EE-42"
+tags = ["workshop"]
+basis = "Elektrik İç Tesisleri Yönetmeliği"
+text = "Öğrenci projeleri şebeke gerilimine bağlanmadan önce öğretmen tarafından incelenip onaylanıyor mu?"
+
+[[question]]
+key = "EE-43"
+tags = ["workshop"]
+basis = "Elektrik İç Tesisleri Yönetmeliği"
+text = "Şebekeye bağlı öğrenci projeleri yalıtkan kapalı kutuda, sigortalı ve (gerekiyorsa) gövde toprağı bağlı mı?"
+
+[[question]]
+key = "EE-44"
+tags = ["workshop", "storage"]
+basis = "Elektrik İç Tesisleri Yönetmeliği"
+text = "Kablo makaraları kullanılırken kablo tamamen açılıyor ve makaranın koruma düzeneği çalışıyor mu?"
+
+[[question]]
+key = "EE-45"
+tags = ["workshop"]
+basis = "Elektrik İç Tesisleri Yönetmeliği"
+text = "Uzatma kabloları ve çoklu prizler art arda eklenmeden kullanılıyor ve geçici kullanımdan sonra kaldırılıyor mu?"
+
+[[question]]
+key = "EE-46"
+tags = ["workshop"]
+basis = "İşyerlerinde İlk Yardım Hakkında Yönetmelik"
+text = "Elektrik çarpmasında önce enerjinin kesileceği, kazazedeye yalıtkan olmayan nesneyle dokunulmayacağı öğretmenler tarafından biliniyor mu?"
+
+[[question]]
+key = "EE-47"
+tags = ["workshop"]
+basis = "İşyerlerinde Acil Durumlar Hakkında Yönetmelik"
+text = "Atölyenin ana enerji kesme şalterinin yeri öğrenciler tarafından biliniyor ve şalterin önü kapalı değil mi?"

@@ -1,20 +1,19 @@
-// Question bank: every MEB item plus the app's own Elektrik-Elektronik extension. Pure helpers.
-import mebData from "../data/questions.json";
-import extensionData from "../data/questions-ee.json";
+// Question bank (compiled from content/questions/*.toml): MEB items plus RiskPrime's own. Pure helpers.
+import bankData from "../data/questions.json";
 import { newItem } from "./checklist";
 import type { Assessment, BankQuestion, BankSource, LocationType } from "./types";
 
 const norm = (s: string) => s.toLocaleLowerCase("tr");
 
-const meb = mebData as { version: string; items: BankQuestion[] };
+const bank = bankData as { version: string; items: BankQuestion[] };
 
 export { BANK_VERSION } from "./bank-version";
 
 let cached: BankQuestion[] | null = null;
 
-/** MEB questions first, then the RiskPrime extension; each key appears once. */
+/** MEB questions first, then the RiskPrime ones (order fixed by scripts/build-bank.mjs); each key appears once. */
 export function loadBank(): BankQuestion[] {
-  cached ??= [...meb.items, ...(extensionData as BankQuestion[])];
+  cached ??= bank.items;
   return cached;
 }
 
@@ -51,7 +50,13 @@ export function addBankQuestions(
     return q;
   });
   const items = questions.reduce(
-    (acc, q) => [...acc, newItem(acc.length + 1, q.text, list.source === "external", q.key)],
+    (acc, q) => [
+      ...acc,
+      {
+        ...newItem(acc.length + 1, q.text, list.source === "external", q.key),
+        fromBank: true as const,
+      },
+    ],
     list.items,
   );
   return {

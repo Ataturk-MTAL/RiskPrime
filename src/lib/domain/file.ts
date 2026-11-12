@@ -166,6 +166,7 @@ function validateChecklist(l: unknown, path: string, errors: string[]): void {
     }
     checkStrings(x, ["id", "no", "text"], p, errors);
     if (x.ref !== undefined && !isString(x.ref)) errors.push(`${p}.ref: metin olmalı.`);
+    if (x.fromBank !== undefined && x.fromBank !== true) errors.push(`${p}.fromBank: true olmalı.`);
   });
 }
 

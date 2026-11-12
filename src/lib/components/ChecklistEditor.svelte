@@ -9,7 +9,8 @@
   import ChecklistLocations from './ChecklistLocations.svelte';
   import ConfirmDialog from './ConfirmDialog.svelte';
   import QuestionBankDialog from './QuestionBankDialog.svelte';
-  import { addItem, removeChecklist, removeItem, updateChecklist, updateItem } from '$lib/domain/checklist';
+  import { applyBankChanges, bankChanges } from '$lib/domain/bank-sync';
+  import { addItem,removeChecklist, removeItem, updateChecklist, updateItem } from '$lib/domain/checklist';
   import type { ChecklistItem } from '$lib/domain/types';
   import { nav } from '$lib/nav.svelte';
   import { focusFirstField, store } from '$lib/state.svelte';
@@ -21,6 +22,9 @@
 
   let bankOpen = $state(false);
   const list = $derived(store.assessment.checklists.find((l) => l.id === listId));
+  const outdated = $derived(new Set(bankChanges(store.assessment).updated.filter((u) => u.listId === listId).map((u) => u.itemId)));
+  const takeBankText = (itemId: string) =>
+    store.applyWithUndo((a) => applyBankChanges(a, { itemIds: [itemId], addedKeys: [] }), 'Soru metni bankadaki gibi güncellendi.');
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
 
   const patchItem = (itemId: string, patch: Partial<Pick<ChecklistItem, 'no' | 'text'>>) =>
@@ -82,6 +86,12 @@
           <ConfirmDialog label="Maddeyi sil" title="Madde silinsin mi?" description="Bu kontrol maddesi ve cevapları silinecek." onconfirm={() => store.apply((a) => removeItem(a, listId, item.id))}>
             <Trash2 />
           </ConfirmDialog>
+          {#if outdated.has(item.id)}
+            <div class="col-start-2 flex flex-wrap items-center gap-2">
+              <Badge variant="secondary">Bankada güncellendi</Badge>
+              <Button variant="link" size="sm" class="h-auto p-0" onclick={() => takeBankText(item.id)}>Yeni metni al</Button>
+            </div>
+          {/if}
         </div>
       {/each}
     </div>

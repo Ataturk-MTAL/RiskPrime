@@ -67,6 +67,8 @@ export interface ChecklistItem {
   added?: boolean;
   /** Question bank key this item came from, e.g. "KL-26.06" or "EE-03". */
   ref?: string;
+  /** Text taken verbatim from the bank; only such items in school lists are offered bank text updates. */
+  fromBank?: true;
 }
 
 /** One checklist template item answered in one inspection. */

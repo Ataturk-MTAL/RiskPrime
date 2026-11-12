@@ -4,6 +4,13 @@ import type { Assessment, ChecklistTemplate, LocationTemplate } from "$lib/domai
 import { addLocationFromTemplate, emptyAssessment } from "$lib/domain/assessment";
 import { addChecklist as addChecklistFromTemplate } from "$lib/domain/checklist";
 import { autoAssign } from "$lib/domain/auto-assign";
+import {
+  applyBankChanges,
+  bankChanges,
+  hasBankChanges,
+  type BankChanges,
+  type BankSelection,
+} from "$lib/domain/bank-sync";
 import { startNextPeriod } from "$lib/domain/rollover";
 import { APP_VERSION, nowIso } from "$lib/domain/app-version";
 import { isLocked, reviseDraft, signSnapshot, touch } from "$lib/domain/snapshot";
@@ -85,6 +92,8 @@ class Store {
     null,
   );
   discard = $state.raw<{ resolve: (choice: DiscardChoice) => void } | null>(null);
+  /** Bank updates offered to the school; non-null opens the bank-updates dialog. */
+  bankOffer = $state.raw<BankChanges | null>(null);
   /** True while an unreadable stored assessment is backed up under UNREADABLE_KEY. */
   hasUnreadable = $state(false);
   /** Another tab wrote the assessment; offered, never applied automatically. */
@@ -372,8 +381,28 @@ class Store {
   }
 
   async newPeriod() {
-    if (await this.#confirmDiscard())
-      this.#load(startNextPeriod(this.assessment, nowIso()), "Yeni dönem açıldı.");
+    if (!(await this.#confirmDiscard())) return;
+    this.#load(startNextPeriod(this.assessment, nowIso()), "Yeni dönem açıldı.");
+    this.openBankOffer();
+  }
+
+  /** Opens the bank-updates dialog when the checklists lag behind the question bank. */
+  openBankOffer() {
+    const changes = bankChanges(this.assessment);
+    this.bankOffer = hasBankChanges(changes) ? changes : null;
+  }
+
+  dismissBankOffer() {
+    this.bankOffer = null;
+  }
+
+  /** Applies the chosen bank updates as one undoable edit; the dialog closes only on success. */
+  applyBankSelection(selection: BankSelection) {
+    const ok = this.#applyUndoable(
+      (a) => applyBankChanges(a, selection),
+      "Soru bankası güncellemeleri uygulandı.",
+    );
+    if (ok) this.bankOffer = null;
   }
 
   /** Signs and locks the period (no undo: the seal must not be silently reverted); persists. */

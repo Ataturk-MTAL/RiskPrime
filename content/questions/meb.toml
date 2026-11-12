@@ -1,0 +1,4699 @@
+# MEB Risk Değerlendirme Kontrol Listeleri (KL-01 – KL-43), metinler birebir.
+
+[[question]]
+key = "KL-01.01"
+list = "KL-01"
+tags = []
+text = "Havalandırmaya ihtiyaç olan yerlerde pencereler açılabiliyor mu?"
+
+[[question]]
+key = "KL-01.02"
+list = "KL-01"
+tags = []
+text = "Pencere açıldığında yaralanma ve düşme riski mevcutsa, açıklık 100 mm ile sınırlandırılmış mı?"
+
+[[question]]
+key = "KL-01.03"
+list = "KL-01"
+tags = []
+text = "Güvenlik açısından cam kapılar, camlı bölümler vs. kırılmaya karşı değerlendirildi ve önlem alınmış mı?"
+
+[[question]]
+key = "KL-01.04"
+list = "KL-01"
+tags = []
+text = "İhtiyaç noktalarında uygun çöp kovaları veya geri dönüşüm kutuları güvenli olarak yerleştirilmiş mi?"
+
+[[question]]
+key = "KL-01.05"
+list = "KL-01"
+tags = []
+text = "Bariyerler, zincirler, pervazlar vs. takılıp düşmeyi engellemek için açıkça işaretlenmiş mi?"
+
+[[question]]
+key = "KL-01.06"
+list = "KL-01"
+tags = []
+text = "Çatıya izinsiz çıkmaya karşı tedbir alınmış mı?"
+
+[[question]]
+key = "KL-01.07"
+list = "KL-01"
+tags = []
+text = "Okul saatleri dışında alarm durumu için bir prosedür belirlenmiş mi?"
+
+[[question]]
+key = "KL-01.08"
+list = "KL-01"
+tags = []
+text = "Ziyaretçilerin ve araçların giriş çıkışları ile ilgili prosedür belirlenmiş mi?"
+
+[[question]]
+key = "KL-01.09"
+list = "KL-01"
+tags = []
+text = "Yer değişikliği olduğunda radyatör, sıcak su boruları göz önünde bulunduruluyor mu?"
+
+[[question]]
+key = "KL-01.10"
+list = "KL-01"
+tags = []
+text = "İlan panoları hazırlanmış mı?"
+
+[[question]]
+key = "KL-01.11"
+list = "KL-01"
+tags = []
+text = "Panolardaki duyurular güncel tutulmuş mu?"
+
+[[question]]
+key = "KL-01.13"
+list = "KL-01"
+tags = []
+text = "İlkyardım dolapları hazırlanarak, hemen erişim sağlanabilecek yerlere yerleştirilmiş mi?"
+
+[[question]]
+key = "KL-01.14"
+list = "KL-01"
+tags = []
+text = "İlkyardım dolaplarına yeterli malzemeler konulmuş mu?"
+
+[[question]]
+key = "KL-01.15"
+list = "KL-01"
+tags = []
+text = "Koridorlar, geçiş yolları gibi insan trafiğinin yoğun olduğu yerlerde geçişi engelleyecek malzemelerden arındırılmış mı?"
+
+[[question]]
+key = "KL-01.16"
+list = "KL-01"
+tags = []
+text = "Elektrik kabloları, bilgisayar kabloları gibi malzemelerin tehlike oluşturması (düşme vb) önlenmiş mi?"
+
+[[question]]
+key = "KL-01.17"
+list = "KL-01"
+tags = []
+text = "Kayma ve düşmeye karşı zeminler uygun malzemelerden yapılmış mı?"
+
+[[question]]
+key = "KL-01.18"
+list = "KL-01"
+tags = []
+text = "Elektrik kesintilerinde geçici olarak aydınlatma sağlayabilecek ekipman hazır durumda mı?"
+
+[[question]]
+key = "KL-01.19"
+list = "KL-01"
+tags = []
+text = "Merdiven tırabzanları tam ve devamlı mı?"
+
+[[question]]
+key = "KL-01.20"
+list = "KL-01"
+tags = []
+text = "Tırabzanlar standartlara uygun mu?"
+
+[[question]]
+key = "KL-01.21"
+list = "KL-01"
+tags = []
+text = "Merdivenlerde basamaklar eşit genişlikte mi?"
+
+[[question]]
+key = "KL-01.22"
+list = "KL-01"
+tags = []
+text = "Merdivenlerde rıhtlar eşit yükseklikte mi?"
+
+[[question]]
+key = "KL-01.23"
+list = "KL-01"
+tags = []
+text = "Basamak geçişlerinde ve aralarda engel oluşturacak şekilde istiflenmiş malzemeler varsa kaldırılmış mı?"
+
+[[question]]
+key = "KL-01.24"
+list = "KL-01"
+tags = []
+text = "Merdiven aralıklarında düşmelere karşı tedbir alınmış mı? (File, perde, korkuluk vb)"
+
+[[question]]
+key = "KL-01.25"
+list = "KL-01"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-01.26"
+list = "KL-01"
+tags = []
+text = "Çalışan bayan sayısı 100 den fazla ise Emzirme Odası tahsis edilmiş mi?"
+
+[[question]]
+key = "KL-01.27"
+list = "KL-01"
+tags = []
+text = "Aktif araçlar, bina hava girişlerinden yeterince uzakta mı?"
+
+[[question]]
+key = "KL-02.01"
+list = "KL-02"
+tags = []
+text = "Okulun yangın, sel, kundaklama, sivil kargaşa, araç kazası, davetsiz misafir vb. olağandışı durumlar için kapsamlı bir acil durum planı hazırlanmış mı?"
+
+[[question]]
+key = "KL-02.02"
+list = "KL-02"
+tags = []
+text = "Acil Plan güncellenmiş ve test edilmiş mi?"
+
+[[question]]
+key = "KL-02.03"
+list = "KL-02"
+tags = []
+text = "Acil durum tatbikatları zamanında ve gerektiği şekilde yapılmış mı?"
+
+[[question]]
+key = "KL-02.04"
+list = "KL-02"
+tags = []
+text = "Acil çıkışları açıkça belli mi ve acil çıkış yazıları ışıklandırılmış mı?"
+
+[[question]]
+key = "KL-02.05"
+list = "KL-02"
+tags = []
+text = "Acil çıkışlarında herhangi bir engel varsa kaldırılmış mı?"
+
+[[question]]
+key = "KL-02.06"
+list = "KL-02"
+tags = []
+text = "Acil çıkışları her an açık bulundurulmakta mı?"
+
+[[question]]
+key = "KL-02.07"
+list = "KL-02"
+tags = []
+text = "Acil çıkış kapısı dışarıya doğru mu, açılıyor.?"
+
+[[question]]
+key = "KL-02.08"
+list = "KL-02"
+tags = []
+text = "Yerel Sivil Savunma ekipleriyle koordinasyon var mı?"
+
+[[question]]
+key = "KL-02.09"
+list = "KL-02"
+tags = []
+text = "Personel Sağlık Raporları dosyalanmış mı?"
+
+[[question]]
+key = "KL-02.10"
+list = "KL-02"
+tags = []
+text = "Personele periyodik olarak iş sağlığı ve güvenliği konularında eğitimler verilmiş mi?"
+
+[[question]]
+key = "KL-02.11"
+list = "KL-02"
+tags = []
+text = "Birimlerde bulunan ilkyardım kutuları üzerinde açıklamaları var mı?"
+
+[[question]]
+key = "KL-02.12"
+list = "KL-02"
+tags = []
+text = "İhtisas gerektiren işlerde çalışanların mesleki yeterlilik belgeleri var mı?"
+
+[[question]]
+key = "KL-02.13"
+list = "KL-02"
+tags = []
+text = "Bütün birimlerdeki zeminlerde kayma veya düşmeye karşı tedbirler alınıp uyarılar yapılmış mı?"
+
+[[question]]
+key = "KL-02.14"
+list = "KL-02"
+tags = []
+text = "Yönetmeliğe uygun sığınak hazırlanmış mı?"
+
+[[question]]
+key = "KL-02.15"
+list = "KL-02"
+tags = []
+text = "Bütün birimlerdeki araç ve gereçlerin kullanma talimatı görülebilir yere yerleştirilmiş mi?"
+
+[[question]]
+key = "KL-02.16"
+list = "KL-02"
+tags = []
+text = "Bütün birimlerde bulunan ısıtma ve soğutma cihazları için gereken emniyet tedbirleri alınmış mı?"
+
+[[question]]
+key = "KL-02.17"
+list = "KL-02"
+tags = []
+text = "Binadaki paratonerin yıllık bakımı yapılmış mı?"
+
+[[question]]
+key = "KL-02.18"
+list = "KL-02"
+tags = []
+text = "Binada bulunan kolay yanabilen malzemeler emniyetli bir yerde ve tedbir alınmış mı?"
+
+[[question]]
+key = "KL-02.19"
+list = "KL-02"
+tags = []
+text = "Kurumda çalışanlar yaptıkları işlere göre KKD ı kullanıyor mu?"
+
+[[question]]
+key = "KL-02.20"
+list = "KL-02"
+tags = []
+text = "Varsa asansörün periyodik olarak bakımı yönetmeliklere uygun yapılmış mı?"
+
+[[question]]
+key = "KL-02.21"
+list = "KL-02"
+tags = []
+text = "Binanın gaz kullanılan bölümlerinde gaz dedektörü takılmış mı?"
+
+[[question]]
+key = "KL-02.22"
+list = "KL-02"
+tags = []
+text = "Binada duman olması muhtemel bölümde duman dedektörü takılmış mı?"
+
+[[question]]
+key = "KL-02.23"
+list = "KL-02"
+tags = []
+text = "Elektrik tesisatının periyodik bakım yapılmış mı?"
+
+[[question]]
+key = "KL-03.01"
+list = "KL-03"
+tags = []
+text = "Okul Bahçesi her türlü kademeli kısımlardan arındırılmış mı?"
+
+[[question]]
+key = "KL-03.02"
+list = "KL-03"
+tags = []
+text = "Okul Bahçesi değişik amaçlı sivri materyalden temizlenmiş mi?"
+
+[[question]]
+key = "KL-03.03"
+list = "KL-03"
+tags = []
+text = "Rüzgârlı hava ortamlarında hareketlenebilecek cisimler sabitlenmiş mi?"
+
+[[question]]
+key = "KL-03.04"
+list = "KL-03"
+tags = []
+text = "Araç Park yerleri ile öğrenciler arasında emniyetli mesafe var mı?"
+
+[[question]]
+key = "KL-03.05"
+list = "KL-03"
+tags = []
+text = "Okul bahçesinde bulunan rögar, fosseptik, telefon, su, kanalizasyon, kuyu, tesisat geçit yerlerindeki muhafazalar emniyetli mi? (Tercihen kilitli mi?)"
+
+[[question]]
+key = "KL-03.06"
+list = "KL-03"
+tags = []
+text = "Okul bahçesinden çıkışlar direk güvenli alanlara mı yapılıyor?"
+
+[[question]]
+key = "KL-03.07"
+list = "KL-03"
+tags = []
+text = "Ağaç döküntülerinin veya diğer kuruyabilen organik atıkların tutuşabilecekleri ortam var mı?"
+
+[[question]]
+key = "KL-03.08"
+list = "KL-03"
+tags = []
+text = "Özellikle kış mevsimlerinde donmuş sarkıtlar için önlem alınmış mı?"
+
+[[question]]
+key = "KL-03.09"
+list = "KL-03"
+tags = []
+text = "Açık oyun alanlarında oynayanlar için bireysel önlemler alınmış mı?"
+
+[[question]]
+key = "KL-03.10"
+list = "KL-03"
+tags = []
+text = "Açık oyun alanlarında çarpmalara ve yaralanmalara maruz kalınmaması için önlem alınmış mı?"
+
+[[question]]
+key = "KL-03.11"
+list = "KL-03"
+tags = []
+text = "Pencere altlarında yukarıdan kontrolsüz olarak düşebilecek cisimler için önlemler alınmış mı? (Pencere altları emniyetli mi?)"
+
+[[question]]
+key = "KL-03.12"
+list = "KL-03"
+tags = []
+text = "Varsa inşaat işleri için gerekli önlemler alınmış mı?"
+
+[[question]]
+key = "KL-03.13"
+list = "KL-03"
+tags = []
+text = "Okul bahçesinde bulunan direk v.b. çürümeye devrilmeye karşı emniyetli mi?"
+
+[[question]]
+key = "KL-03.14"
+list = "KL-03"
+tags = []
+text = "Okul bahçesi ve girişleri kaygan zeminden arındırılmış mı?"
+
+[[question]]
+key = "KL-03.15"
+list = "KL-03"
+tags = []
+text = "Okul bahçesi yeşil alanlar dışındaki kullanım alanları kauçuk malzeme ile mi kaplı?"
+
+[[question]]
+key = "KL-03.16"
+list = "KL-03"
+tags = []
+text = "Okul bahçesi aydınlatması yeterli mi?"
+
+[[question]]
+key = "KL-03.17"
+list = "KL-03"
+tags = []
+text = "Okul yönetimi belirli noktalardan okul bahçesini gözlemleyebiliyor mu?"
+
+[[question]]
+key = "KL-03.18"
+list = "KL-03"
+tags = []
+text = "Otomatik hareket kabiliyeti olan kapılarda sensörlü durdurma sistemi mevcut mu?"
+
+[[question]]
+key = "KL-03.19"
+list = "KL-03"
+tags = []
+text = "Bahçe ihata duvarı ve ekleri yıkılma, yırtma, kesme gibi riskleri taşıyor mu?"
+
+[[question]]
+key = "KL-03.20"
+list = "KL-03"
+tags = []
+text = "Bahçe dışından okulu tehdit eden unsurlar için tedbirler alınmış mı?"
+
+[[question]]
+key = "KL-03.21"
+list = "KL-03"
+tags = []
+text = "Belirlenen noktaların dışında okula girilebilecek yerler varsa tedbir alınmış mı?"
+
+[[question]]
+key = "KL-03.22"
+list = "KL-03"
+tags = []
+text = "Yeşil alanlar böcek, haşere gibi olumsuzluklar için ilaçlanmış mı?"
+
+[[question]]
+key = "KL-03.23"
+list = "KL-03"
+tags = []
+text = "Okul bahçesinde yapılan etkinliklerin diğerlerini etkilememesi için önlem alınmış mı?"
+
+[[question]]
+key = "KL-03.24"
+list = "KL-03"
+tags = []
+text = "Okul bahçesindeki çöpler zamanında toplanıyor mu?"
+
+[[question]]
+key = "KL-03.25"
+list = "KL-03"
+tags = []
+text = "Havuz varsa gerekli emniyet tedbirleri alınmış mı?"
+
+[[question]]
+key = "KL-03.26"
+list = "KL-03"
+tags = []
+text = "Bahçede varsa elektrik bağlantıları için muhafaza yapılmış mı?"
+
+[[question]]
+key = "KL-03.27"
+list = "KL-03"
+tags = []
+text = "Bahçeye gerekli uyarı işaretleri konulmuş mu?"
+
+[[question]]
+key = "KL-03.28"
+list = "KL-03"
+tags = []
+text = "Bahçe kapısı devrilmelere karşı emniyetli mi?"
+
+[[question]]
+key = "KL-03.29"
+list = "KL-03"
+tags = []
+text = "Bahçe kapısı büyüklüğü öğrencilerin tahliyesi için yeterli mi?"
+
+[[question]]
+key = "KL-03.30"
+list = "KL-03"
+tags = []
+text = "Okul bahçesinde acil durumlar için ikinci bir kapı var mı?"
+
+[[question]]
+key = "KL-03.31"
+list = "KL-03"
+tags = []
+text = "Okul bahçesinde yıldırım çekebilecek unsurlar için önlem alınmış mı? (Trafo gibi)"
+
+[[question]]
+key = "KL-03.32"
+list = "KL-03"
+tags = []
+text = "Okul bahçesi öğrencilerin görülmesini engelleyecek kör noktalardan arındırılmış mı?"
+
+[[question]]
+key = "KL-03.33"
+list = "KL-03"
+tags = []
+text = "Okul bahçesinde yayaların ve araçların ayrı ayrı kullandığı yollar güvenli mi?"
+
+[[question]]
+key = "KL-04.01"
+list = "KL-04"
+tags = []
+text = "Havalandırma ve baca her türlü kokuyu önleyecek şekilde mi?"
+
+[[question]]
+key = "KL-04.02"
+list = "KL-04"
+tags = []
+text = "Çalışan personel için tüberküloz, portör muayenesi yapıldı mı?"
+
+[[question]]
+key = "KL-04.03"
+list = "KL-04"
+tags = []
+text = "İlkyardım dolabı var mı?"
+
+[[question]]
+key = "KL-04.04"
+list = "KL-04"
+tags = []
+text = "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?"
+
+[[question]]
+key = "KL-04.05"
+list = "KL-04"
+tags = []
+text = "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?"
+
+[[question]]
+key = "KL-04.06"
+list = "KL-04"
+tags = []
+text = "Yangın için özel önlemler alınmış mı?"
+
+[[question]]
+key = "KL-04.07"
+list = "KL-04"
+tags = []
+text = "Zemin kaymaya, düşmeye karşı uygun malzemelerden yapılmış mı?"
+
+[[question]]
+key = "KL-04.08"
+list = "KL-04"
+tags = []
+text = "Çalışan personel için soyunma dolabı var mı?"
+
+[[question]]
+key = "KL-04.09"
+list = "KL-04"
+tags = []
+text = "Çalışan personel temizlik kurallarına ( Tırnakların kısa kesilmiş ve iş kıyafetlerinin temiz olması) uyuyor mu?"
+
+[[question]]
+key = "KL-04.10"
+list = "KL-04"
+tags = []
+text = "Satışa sunulan gıda maddelerinin ilgili mevzuat uyarınca Gıda, Tarım ve Hayvancılık Bakanlığından Üretim/İthalat izinleri var mı?"
+
+[[question]]
+key = "KL-04.11"
+list = "KL-04"
+tags = []
+text = "WC’ler gıda üretim, satış ve tüketim yapılan yerlerden uygun uzaklıkta mı?"
+
+[[question]]
+key = "KL-04.12"
+list = "KL-04"
+tags = []
+text = "Ortamın ısınması ve aydınlatılması yeterli mi?"
+
+[[question]]
+key = "KL-04.13"
+list = "KL-04"
+tags = []
+text = "Çöp ve her türlü atığın konulacağı kap yeterli sayıda, büyüklükte ve ağzı kapalı mı?"
+
+[[question]]
+key = "KL-04.14"
+list = "KL-04"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-04.15"
+list = "KL-04"
+tags = []
+text = "Çalışan personelin hijyen belgesi var mı?"
+
+[[question]]
+key = "KL-04.16"
+list = "KL-04"
+tags = []
+text = "Çalışanlardan en az birinin ilkyardımcı belgesi var mı?"
+
+[[question]]
+key = "KL-04.17"
+list = "KL-04"
+tags = []
+text = "Kantin ya da kafeterya işletmesi İSG hizmeti alıyor mu?"
+
+[[question]]
+key = "KL-05.01"
+list = "KL-05"
+tags = []
+text = "Okulda temizlik yapılırken gerekli uyarı levhaları asılıyor mu?"
+
+[[question]]
+key = "KL-05.02"
+list = "KL-05"
+tags = []
+text = "WC’lerde hijyen sağlanmış mı?"
+
+[[question]]
+key = "KL-05.03"
+list = "KL-05"
+tags = []
+text = "Temizlik malzemeleri sağlığa uygun mu?"
+
+[[question]]
+key = "KL-05.04"
+list = "KL-05"
+tags = []
+text = "Okul personeli tarafından düzenli bir şekilde temizlik yapılıyor mu?"
+
+[[question]]
+key = "KL-05.05"
+list = "KL-05"
+tags = []
+text = "Zemin kaymaya, düşmeye karşı uygun malzemeden yapılmış mı?"
+
+[[question]]
+key = "KL-05.06"
+list = "KL-05"
+tags = []
+text = "Okulda elle temasın bulunduğu sıralar, kapı kolları, dolap, masa gibi yüzeyler su ve sabun ile periyodik temizliği yapılıyor mu?"
+
+[[question]]
+key = "KL-05.07"
+list = "KL-05"
+tags = []
+text = "Okulda çöp kovaları temiz ve muhafazalı mı?"
+
+[[question]]
+key = "KL-05.08"
+list = "KL-05"
+tags = []
+text = "Öğrencilere yapılan temizlik ile ilgili uyarılar yeterli mi?"
+
+[[question]]
+key = "KL-05.09"
+list = "KL-05"
+tags = []
+text = "Okullarda bulunan hizmetlinin telefon numarası panoda asılmış mı?"
+
+[[question]]
+key = "KL-05.10"
+list = "KL-05"
+tags = []
+text = "Hijyen Eğitimi Yönetmeliğinde belirlenen iş kollarında bulunanların aynı yönetmeliğe göre eğitim almaları sağlanmış mı?"
+
+[[question]]
+key = "KL-05.11"
+list = "KL-05"
+tags = []
+text = "Kontrol kartları var mı? Düzenli takip ediliyor mu?"
+
+[[question]]
+key = "KL-05.12"
+list = "KL-05"
+tags = []
+text = "Temizlik işlerinde kullanılan malzemeler CAS (Kimyasal Kurumlar Servisi tarafından verilen numara) numarası ile etiketlenmiş mi?"
+
+[[question]]
+key = "KL-05.13"
+list = "KL-05"
+tags = []
+text = "Temizlik çalışanları kişisel koruyucu donanım kullanıyor mu?"
+
+[[question]]
+key = "KL-06.01"
+list = "KL-06"
+tags = []
+text = "Zemin kaymaya, düşmeye karşı uygun malzemeden yapılmış mı?"
+
+[[question]]
+key = "KL-06.02"
+list = "KL-06"
+tags = []
+text = "Aydınlatma ve ısıtma sistemi yeterli mi?"
+
+[[question]]
+key = "KL-06.03"
+list = "KL-06"
+tags = []
+text = "Öğrencilerin oturma planı asılmış mı?"
+
+[[question]]
+key = "KL-06.04"
+list = "KL-06"
+tags = []
+text = "Acil durum alarmı ve acil çıkış levhaları asılmış mı?"
+
+[[question]]
+key = "KL-06.05"
+list = "KL-06"
+tags = []
+text = "Elektrik prizleri korumalı mı?"
+
+[[question]]
+key = "KL-06.06"
+list = "KL-06"
+tags = []
+text = "TV, bilgisayar ve projeksiyon gibi elektrikli cihazlar için güvenlik önlemleri alınmış mı?"
+
+[[question]]
+key = "KL-06.07"
+list = "KL-06"
+tags = []
+text = "Çöp kovası yeterli büyüklükte ve ağzı kapalı mı?"
+
+[[question]]
+key = "KL-06.08"
+list = "KL-06"
+tags = []
+text = "Duyuru panosu asılı mı?"
+
+[[question]]
+key = "KL-06.09"
+list = "KL-06"
+tags = []
+text = "Havalandırma yeterli mi?"
+
+[[question]]
+key = "KL-06.10"
+list = "KL-06"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-06.11"
+list = "KL-06"
+tags = []
+text = "Sınıf kapıları acil çıkışlar için uygun mu?"
+
+[[question]]
+key = "KL-06.12"
+list = "KL-06"
+tags = []
+text = "Sınıflarda öğrencilere zarar verebilecek (Kolon köşeleri, radyatör, metal direkler vb.) nesneler darbe emici izolasyon malzemeleri ile kaplanmış mı?"
+
+[[question]]
+key = "KL-06.13"
+list = "KL-06"
+tags = []
+text = "Pencereler açıldığında yaralanma ve düşme tehlikesi mevcutsa açıklık 100 mm ile sınırlandırılmış mı?"
+
+[[question]]
+key = "KL-07.01"
+list = "KL-07"
+tags = []
+text = "Zemin kaymaya veya düşmeye karşı uygun malzemeden yapılmış mı?"
+
+[[question]]
+key = "KL-07.02"
+list = "KL-07"
+tags = []
+text = "Aydınlatma ve ısıtma sistemi yeterli mi?"
+
+[[question]]
+key = "KL-07.03"
+list = "KL-07"
+tags = []
+text = "Duyuru panoları asılmış mı?"
+
+[[question]]
+key = "KL-07.04"
+list = "KL-07"
+tags = []
+text = "Acil durum alarmı var mı?"
+
+[[question]]
+key = "KL-07.05"
+list = "KL-07"
+tags = []
+text = "Acil çıkış levhaları asılmış mı?"
+
+[[question]]
+key = "KL-07.06"
+list = "KL-07"
+tags = []
+text = "Koridorlarda yangın için özel önlemler alınmış mı?"
+
+[[question]]
+key = "KL-07.07"
+list = "KL-07"
+tags = []
+text = "Uyarı levhaları asılmış mı?"
+
+[[question]]
+key = "KL-07.08"
+list = "KL-07"
+tags = []
+text = "Koridorlarının hijyenine özen gösterilmiş mi?"
+
+[[question]]
+key = "KL-07.09"
+list = "KL-07"
+tags = []
+text = "Koridorlardaki çöp kovalarının ağzı kapalı mı?"
+
+[[question]]
+key = "KL-07.10"
+list = "KL-07"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-07.11"
+list = "KL-07"
+tags = []
+text = "Dışa açılan kapılar için uyarılar var mı?"
+
+[[question]]
+key = "KL-07.12"
+list = "KL-07"
+tags = []
+text = "Koridorda öğrencilere zarar verebilecek (Kolon köşeleri, radyatör, metal direkler vb.) nesneler darbe emici izolasyon malzemeleri ile kaplanmış mı?"
+
+[[question]]
+key = "KL-07.13"
+list = "KL-07"
+tags = []
+text = "Koridorda kontrolsüz düşmeye neden olabilecek girinti, çıkıntı v.b. var mı?"
+
+[[question]]
+key = "KL-07.14"
+list = "KL-07"
+tags = []
+text = "Ağ ve elektrik kablolarının taşındığı sistem gerekli yükseklikte mi?"
+
+[[question]]
+key = "KL-08.01"
+list = "KL-08"
+tags = []
+text = "Aydınlatma kumanda panosundaki açma kapama anahtarları ve şalterler çalışır durumda mı?"
+
+[[question]]
+key = "KL-08.02"
+list = "KL-08"
+tags = []
+text = "Uzatma kablosu kullanımını gerektirmeyecek kadar sabit tesisat var mı?"
+
+[[question]]
+key = "KL-08.03"
+list = "KL-08"
+tags = []
+text = "Tüm elektrik anahtarları ve prizleri düzgün çalışıyor mu?"
+
+[[question]]
+key = "KL-08.04"
+list = "KL-08"
+tags = []
+text = "Yeterli sayıda elektrik prizi var mı ve görsel-işitsel cihazların kullanımı için uygun yerlerde mi?"
+
+[[question]]
+key = "KL-08.05"
+list = "KL-08"
+tags = []
+text = "Toplantı salonunda havalandırma sistemi yeterli mi?"
+
+[[question]]
+key = "KL-08.06"
+list = "KL-08"
+tags = []
+text = "Zemin, kaymaya ve düşmeye karşı uygun malzemeden yapılmış mı?"
+
+[[question]]
+key = "KL-08.07"
+list = "KL-08"
+tags = []
+text = "Aydınlatma sistemi yeterli mi?"
+
+[[question]]
+key = "KL-08.08"
+list = "KL-08"
+tags = []
+text = "Isıtma sistemi yeterli mi?"
+
+[[question]]
+key = "KL-08.09"
+list = "KL-08"
+tags = []
+text = "Acil durum alarmı var mı?"
+
+[[question]]
+key = "KL-08.10"
+list = "KL-08"
+tags = []
+text = "Mevzuata uygun olarak acil çıkış kapısı var mı?"
+
+[[question]]
+key = "KL-08.11"
+list = "KL-08"
+tags = []
+text = "Acil çıkış yönlendirme levhaları asılmış mı?"
+
+[[question]]
+key = "KL-08.12"
+list = "KL-08"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-09.01"
+list = "KL-09"
+tags = []
+text = "Yeterli aydınlatma sağlanmış mı?"
+
+[[question]]
+key = "KL-09.02"
+list = "KL-09"
+tags = []
+text = "Isıtma, havalandırma ve iklimlendirme şartları yeterli mi?"
+
+[[question]]
+key = "KL-09.03"
+list = "KL-09"
+tags = []
+text = "Ses izolasyonu standartlara uygun olarak yapılmış mı?"
+
+[[question]]
+key = "KL-09.04"
+list = "KL-09"
+tags = []
+text = "Odadaki akustik uygulaması yeterli mi ve duvara veya duvarlara monte edilmiş mi?"
+
+[[question]]
+key = "KL-09.05"
+list = "KL-09"
+tags = []
+text = "Zeminde kayma ve düşmeleri engelleyecek döşeme sistemi mevcut mu?"
+
+[[question]]
+key = "KL-09.06"
+list = "KL-09"
+tags = []
+text = "Oda kapısı çift kanatlı ve izolasyonlu mu?"
+
+[[question]]
+key = "KL-09.07"
+list = "KL-09"
+tags = []
+text = "Odada oturma ve çalışma ergonomisi gözetilmiş mi?"
+
+[[question]]
+key = "KL-09.08"
+list = "KL-09"
+tags = []
+text = "Elektronik müzik aletleri için gerekli elektrik tesisatı ve bunlara uygun standart elektrik panoları mevcut mu?"
+
+[[question]]
+key = "KL-09.09"
+list = "KL-09"
+tags = []
+text = "Aletler güvenliği etkilemeyecek şekilde muhafaza ediliyor mu?"
+
+[[question]]
+key = "KL-09.10"
+list = "KL-09"
+tags = []
+text = "Acil durumlar için acil çıkış yön levhaları var mı?"
+
+[[question]]
+key = "KL-09.11"
+list = "KL-09"
+tags = []
+text = "Yangın tesisatı ve gerekli alarm sistemi var mı?"
+
+[[question]]
+key = "KL-09.12"
+list = "KL-09"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-10.01"
+list = "KL-10"
+tags = []
+text = "Yeterli aydınlatma sağlanmış mı?"
+
+[[question]]
+key = "KL-10.02"
+list = "KL-10"
+tags = []
+text = "Isıtma, havalandırma ve iklimlendirme şartları yeterli mi?"
+
+[[question]]
+key = "KL-10.03"
+list = "KL-10"
+tags = []
+text = "Odada oturma ve çalışma ergonomisi var mı?"
+
+[[question]]
+key = "KL-10.04"
+list = "KL-10"
+tags = []
+text = "Zeminde kayma ve düşmeleri engelleyecek döşeme sistemi mevcut mu?"
+
+[[question]]
+key = "KL-10.05"
+list = "KL-10"
+tags = []
+text = "Gerekli elektrik tesisatı ve bunlara uygun standart elektrik panoları mevcut mu?"
+
+[[question]]
+key = "KL-10.06"
+list = "KL-10"
+tags = []
+text = "Elektrik tesisatına kaçak akım rölesi konulmuş mu?"
+
+[[question]]
+key = "KL-10.07"
+list = "KL-10"
+tags = []
+text = "Kimyasal malzemeler kullanılan kısımlarda kimyasallar kontrol altında mı?"
+
+[[question]]
+key = "KL-10.08"
+list = "KL-10"
+tags = []
+text = "Kimyasal sızıntılar için gerekli önlemler alınmış mı?"
+
+[[question]]
+key = "KL-10.09"
+list = "KL-10"
+tags = []
+text = "Kimyasallar kullanılırken KKD' ler kullanılması için gerekli uyarılar asılmış mı?"
+
+[[question]]
+key = "KL-10.10"
+list = "KL-10"
+tags = []
+text = "Yangın tesisatı ve gerekli alarm sistemi var mı?"
+
+[[question]]
+key = "KL-10.11"
+list = "KL-10"
+tags = []
+text = "Acil durumlar için acil çıkış yön levhaları var mı?"
+
+[[question]]
+key = "KL-10.12"
+list = "KL-10"
+tags = []
+text = "Fırınlar düzgün biçimde havalandırılıyor ve izole edilmiş mi?"
+
+[[question]]
+key = "KL-10.13"
+list = "KL-10"
+tags = []
+text = "Makas gibi keskin veya sivri uçlu objelerin muhafaza edildiği kutu benzeri belli bir yeri var mı?"
+
+[[question]]
+key = "KL-10.14"
+list = "KL-10"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-11.01"
+list = "KL-11"
+tags = ["wet"]
+text = "Yeterli aydınlatma sağlanmış mı?"
+
+[[question]]
+key = "KL-11.02"
+list = "KL-11"
+tags = ["wet"]
+text = "Isıtma, havalandırma ve iklimlendirme şartları yeterli mi?"
+
+[[question]]
+key = "KL-11.03"
+list = "KL-11"
+tags = ["wet"]
+text = "Saç ve el kurutucusu, elektrikli ısıtıcısı gibi elektrikli aletlerin kullanım talimatı uygun yerlere asılmış mı?"
+
+[[question]]
+key = "KL-11.04"
+list = "KL-11"
+tags = ["wet"]
+text = "Zeminlerde kaymaya engel olmak için gerekli tedbir alınmış mı?"
+
+[[question]]
+key = "KL-11.05"
+list = "KL-11"
+tags = ["wet"]
+text = "Duş içinde herhangi bir düşme sırasında tutunabilecek sağlam bir tutunma aparatı takılmış mı?"
+
+[[question]]
+key = "KL-11.06"
+list = "KL-11"
+tags = ["wet"]
+text = "Islak hacim kapıları, herhangi bir düşme sırasında, tehlike yaratmaması için uygun bir malzemeden yapılmış mı?"
+
+[[question]]
+key = "KL-11.07"
+list = "KL-11"
+tags = ["wet"]
+text = "Islak zeminden dolayı, elektrik tesisatı ile ilgili kaçak akım rölesi vs. gibi önlemler alınmış mı?"
+
+[[question]]
+key = "KL-11.08"
+list = "KL-11"
+tags = ["wet"]
+text = "Islak hacimlerde temizlik kurallarına uyuluyor mu?"
+
+[[question]]
+key = "KL-11.09"
+list = "KL-11"
+tags = ["wet"]
+text = "Islak hacimler engellilerin kullanımına uygun olarak tasarlanmış mı?"
+
+[[question]]
+key = "KL-11.10"
+list = "KL-11"
+tags = ["wet"]
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-11.11"
+list = "KL-11"
+tags = ["wet"]
+text = "Islak hacimlerde kapılar dışarı açılıyor mu?"
+
+[[question]]
+key = "KL-11.12"
+list = "KL-11"
+tags = ["wet"]
+text = "Kontrol kartları düzenli takip ediliyor mu?"
+
+[[question]]
+key = "KL-12.01"
+list = "KL-12"
+tags = []
+text = "Yeterli aydınlatma sağlanmış mı?"
+
+[[question]]
+key = "KL-12.02"
+list = "KL-12"
+tags = []
+text = "Isıtma, havalandırma ve iklimlendirme şartları yeterli mi?"
+
+[[question]]
+key = "KL-12.03"
+list = "KL-12"
+tags = []
+text = "Zemin döşeme malzemesi standartlara uygun mu?"
+
+[[question]]
+key = "KL-12.04"
+list = "KL-12"
+tags = []
+text = "Seyirci koltuklarında gerekli ergonomi sağlanmış mı?"
+
+[[question]]
+key = "KL-12.05"
+list = "KL-12"
+tags = []
+text = "Seyirci koltukları arasında standart ölçülerde boşluk bırakılmış mı?"
+
+[[question]]
+key = "KL-12.06"
+list = "KL-12"
+tags = []
+text = "Yangın tesisatı ve gerekli alarm sistemi var mı?"
+
+[[question]]
+key = "KL-12.07"
+list = "KL-12"
+tags = []
+text = "Acil çıkış kapıları yeterli sayıda ve mevzuata uygun mu?"
+
+[[question]]
+key = "KL-12.08"
+list = "KL-12"
+tags = []
+text = "Acil çıkış yön levhaları var mı?"
+
+[[question]]
+key = "KL-12.09"
+list = "KL-12"
+tags = []
+text = "Spor salonlarında sporculara zarar verebilecek (Kolon köşeleri, radyatör, metal direkler vb.) nesneler darbe emici izolasyon malzemeleri ile kaplanmış mı?"
+
+[[question]]
+key = "KL-12.10"
+list = "KL-12"
+tags = []
+text = "İlkyardım dolabı var mı?"
+
+[[question]]
+key = "KL-12.11"
+list = "KL-12"
+tags = []
+text = "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?"
+
+[[question]]
+key = "KL-12.12"
+list = "KL-12"
+tags = []
+text = "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?"
+
+[[question]]
+key = "KL-12.13"
+list = "KL-12"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-13.01"
+list = "KL-13"
+tags = []
+text = "Islak yerlerdeki elektrik tesisatı kaçak akım rölesi ile korunuyor mu?"
+
+[[question]]
+key = "KL-13.02"
+list = "KL-13"
+tags = []
+text = "Havuzun kullanımda olmadığı zamanlarda koruması var mı?"
+
+[[question]]
+key = "KL-13.03"
+list = "KL-13"
+tags = []
+text = "Uyarı ve havuz kullanım kuralları görünür yerde mi?"
+
+[[question]]
+key = "KL-13.04"
+list = "KL-13"
+tags = []
+text = "Havuz merdivenleri ve tırabzanlar uygun ve güvenli malzemeden yapılmış mı?"
+
+[[question]]
+key = "KL-13.05"
+list = "KL-13"
+tags = []
+text = "Havuz kullanımı sırasında güvenliği sağlayacak bir personel görevlendirilmiş mi?"
+
+[[question]]
+key = "KL-13.06"
+list = "KL-13"
+tags = []
+text = "Havuzda kullanılan kimyasallar standartlara uygun mu?"
+
+[[question]]
+key = "KL-13.07"
+list = "KL-13"
+tags = []
+text = "Havuz etrafı kaymaz malzeme ile donatılmış mı?"
+
+[[question]]
+key = "KL-13.08"
+list = "KL-13"
+tags = []
+text = "Havuz derinliği görünür bir şekilde işaretlenmiş mi?"
+
+[[question]]
+key = "KL-13.09"
+list = "KL-13"
+tags = []
+text = "İlkyardım dolabı var mı?"
+
+[[question]]
+key = "KL-13.10"
+list = "KL-13"
+tags = []
+text = "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?"
+
+[[question]]
+key = "KL-13.11"
+list = "KL-13"
+tags = []
+text = "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?"
+
+[[question]]
+key = "KL-14.01"
+list = "KL-14"
+tags = []
+text = "Kazan dairesi işletme talimatı görünür bir yere asılmış mı?"
+
+[[question]]
+key = "KL-14.02"
+list = "KL-14"
+tags = []
+text = "Kazan dairesi içerisinde bulunan kazan, boyler, kapalı genleşme deposu vb. gibi kapalı kaplar üzerinde kapasite, çalışma basıncı, test basıncı, imalat tarihi vb. bilgilerin olduğu etiket var mı?"
+
+[[question]]
+key = "KL-14.03"
+list = "KL-14"
+tags = []
+text = "Boru hatları, pompa ve vanalar üzerine isimleri yazılmış mı?"
+
+[[question]]
+key = "KL-14.04"
+list = "KL-14"
+tags = []
+text = "Aydınlatma yeterli mi?"
+
+[[question]]
+key = "KL-14.05"
+list = "KL-14"
+tags = []
+text = "Havalandırma yeterli mi?"
+
+[[question]]
+key = "KL-14.06"
+list = "KL-14"
+tags = []
+text = "Temiz hava girişi tarafında yanıcı, patlayıcı gaz girişi önlenmiş mi ?"
+
+[[question]]
+key = "KL-14.07"
+list = "KL-14"
+tags = []
+text = "Sorumlu haricindeki kişilerin girmesini engelleyici tedbirler alınıyor mu?"
+
+[[question]]
+key = "KL-14.08"
+list = "KL-14"
+tags = []
+text = "Periyodik bakım onarım kartı düzenlenmiş mi?"
+
+[[question]]
+key = "KL-14.09"
+list = "KL-14"
+tags = []
+text = "Periyodik bakımları yapılıyor mu?"
+
+[[question]]
+key = "KL-14.10"
+list = "KL-14"
+tags = []
+text = "Duman kanalları ve baca çekişi kontrol ediliyor mu ?"
+
+[[question]]
+key = "KL-14.11"
+list = "KL-14"
+tags = []
+text = "Yangın algılama ve bildirme tesisatı yapılmış mı?"
+
+[[question]]
+key = "KL-14.12"
+list = "KL-14"
+tags = []
+text = "Yangın söndürme tüpü var mı?"
+
+[[question]]
+key = "KL-14.13"
+list = "KL-14"
+tags = []
+text = "Sıvı yakıtlı ve doğalgazlı sistemlerde yangın, deprem ve statik elektrik ile ilgili güvenlik sistemleri var mı?"
+
+[[question]]
+key = "KL-14.14"
+list = "KL-14"
+tags = []
+text = "Kazan dairesi içerisinde gereksiz malzemeler var mı?"
+
+[[question]]
+key = "KL-14.15"
+list = "KL-14"
+tags = []
+text = "Elektrik panoları, aydınlatma ve diğer kablo tesisatları exproof malzemelerden yapılmış mı?"
+
+[[question]]
+key = "KL-14.16"
+list = "KL-14"
+tags = []
+text = "Kazanlar yakılmadan önce, kazan görevlisi tarafından tüm vanaların, klapelerin, kapakların, emniyet durumu, yakıt ve su miktarları ve işletme ile ilgili bütün hususlar kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-14.17"
+list = "KL-14"
+tags = []
+text = "Zemin temizliğine dikkat ediliyor mu?"
+
+[[question]]
+key = "KL-14.18"
+list = "KL-14"
+tags = []
+text = "Sıvı yakıtlı kazan dairelerinde yakıt tankları ve yakıt tesisatlarından kaynaklanan kaçaklar var mı?"
+
+[[question]]
+key = "KL-14.19"
+list = "KL-14"
+tags = []
+text = "Boru tesisatları, açma kapama elemanları içinden geçen akışkan cinsine ve standartlara göre boyanarak etiketlenmiş mi?"
+
+[[question]]
+key = "KL-14.20"
+list = "KL-14"
+tags = []
+text = "Açıktan giden tesisatlar da donmaya karşı tedbir alınmış mı?"
+
+[[question]]
+key = "KL-14.21"
+list = "KL-14"
+tags = []
+text = "İlkyardım dolabı var mı?"
+
+[[question]]
+key = "KL-14.22"
+list = "KL-14"
+tags = []
+text = "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?"
+
+[[question]]
+key = "KL-14.23"
+list = "KL-14"
+tags = []
+text = "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?"
+
+[[question]]
+key = "KL-14.24"
+list = "KL-14"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-14.25"
+list = "KL-14"
+tags = []
+text = "Kazan Dairesinde Gaz ve Duman Dedektörü var mı?"
+
+[[question]]
+key = "KL-14.26"
+list = "KL-14"
+tags = []
+text = "Kazan dairesinden sorumlu olan çalışanların gerekli mesleki eğitim belgeleri var mı?"
+
+[[question]]
+key = "KL-14.27"
+list = "KL-14"
+tags = []
+text = "Kazan dairesi ile kömür depoları farklı odalarda mı?"
+
+[[question]]
+key = "KL-14.28"
+list = "KL-14"
+tags = []
+text = "Çalışanlar kişisel koruyucu donanım kullanıyor mu?"
+
+[[question]]
+key = "KL-14.29"
+list = "KL-14"
+tags = []
+text = "Çalışanlar iş sağlığı ve güvenliği eğitimleri almış mı?"
+
+[[question]]
+key = "KL-15.01"
+list = "KL-15"
+tags = []
+text = "Okul dışında gerçekleştirilen faaliyetlerde ortaya çıkabilecek riskler ve güvenlik tedbirleri konusunda öğrencilere bilgi veriliyor mu?"
+
+[[question]]
+key = "KL-15.02"
+list = "KL-15"
+tags = []
+text = "Okul dışı aktivitelerde kullanılan ulaşım aracı mevzuatlara uygun mu?"
+
+[[question]]
+key = "KL-15.03"
+list = "KL-15"
+tags = []
+text = "Ulaşım sırasında ve okul dışında yürütülecek faaliyetlerde tüm öğrenciler ve personel sigorta kapsamında mı?"
+
+[[question]]
+key = "KL-15.04"
+list = "KL-15"
+tags = []
+text = "Okul dışı faaliyetlerden önce ön inceleme yapılıyor mu?"
+
+[[question]]
+key = "KL-15.05"
+list = "KL-15"
+tags = []
+text = "Okul dışı faaliyete katılacaklar için muvafakat belgeleri var mı?"
+
+[[question]]
+key = "KL-15.06"
+list = "KL-15"
+tags = []
+text = "Okul dışı faaliyet planlamasında MEB Sosyal etkinlikler yönetmeliği maddeleri dikkate alınmış mı?"
+
+[[question]]
+key = "KL-16.01"
+list = "KL-16"
+tags = []
+text = "Servis araçları ve araç kullanıcıları yasal mevzuatlara uygun mu?"
+
+[[question]]
+key = "KL-16.02"
+list = "KL-16"
+tags = []
+text = "Araçların okul içindeki güzergâhları ve güvenlik kuralları belirlenmiş mi?"
+
+[[question]]
+key = "KL-16.03"
+list = "KL-16"
+tags = []
+text = "Servis işletmesi ve/veya araç şoförleri ile öğrenciler okul güvenliği kriterlerini biliyor mu?"
+
+[[question]]
+key = "KL-16.04"
+list = "KL-16"
+tags = []
+text = "Yağışlı havalarda araca biniş ve iniş merdivenlerinde kayma ve düşmeleri engellemek için önlem alınmış mı?"
+
+[[question]]
+key = "KL-16.05"
+list = "KL-16"
+tags = []
+text = "Servis aracı sürücüleri ile öğrencilere okul güvenlik politikasına uygun olarak araçlara iniş ve binişler ile güvenli davranışlar konusunda bilgi veriliyor mu?"
+
+[[question]]
+key = "KL-16.06"
+list = "KL-16"
+tags = []
+text = "Araçların içi kullanım öncesi havalandırılıyor mu?"
+
+[[question]]
+key = "KL-16.07"
+list = "KL-16"
+tags = []
+text = "Servis araçlarında görevli çalışanların İş sağlığı ve güvenliği eğitimi almış mı?"
+
+[[question]]
+key = "KL-17.01"
+list = "KL-17"
+tags = []
+text = "Laboratuvar masaları ve tabureleri ergonomik olarak hazırlanmış mı?"
+
+[[question]]
+key = "KL-17.02"
+list = "KL-17"
+tags = []
+text = "Çalışma tezgâhı ve masa yüksekliği standartlara uygun mu?"
+
+[[question]]
+key = "KL-17.03"
+list = "KL-17"
+tags = []
+text = "Laboratuvarda havalandırma ve baca tesisatları standartlara uygun mu?"
+
+[[question]]
+key = "KL-17.04"
+list = "KL-17"
+tags = []
+text = "Çalışma ortamında yeterli aydınlatma sağlanmış mı?"
+
+[[question]]
+key = "KL-17.05"
+list = "KL-17"
+tags = []
+text = "Tehlikeli maddeler koruma altına alınmış mı?"
+
+[[question]]
+key = "KL-17.06"
+list = "KL-17"
+tags = []
+text = "Laboratuvarda yangın için özel önlem alınmış mı?"
+
+[[question]]
+key = "KL-17.07"
+list = "KL-17"
+tags = []
+text = "Kimyasal sızıntılara karşı gerekli önlemler alınmış mı?"
+
+[[question]]
+key = "KL-17.08"
+list = "KL-17"
+tags = []
+text = "Tehlikeli maddelerin muhafaza edildikleri yerlerde gerekli uyarı işaretleri var mı?"
+
+[[question]]
+key = "KL-17.09"
+list = "KL-17"
+tags = []
+text = "Laboratuvar panosunda laboratuvar sorumlusuna ulaşabilecek telefonlar var mı?"
+
+[[question]]
+key = "KL-17.10"
+list = "KL-17"
+tags = []
+text = "Laboratuvar elektrik panolarında gerekli önlemler alınmış mı?"
+
+[[question]]
+key = "KL-17.11"
+list = "KL-17"
+tags = []
+text = "Laboratuvardaki gaz, elektrik, sıhhi tesisat ve pis su tesisatları standartlara uygun mu?"
+
+[[question]]
+key = "KL-17.12"
+list = "KL-17"
+tags = []
+text = "Laboratuvarda ilk yardım dolabı var mı?"
+
+[[question]]
+key = "KL-17.13"
+list = "KL-17"
+tags = []
+text = "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?"
+
+[[question]]
+key = "KL-17.14"
+list = "KL-17"
+tags = []
+text = "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?"
+
+[[question]]
+key = "KL-17.15"
+list = "KL-17"
+tags = []
+text = "Acil durum alarmı ve çıkış levhası var mı?"
+
+[[question]]
+key = "KL-17.16"
+list = "KL-17"
+tags = []
+text = "Laboratuvar zemini kaymaya, düşmeye karşı uygun malzemelerden yapılmış mı?"
+
+[[question]]
+key = "KL-17.17"
+list = "KL-17"
+tags = []
+text = "Laboratuvarda uyarı levhaları asılmış mı?"
+
+[[question]]
+key = "KL-17.18"
+list = "KL-17"
+tags = []
+text = "Deney güvenliği için limitler biliniyor ve dikkat ediliyor mu? (Isı, basınç, elektrik, devir/dakika, diğer)"
+
+[[question]]
+key = "KL-17.19"
+list = "KL-17"
+tags = []
+text = "Deney veya test düzeneği deneyden önce kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-17.20"
+list = "KL-17"
+tags = []
+text = "Deney düzeneğini başlangıç noktasına getirirken nelere dikkat edilmesi gerekiyor, biliniyor mu?"
+
+[[question]]
+key = "KL-17.21"
+list = "KL-17"
+tags = []
+text = "Tehlikeli malzemeler ve atıkların ne şekilde uzaklaştırılacağı biliniyor mu?"
+
+[[question]]
+key = "KL-17.22"
+list = "KL-17"
+tags = []
+text = "Deney yapılırken olası hava, buhar, elektrik veya vakum vb. kesintisine karşı güvenlik tedbirleri alınıyor mu?"
+
+[[question]]
+key = "KL-17.23"
+list = "KL-17"
+tags = []
+text = "Yangın söndürücü uygun mu ya da başka söndürücüye ihtiyaç var mı?"
+
+[[question]]
+key = "KL-17.24"
+list = "KL-17"
+tags = []
+text = "Tavan yüksekliği 2m.'den az mı veya 2m.'den az olan kısımlar bulunuyorsa bunlar işaretlenmiş mi?"
+
+[[question]]
+key = "KL-17.25"
+list = "KL-17"
+tags = []
+text = "Tüm konteyner veya laboratuvar kaplarının üzerinde içerik, tarih, sorumlu kişi bilgileri var mı?"
+
+[[question]]
+key = "KL-17.26"
+list = "KL-17"
+tags = []
+text = "Siper veya maske gibi teması engellemeye ve cihazları korumaya yönelik araçlar kullanılıyor mu?"
+
+[[question]]
+key = "KL-17.27"
+list = "KL-17"
+tags = []
+text = "Etiketler ve işaretlerin yeri ve büyüklüğü standartlara uygun mu?"
+
+[[question]]
+key = "KL-17.28"
+list = "KL-17"
+tags = []
+text = "Deneyler sırasında kıyafet veya takılar dikkate alınıyor mu?"
+
+[[question]]
+key = "KL-17.29"
+list = "KL-17"
+tags = []
+text = "Toz ve partiküller limit değer altında mı? (toksik değilse limit 10 mg/cm)"
+
+[[question]]
+key = "KL-17.30"
+list = "KL-17"
+tags = []
+text = "Öğrencilerin tehlikeli buhar ve gazlara maruz kalmaması için gerekli tedbirler alınıyor mu?"
+
+[[question]]
+key = "KL-17.31"
+list = "KL-17"
+tags = []
+text = "Sıçrama ve dökülme durumu için çalışılan malzeme cinslerine göre tedbirler alınıyor mu?"
+
+[[question]]
+key = "KL-17.32"
+list = "KL-17"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-18.01"
+list = "KL-18"
+tags = []
+text = "Malzemelerin taşınması için yeterli ekipman veya araç (mekanik aletler veya kutu, kap vs.) mevcut mu?"
+
+[[question]]
+key = "KL-18.02"
+list = "KL-18"
+tags = []
+text = "Çalışma sırasında bedeni zorlayıcı pozisyonlar (eğilme, çömelme, dönme, diz çökme vs.) için tedbir alınmış mı?"
+
+[[question]]
+key = "KL-18.03"
+list = "KL-18"
+tags = []
+text = "Oturularak yapılan çalışmalarda çalışma yüksekliği uygun mu?"
+
+[[question]]
+key = "KL-18.04"
+list = "KL-18"
+tags = []
+text = "Oturma pozisyonları ergonomik olarak tasarlanmış mı?"
+
+[[question]]
+key = "KL-18.05"
+list = "KL-18"
+tags = []
+text = "Çalışma alanı/boşluğu uygun mu?"
+
+[[question]]
+key = "KL-18.06"
+list = "KL-18"
+tags = []
+text = "Ağır malzemeler, bel sorunlarına yol açmaması için bel ile diz arasında bir hizada teçhiz edilmiş olan raflarda mı?"
+
+[[question]]
+key = "KL-18.07"
+list = "KL-18"
+tags = []
+text = "Yüksek noktalara erişim için ayaklı merdiven mevcut mu?"
+
+[[question]]
+key = "KL-18.08"
+list = "KL-18"
+tags = []
+text = "Ağır yüklerin taşınması, mümkün olduğunda parçalar halinde veya küçük iş paketleri haline getirilerek taşınıyor mu?"
+
+[[question]]
+key = "KL-18.09"
+list = "KL-18"
+tags = []
+text = "Taşıma aracının varsa tutma kolları yükün cinsine ve ağırlığına uygun mu?"
+
+[[question]]
+key = "KL-18.10"
+list = "KL-18"
+tags = []
+text = "Elle taşıma yapılan mesafeler yakın mı?"
+
+[[question]]
+key = "KL-18.11"
+list = "KL-18"
+tags = []
+text = "Ağır malzemelerin taşınacağı platformda engebe veya merdiven var mı?"
+
+[[question]]
+key = "KL-18.12"
+list = "KL-18"
+tags = []
+text = "Malzemelerin taşınması konusunda dikkat edilmesi gereken hususlar hakkında kişiler bilgi sahibi mi?"
+
+[[question]]
+key = "KL-18.13"
+list = "KL-18"
+tags = []
+text = "Malzemelerin taşınmasında eğilme veya dönme gerektiren pozisyonlar elimine ediliyor mu?"
+
+[[question]]
+key = "KL-18.14"
+list = "KL-18"
+tags = []
+text = "Malzemeleri tutmak ve taşımak için gerekli aparatlardan/araçlardan faydalanılıyor mu?"
+
+[[question]]
+key = "KL-18.15"
+list = "KL-18"
+tags = []
+text = "El ile taşımayı en aza indirmek için raflar çalışma tezgahlarına yakın tasarlanmış mı?"
+
+[[question]]
+key = "KL-19.01"
+list = "KL-19"
+tags = ["office"]
+text = "Oturularak yapılan çalışmalarda çalışma yüksekliği uygun mu?"
+
+[[question]]
+key = "KL-19.02"
+list = "KL-19"
+tags = ["office"]
+text = "Çalışma alanı/boşluğu uygun mu?"
+
+[[question]]
+key = "KL-19.03"
+list = "KL-19"
+tags = ["office"]
+text = "Ekranlı araçlar yükseklik, mesafe, parlaklık olarak rahat çalışmaya imkân verecek uygunlukta mı?"
+
+[[question]]
+key = "KL-19.04"
+list = "KL-19"
+tags = ["office"]
+text = "Çalışma pozisyonu yeterli sıklıkta değişim gösteriyor mu? (ayağa kalkma/oturma/ etrafta dolaşma)"
+
+[[question]]
+key = "KL-19.05"
+list = "KL-19"
+tags = ["office"]
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-19.06"
+list = "KL-19"
+tags = ["office"]
+text = "Çalışma ortamının gereksiz yere daralmasını önlemek amacıyla tedbir alınmış mı?"
+
+[[question]]
+key = "KL-19.07"
+list = "KL-19"
+tags = ["office"]
+text = "Çalışma ortamı yakıcı, tutuşturucu, parlayıcı, patlayıcı v.b. Malzemelerden arındırılmış mı?"
+
+[[question]]
+key = "KL-19.08"
+list = "KL-19"
+tags = ["office"]
+text = "Klavye ve farenin ön tarafında bileklerin dayanabileceği özel destek var mı?"
+
+[[question]]
+key = "KL-19.09"
+list = "KL-19"
+tags = ["office"]
+text = "Ekranlı araçların kabloları askıda ve korunaklı mı?"
+
+[[question]]
+key = "KL-20.01"
+list = "KL-20"
+tags = []
+text = "Toz, talaş vs. birikmesi sonucunda aydınlatma armatürlerinden ve pencere camlarından gelen gün ışığı azalmasının önüne geçiliyor mu?"
+
+[[question]]
+key = "KL-20.02"
+list = "KL-20"
+tags = []
+text = "Koridorlar, antre, geçiş yolları gibi karanlıkta kalan yerler var mı?"
+
+[[question]]
+key = "KL-20.03"
+list = "KL-20"
+tags = []
+text = "Çalışma yürütülen mekânlarda, aydınlatma, çalışmanın sağlıklı yürütülmesine uygun mu?"
+
+[[question]]
+key = "KL-20.04"
+list = "KL-20"
+tags = []
+text = "Genel aydınlatma yeterli mi?"
+
+[[question]]
+key = "KL-20.05"
+list = "KL-20"
+tags = []
+text = "Gereken yerlerde veya noktalarda lokal aydınlatma var mı?"
+
+[[question]]
+key = "KL-20.06"
+list = "KL-20"
+tags = []
+text = "Floresan lambalar tezgâhlara, sıralara paralel mi?"
+
+[[question]]
+key = "KL-20.07"
+list = "KL-20"
+tags = []
+text = "Kişilerin aydınlatma ile şikâyetçi oldukları alanlar mevcut mu?"
+
+[[question]]
+key = "KL-20.08"
+list = "KL-20"
+tags = []
+text = "Görüş alanında göz yorgunluğuna neden olabilecek ya da gözün sürekli olarak yeniden uyum sağlamasını engelleyecek aşırı kontrastlar önleniyor mu?"
+
+[[question]]
+key = "KL-20.09"
+list = "KL-20"
+tags = []
+text = "Çalışma alanında yapılan işle ilgili görüşü değiştirebilecek yansımaları önleyici tedbirler alınıyor mu?(cilalı ya da parlak yüzeylerden doğrudan yansımalar)"
+
+[[question]]
+key = "KL-20.10"
+list = "KL-20"
+tags = []
+text = "Çalışma ortamındaki nesne ve insanların derilerinin/ciltlerinin renkleri mevcut suni aydınlatma nedeniyle olduğundan farklı görünmesi önleniyor mu?"
+
+[[question]]
+key = "KL-20.11"
+list = "KL-20"
+tags = []
+text = "Çalışanlar ikaz ışıklarının yanıp sönmesini fark edebiliyor mu?"
+
+[[question]]
+key = "KL-20.12"
+list = "KL-20"
+tags = []
+text = "Mevcut suni aydınlatma altında, dönen makinaların hareketsizmiş gibi görünmesinin önüne geçiliyor mu?"
+
+[[question]]
+key = "KL-21.01"
+list = "KL-21"
+tags = []
+text = "Okulda kullanılan Bıçaklar, kesiciler, biçiciler, makaslar gibi kesici uçlu veya yüzeyi keskin aletler yapılan iş için uygun mu?"
+
+[[question]]
+key = "KL-21.02"
+list = "KL-21"
+tags = []
+text = "Kesicilerin bulunduruldukları muhafaza uygun mu?"
+
+[[question]]
+key = "KL-21.03"
+list = "KL-21"
+tags = []
+text = "Körleşmiş araçlar kullanımdan kaldırılıyor mu?"
+
+[[question]]
+key = "KL-21.04"
+list = "KL-21"
+tags = []
+text = "Kıymıklı, dikenli, tel gibi sivri, batıcı uçlu nesneler için uygun KKD kullanılıyor mu?"
+
+[[question]]
+key = "KL-21.05"
+list = "KL-21"
+tags = []
+text = "Mil, çengel gibi sivri keskin uçları bulunan nesnelerin uçları mümkün olduğunda yuvarlatılıyor, körleştiriliyor mu?"
+
+[[question]]
+key = "KL-21.06"
+list = "KL-21"
+tags = []
+text = "Raflar, çekmeceler, tezgâhlar kesici kenar ve köşeler için, tahrip edici özelliklerini azaltmaya yönelik bir önlem alınmış mı?"
+
+[[question]]
+key = "KL-21.07"
+list = "KL-21"
+tags = []
+text = "Seramik, porselen, cam, ayna, cam kapı, cam duvar gibi nesneler tehlike yaratıyor mu?"
+
+[[question]]
+key = "KL-21.08"
+list = "KL-21"
+tags = []
+text = "Baş hizasındaki yüksekliklerde çarpma noktaları için önlem alınmış mı?"
+
+[[question]]
+key = "KL-21.09"
+list = "KL-21"
+tags = []
+text = "Şaft, merdane gibi kesici ve keskin yüzeyleri bulunan makine ve ekipman, kullanımda olmadıkları zaman muhafaza ediliyor mu?"
+
+[[question]]
+key = "KL-21.10"
+list = "KL-21"
+tags = []
+text = "Çember burma presi veya yapıştırma tabancası gibi sıcak yüzeylerle temas engelleniyor mu?"
+
+[[question]]
+key = "KL-21.11"
+list = "KL-21"
+tags = []
+text = "Konteynır, tekne, küvet vs. kenar ve köşeleri körleştirilmiş mi?"
+
+[[question]]
+key = "KL-22.01"
+list = "KL-22"
+tags = []
+text = "Varsa raflar ve iskeleler dengede mi?"
+
+[[question]]
+key = "KL-22.02"
+list = "KL-22"
+tags = []
+text = "Baca, raf, iskele, merdivenlerde emniyeti tehdit eden unsurlar ortadan kaldırılmış mı?"
+
+[[question]]
+key = "KL-22.03"
+list = "KL-22"
+tags = []
+text = "Stoklanmış malzemeler, yığıntılar, aletler, hortum veya elde taşınan objeler, aletler gibi boşalma, düşme veya kontrolsüz harekete geçmeye meyilli nesneler emniyete alınmış mı?"
+
+[[question]]
+key = "KL-22.04"
+list = "KL-22"
+tags = []
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-23.01"
+list = "KL-23"
+tags = []
+text = "Dondurulmuş ürünler, Süt, su gibi madde ve nesnelerin dış ortam ile teması önleniyor mu?"
+
+[[question]]
+key = "KL-23.02"
+list = "KL-23"
+tags = []
+text = "Çok sıcak sıvılar, buhar, gaz, sıcak yüzeyler, çıplak alev, ısıtma cihazları gibi sıcak ile temas önleniyor mu?"
+
+[[question]]
+key = "KL-23.03"
+list = "KL-23"
+tags = []
+text = "Sıcak borular, ısıtma tesisatı veya tank gibi sıcak yüzeylerle temas ve bunlardan dolayı yanma tehlikesi önleniyor mu?"
+
+[[question]]
+key = "KL-23.04"
+list = "KL-23"
+tags = []
+text = "Sıcak/soğuk madde veya nesneler civarında yetkisiz kişilerin bulunması engelleniyor mu?"
+
+[[question]]
+key = "KL-24.01"
+list = "KL-24"
+tags = []
+text = "Ortam termal konfor şartlarına uygun mu?"
+
+[[question]]
+key = "KL-24.02"
+list = "KL-24"
+tags = []
+text = "Duman ve atık gaz üreten makinelere bağlı olarak çalışan egzoz ve filtre sistemi var mı?"
+
+[[question]]
+key = "KL-24.03"
+list = "KL-24"
+tags = []
+text = "İklimlendirme cihazlarının kontrolleri yapılıyor mu?"
+
+[[question]]
+key = "KL-25.01"
+list = "KL-25"
+tags = []
+text = "Genel kullanım alanlarında 90 cm. ’den, çalışma yürütülen yerlerde 121 cm. ‘den yüksek yerlere korkuluk teçhiz edilmiş mi?"
+
+[[question]]
+key = "KL-25.02"
+list = "KL-25"
+tags = []
+text = "Yüksekte istiflenen veya muhafaza edilen malzeme, yuvarlanma, düşme, saçılma gibi durumlara karşı tedbirli olarak yerleştirilmiş mi?"
+
+[[question]]
+key = "KL-25.03"
+list = "KL-25"
+tags = []
+text = "Makaslı merdivenler, iskele vs. kullanımı konusunda öğrenci ve personele yeterli eğitim verildi mi?"
+
+[[question]]
+key = "KL-25.04"
+list = "KL-25"
+tags = []
+text = "Seyyar merdivenler ve tüm aksamı iyi durumda ve kullanıma hazır mı?"
+
+[[question]]
+key = "KL-25.05"
+list = "KL-25"
+tags = []
+text = "Merdivenleri kullanmak için gerekli KKD sağlandı mı veya ayakkabılar kaymaz cinsten mi?"
+
+[[question]]
+key = "KL-25.06"
+list = "KL-25"
+tags = []
+text = "Merdivenler her kullanımdan önce muayene ediliyor mu?"
+
+[[question]]
+key = "KL-25.07"
+list = "KL-25"
+tags = []
+text = "Merdiven basamakların üzerinde yağ vs. gibi kaydırıcı maddelerin olmamasına dikkat ediliyor mu?"
+
+[[question]]
+key = "KL-25.08"
+list = "KL-25"
+tags = []
+text = "Yüksekteki bir platforma veya çatıya çıkılması gerektiği zaman kullanılan merdivenler erişim sağlanan bu yükseklikten en az 91 cm daha uzun mu?"
+
+[[question]]
+key = "KL-26.01"
+list = "KL-26"
+tags = []
+text = "Elektrik tesisatının bakım ve onarımı cins ve kapasitesine göre yetkili ehliyete sahip kişilerce mi yapılıyor?"
+
+[[question]]
+key = "KL-26.02"
+list = "KL-26"
+tags = []
+text = "Makine ve aletlerin çıplak metal kısımları topraklanmış ya da gerekli yalıtım yapılmış mı?"
+
+[[question]]
+key = "KL-26.03"
+list = "KL-26"
+tags = []
+text = "Alet veya makinelerin topraklaması çalışıyor mu?"
+
+[[question]]
+key = "KL-26.04"
+list = "KL-26"
+tags = []
+text = "Atölyede çalışan öğretmen ve öğrenciler için gereken KKD’ler var mı ve bu donanım gerektiğinde kullanılıyor mu?"
+
+[[question]]
+key = "KL-26.05"
+list = "KL-26"
+tags = []
+text = "Öğretmen ve öğrenciler elektrik tesisatı hakkında gerekli eğitim, bilgi ve deneyime sahipler mi?"
+
+[[question]]
+key = "KL-26.06"
+list = "KL-26"
+tags = []
+text = "Elektrik panolarının etrafında panoya ulaşımı engelleyecek malzeme var mı?"
+
+[[question]]
+key = "KL-26.07"
+list = "KL-26"
+tags = []
+text = "Kollu ve çevirmeli şalterlerde 1 ve 0 konumu etiketli mi?"
+
+[[question]]
+key = "KL-26.08"
+list = "KL-26"
+tags = []
+text = "Elektrikli el aletlerinin kullanılması gereken yerlerde aletlerin fişlerine uygun prizler var mı?"
+
+[[question]]
+key = "KL-26.09"
+list = "KL-26"
+tags = []
+text = "Elektrik tesisatı standartlara uygun olarak döşenmiş mi?"
+
+[[question]]
+key = "KL-26.10"
+list = "KL-26"
+tags = []
+text = "Sigortalar pano içerisinde mi ve kapakları kapalı tutuluyor mu?"
+
+[[question]]
+key = "KL-26.11"
+list = "KL-26"
+tags = []
+text = "Nemli ve ıslak yerler ile parlama ve patlama tehlikesi olan yerlerde aydınlatma lambaları, fiş priz ve anahtarlar su damlalarına ve toza karşı tamamen korunmuş mu?"
+
+[[question]]
+key = "KL-26.12"
+list = "KL-26"
+tags = []
+text = "Sigortalar, nemli ve ıslak yerler ile parlama ve patlama tehlikesi olan ortamın dışında mı?"
+
+[[question]]
+key = "KL-26.13"
+list = "KL-26"
+tags = []
+text = "Yıpratıcı etkisi olan buhar ve dumana açık metal parçalar koruyucu boya ya da dayanıklı malzemeler kullanılarak korozyona karşı korunmakta mı?"
+
+[[question]]
+key = "KL-26.14"
+list = "KL-26"
+tags = []
+text = "Makina kötü ve kullanılamaz durumda ise üzerinde kullanım dışı olduğunu belirten yazılı talimat var mı?"
+
+[[question]]
+key = "KL-26.15"
+list = "KL-26"
+tags = []
+text = "Makinayı kullanacak kişiler kullanım/talimatlar/riskler ve tedbirler konusunda eğitildi mi?"
+
+[[question]]
+key = "KL-26.16"
+list = "KL-26"
+tags = []
+text = "Eğitim kaydı tutuluyor mu?"
+
+[[question]]
+key = "KL-26.17"
+list = "KL-26"
+tags = []
+text = "Makina üretici talimatları doğrultusunda kullanılıyor mu?"
+
+[[question]]
+key = "KL-26.18"
+list = "KL-26"
+tags = []
+text = "Makinanın bulunduğu konum, makinanın güvenli kullanımı için uygun mu? (çevredeki malzemeler, taşınan parçalar ve operatörün çalışma sahası dikkate alınarak)"
+
+[[question]]
+key = "KL-26.19"
+list = "KL-26"
+tags = []
+text = "Başlatma ve durdurma düğmeleri açıkça ayırt ediliyor mu? (Durdurma düğmesi kırmızı)"
+
+[[question]]
+key = "KL-26.20"
+list = "KL-26"
+tags = []
+text = "Güvenlik araçları ve açma kapama anahtarları düzgün çalışıyor mu?"
+
+[[question]]
+key = "KL-26.21"
+list = "KL-26"
+tags = []
+text = "Elektrik hatlarında izolasyonu zarar görmüş, düğüm, eklenti vs. gibi kısımlar var mı?"
+
+[[question]]
+key = "KL-26.22"
+list = "KL-26"
+tags = []
+text = "Hasar görmüş ya da yetkili olmayan kişilerin kullanımına karşı koruma altına alınmamış elektrikli makina var mı?"
+
+[[question]]
+key = "KL-26.23"
+list = "KL-26"
+tags = []
+text = "Basınçlı çivi çakma ve zımba gibi el aletleri kullanılırken gereken koruyucu tedbirler alınıyor mu?"
+
+[[question]]
+key = "KL-26.24"
+list = "KL-26"
+tags = []
+text = "Diğer işletme kontrolleri ve konteyner muhteviyatı açıkça belli edilmiş mi?"
+
+[[question]]
+key = "KL-26.25"
+list = "KL-26"
+tags = []
+text = "KKD zorunludur, sınırlı kullanım, yetkili kişiler gibi işaret ve uyarılar mevcut mu?"
+
+[[question]]
+key = "KL-26.26"
+list = "KL-26"
+tags = []
+text = "Makina güvenlik donanımı, elektrik güvenliği açısından periyodik muayeneye tabi mi?"
+
+[[question]]
+key = "KL-26.27"
+list = "KL-26"
+tags = []
+text = "Makina kurulumu doğru yapılmış mı?"
+
+[[question]]
+key = "KL-26.28"
+list = "KL-26"
+tags = []
+text = "Makinanın eskimesi güvensiz bir durum oluşturuyor mu?"
+
+[[question]]
+key = "KL-26.29"
+list = "KL-26"
+tags = []
+text = "Makina veya güvensiz durum yaratabilecek aksam, koruyucular, kullanım ömrü tamamlanmadan değiştiriliyor mu?"
+
+[[question]]
+key = "KL-26.30"
+list = "KL-26"
+tags = []
+text = "Makina tamir ve değiştirmeye ilişkin riskler değerlendiriliyor mu?"
+
+[[question]]
+key = "KL-26.31"
+list = "KL-26"
+tags = []
+text = "Makina ile ilgili olarak parça fırlaması, düşmesi, alabora, sıkışma, aşırı ısınma, yangın, parçalanma, patlama gibi belli tehlikeler önleniyor mu?"
+
+[[question]]
+key = "KL-26.32"
+list = "KL-26"
+tags = []
+text = "Daire testerelerin taban pabucun altından ve üstünden koruması var mı?"
+
+[[question]]
+key = "KL-26.33"
+list = "KL-26"
+tags = []
+text = "Daire testerelerin koruyucuları, alt bıçakları muhafazasız bırakmayacak şekilde mi?"
+
+[[question]]
+key = "KL-26.34"
+list = "KL-26"
+tags = []
+text = "Makara zincirleri, kayışlar ve dişliler üzerinde etkili koruma var mı?"
+
+[[question]]
+key = "KL-26.35"
+list = "KL-26"
+tags = []
+text = "Her bir makina parçası ve donanımı temiz tutulmuş ve düzgün bir biçimde muhafaza edilmiş mi?"
+
+[[question]]
+key = "KL-26.36"
+list = "KL-26"
+tags = []
+text = "Makinelerin güvenli çalışmaları, kurulum ve bakımları, yükleme-boşaltmaları ve atıklarının taşınması için kendi aralarında ve çevrelerinde yeterli boşluk bırakılmış mı?"
+
+[[question]]
+key = "KL-26.37"
+list = "KL-26"
+tags = []
+text = "Her makinede operatörün ulaşabileceği bir noktada güç kapama şalteri var mı?"
+
+[[question]]
+key = "KL-26.38"
+list = "KL-26"
+tags = []
+text = "Ayakla kontrol edilen şalterler düşen cisimlerden veya çalışandan kaynaklanan hatalı aktivasyonları önlemek için korunmuş veya uygun biçimde ayarlanmış mı?"
+
+[[question]]
+key = "KL-26.39"
+list = "KL-26"
+tags = []
+text = "Bütün acil durdurma butonları kırmızı renkte mi?"
+
+[[question]]
+key = "KL-26.40"
+list = "KL-26"
+tags = []
+text = "Bütün kayış/kasnaklar, zincir/dişliler, dişli çarkların yerden yüksekliği 2.14 m. ye kadar veya çalışma seviyesinde çevreleyen bir koruma var mı?"
+
+[[question]]
+key = "KL-26.41"
+list = "KL-26"
+tags = []
+text = "Operatörü ve makine alanı içerisindeki diğer kişileri, çalışma noktasında ve makinanın dönen noktalarındaki tehlikelerden, uçan parçalardan, talaşlardan, kıvılcımlardan korumak için korumalar geliştirildi mi?"
+
+[[question]]
+key = "KL-26.42"
+list = "KL-26"
+tags = []
+text = "Makineler bir elektrik arızası veya kapanma sonrası enerji tekrar verildiğinde otomatik çalışmayı önleyecek şekilde ayarlanmış mı?"
+
+[[question]]
+key = "KL-26.43"
+list = "KL-26"
+tags = []
+text = "Makine basınçlı havayla temizleniyorsa, hortumun basıncı 30 p.s.i (2.07 bar) veya daha az basınca düşürecek şekilde tasarlanmış ucu var mı?"
+
+[[question]]
+key = "KL-26.44"
+list = "KL-26"
+tags = []
+text = "Basınçlı havayla temizlik yapılırken KKD' ler kullanılıyor mu?"
+
+[[question]]
+key = "KL-26.45"
+list = "KL-26"
+tags = []
+text = "Havalandırma Fan kanat açıklıkları ve fan yüksekliği standartlara uygun mu?"
+
+[[question]]
+key = "KL-26.46"
+list = "KL-26"
+tags = []
+text = "Kesmede kullanılan testereler fırlamayı önleyecek gergi ve donanımlara sahip mi?"
+
+[[question]]
+key = "KL-26.47"
+list = "KL-26"
+tags = []
+text = "Kesici başlıklar, delici uçlar vs., tezgâhın kenarını aşmayacak şekilde ayarlanmış mı?"
+
+[[question]]
+key = "KL-26.48"
+list = "KL-26"
+tags = []
+text = "Tamir, servis, kurulum ve bakım esnasında kablolu sabit ekipmanlar birbirinden ayrılmış ve güç kaynağıyla bağlantısı kesilmiş mi?(elektrikli, hidrolik, pnömatik v.b.)"
+
+[[question]]
+key = "KL-27.01"
+list = "KL-27"
+tags = []
+text = "Ekranlı araçlar kullanıcının ihtiyaçları doğrultusunda hareket ettirilebiliyor ve istenilen pozisyonda sabitlenebiliyor mu?"
+
+[[question]]
+key = "KL-27.02"
+list = "KL-27"
+tags = []
+text = "Genel ve lokal aydınlatma, ekran ile bilgisayar arka planı arasında yeterli ışıklandırma ve kontrast sağlıyor mu?"
+
+[[question]]
+key = "KL-27.03"
+list = "KL-27"
+tags = []
+text = "Gözler ile ekran arasındaki mesafe 50-80 cm arasında mı?"
+
+[[question]]
+key = "KL-27.04"
+list = "KL-27"
+tags = []
+text = "Ekran, görüşü bozabilecek yansımalardan arındırılmış mı?"
+
+[[question]]
+key = "KL-27.05"
+list = "KL-27"
+tags = []
+text = "Klavye ve farenin önünde kalan boşluk kullanıcının bileklerini desteklemeye yeterli mi?"
+
+[[question]]
+key = "KL-27.06"
+list = "KL-27"
+tags = []
+text = "Klavyenin yüzeyi yansımaları engelleyecek şekilde mat mı?"
+
+[[question]]
+key = "KL-27.07"
+list = "KL-27"
+tags = []
+text = "Ekranlı Araçlarla Çalışmalarda Sağlık ve Güvenlik Önlemleri Hakkında Yönetmelik doğrultusunda tedbirler alınmış mı?"
+
+[[question]]
+key = "KL-27.08"
+list = "KL-27"
+tags = []
+text = "Masa ve sandalye yeterli yükseklikte mi?"
+
+[[question]]
+key = "KL-27.09"
+list = "KL-27"
+tags = []
+text = "Sandalyeler ergonomik mi?"
+
+[[question]]
+key = "KL-27.10"
+list = "KL-27"
+tags = []
+text = "Yeterli çalışma boşluğu var mı?"
+
+[[question]]
+key = "KL-27.11"
+list = "KL-27"
+tags = []
+text = "Bilgisayar odasında yeterli havalandırma var mı?"
+
+[[question]]
+key = "KL-27.12"
+list = "KL-27"
+tags = []
+text = "Bilgisayar odası yeterli aydınlanıyor mu?"
+
+[[question]]
+key = "KL-27.13"
+list = "KL-27"
+tags = []
+text = "Bilgisayar ekranları sağlığa zararlı ışın yayıyor mu?"
+
+[[question]]
+key = "KL-28.01"
+list = "KL-28"
+tags = []
+text = "Emniyetli çalışma sınırları dışındaki basınç düzeylerinde gereken emniyet ventilleri ve yedekleri çalışır durumda mı?"
+
+[[question]]
+key = "KL-28.02"
+list = "KL-28"
+tags = []
+text = "Kullanılan malzemeler (tank, boru, ekleme parçaları, açma kapama elemanları, göstergeler ve şalterler) çalışma basıncına uygun mu?"
+
+[[question]]
+key = "KL-28.03"
+list = "KL-28"
+tags = []
+text = "İmalatçı firma adı, kazan numarası, imalat tarihi ve en yüksek test ve çalışma basıncı bilgilerin olduğu etiket var mı?"
+
+[[question]]
+key = "KL-28.04"
+list = "KL-28"
+tags = []
+text = "Emniyet ventili ile basınçlı kap arasında herhangi bir açma kapama elemanı olmadığı kontrol edildi mi?"
+
+[[question]]
+key = "KL-28.05"
+list = "KL-28"
+tags = []
+text = "Periyodik bakım onarım kartı var mı?"
+
+[[question]]
+key = "KL-28.06"
+list = "KL-28"
+tags = []
+text = "Periyodik bakımları yetkili teknik elemanlar tarafından yapılmış ve rapor düzenlenmiş mi?"
+
+[[question]]
+key = "KL-28.07"
+list = "KL-28"
+tags = []
+text = "Basınçlı kapların üzerinde, gerektiğinde içine girmeyi sağlayacak kapak veya el delikleri var mı ve emniyetli şekilde kapatılmış mı?"
+
+[[question]]
+key = "KL-28.08"
+list = "KL-28"
+tags = []
+text = "Boşaltma ve kontrol kör tapaları var mı?"
+
+[[question]]
+key = "KL-28.09"
+list = "KL-28"
+tags = []
+text = "İçi su dolu tank ve depolarda donmaya karşı tedbirler alınmış mı?"
+
+[[question]]
+key = "KL-28.10"
+list = "KL-28"
+tags = []
+text = "Basınçlı hava tanklarında içinde biriken su, yağ ve pislik dışarı atılması için boşaltma muslukları günlük açılarak boşaltılıyor mu?"
+
+[[question]]
+key = "KL-28.11"
+list = "KL-28"
+tags = []
+text = "Boru tesisatları, açma kapama elemanları ve izolasyonlar periyodik olarak kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-28.12"
+list = "KL-28"
+tags = []
+text = "Hava kompresörü ile hava tankları arasında, yağ ve nem ayırıcıları (seperatör) var mı?"
+
+[[question]]
+key = "KL-28.13"
+list = "KL-28"
+tags = []
+text = "Hava kompresörlerin temiz hava emmeleri sağlanmış mı? (patlayıcı, zararlı ve zehirli gaz, duman ve toz emilmesi önlenmiş mi?)"
+
+[[question]]
+key = "KL-28.14"
+list = "KL-28"
+tags = []
+text = "Kompresörün tehlike anında uzak bir yerden durdurulması sağlanmış mı?"
+
+[[question]]
+key = "KL-28.15"
+list = "KL-28"
+tags = []
+text = "Kompresör kullanma talimatı var mı?"
+
+[[question]]
+key = "KL-28.16"
+list = "KL-28"
+tags = []
+text = "Kompresör sorumlusu kişi belirtilmiş mi?"
+
+[[question]]
+key = "KL-28.17"
+list = "KL-28"
+tags = []
+text = "Bakım kartı var mı?"
+
+[[question]]
+key = "KL-28.18"
+list = "KL-28"
+tags = []
+text = "Kompresör çalışma alanının dışında mı?"
+
+[[question]]
+key = "KL-28.19"
+list = "KL-28"
+tags = []
+text = "Basınçlı kazanların atölye dışında uygun muhafazası yapılıyor mu?"
+
+[[question]]
+key = "KL-28.20"
+list = "KL-28"
+tags = []
+text = "Elektrikli kompresörlerin elektrik bağlantıları düzenli kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-28.21"
+list = "KL-28"
+tags = []
+text = "Kompresör için uygun yağ seçilmiş mi?"
+
+[[question]]
+key = "KL-28.22"
+list = "KL-28"
+tags = []
+text = "Kompresör tankı, gövdesi korozyona karşı dayanıklı mı?"
+
+[[question]]
+key = "KL-28.23"
+list = "KL-28"
+tags = []
+text = "Kullanılan yağ oksidasyona karşı mukavemeti artırıcı özellikte mi?"
+
+[[question]]
+key = "KL-28.24"
+list = "KL-28"
+tags = []
+text = "Seperatör elemanı her yıl düzenli olarak değiştiriliyor mu?"
+
+[[question]]
+key = "KL-28.25"
+list = "KL-28"
+tags = []
+text = "Motor kayışı düzenli olarak değiştiriliyor mu?"
+
+[[question]]
+key = "KL-28.26"
+list = "KL-28"
+tags = []
+text = "Soğutma radyatörünün bakımı düzenli olarak yapılıyor mu?"
+
+[[question]]
+key = "KL-29.01"
+list = "KL-29"
+tags = []
+text = "Çalışma alanındaki bütün tüpler; içerik bilgilerini ve tehlikeli bileşik uyarılarını açıkça gösterecek şekilde etiketlenmiş mi?"
+
+[[question]]
+key = "KL-29.02"
+list = "KL-29"
+tags = []
+text = "Tüpler yetkili olmayan kişiler tarafından cisim düşürülerek ya da temas edilerek zarar görmeyecek alanlara yerleştirildi mi veya depolandı mı?"
+
+[[question]]
+key = "KL-29.03"
+list = "KL-29"
+tags = []
+text = "Boş tüplerin boş oldukları işaretle veya etiketle açıkça gösterilmiş mi?"
+
+[[question]]
+key = "KL-29.04"
+list = "KL-29"
+tags = []
+text = "Vana koruyucuları, her durumda (tüpler kullanıma hazır veya değilken) tüplerin üzerinde mevcut mu?"
+
+[[question]]
+key = "KL-29.05"
+list = "KL-29"
+tags = []
+text = "Tüpler tehlike sınıflarına göre gruplandırmış ve ayrılmış mı?"
+
+[[question]]
+key = "KL-29.06"
+list = "KL-29"
+tags = []
+text = "Oksijen tüpleri gaz yakıt tüplerinden en az 6 metre uzakta depolanmış mı?"
+
+[[question]]
+key = "KL-29.07"
+list = "KL-29"
+tags = []
+text = "Bütün tüpler taşınma ya da depolanma sırasında dik pozisyondan devrilmesi, yuvarlanması ve düşmesine engel olunacak şekilde duvara, el arabasına veya tezgâha (kayış veya zincirle) bağlandı mı?"
+
+[[question]]
+key = "KL-29.08"
+list = "KL-29"
+tags = []
+text = "Vanalar, regülatörler, sayaçlar, bağlantı elemanları ve hortumlar tüpün basınç ve hacmiyle (içeriğiyle) uyumlu mu?"
+
+[[question]]
+key = "KL-29.09"
+list = "KL-29"
+tags = []
+text = "Vanalar tüp hareket ettirilmeden önce, tüp boşken ve iş bitiminde kapalı durumda mı?"
+
+[[question]]
+key = "KL-30.01"
+list = "KL-30"
+tags = []
+text = "Bina yangın çıkış levhaları gerekli yerlere asılmış mı?"
+
+[[question]]
+key = "KL-30.02"
+list = "KL-30"
+tags = []
+text = "Bina yangın çıkış kapıları ve merdivenleri ulaşılabilir durumda mı?"
+
+[[question]]
+key = "KL-30.03"
+list = "KL-30"
+tags = []
+text = "Yangın söndürme tüpleri yılda bir kontrol edilerek kontrol tarihleri üzerlerine yazılmış mı?"
+
+[[question]]
+key = "KL-30.04"
+list = "KL-30"
+tags = []
+text = "Yangın söndürme tüp ve dolapları görünür ve kolay erişilebilir yerlerde mi?"
+
+[[question]]
+key = "KL-30.05"
+list = "KL-30"
+tags = []
+text = "Otomatik alarm sistemi varsa düğmeleri, iyi görülebilir ve erişilebilir bir yere ve özellikle acil çıkış yolları üzerine konulmuş mu?"
+
+[[question]]
+key = "KL-30.06"
+list = "KL-30"
+tags = []
+text = "Yanıcı, patlayıcı maddeler, atıklar talimatlara uygun bir şekilde depolanmış mı?"
+
+[[question]]
+key = "KL-30.07"
+list = "KL-30"
+tags = []
+text = "Geceleri kullanılmayan kısımların şalterleri kapatılabilecek şekilde düzenlenmiş mi?"
+
+[[question]]
+key = "KL-30.08"
+list = "KL-30"
+tags = []
+text = "Yangın ve alarm sistemi aydınlatma ve kuvvet şebekesinden ayrı bir kaynaktan beslenmiş mi?"
+
+[[question]]
+key = "KL-30.09"
+list = "KL-30"
+tags = []
+text = "Tesisat galeri ve kanallarında yangın yalıtımı yapılmış mı?"
+
+[[question]]
+key = "KL-30.10"
+list = "KL-30"
+tags = []
+text = "Yangın riski yüksek atölyelerde ( Kaynak ve oksijenle kesme vb. ) yanıcı ve parlayıcı maddeler uzaklaştırılmış mı?"
+
+[[question]]
+key = "KL-30.11"
+list = "KL-30"
+tags = []
+text = "Patlama riski bulunan LPG, Asetilen vb tüplerin depolanma yerleri güneşten ve çeşitli ısı kaynaklarından korunacak şekilde seçilmiş mi?"
+
+[[question]]
+key = "KL-30.12"
+list = "KL-30"
+tags = []
+text = "Kullanılan tüm patlayıcı kimyasal maddeler için Malzeme Güvenlik Bilgi Formu var mı?"
+
+[[question]]
+key = "KL-30.13"
+list = "KL-30"
+tags = []
+text = "Patlayıcı ve yanıcı maddeler standartlara uygun olarak etiketlenmiş mi?"
+
+[[question]]
+key = "KL-30.14"
+list = "KL-30"
+tags = []
+text = "İş süreçlerinde yapılan veya oluşan karışımların patlayıcı olması önleniyor mu?"
+
+[[question]]
+key = "KL-30.15"
+list = "KL-30"
+tags = []
+text = "Gaz birikme riski olan kapalı alanlar standartlara uygun havalandırılıyor mu?"
+
+[[question]]
+key = "KL-30.16"
+list = "KL-30"
+tags = []
+text = "Havalandırma sistemi düzenli olarak kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-30.17"
+list = "KL-30"
+tags = []
+text = "Patlama tehlikesinin bulunduğu alanlarda herhangi bir elektrostatik alan var mı?"
+
+[[question]]
+key = "KL-30.18"
+list = "KL-30"
+tags = []
+text = "Patlayıcı alanlarda kullanılan elektrikli araçlar uygun şekilde seçilmiş mi?"
+
+[[question]]
+key = "KL-30.19"
+list = "KL-30"
+tags = []
+text = "Alarm ikaz tesisatı var mı?"
+
+[[question]]
+key = "KL-30.20"
+list = "KL-30"
+tags = []
+text = "Yangın söndürme tüplerinin cinsine göre kullanılma yerleri biliniyor mu?"
+
+[[question]]
+key = "KL-30.21"
+list = "KL-30"
+tags = []
+text = "Yangın tipine uygun söndürücü var mı?"
+
+[[question]]
+key = "KL-30.22"
+list = "KL-30"
+tags = []
+text = "Yangın tatbikatları yapılıyor mu?"
+
+[[question]]
+key = "KL-30.23"
+list = "KL-30"
+tags = []
+text = "Acil çıkış kapıları var mı, yönetmeliğe uygun mu?"
+
+[[question]]
+key = "KL-30.24"
+list = "KL-30"
+tags = []
+text = "Personel yangın ve patlamayla ilgili eğitim almış mı?"
+
+[[question]]
+key = "KL-30.25"
+list = "KL-30"
+tags = []
+text = "Okulun özelliğine göre yangın söndürme tüpü kullanılıyor mu?"
+
+[[question]]
+key = "KL-30.26"
+list = "KL-30"
+tags = []
+text = "Yıllık yangın tatbikatı yapılıp kayıt altına alınıyor mu?"
+
+[[question]]
+key = "KL-30.27"
+list = "KL-30"
+tags = []
+text = "Yangın esnasında görev dağılımı yapılmış mı, uygun yere asılmış mı?"
+
+[[question]]
+key = "KL-30.28"
+list = "KL-30"
+tags = []
+text = "Yangın durumunda ilk kurtarılacak işaretlenmiş mi?"
+
+[[question]]
+key = "KL-30.29"
+list = "KL-30"
+tags = []
+text = "Basınçlı tüplerin arasında mesafeler ayarlandı mı?"
+
+[[question]]
+key = "KL-30.30"
+list = "KL-30"
+tags = []
+text = "Asetilen kazanlarının basınç değerleri kontrol altına alındı mı?"
+
+[[question]]
+key = "KL-30.31"
+list = "KL-30"
+tags = []
+text = "Kaynak ünitelerine kaynak yapılmış parçaların soğuma işlemleri kontrol altına alınarak yapılıyor mu?"
+
+[[question]]
+key = "KL-30.32"
+list = "KL-30"
+tags = []
+text = "Kıvılcım çıkaran makinelerle yanıcı maddelerin çalışma alanları birbirinden güvenli şekilde ayrıldı mı?"
+
+[[question]]
+key = "KL-30.33"
+list = "KL-30"
+tags = []
+text = "Kaynak işlemlerinden sonra ortam ve kaynak ekipmanları içindeki gazlar güvenli şekilde havalandırılmış mı?"
+
+[[question]]
+key = "KL-30.34"
+list = "KL-30"
+tags = []
+text = "Yangın söndürme tüpleri dördüncü yılın sonunda içindeki söndürme maddeleri yenilenerek hidrostatik testleri yapılmış ve değiştirilmiş mi?"
+
+[[question]]
+key = "KL-31.01"
+list = "KL-31"
+tags = []
+text = "Gürültü seviyesinin yüksek olduğu yerlerde gerekli önlemler alınıyor mu?"
+
+[[question]]
+key = "KL-31.02"
+list = "KL-31"
+tags = []
+text = "Gürültü maruziyetinin fazla olduğu yerlerde gürültü testleri yapılıyor mu?"
+
+[[question]]
+key = "KL-31.03"
+list = "KL-31"
+tags = []
+text = "Çalışma sırasında ortaya çıkan gürültünün uyarıcı alarmları bastırma olasılığı önleniyor mu?"
+
+[[question]]
+key = "KL-31.04"
+list = "KL-31"
+tags = []
+text = "Yapılan iş sırasında makinenin titreşimini absorbe edecek önlemler alınıyor mu?"
+
+[[question]]
+key = "KL-31.05"
+list = "KL-31"
+tags = []
+text = "Atölyelerde gürültü cinsine uygun KKD var mı?"
+
+[[question]]
+key = "KL-31.06"
+list = "KL-31"
+tags = []
+text = "Atölye çalışanları gürültü ve titreşim hakkında eğitim aldı mı?"
+
+[[question]]
+key = "KL-31.07"
+list = "KL-31"
+tags = []
+text = "Motor çalıştırılan atölyelerde sesin absorbe edilmesi için duvara yalıtım yapılmış mı?"
+
+[[question]]
+key = "KL-31.08"
+list = "KL-31"
+tags = []
+text = "Gürültü ve titreşim süreleri yapılan işe uygun tutuluyor mu?"
+
+[[question]]
+key = "KL-31.09"
+list = "KL-31"
+tags = []
+text = "Gürültülü ve titreşimli yerde çalışan elemanların periyodik olarak sağlık taraması yapılıyor mu?"
+
+[[question]]
+key = "KL-32.01"
+list = "KL-32"
+tags = []
+text = "Çalışmaya başlamadan önce numuneye ait deney iş talimatı okunuyor mu?"
+
+[[question]]
+key = "KL-32.02"
+list = "KL-32"
+tags = []
+text = "Numunenin katı, sıvı, gaz, tehlikeli madde, toz, granül özelliği öncelikli olarak belirleniyor mu?"
+
+[[question]]
+key = "KL-32.03"
+list = "KL-32"
+tags = []
+text = "Kimyasalların kullanıldığı laboratuvar çalışma alanlarında uygulamalı bir laboratuvar güvenlik kılavuzu var mı?"
+
+[[question]]
+key = "KL-32.04"
+list = "KL-32"
+tags = []
+text = "Her laboratuvar girişinde tehlikeleri ve ihtiyaç duyulan koruyucu önlemleri tanımlayan bir işaret var mı?"
+
+[[question]]
+key = "KL-32.05"
+list = "KL-32"
+tags = []
+text = "Yapılan çalışmaya ait uyarı işaret ve levhaları talimatlar doğrultusunda yerleştirilerek ve çalışma sırasında koruyarak iş alanının ve personelin güvenliği sağlanabiliyor mu?"
+
+[[question]]
+key = "KL-32.06"
+list = "KL-32"
+tags = []
+text = "Çalışanlar çalışma alanlarındaki kimyasal tehlikeler ve uygun korunma şartları konusunda bilgili mi?"
+
+[[question]]
+key = "KL-32.07"
+list = "KL-32"
+tags = []
+text = "Çalışma alanında ilgisiz kişilerin bulunmamasına dikkat ediliyor mu?"
+
+[[question]]
+key = "KL-32.08"
+list = "KL-32"
+tags = []
+text = "Kimyasallar ile çalışırken yapılan işe uygun iş elbiseleri ve kişisel koruyucu donanım kullanıyor mu?"
+
+[[question]]
+key = "KL-32.09"
+list = "KL-32"
+tags = []
+text = "İş sağlığı ve güvenliği koruma ve müdahale araçları uygun ve çalışır şekilde bulunuyor mu?"
+
+[[question]]
+key = "KL-32.10"
+list = "KL-32"
+tags = []
+text = "Çeker ocağın kullanılması gereken işlerde kullanılıp kullanılmadığı kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-32.11"
+list = "KL-32"
+tags = []
+text = "Statik elektrik biriktirme ve kıvılcım atlama ihtimali olan uygulamalarda topraklama yapılıyor mu?"
+
+[[question]]
+key = "KL-32.12"
+list = "KL-32"
+tags = []
+text = "Havalandırma ve kimyasal yükleme-boşaltma gibi kontrol prosedürleri gerekli olan tehlikeli maddeler için uygulanıyor mu?"
+
+[[question]]
+key = "KL-32.13"
+list = "KL-32"
+tags = []
+text = "Her kimyasal için malzeme güvenliği-güvenlik bilgi formu var mı?"
+
+[[question]]
+key = "KL-32.14"
+list = "KL-32"
+tags = []
+text = "Tehlikeli madde içeren her konteynır (fıçı, tank, şişe v.b.)uygun biçimde etiketlenmiş mi?"
+
+[[question]]
+key = "KL-32.15"
+list = "KL-32"
+tags = []
+text = "Kimyasallar, birbirine zıt olanlar(asit ve baz, organik ve oksitleyiciler gibi) ayrı tutularak depolanıyor mu?"
+
+[[question]]
+key = "KL-32.16"
+list = "KL-32"
+tags = []
+text = "Yanıcı ve parlayıcı malzemeler güvenli bir şekilde tutuluyor mu?"
+
+[[question]]
+key = "KL-32.17"
+list = "KL-32"
+tags = []
+text = "Sıvı kimyasal konteynırları sıçramayı ve zıt reaksiyonları önlemek için emniyet kabı içerisinde saklanıyor mu?"
+
+[[question]]
+key = "KL-32.18"
+list = "KL-32"
+tags = []
+text = "Vücuda zarar verici kimyasallar kullanıldığı zaman acil yıkama imkânları (örn: göz banyoları ve duş) mevcut mu?"
+
+[[question]]
+key = "KL-32.19"
+list = "KL-32"
+tags = []
+text = "Kişinin acil yıkama imkânlarına ulaşmasını engelleyecek durumlar ortadan kaldırılmış mı?"
+
+[[question]]
+key = "KL-32.20"
+list = "KL-32"
+tags = []
+text = "Acil durum göz banyosu düzgün çalıştığını doğrulamak amacıyla haftada bir test ediliyor mu?"
+
+[[question]]
+key = "KL-32.21"
+list = "KL-32"
+tags = []
+text = "Acil durumlarda çıkış veya kaçış prosedürlerini uygulanıyor"
+
+[[question]]
+key = "KL-32.22"
+list = "KL-32"
+tags = []
+text = "Genel Güvenlik kuralları uygun yerlere asıldı mı?"
+
+[[question]]
+key = "KL-32.23"
+list = "KL-32"
+tags = []
+text = "Laboratuvarda meydana gelebilecek kazalara karşı öğretmen ve öğrenciler bilgilendirildi mi?"
+
+[[question]]
+key = "KL-32.24"
+list = "KL-32"
+tags = []
+text = "Kimyasalların depoları veya kabinleri var mı?"
+
+[[question]]
+key = "KL-32.25"
+list = "KL-32"
+tags = []
+text = "Laboratuvar muslukları sızdırmaz mı?"
+
+[[question]]
+key = "KL-32.26"
+list = "KL-32"
+tags = []
+text = "Vücut ve göz duşu var mı?"
+
+[[question]]
+key = "KL-32.27"
+list = "KL-32"
+tags = []
+text = "Alev alabilen ve parlayabilen malzemeler için önlem alınmış mı?"
+
+[[question]]
+key = "KL-32.28"
+list = "KL-32"
+tags = []
+text = "Stabil olmayan kimyasallar kontrol altına alınmış mı?"
+
+[[question]]
+key = "KL-32.29"
+list = "KL-32"
+tags = []
+text = "Korozif kimyasallar kontrol altına alınmış mı?"
+
+[[question]]
+key = "KL-32.30"
+list = "KL-32"
+tags = []
+text = "Asit ve bazlar kontrol altında mı?"
+
+[[question]]
+key = "KL-32.31"
+list = "KL-32"
+tags = []
+text = "Toksikolojik etkilerine göre sınıflandırmalar yapılıp güvenlik önlemleri alındı mı?"
+
+[[question]]
+key = "KL-32.32"
+list = "KL-32"
+tags = []
+text = "Radyasyon içeren maddeler konusunda koruma tedbirleri alındı mı?"
+
+[[question]]
+key = "KL-32.33"
+list = "KL-32"
+tags = []
+text = "Cam malzemelerin güvenliği konusunda tedbirler alındı mı?"
+
+[[question]]
+key = "KL-32.34"
+list = "KL-32"
+tags = []
+text = "Laboratuvarda yiyecek ve içecek bulundurulmaması konusunda bilgilendirme yapıldı mı?"
+
+[[question]]
+key = "KL-32.35"
+list = "KL-32"
+tags = []
+text = "Laboratuvarda bulunan herkes tarafından KKD kullanılıyor mu?"
+
+[[question]]
+key = "KL-32.36"
+list = "KL-32"
+tags = []
+text = "Kimyasal Maddelerle Çalışmalarda Sağlık ve Güvenlik Önlemler Hakkında Yönetmelik öğretmen ve öğrenciler tarafından biliniyor mu?"
+
+[[question]]
+key = "KL-32.37"
+list = "KL-32"
+tags = []
+text = "Mesleki maruziyet sınır değerlerini gösterir tablo öğretmen ve öğrenciler tarafından görülebilecek yere asılmış mı?"
+
+[[question]]
+key = "KL-32.38"
+list = "KL-32"
+tags = []
+text = "Biyolojik sınır değerler ve sağlık gözetimi önlemleri öğretmen ve öğrenciler tarafından görülebilecek yerde mi?"
+
+[[question]]
+key = "KL-32.39"
+list = "KL-32"
+tags = []
+text = "Kullanımı yasak olan kimyasal maddeler ile yapılması yasaklanan işler tablosu öğretmen ve öğrencilerin görebilecekleri yerde asılı mı?"
+
+[[question]]
+key = "KL-32.40"
+list = "KL-32"
+tags = []
+text = "Sıvı oksijen, sıvı argon ve sıvı azot depolama tankları ile ilgili güvenlik mesafelerini gösterir çizelge öğretmen ve öğrencilerin görebilecekleri yere asılmış mı?"
+
+[[question]]
+key = "KL-33.01"
+list = "KL-33"
+tags = []
+text = "Kimyasal atıkların imhası için gerekli olan ihtiyaçların belirlenmesi için’ ’Atık Sınıflandırma’’ değerlendirmeleri yapılmış mı?"
+
+[[question]]
+key = "KL-33.02"
+list = "KL-33"
+tags = []
+text = "Dönüştürülebilen malzemelerin geri kazanımı için gerekli ayırma ve sınıflandırma yapılıyor mu?"
+
+[[question]]
+key = "KL-33.03"
+list = "KL-33"
+tags = []
+text = "İşlem sırasında ve hazırlık aşamalarında KKD kullanılıyor mu?"
+
+[[question]]
+key = "KL-33.04"
+list = "KL-33"
+tags = []
+text = "Atık konteynırları ilk atık konulduktan sonra ambalajın üzerinden net olarak görünecek şekilde etiketleniyor mu?"
+
+[[question]]
+key = "KL-33.05"
+list = "KL-33"
+tags = []
+text = "Çalışanlar atık depolanmasını başlatmak için Kimyasal Depolama İstek formuyla başvurmuşlar mı?"
+
+[[question]]
+key = "KL-33.06"
+list = "KL-33"
+tags = []
+text = "Çalışanlar atık toplanmasını sağlamak için Kimyasal Toplama Talebi formu sunuyorlar mı?"
+
+[[question]]
+key = "KL-33.07"
+list = "KL-33"
+tags = []
+text = "Atık bilgi formları eksiksiz doldurulup kayıt altına alınıyor mu?"
+
+[[question]]
+key = "KL-33.08"
+list = "KL-33"
+tags = []
+text = "Sınıflandırılan atıklar uygun alan ve koşullarda bekletiliyor mu?"
+
+[[question]]
+key = "KL-33.09"
+list = "KL-33"
+tags = []
+text = "Satın alınan kimyasalların geri dönüşümlü olmasına dikkat ediliyor mu?"
+
+[[question]]
+key = "KL-33.10"
+list = "KL-33"
+tags = []
+text = "Kullanılmış tüm piller geri dönüşüme tabi tutuluyor mu?"
+
+[[question]]
+key = "KL-33.11"
+list = "KL-33"
+tags = []
+text = "Kimyasallar zararsız veya daha az zararlı alternatifleri ile değiştiriliyor mu?"
+
+[[question]]
+key = "KL-33.12"
+list = "KL-33"
+tags = []
+text = "Çalışanlar kimyasal saçılmaların temizlenmesi için yetiştirilmiş ve teçhizatlandırılmışlar mı?"
+
+[[question]]
+key = "KL-33.13"
+list = "KL-33"
+tags = []
+text = "Dökülme ve sızıntılara karsı kullanılacak uygun donanım, malzeme ve ekipman hazır bulunduruluyor mu?"
+
+[[question]]
+key = "KL-33.14"
+list = "KL-33"
+tags = []
+text = "İnce talaş, cilalar ve çözücüler gibi ürünler için ürün türünü ve ürünle ilişkili tehlikeleri (kanserojen, cila çözücü buharı, toz tehlikesi gibi) belirten semboller içeren uyarılar mevcut mu?"
+
+[[question]]
+key = "KL-33.15"
+list = "KL-33"
+tags = []
+text = "Talimatların hazırlanmasında ve güvenlik uygulamalarında istişare ediliyor mu?"
+
+[[question]]
+key = "KL-33.16"
+list = "KL-33"
+tags = []
+text = "Okulda kullanılan ve bulunan maddelere (yakıtlar, yağlar, lifler, çözücüler, temizlik ürünleri, boyalar, vernikler, yapıştırıcılar, mürekkepler, reçineler, böcek öldürücüler, ağır metaller, asitler, alkaliler, dumanlar, gazlar) ait risk değerlendirmesi için bir envanter kaydı mevcut mu?"
+
+[[question]]
+key = "KL-33.17"
+list = "KL-33"
+tags = []
+text = "Pil, Yağ, Katı, Kentsel, Bitkisel, Radyoaktif, Tıbbi ve kentsel atıklarla ilgili yönetmeliklerin gereği için tedbirler alınmış mı?"
+
+[[question]]
+key = "KL-33.18"
+list = "KL-33"
+tags = []
+text = "Kullanılan yağ, yakıt gibi sıvıların kutularında uygun işaretleme yapılmış mı?"
+
+[[question]]
+key = "KL-34.01"
+list = "KL-34"
+tags = []
+text = "Tüm alet ve ekipmanlar sağlıklı ve kullanılır durumda mı?"
+
+[[question]]
+key = "KL-34.02"
+list = "KL-34"
+tags = []
+text = "Kullanılan alet ve ekipman yapılan işe uygun mu?"
+
+[[question]]
+key = "KL-34.03"
+list = "KL-34"
+tags = []
+text = "Keski gibi aletler gerektikçe onarılıyor veya yenileniyor mu?"
+
+[[question]]
+key = "KL-34.04"
+list = "KL-34"
+tags = []
+text = "Aletlerin sapları hasarsız ve baş ile bağlantısı sağlam mı?"
+
+[[question]]
+key = "KL-34.05"
+list = "KL-34"
+tags = []
+text = "Aletlerin kesici kısımları işlevini yerine getirecek keskinlikte mi?"
+
+[[question]]
+key = "KL-34.06"
+list = "KL-34"
+tags = []
+text = "Sivri ve kesici aletler koruyucu kılıf içerisinde mi taşınıyor?"
+
+[[question]]
+key = "KL-34.07"
+list = "KL-34"
+tags = []
+text = "Kullanılan el aletleri el ergonomisine uygun ve kullanımı rahat mı?"
+
+[[question]]
+key = "KL-34.08"
+list = "KL-34"
+tags = []
+text = "El aletlerinin periyodik olarak kontrolü ve bakımı yapılıyor mu?"
+
+[[question]]
+key = "KL-34.09"
+list = "KL-34"
+tags = []
+text = "İşlem yapılacak malzemeler emniyetle sabitleniyor mu?"
+
+[[question]]
+key = "KL-34.10"
+list = "KL-34"
+tags = []
+text = "Kesme ve taşlama aletlerinin koruyucu başlıkları var mı?"
+
+[[question]]
+key = "KL-34.11"
+list = "KL-34"
+tags = []
+text = "El aletleri kullanıldıktan sonra muhafaza edildikleri yerlerine konuluyor mu?"
+
+[[question]]
+key = "KL-34.12"
+list = "KL-34"
+tags = []
+text = "El aletleri imalatçının kullanma kılavuzunda belirttiği gibi kullanılıyor mu?"
+
+[[question]]
+key = "KL-34.13"
+list = "KL-34"
+tags = []
+text = "İlk kullanım öncesi el aletleri ile ilgili kullanıcılara eğitim veriliyor mu?"
+
+[[question]]
+key = "KL-34.14"
+list = "KL-34"
+tags = []
+text = "El aletlerinin kullanımı sırasında gerekli KKD kullanılıyor mu?"
+
+[[question]]
+key = "KL-34.15"
+list = "KL-34"
+tags = []
+text = "Basınçlı çivi ve çakma zımba gibi el aletleri kullanılırken gereken koruyucu tedbirler alınıyor mu?"
+
+[[question]]
+key = "KL-34.16"
+list = "KL-34"
+tags = []
+text = "Çekiç, tokmak gibi vurma aletlerinin emniyet kaması var mı?"
+
+[[question]]
+key = "KL-34.17"
+list = "KL-34"
+tags = []
+text = "Çekiç, tokmak gibi vurma aletlerinin köşeleri düzgün mü?"
+
+[[question]]
+key = "KL-34.18"
+list = "KL-34"
+tags = []
+text = "Vurma aletlerinin sapları düzgün mü?"
+
+[[question]]
+key = "KL-34.19"
+list = "KL-34"
+tags = []
+text = "Ölçme aletlerinin kalibrasyonu yapılıyor mu?"
+
+[[question]]
+key = "KL-34.20"
+list = "KL-34"
+tags = []
+text = "Ölçme aletlerinin düzenli olarak bakımı yapılıyor mu?"
+
+[[question]]
+key = "KL-34.21"
+list = "KL-34"
+tags = []
+text = "Pense saplarının izolasyonu var mı, ağızları düzgün mü?"
+
+[[question]]
+key = "KL-34.22"
+list = "KL-34"
+tags = []
+text = "Kırık, çatlak, aşınmış olan el aletleri yenisiyle değiştiriliyor mu?"
+
+[[question]]
+key = "KL-34.23"
+list = "KL-34"
+tags = []
+text = "Kırık, çatlak, aşınmış olan el aletleri ayrı muhafaza ediliyor mu?"
+
+[[question]]
+key = "KL-34.24"
+list = "KL-34"
+tags = []
+text = "Tüm el aletleri kayıtları (günlük kontrol) tutuluyor mu?"
+
+[[question]]
+key = "KL-34.25"
+list = "KL-34"
+tags = []
+text = "Takımhanelerde sorumlu bir kişi bulunduruluyor mu? (Nöbetçi)"
+
+[[question]]
+key = "KL-35.01"
+list = "KL-35"
+tags = ["workshop"]
+text = "Çalışma masaları, makineler ve tabureler ergonomik mi?"
+
+[[question]]
+key = "KL-35.02"
+list = "KL-35"
+tags = ["workshop"]
+text = "Çalışma masaları, makineler ve taburelerin yükseklikleri ayarlanabiliyor mu?"
+
+[[question]]
+key = "KL-35.03"
+list = "KL-35"
+tags = ["workshop"]
+text = "Aydınlatma yeterli mi?"
+
+[[question]]
+key = "KL-35.04"
+list = "KL-35"
+tags = ["workshop"]
+text = "Havalandırma ve baca tesisatı standartlara uygun mu?"
+
+[[question]]
+key = "KL-35.05"
+list = "KL-35"
+tags = ["workshop"]
+text = "İlkyardım dolabı var mı?"
+
+[[question]]
+key = "KL-35.06"
+list = "KL-35"
+tags = ["workshop"]
+text = "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?"
+
+[[question]]
+key = "KL-35.07"
+list = "KL-35"
+tags = ["workshop"]
+text = "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?"
+
+[[question]]
+key = "KL-35.08"
+list = "KL-35"
+tags = ["workshop"]
+text = "Acil durum alarmı ve acil çıkış levhası var mı?"
+
+[[question]]
+key = "KL-35.09"
+list = "KL-35"
+tags = ["workshop"]
+text = "Uyarı levhaları asılı mı?"
+
+[[question]]
+key = "KL-35.10"
+list = "KL-35"
+tags = ["workshop"]
+text = "Zeminler kaymaya, düşmeye karşı uygun malzemelerden yapılmış mı?"
+
+[[question]]
+key = "KL-35.11"
+list = "KL-35"
+tags = ["workshop"]
+text = "Elektrik panolarında gerekli önlemler alınmış mı?"
+
+[[question]]
+key = "KL-35.12"
+list = "KL-35"
+tags = ["workshop"]
+text = "Makinelerin kullanım talimatları asılmış mı?"
+
+[[question]]
+key = "KL-35.13"
+list = "KL-35"
+tags = ["workshop"]
+text = "Çalışanlar için gerekli KKD var mı?"
+
+[[question]]
+key = "KL-35.14"
+list = "KL-35"
+tags = ["workshop"]
+text = "KKD uygun şekilde muhafaza ediliyor mu?"
+
+[[question]]
+key = "KL-35.15"
+list = "KL-35"
+tags = ["workshop"]
+text = "Zarar verici maddeler korunmaya alınmış mı?"
+
+[[question]]
+key = "KL-35.16"
+list = "KL-35"
+tags = ["workshop"]
+text = "Kimyasal maddelerin zararlarına karşı gerekli önlemler alındı mı?"
+
+[[question]]
+key = "KL-35.17"
+list = "KL-35"
+tags = ["workshop"]
+text = "Gaz, elektrik, sıhhi tesisat ve pis su tesisatları standartlara uygun mu?"
+
+[[question]]
+key = "KL-35.18"
+list = "KL-35"
+tags = ["workshop"]
+text = "WC ve duş var mı?"
+
+[[question]]
+key = "KL-35.19"
+list = "KL-35"
+tags = ["workshop"]
+text = "Duyuru panosu var mı?"
+
+[[question]]
+key = "KL-35.20"
+list = "KL-35"
+tags = ["workshop"]
+text = "Atölye sorumlusunun telefonları panoda asılı mı?"
+
+[[question]]
+key = "KL-35.21"
+list = "KL-35"
+tags = ["workshop"]
+text = "Çalışan için soyunma dolapları var mı?"
+
+[[question]]
+key = "KL-35.22"
+list = "KL-35"
+tags = ["workshop"]
+text = "Çalışma planı (vaziyet planı) asılı mı?"
+
+[[question]]
+key = "KL-35.23"
+list = "KL-35"
+tags = ["workshop"]
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-35.24"
+list = "KL-35"
+tags = ["workshop"]
+text = "Atölye içinin ışıklandırması yeterli mi?"
+
+[[question]]
+key = "KL-36.01"
+list = "KL-36"
+tags = ["workshop"]
+text = "Ocakların havalandırma ve baca tesisatı yeterli mi?"
+
+[[question]]
+key = "KL-36.02"
+list = "KL-36"
+tags = ["workshop"]
+text = "Boya, tiner gibi patlayıcı ve yanıcı maddeler korunmaya alınmış mı?"
+
+[[question]]
+key = "KL-36.03"
+list = "KL-36"
+tags = ["workshop"]
+text = "Atölyede öğrencilerin kendilerine ait soyunma dolapları var mı?"
+
+[[question]]
+key = "KL-37.01"
+list = "KL-37"
+tags = ["workshop"]
+text = "Çalışma masaları, makineler ve tabureler ergonomik mi?"
+
+[[question]]
+key = "KL-37.02"
+list = "KL-37"
+tags = ["workshop"]
+text = "Çalışma masaları, makineler ve taburelerin yükseklikleri ayarlanabiliyor mu?"
+
+[[question]]
+key = "KL-37.03"
+list = "KL-37"
+tags = ["workshop"]
+text = "Aydınlatma yeterli mi?"
+
+[[question]]
+key = "KL-37.04"
+list = "KL-37"
+tags = ["workshop"]
+text = "Havalandırma ve baca tesisatı standartlara uygun mu?"
+
+[[question]]
+key = "KL-37.05"
+list = "KL-37"
+tags = ["workshop"]
+text = "İlkyardım dolabı var mı?"
+
+[[question]]
+key = "KL-37.06"
+list = "KL-37"
+tags = ["workshop"]
+text = "İlkyardım dolapları hemen erişim sağlanabilecek yerlerde mi?"
+
+[[question]]
+key = "KL-37.07"
+list = "KL-37"
+tags = ["workshop"]
+text = "İlkyardım dolaplarının ihtiyaç malzemeleri yeterli mi?"
+
+[[question]]
+key = "KL-37.08"
+list = "KL-37"
+tags = ["workshop"]
+text = "Acil durum alarmı ve acil çıkış levhası var mı?"
+
+[[question]]
+key = "KL-37.09"
+list = "KL-37"
+tags = ["workshop"]
+text = "Uyarı levhaları asılı mı?"
+
+[[question]]
+key = "KL-37.10"
+list = "KL-37"
+tags = ["workshop"]
+text = "Zeminler kaymaya, düşmeye karşı uygun malzemelerden yapılmış mı?"
+
+[[question]]
+key = "KL-37.11"
+list = "KL-37"
+tags = ["workshop"]
+text = "Elektrik panolarında gerekli önlemler alınmış mı?"
+
+[[question]]
+key = "KL-37.12"
+list = "KL-37"
+tags = ["workshop"]
+text = "Makinelerin kullanım talimatları asılmış mı?"
+
+[[question]]
+key = "KL-37.13"
+list = "KL-37"
+tags = ["workshop"]
+text = "Çalışanlar için gerekli KKD var mı?"
+
+[[question]]
+key = "KL-37.14"
+list = "KL-37"
+tags = ["workshop"]
+text = "KKD uygun şekilde muhafaza ediliyor mu?"
+
+[[question]]
+key = "KL-37.15"
+list = "KL-37"
+tags = ["workshop"]
+text = "Zarar verici maddeler kilit altında mı?"
+
+[[question]]
+key = "KL-37.16"
+list = "KL-37"
+tags = ["workshop"]
+text = "Kimyasal maddelerin zararlarına karşı gerekli önlemler alındı mı?"
+
+[[question]]
+key = "KL-37.17"
+list = "KL-37"
+tags = ["workshop"]
+text = "Gaz, elektrik, sıhhi tesisat ve pis su tesisatları standartlara uygun mu?"
+
+[[question]]
+key = "KL-37.18"
+list = "KL-37"
+tags = ["workshop"]
+text = "WC ve duş var mı?"
+
+[[question]]
+key = "KL-37.19"
+list = "KL-37"
+tags = ["workshop"]
+text = "Duyuru panosu var mı?"
+
+[[question]]
+key = "KL-37.20"
+list = "KL-37"
+tags = ["workshop"]
+text = "Atölye sorumlusunun telefonları panoda asılı mı?"
+
+[[question]]
+key = "KL-37.21"
+list = "KL-37"
+tags = ["workshop"]
+text = "Çalışan için soyunma dolapları var mı?"
+
+[[question]]
+key = "KL-37.22"
+list = "KL-37"
+tags = ["workshop"]
+text = "Çalışma planı (vaziyet planı) asılı mı?"
+
+[[question]]
+key = "KL-37.23"
+list = "KL-37"
+tags = ["workshop"]
+text = "Deprem veya sarsıntı gibi durumlarda devrilebilecek ekipmanlar duvara sabitlenmiş mi?"
+
+[[question]]
+key = "KL-37.24"
+list = "KL-37"
+tags = ["workshop"]
+text = "Zeminde kaymaya karşı güvenlik tedbirleri alınıyor mu?"
+
+[[question]]
+key = "KL-37.25"
+list = "KL-37"
+tags = ["workshop"]
+text = "Atölyede gayrı faal malzemeler ayrı ve uygun ayrılıyor ve depolanıyor mu?"
+
+[[question]]
+key = "KL-38.01"
+list = "KL-38"
+tags = []
+text = "Acil çıkış kapısı var mı?"
+
+[[question]]
+key = "KL-38.02"
+list = "KL-38"
+tags = []
+text = "Lift ‘in periyodik bakımları yapılıyor mu?"
+
+[[question]]
+key = "KL-38.03"
+list = "KL-38"
+tags = []
+text = "Tekerlek sökme aparatının koruyucuları var mı?"
+
+[[question]]
+key = "KL-38.04"
+list = "KL-38"
+tags = []
+text = "Motor çalıştırma anında egzoz gazlarının çıkışı için uygun bağlantılar kullanıldı mı?"
+
+[[question]]
+key = "KL-38.05"
+list = "KL-38"
+tags = []
+text = "Motorlar arasında uygun mesafe çalışma alanı var mı?"
+
+[[question]]
+key = "KL-38.06"
+list = "KL-38"
+tags = []
+text = "Motorlar çalışırken yangın söndürme cihazı hazır bulunduruluyor mu?"
+
+[[question]]
+key = "KL-38.07"
+list = "KL-38"
+tags = []
+text = "Motor çalıştırılması esnasında uygun KKD kullanılıyor mu?"
+
+[[question]]
+key = "KL-38.08"
+list = "KL-38"
+tags = []
+text = "Tezgahların periyodik bakımı yapılıyor mu?"
+
+[[question]]
+key = "KL-38.09"
+list = "KL-38"
+tags = []
+text = "Test cihazları koruma kutularında muhafaza ediliyor mu?"
+
+[[question]]
+key = "KL-38.10"
+list = "KL-38"
+tags = []
+text = "Zeminde, kaymaya karşı önlem alınıyor mu?"
+
+[[question]]
+key = "KL-38.11"
+list = "KL-38"
+tags = []
+text = "İlkyardım kutusu var mı?"
+
+[[question]]
+key = "KL-38.12"
+list = "KL-38"
+tags = []
+text = "Çalışma masaları ve tabureleri sağlam mı?"
+
+[[question]]
+key = "KL-38.13"
+list = "KL-38"
+tags = []
+text = "Yangın söndürme tüpü var mı?"
+
+[[question]]
+key = "KL-38.14"
+list = "KL-38"
+tags = []
+text = "Yangın Ekibi çizelgesi var mı?"
+
+[[question]]
+key = "KL-38.15"
+list = "KL-38"
+tags = []
+text = "Acil çıkış kapısı yönetmeliğe uygun mu?"
+
+[[question]]
+key = "KL-38.16"
+list = "KL-38"
+tags = []
+text = "Pompa test cihazı yere sabitlendi mi?"
+
+[[question]]
+key = "KL-38.17"
+list = "KL-38"
+tags = []
+text = "Pompa Test Cihazı Çalışma Talimatı var mı?"
+
+[[question]]
+key = "KL-38.18"
+list = "KL-38"
+tags = []
+text = "Yakıtlar koruma altına alındı mı?"
+
+[[question]]
+key = "KL-38.19"
+list = "KL-38"
+tags = []
+text = "Personele yangın hakkında eğitim verildi mi?"
+
+[[question]]
+key = "KL-38.20"
+list = "KL-38"
+tags = []
+text = "Atölye sıcaklığı çalışma şartlarına uygun mu?"
+
+[[question]]
+key = "KL-38.21"
+list = "KL-38"
+tags = []
+text = "Elektrik panolarının yanında uyarı levhası var mı?"
+
+[[question]]
+key = "KL-38.22"
+list = "KL-38"
+tags = []
+text = "Atölyelerde sorumlu kişilerin İsmi yazılı mı?"
+
+[[question]]
+key = "KL-38.23"
+list = "KL-38"
+tags = []
+text = "Faal ve gayri faal parçalar muhafaza altına alınıyor mu?"
+
+[[question]]
+key = "KL-38.24"
+list = "KL-38"
+tags = []
+text = "Egzoz gazları için havalandırma sistemi var mı?"
+
+[[question]]
+key = "KL-38.25"
+list = "KL-38"
+tags = []
+text = "Motor sehpalarının bağlantıları düzenli olarak kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-38.26"
+list = "KL-38"
+tags = []
+text = "Aküler uygun yerde muhafaza ediliyor mu?"
+
+[[question]]
+key = "KL-38.27"
+list = "KL-38"
+tags = []
+text = "Pompa test cihazlarının bakımı yıllık yapılıyor mu?"
+
+[[question]]
+key = "KL-38.28"
+list = "KL-38"
+tags = []
+text = "Pompa test cihazlarının kullanma kılavuzu var mı?"
+
+[[question]]
+key = "KL-38.29"
+list = "KL-38"
+tags = []
+text = "Pompa test cihazlarının sorumlusu var mı?"
+
+[[question]]
+key = "KL-38.30"
+list = "KL-38"
+tags = []
+text = "Enjektör test cihazlarının bakımı düzenli olarak yapılıyor mu?"
+
+[[question]]
+key = "KL-38.31"
+list = "KL-38"
+tags = []
+text = "Enjektör test cihazlarının kullanma talimatı var mı?"
+
+[[question]]
+key = "KL-38.32"
+list = "KL-38"
+tags = []
+text = "Yedek parçalar ayrı muhafaza edilip etiketleniyor mu?"
+
+[[question]]
+key = "KL-38.33"
+list = "KL-38"
+tags = []
+text = "Sehpaya alınmış motor bağlantılarının güvenliği sağlanmış mı?"
+
+[[question]]
+key = "KL-38.34"
+list = "KL-38"
+tags = []
+text = "Motor parçalarının gösterildiği pano duvarda sabitlendi mi?"
+
+[[question]]
+key = "KL-38.35"
+list = "KL-38"
+tags = []
+text = "Zımpara taşı ve matkapta çalışırken yeteri kadar güvenlik"
+
+[[question]]
+key = "KL-38.36"
+list = "KL-38"
+tags = []
+text = "Yanıcı ve parlayıcı maddeler emniyet altında tutuluyor mu?"
+
+[[question]]
+key = "KL-38.37"
+list = "KL-38"
+tags = []
+text = "Akü şarj cihazının yıllık kontrolü yapılıyor mu?"
+
+[[question]]
+key = "KL-38.38"
+list = "KL-38"
+tags = []
+text = "Akü şarj cihazının kullanma talimatı var mı?"
+
+[[question]]
+key = "KL-38.39"
+list = "KL-38"
+tags = []
+text = "Akü şarj cihazının bağlantıları kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-38.40"
+list = "KL-38"
+tags = []
+text = "Batarya test cihazlarının kalibrasyonu yıllık yapılıyor mu?"
+
+[[question]]
+key = "KL-38.41"
+list = "KL-38"
+tags = []
+text = "Batarya test cihazlarının koruma kutusu var mı?"
+
+[[question]]
+key = "KL-38.42"
+list = "KL-38"
+tags = []
+text = "Marş ve şarj sistemi test cihazlarının yıllık kontrolü yapılıyor mu?"
+
+[[question]]
+key = "KL-38.43"
+list = "KL-38"
+tags = []
+text = "Ateşleme sistemi test cihazlarının kontrolü yapılıyor mu?"
+
+[[question]]
+key = "KL-38.44"
+list = "KL-38"
+tags = []
+text = "Marş ve şarj sistemi test cihazlarının bağlantıları kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-38.45"
+list = "KL-38"
+tags = []
+text = "Ateşleme sistemi test cihazlarının bağlantıları düzenli olarak kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-38.46"
+list = "KL-38"
+tags = []
+text = "Aydınlatma sistemi maketleri muhafaza eriliyor mu?"
+
+[[question]]
+key = "KL-38.47"
+list = "KL-38"
+tags = []
+text = "Asit ve elektrolit gibi kimyasal maddeler işaretli mi?"
+
+[[question]]
+key = "KL-38.48"
+list = "KL-38"
+tags = []
+text = "Asit ve elektrolit gibi kimyasal maddeler uygun yerde muhafaza ediliyor mu?"
+
+[[question]]
+key = "KL-38.49"
+list = "KL-38"
+tags = []
+text = "Duvarlarda asılı maketler varsa düşmeye karşı önlem alınmış mı?"
+
+[[question]]
+key = "KL-38.50"
+list = "KL-38"
+tags = []
+text = "Yangın tüpü kontrolleri yapılmış mı?"
+
+[[question]]
+key = "KL-38.51"
+list = "KL-38"
+tags = []
+text = "Yedek parçalar için uygun dolap hazırlanmış mı?"
+
+[[question]]
+key = "KL-39.01"
+list = "KL-39"
+tags = []
+text = "Yan koruyucular testere çapının yüzde 75’ini içine alıyor mu?"
+
+[[question]]
+key = "KL-39.02"
+list = "KL-39"
+tags = []
+text = "Dayanak, zımpara taşına 0,3 cm yakınlıkta mı?"
+
+[[question]]
+key = "KL-39.03"
+list = "KL-39"
+tags = []
+text = "Zımpara taşı, dakika devir üst hızı, motor dakika devir üst hızıyla uyumlu mu?"
+
+[[question]]
+key = "KL-39.04"
+list = "KL-39"
+tags = []
+text = "Makinaların, gerekli koruyucuları takılmış mı?"
+
+[[question]]
+key = "KL-39.05"
+list = "KL-39"
+tags = []
+text = "Taşlama yapılacak malzemeye göre zımpara taş seçimi yapılıyor mu?"
+
+[[question]]
+key = "KL-39.06"
+list = "KL-39"
+tags = []
+text = "Zımpara taşı takılmadan önce muayenesi yapılıyor mu?"
+
+[[question]]
+key = "KL-39.07"
+list = "KL-39"
+tags = []
+text = "Ayak ile işletilen anahtarlar üzerine cisim düşmesi veya başka kişilerin kontrolsüz müdahalesine imkan vermemek üzere emniyete alınmış veya korunmuş mu?"
+
+[[question]]
+key = "KL-39.08"
+list = "KL-39"
+tags = []
+text = "Vantilatörler yerden 2,1 mt'den daha yukarıda mı?"
+
+[[question]]
+key = "KL-39.09"
+list = "KL-39"
+tags = []
+text = "Makinelerin temizliğinde basınçlı hava kullanılıyor mu?"
+
+[[question]]
+key = "KL-39.10"
+list = "KL-39"
+tags = []
+text = "Basınçlı havayla temizlik yapılırken KKD' ler kullanılıyor mu?"
+
+[[question]]
+key = "KL-39.11"
+list = "KL-39"
+tags = []
+text = "Taşlama tezgâhlarının kullanma talimatı var mı?"
+
+[[question]]
+key = "KL-39.12"
+list = "KL-39"
+tags = []
+text = "Taşlama tezgâhlarının güç kaynaklarının bağlantıları düzenli olarak kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-40.01"
+list = "KL-40"
+tags = []
+text = "Kaynak, kesim ve pirinçle kaplama sırasında ortaya çıkan tehlikelere maruz kalabilecek personel ve öğrenciler korunmak için (göz ve yüz koruyucusu, eldiven, önlük ve gaz maskesi gibi) kişisel koruyucu donanım kullanıyor mu?"
+
+[[question]]
+key = "KL-40.02"
+list = "KL-40"
+tags = []
+text = "Kaynak ve kesim işleminin yapıldığı yerde yeterli havalandırma var mı?"
+
+[[question]]
+key = "KL-40.03"
+list = "KL-40"
+tags = []
+text = "Kaynak alanları yakın mesafede çalışanları korumak için paravan ile ayrılmış mı?"
+
+[[question]]
+key = "KL-40.04"
+list = "KL-40"
+tags = []
+text = "Acil durumlarda kullanmak için uygun yangın söndürücüler var mı?"
+
+[[question]]
+key = "KL-40.05"
+list = "KL-40"
+tags = []
+text = "Kaynak yapılacak ya da kesilecek cisim hareket ettirilemediğinde ve yangın tehlikesi olduğunda, ısı, curuf ve kıvılcımı önlemek için siper kullanılıyor mu?"
+
+[[question]]
+key = "KL-40.06"
+list = "KL-40"
+tags = []
+text = "Sıcak bir işlem başlamadan önce kullanılmış davlumbazlar, variller, tanklar ve diğer kaplar parlayıcı, patlayıcı, ve zararlı gaz üretebilecek hiçbir madde kalmayacak şekilde temizleniyor mu?"
+
+[[question]]
+key = "KL-40.07"
+list = "KL-40"
+tags = []
+text = "Sıkıştırılmış gaz tüpleri, valfler, bağlantılar, regülatörler, hortumlar; yağdan ve yağlı maddelerden arındırılmış mı?"
+
+[[question]]
+key = "KL-40.08"
+list = "KL-40"
+tags = []
+text = "Sıkıştırılmış gaz tüpleri, valfler, bağlantılar, regülatörler, hortumlar gözle görülebilen arıza ve kusurlara karşı düzenli olarak denetleniyor mu?"
+
+[[question]]
+key = "KL-40.09"
+list = "KL-40"
+tags = []
+text = "Elektrot uçları; yıpranma ve hasara karşı sıklıkla denetleniyor mu?"
+
+[[question]]
+key = "KL-40.10"
+list = "KL-40"
+tags = []
+text = "Boşalmış ve kullanılmayan kaynak tüpleri tecrit ediliyor mu?"
+
+[[question]]
+key = "KL-40.11"
+list = "KL-40"
+tags = []
+text = "Dolu tüpler için uygun yer ayrılmış mı?"
+
+[[question]]
+key = "KL-40.12"
+list = "KL-40"
+tags = []
+text = "Tüplerin düşmesini önlemek için muhafaza kullanılıyor mu?"
+
+[[question]]
+key = "KL-40.13"
+list = "KL-40"
+tags = []
+text = "Kaynak cinsine göre uygun söndürücü bulunuyor mu?"
+
+[[question]]
+key = "KL-40.14"
+list = "KL-40"
+tags = []
+text = "Güvenlik araçları düzenli olarak kontrol ediliyor mu?"
+
+[[question]]
+key = "KL-40.15"
+list = "KL-40"
+tags = []
+text = "Elektrik kaynak makinalarının kontrolü yapılıyor mu?"
+
+[[question]]
+key = "KL-40.16"
+list = "KL-40"
+tags = []
+text = "Asetilen ve oksijen tüpleri muhafaza altında mı?"
+
+[[question]]
+key = "KL-40.17"
+list = "KL-40"
+tags = []
+text = "Karpit depoları uygun özellikte mi?"
+
+[[question]]
+key = "KL-40.18"
+list = "KL-40"
+tags = []
+text = "Asetilen kazanları uygun şekilde muhafaza ediliyor mu?"
+
+[[question]]
+key = "KL-40.19"
+list = "KL-40"
+tags = []
+text = "Asetilen kazanlarının rutin kontrolleri yapılıyor mu?"
+
+[[question]]
+key = "KL-40.20"
+list = "KL-40"
+tags = []
+text = "Kaynak elemanlarının düzenli kontrolü yapılıyor mu?"
+
+[[question]]
+key = "KL-40.21"
+list = "KL-40"
+tags = []
+text = "Kaynak ışınlarının göze zarar vermesi durumunda yapılacaklar konusunda bilgi veriliyor mu?"
+
+[[question]]
+key = "KL-41.01"
+list = "KL-41"
+tags = []
+text = "Vinçler ve kaldırma makinaları çalışma mekanizmalarında, hidrolik sistemlerde, kancalarda ve sapanlarda oluşabilecek kolay tespit edilebilir arızalar yönünden her kullanımdan önce görsel olarak inceleniyor mu?"
+
+[[question]]
+key = "KL-41.02"
+list = "KL-41"
+tags = []
+text = "Bütün gezer köprü elektrikli kaldırma makineleri, güvenli hareket edebileceği en alt ve en üst noktada durduracak bir sınırlama cihazına sahip mi?"
+
+[[question]]
+key = "KL-41.03"
+list = "KL-41"
+tags = []
+text = "Her vinç için kaldırılmasına müsaade edilen en fazla yük miktarı okunaklı bir şekilde işaretlenmiş mi?"
+
+[[question]]
+key = "KL-41.04"
+list = "KL-41"
+tags = []
+text = "Vinçler/Kaldırma makinaları kontrolleri seyir ve hareket yönünü gösterecek şekilde açıkça işaretlenmiş mi?"
+
+[[question]]
+key = "KL-41.05"
+list = "KL-41"
+tags = []
+text = "Malzemeler kaldırılırken sapanlar ya da yük bağlantılarının kazayla kancalardan kurtulmasını önlemek amacıyla emniyet kilit mandalına sahip kancalar kullanılıyor mu?"
+
+[[question]]
+key = "KL-41.06"
+list = "KL-41"
+tags = []
+text = "Güvenlik zincirleri, halatları, kelepçeleri veya sapanları kaldırma kapasiteleri belirlenmiş ve taşınacak yük için uygun mu?"
+
+[[question]]
+key = "KL-41.07"
+list = "KL-41"
+tags = []
+text = "Malzeme veya ekipman kaldırılırken asılı yükün altında kimsenin bulunmamasını sağlayacak önlemler alınıyor mu?"
+
+[[question]]
+key = "KL-41.08"
+list = "KL-41"
+tags = []
+text = "Forkliftleri yetkili kişiler kullanıyor mu?"
+
+[[question]]
+key = "KL-41.09"
+list = "KL-41"
+tags = []
+text = "Forkliftler her kullanımdan önce muayene ediliyor mu?"
+
+[[question]]
+key = "KL-41.10"
+list = "KL-41"
+tags = []
+text = "Kaldırma makinalarının yıllık testleri uygun kişiler tarafından yapılıyor mu?"
+
+[[question]]
+key = "KL-41.11"
+list = "KL-41"
+tags = []
+text = "Kaldırma araçlarında (aletlerinde) aşınmış, çatlamış, kırılmış parçalar değiştiriliyor mu?"
+
+[[question]]
+key = "KL-41.12"
+list = "KL-41"
+tags = []
+text = "Makinaların etrafındaki zemin kaymaya karşı tedbir alınmış mı?"
+
+[[question]]
+key = "KL-41.13"
+list = "KL-41"
+tags = []
+text = "Kaldırma makinaları kapasitelerine uygun kullanılıyor mu?"
+
+[[question]]
+key = "KL-41.14"
+list = "KL-41"
+tags = []
+text = "Kaldırma makinalarını kullanacak personele eğitim veriliyor mu?"
+
+[[question]]
+key = "KL-41.15"
+list = "KL-41"
+tags = []
+text = "Kaldırma makinalarının kullanma talimatı var mı?"
+
+[[question]]
+key = "KL-41.16"
+list = "KL-41"
+tags = []
+text = "Forklifler fosil yakıt ile çalışıyorsa çıkan egzoz gazlarının zararlı etkisi için önlem alınıyor mu?"
+
+[[question]]
+key = "KL-41.17"
+list = "KL-41"
+tags = []
+text = "Taşıyıcı halatların periyodik muayeneleri yapılıyor mu?"
+
+[[question]]
+key = "KL-41.18"
+list = "KL-41"
+tags = []
+text = "Tehlikeli durumlar için hareketli dikkat çekici şerit bez asılmış mı?"
+
+[[question]]
+key = "KL-42.01"
+list = "KL-42"
+tags = ["workshop"]
+text = "Çalışma yüksekliği çalışanın dirsek hizasında veya biraz altında mı?"
+
+[[question]]
+key = "KL-42.02"
+list = "KL-42"
+tags = ["workshop"]
+text = "Çalışma tezgâhı genç insana göre tasarlanmış mı?"
+
+[[question]]
+key = "KL-42.03"
+list = "KL-42"
+tags = ["workshop"]
+text = "Sıklıkla kullanılan ekipmana kolay erişim sağlanıyor mu?"
+
+[[question]]
+key = "KL-42.04"
+list = "KL-42"
+tags = ["workshop"]
+text = "İnce iş yapılan tezgâhlar ile güç gerektiren işler yapılan tezgâhlar işin özelliklerine göre mi?"
+
+[[question]]
+key = "KL-42.05"
+list = "KL-42"
+tags = ["workshop"]
+text = "Tezgâh hem ayakta hem de oturarak iş yapmaya olanak sağlıyor mu?"
+
+[[question]]
+key = "KL-42.06"
+list = "KL-42"
+tags = ["workshop"]
+text = "Küçük ve büyük çalışma parçaları arasında çalışma gerçekleşen tezgâhlar ayarlanabilir özellikte mi?"
+
+[[question]]
+key = "KL-42.07"
+list = "KL-42"
+tags = ["workshop"]
+text = "İşi yapanların tasarım konusunda fikirleri alınıyor mu?"
+
+[[question]]
+key = "KL-42.08"
+list = "KL-42"
+tags = ["workshop"]
+text = "Güvenlik kuralları ve talimatları içeren panolar çalışma istasyonuna yakın mı?"
+
+[[question]]
+key = "KL-42.09"
+list = "KL-42"
+tags = ["workshop"]
+text = "Makine koruyucuları uygun olarak kullanılıyor mu?"
+
+[[question]]
+key = "KL-42.10"
+list = "KL-42"
+tags = ["workshop"]
+text = "Tezgâhın kullanma talimatı var mı?"
+
+[[question]]
+key = "KL-42.11"
+list = "KL-42"
+tags = ["workshop"]
+text = "Tezgâhtan sorumlu personel görevlendirilmiş mi?"
+
+[[question]]
+key = "KL-42.12"
+list = "KL-42"
+tags = ["workshop"]
+text = "Tezgâhların tehlike durumunda uzaktan durdurma sistemi var mı?"
+
+[[question]]
+key = "KL-42.13"
+list = "KL-42"
+tags = ["workshop"]
+text = "Makinaların emniyetli çalışma alanı belirlenmiş mi?"
+
+[[question]]
+key = "KL-42.14"
+list = "KL-42"
+tags = ["workshop"]
+text = "Tezgâh kabin içi ışıklandırma uygun mu?"
+
+[[question]]
+key = "KL-42.15"
+list = "KL-42"
+tags = ["workshop"]
+text = "Tezgâhın elektrik bağlantısı yalıtımı uygun mu?"
+
+[[question]]
+key = "KL-42.16"
+list = "KL-42"
+tags = ["workshop"]
+text = "Tezgâh kapıları sağlam mı, emniyetli mi?"
+
+[[question]]
+key = "KL-42.17"
+list = "KL-42"
+tags = ["workshop"]
+text = "Tezgâh çalıştırma talimatı var mı?"
+
+[[question]]
+key = "KL-42.18"
+list = "KL-42"
+tags = ["workshop"]
+text = "Acil stop anahtarı var mı?"
+
+[[question]]
+key = "KL-42.19"
+list = "KL-42"
+tags = ["workshop"]
+text = "Tezgâh çevre temizliği yapılıyor mu?"
+
+[[question]]
+key = "KL-42.20"
+list = "KL-42"
+tags = ["workshop"]
+text = "Çalışma ortamı öğrencilerin görebilmesi için uygun mu?"
+
+[[question]]
+key = "KL-42.21"
+list = "KL-42"
+tags = ["workshop"]
+text = "Öğrencilerin boylarına göre tezgâh çalışma planı yapılmış mı?"
+
+[[question]]
+key = "KL-43.01"
+list = "KL-43"
+tags = []
+text = "Güvenliği sağlanmamış hareketli parçaları bulunan makinalar için gerekli önlem alınmış mı? (kayışlar, zincirler, kesiciler, tornalar, deliciler, biçiciler, eğme presleri, şekillendiriciler, bükücüler, vs.)"
+
+[[question]]
+key = "KL-43.02"
+list = "KL-43"
+tags = []
+text = "Makine çalışırken tehlike bölgesinde insanların olmamasına dikkat ediliyor mu?"
+
+[[question]]
+key = "KL-43.03"
+list = "KL-43"
+tags = []
+text = "Makine koruyucuları çalışanların ellerinin, kollarının, ya da diğer vücut kısımlarının tehlikeli hareketli parçalarla temas etmesini yeterli ölçüde engelliyor mu?"
+
+[[question]]
+key = "KL-43.04"
+list = "KL-43"
+tags = []
+text = "Makinelerin koruyucu parçaları sıkı bir şekilde sabitlenmiş ve yerlerinden kolayca çıkarılmaları engellenmiş mi?"
+
+[[question]]
+key = "KL-43.05"
+list = "KL-43"
+tags = []
+text = "Makinenin hareketli parçası üzerine herhangi bir nesnenin düşme tehlikesi önlenmiş mi?"
+
+[[question]]
+key = "KL-43.06"
+list = "KL-43"
+tags = []
+text = "Kullanılan makine koruyucuları makinenin işleyişini bozmayacak ve güçleştirmeyecek şekilde montajlanmış mı?"
+
+[[question]]
+key = "KL-43.07"
+list = "KL-43"
+tags = []
+text = "Koruyucu parçaları çıkarmadan makine yağlanabiliyor mu?"
+
+[[question]]
+key = "KL-43.08"
+list = "KL-43"
+tags = []
+text = "Makinenin hareketli parçaları, hareket halinde iken, koruyucuların çıkarılması önleniyor mu?"
+
+[[question]]
+key = "KL-43.09"
+list = "KL-43"
+tags = []
+text = "Operatörün açma/kapama kontrollerine kolayca ulaşması mümkün mü?"
+
+[[question]]
+key = "KL-43.10"
+list = "KL-43"
+tags = []
+text = "Birden fazla operatörün kullandığı cihazlarda tek bir kontrol mekanizması var mı?"
+
+[[question]]
+key = "KL-43.11"
+list = "KL-43"
+tags = []
+text = "Makine ve atölyede kaçak akım rölesi var mı?"
+
+[[question]]
+key = "KL-43.12"
+list = "KL-43"
+tags = []
+text = "Zorlama anında makine otomatik olarak duruyor mu?"
+
+[[question]]
+key = "KL-43.13"
+list = "KL-43"
+tags = []
+text = "Şartel manyetik mi?"
+
+[[question]]
+key = "KL-43.14"
+list = "KL-43"
+tags = []
+text = "Makine yere (zemine) sabitlenmiş mi ve teraziye alınmış mı?"
+
+[[question]]
+key = "KL-43.15"
+list = "KL-43"
+tags = []
+text = "Makinelerin tehlike durumunda otomatik stop sistemi var mı?"
+
+[[question]]
+key = "KL-43.16"
+list = "KL-43"
+tags = []
+text = "Makine koruyucuları uygun aralıkta mı?"
+
+[[question]]
+key = "KL-43.17"
+list = "KL-43"
+tags = []
+text = "Çalışanların operasyon noktasına (makinanın) ulaşması engelleniyor mu? (Gerekli emniyet tedbirleri alınıyor mu?)"
+
+[[question]]
+key = "KL-43.18"
+list = "KL-43"
+tags = []
+text = "Tehlike durumunda makinalarda acil durdurma butonu var mı?"
+
+[[question]]
+key = "KL-43.19"
+list = "KL-43"
+tags = []
+text = "İş kazalarını önlemek için çalışan makinalarda çift emniyet kullanılıyor mu?"
+
+[[question]]
+key = "KL-43.20"
+list = "KL-43"
+tags = []
+text = "Makinaların kullanma talimatı var mı?"
+
+[[question]]
+key = "KL-43.21"
+list = "KL-43"
+tags = []
+text = "Makinaların periyodik bakımı yapılıyor mu?"
+
+[[question]]
+key = "KL-43.22"
+list = "KL-43"
+tags = []
+text = "Makinalar arasındaki mesafe yönetmeliğe uygun mu?"
+
+[[question]]
+key = "KL-43.23"
+list = "KL-43"
+tags = []
+text = "Makina çalışma alanı uygun çizgilerle belirtilmiş mi?"
+
+[[question]]
+key = "KL-43.24"
+list = "KL-43"
+tags = []
+text = "Makinaya güç veren (elektrik, hidrolik, vb.) bağlantıları"
+
+[[question]]
+key = "KL-43.25"
+list = "KL-43"
+tags = []
+text = "Tezgâh temizliği emniyetli olarak yapılabiliyor mu?"
+
+[[question]]
+key = "KL-43.26"
+list = "KL-43"
+tags = []
+text = "Ağır iş parçalarının taşıma emniyeti sağlanıyor mu?"
+
+[[question]]
+key = "KL-43.27"
+list = "KL-43"
+tags = []
+text = "Operatörle iş parçası arasında emniyet mesafesi uygun mu?"
+
+[[question]]
+key = "KL-43.28"
+list = "KL-43"
+tags = []
+text = "Çıkan talaşların atölyeye dağılması engelleniyor mu?"
+
+[[question]]
+key = "KL-43.29"
+list = "KL-43"
+tags = []
+text = "Hareketli kısımlar muhafazalı mı?"
+
+[[question]]
+key = "KL-43.30"
+list = "KL-43"
+tags = []
+text = "Acil durdurma butonları var mı?"
+
+[[question]]
+key = "KL-43.31"
+list = "KL-43"
+tags = []
+text = "İş parçası bağlama sistemleri yeteri derecede emniyetli mi?"
+
+[[question]]
+key = "KL-43.32"
+list = "KL-43"
+tags = []
+text = "Kesici bağlama sistemleri yeterince emniyetli mi?"
+
+[[question]]
+key = "KL-43.33"
+list = "KL-43"
+tags = []
+text = "Hareketli parça üzerine güvenlik boyası vuruldu mu?"

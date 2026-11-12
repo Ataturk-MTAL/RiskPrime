@@ -129,7 +129,7 @@ export interface PdfData {
   period: string;
   assessmentDate: string;
   validUntil: string;
-  /** Snapshot facts for the report (not used by report.typ yet). */
+  /** Snapshot facts for the report (footer shows bankVersion and revision). */
   snapshot: { revision: number; status: string; signedAt: string; bankVersion: string };
   groups: { title: string; locations: PdfLocation[] }[];
   checklists: PdfChecklist[];

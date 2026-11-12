@@ -107,9 +107,14 @@ export function updateItem(
   const next = Object.fromEntries(
     Object.entries(pick<ChecklistItem>(patch, ["no", "text"])).map(([k, v]) => [k, String(v)]),
   );
+  const rewords = "text" in next; // the school's wording now wins over the bank text
   return mapChecklist(a, listId, (l) => ({
     ...l,
-    items: l.items.map((x) => (x.id === itemId ? { ...x, ...next } : x)),
+    items: l.items.map((x) => {
+      if (x.id !== itemId) return x;
+      const { fromBank: _dropped, ...rest } = x;
+      return { ...(rewords ? rest : x), ...next };
+    }),
   }));
 }
 

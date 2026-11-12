@@ -51,6 +51,9 @@
     grid(columns: (1fr, auto),
       [Risk giderilmeden iş başlatılmaz. Önce enerjiyi kes, sonra çalış.],
       [Sayfa #counter(page).display("1 / 1", both: true)])
+    if V.at("snapshot", default: none) != none [
+      Soru bankası sürümü: #V.snapshot.bankVersion · Revizyon #V.snapshot.revision
+    ]
   },
 )
 #set text(font: ("IBM Plex Sans", "Libertinus Serif"), lang: "tr", size: 9.5pt)

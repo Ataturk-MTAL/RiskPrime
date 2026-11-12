@@ -44,3 +44,10 @@ Yapı:
 - `src/lib/components/`: ekranlar; `ui/` shadcn-svelte'ten üretilir (`pnpm dlx shadcn-svelte@1.8.0 add <ad> --yes --no-deps-install`).
 - `public/template/report.typ`: PDF şablonu; `public/fonts/`: IBM Plex Sans (OFL).
 - Tasarım: `docs/superpowers/specs/2026-11-11-riskprime-design.md`.
+
+## Soru bankasını güncelleme
+
+1. `content/questions/*.toml` dosyalarını düzenleyin (`meb.toml`: MEB soruları, `riskprime-*.toml`: RiskPrime soruları).
+2. `content/questions/bank.toml` içindeki `version` değerini artırın.
+3. `content/CHANGELOG.md` dosyasına aynı sürümle bir `## <sürüm>` girişi ekleyin.
+4. `pnpm bank:build` çalıştırın: doğrular, `src/lib/data/questions.json` dosyasını (ve `library.json` metinlerini) yeniden üretir. CI `pnpm bank:check` ile güncelliği denetler.

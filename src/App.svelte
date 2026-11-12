@@ -4,6 +4,7 @@
   import AboutDialog from '$lib/components/AboutDialog.svelte';
   import AppSidebar from '$lib/components/AppSidebar.svelte';
   import AppTopbar from '$lib/components/AppTopbar.svelte';
+  import BankUpdatesDialog from '$lib/components/BankUpdatesDialog.svelte';
   import BottomNav from '$lib/components/BottomNav.svelte';
   import ConflictDialog from '$lib/components/ConflictDialog.svelte';
   import DeficienciesPage from '$lib/components/DeficienciesPage.svelte';
@@ -104,6 +105,7 @@
 <AboutDialog bind:open={aboutOpen} />
 <PeriodsDialog bind:open={periodsOpen} />
 <ReadinessDialog />
+<BankUpdatesDialog />
 <ConflictDialog />
 <DiscardDialog />
 <Toaster />

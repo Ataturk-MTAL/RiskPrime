@@ -6,12 +6,15 @@
   import * as Table from '$lib/components/ui/table';
   import ChecklistEditor from './ChecklistEditor.svelte';
   import LibraryDialog from './LibraryDialog.svelte';
+  import { bankChanges } from '$lib/domain/bank-sync';
   import { liveLocationIds } from '$lib/domain/inspections';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
   let libraryOpen = $state(false);
   const lists = $derived(store.assessment.checklists);
+  const changes = $derived(bankChanges(store.assessment));
+  const changeCount = $derived(changes.updated.length + changes.added.length);
   const openId = $derived(nav.place.listId);
 
   function addBlank() {
@@ -37,6 +40,9 @@
     <div class="flex flex-wrap gap-2">
       <Button onclick={addBlank}><Plus />Boş liste ekle</Button>
       <Button variant="outline" onclick={() => (libraryOpen = true)}>Hazır listelerden ekle</Button>
+      {#if changeCount > 0}
+        <Button variant="outline" onclick={() => store.openBankOffer()}>Soru bankası güncellemeleri ({changeCount})</Button>
+      {/if}
     </div>
     {#if lists.length}
       <div class="rounded-xl border bg-card">
