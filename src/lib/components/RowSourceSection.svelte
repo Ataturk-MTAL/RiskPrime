@@ -5,6 +5,7 @@
   import { addRowSource, listsForLocation, removeRowSource, sourceLabel, sourcesOf } from '$lib/domain/links';
   import type { RiskRow, RiskSource } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
+  import { nav } from '$lib/nav.svelte';
   import SelectField from './SelectField.svelte';
   import { SOURCE_ANSWER_TEXT } from './SourceBadge.svelte';
 
@@ -50,7 +51,7 @@
       <p><b>{info.listName}</b> ({info.code || 'kodsuz'}) · madde {info.no} · cevap: <b>{SOURCE_ANSWER_TEXT[info.answer]}</b></p>
       <p class="text-muted-foreground">{info.text}</p>
       <div class="flex flex-wrap gap-2">
-        <Button variant="outline" size="sm" onclick={() => store.selectChecklist(info.listId)}>Maddeye git</Button>
+        <Button variant="outline" size="sm" onclick={() => nav.openLocation(info.locationId ?? locationId, 'inspections', info.listId)}>Maddeye git</Button>
         <Button variant="outline" size="icon-sm" aria-label="Bağlantıyı kaldır: {sourceLabel(info)}" onclick={() => unlink(info)}><X /></Button>
       </div>
     </div>

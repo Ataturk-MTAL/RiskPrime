@@ -18,7 +18,7 @@ export const ANSWERS: Answer[] = ["yes", "no", "na", ""];
 export const ANSWER_LABELS: Record<Answer, string> = {
   yes: "Evet",
   no: "Hayır",
-  na: "U/D",
+  na: "U.D.",
   "": "",
 };
 

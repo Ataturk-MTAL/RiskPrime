@@ -4,6 +4,7 @@
   import { rowsForItem } from '$lib/domain/links';
   import type { Checklist, ChecklistItem } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
+  import { nav } from '$lib/nav.svelte';
   import ChecklistExistingRowButton from './ChecklistExistingRowButton.svelte';
   import ChecklistRiskButton from './ChecklistRiskButton.svelte';
 
@@ -12,7 +13,7 @@
   const rows = $derived(rowsForItem(store.assessment, list.id, item.id, locationId));
   const answer = $derived(answerOf(store.assessment, list.id, locationId, item.id).answer);
 
-  const openRow = (locationId: string, rowId: string) => store.openRow(locationId, rowId);
+  const openRow = (locationId: string, rowId: string) => nav.openRow(locationId, rowId);
 </script>
 
 {#each rows as r (r.rowId)}

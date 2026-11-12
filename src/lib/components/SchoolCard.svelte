@@ -9,6 +9,7 @@
   import type { Assessment, Grouping } from '$lib/domain/types';
   import { isBefore } from '$lib/domain/date';
   import DateField from './DateField.svelte';
+  import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
   const GROUPING_OPTIONS = [
@@ -19,10 +20,10 @@
 
   const a = $derived(store.assessment);
   let root = $state<HTMLElement | null>(null);
-  // Opened from elsewhere (readiness list): focus the first empty field once the page has rendered.
+  // Opened from elsewhere (overview, readiness list): focus the first empty field once the page has rendered.
   $effect(() => {
-    if (!store.schoolRequest) return;
-    store.schoolRequest = 0;
+    if (!nav.schoolRequest) return;
+    nav.schoolRequest = 0;
     requestAnimationFrame(() => {
       [...(root?.querySelectorAll<HTMLInputElement>('input') ?? [])].find((i) => !i.value)?.focus();
     });

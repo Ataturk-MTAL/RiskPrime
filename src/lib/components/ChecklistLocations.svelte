@@ -16,7 +16,7 @@
   const names = $derived(
     selected.map((id) => store.assessment.locations.find((l) => l.id === id)?.name || 'Adsız mekân'),
   );
-  const summary = $derived(names.length ? names.join(', ') : 'Genel (tüm mekânlar)');
+  const summary = $derived(names.length ? names.join(', ') : 'Okul geneli');
   const groups = $derived(grouped(store.assessment));
 
   const toggle = (id: string, on: boolean) =>
@@ -32,7 +32,7 @@
     {/snippet}
   </Popover.Trigger>
   <Popover.Content class="max-h-80 w-72 space-y-2 overflow-y-auto">
-    <p class="text-xs text-muted-foreground">Hiçbiri seçili değilse liste genel sayılır (tüm mekânlar).</p>
+    <p class="text-xs text-muted-foreground">Her seçili mekânda ayrı denetlenir. Hiçbiri seçili değilse okul genelinde bir kez denetlenir.</p>
     {#each groups as group (group.title)}
       <fieldset class="space-y-1">
         {#if group.title}<legend class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{group.title}</legend>{/if}

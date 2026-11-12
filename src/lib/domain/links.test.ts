@@ -517,3 +517,26 @@ describe("excel backup links", () => {
     expect(result.assessment.locations[0].rows[0].sources).toBeUndefined();
   });
 });
+
+describe("assigning a general list keeps its answers", () => {
+  test("school-wide answers and row links move to the first assigned location", () => {
+    const before = riskRowFromChecklistItem(sample(), "k1", "m1", null, "l2");
+    const after = setChecklistLocations(before, "k1", ["l1"]);
+    const insp = after.inspections.find((i) => i.checklistId === "k1" && i.locationId === "l1");
+    expect(insp?.answers.map((x) => [x.itemId, x.answer])).toEqual([
+      ["m1", "no"],
+      ["m2", "no"],
+    ]);
+    expect(after.inspections.some((i) => i.checklistId === "k1" && i.locationId === null)).toBe(
+      false,
+    );
+    expect(rowsForItem(after, "k1", "m1", "l1")).toHaveLength(1);
+  });
+
+  test("an already assigned list is not touched", () => {
+    const one = setChecklistLocations(sample(), "k1", ["l1"]);
+    const two = setChecklistLocations(one, "k1", ["l1", "l2"]);
+    const l2 = two.inspections.find((i) => i.checklistId === "k1" && i.locationId === "l2");
+    expect(l2?.answers).toEqual([]);
+  });
+});

@@ -5,49 +5,41 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
-  import { Progress } from '$lib/components/ui/progress';
   import { Textarea } from '$lib/components/ui/textarea';
-  import * as ToggleGroup from '$lib/components/ui/toggle-group';
-  import ChecklistItemLinks from './ChecklistItemLinks.svelte';
   import ChecklistLocations from './ChecklistLocations.svelte';
   import ConfirmDialog from './ConfirmDialog.svelte';
-  import { countUntransferred } from '$lib/domain/transfer';
   import QuestionBankDialog from './QuestionBankDialog.svelte';
-  import { addItem, ANSWER_LABELS, removeChecklist, removeItem, setAnswer, setNote, updateChecklist, updateItem } from '$lib/domain/checklist';
-  import { answerOf, inspectionsForList, inspectionSummary, scopeName } from '$lib/domain/inspections';
-  import type { Answer, ChecklistItem } from '$lib/domain/types';
+  import { addItem, removeChecklist, removeItem, updateChecklist, updateItem } from '$lib/domain/checklist';
+  import type { ChecklistItem } from '$lib/domain/types';
+  import { nav } from '$lib/nav.svelte';
   import { focusFirstField, store } from '$lib/state.svelte';
 
-  const CHOICES: { value: Exclude<Answer, ''>; tone: string }[] = [
-    { value: 'yes', tone: 'data-[state=on]:bg-green-700 data-[state=on]:text-white' },
-    { value: 'no', tone: 'data-[state=on]:bg-red-600 data-[state=on]:text-white' },
-    { value: 'na', tone: 'data-[state=on]:bg-gray-500 data-[state=on]:text-white' },
-  ];
-  const ROW_GRID = '@3xl:grid-cols-[4rem_minmax(0,2fr)_auto_minmax(0,1.2fr)_2rem]';
+  const ROW_GRID = 'grid-cols-[4rem_minmax(0,1fr)_2rem]';
+
+  // The template only: item texts. Answers are entered per location, under Mekânlar.
+  let { listId }: { listId: string } = $props();
 
   let bankOpen = $state(false);
-  const list = $derived(store.checklist);
-  const untransferred = $derived(list ? countUntransferred(store.assessment, list.id) : 0);
-  // Until the next phase adds a location picker, the editor works on the list's first inspection.
-  const inspection = $derived(list ? inspectionsForList(store.assessment, list.id)[0] : undefined);
-  const scopeId = $derived(inspection?.locationId ?? null);
-  const stats = $derived(inspection ? inspectionSummary(store.assessment, inspection) : { total: 0, answered: 0, no: 0 });
+  const list = $derived(store.assessment.checklists.find((l) => l.id === listId));
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
 
-  const patchItem = (listId: string, itemId: string, patch: Partial<Pick<ChecklistItem, 'no' | 'text'>>) =>
+  const patchItem = (itemId: string, patch: Partial<Pick<ChecklistItem, 'no' | 'text'>>) =>
     store.apply((a) => updateItem(a, listId, itemId, patch));
 
-  function addNewItem(listId: string) {
-    const before = store.checklist?.items.length ?? 0;
+  function addNewItem() {
+    const before = list?.items.length ?? 0;
     if (!store.apply((a) => addItem(a, listId))) return;
-    const created = store.checklist?.items[before];
+    const created = list?.items[before];
     if (created) focusFirstField(`item-${created.id}`);
+  }
+
+  function remove() {
+    if (store.apply((a) => removeChecklist(a, listId))) nav.openLibrary();
   }
 </script>
 
 <section class="min-w-0 space-y-3 rounded-xl border bg-card p-3">
   {#if list}
-    {@const listId = list.id}
     {@const locked = list.source === 'external'}
     <div class="flex flex-wrap items-end gap-2">
       {#if locked}
@@ -71,57 +63,35 @@
         variant="destructive"
         size="default"
         title="Liste silinsin mi?"
-        description={`"${list.code} ${list.name}" listesi ve cevapları silinecek.`}
-        onconfirm={() => store.apply((a) => removeChecklist(a, listId))}
+        description={`"${list.code} ${list.name}" listesi ve tüm mekânlardaki cevapları silinecek.`}
+        onconfirm={remove}
       ><Trash2 />Listeyi sil</ConfirmDialog>
     </div>
 
-    <div class="flex items-center gap-3">
-      <Progress value={stats.answered} max={stats.total || 1} class="h-2 max-w-sm" aria-label="Cevaplanan madde oranı" />
-      <span class="text-sm text-muted-foreground">
-        {stats.answered}/{stats.total} cevaplandı{#if stats.no}{" "}· <b class="text-red-600">{stats.no} eksik</b>{/if}
-      </span>
-      <span class="text-sm text-muted-foreground">Mekân: {scopeName(store.assessment, scopeId)}</span>
-      <Button variant="outline" size="sm" disabled={untransferred === 0} onclick={() => store.transferMissing(listId)}>Eksikleri risk tablosuna aktar ({untransferred})</Button>
-    </div>
-
-    <div class="@container space-y-2">
-      <div class="hidden gap-2 px-2 text-xs font-semibold text-muted-foreground @3xl:grid {ROW_GRID}">
-        <span>No</span><span>Kontrol maddesi</span><span>Cevap</span><span>Açıklama</span><span class="sr-only">Sil</span>
-      </div>
+    <div class="space-y-2">
       {#each list.items as item (item.id)}
         {@const textLocked = locked && !item.added}
-        {@const current = answerOf(store.assessment, listId, scopeId, item.id)}
         <div id="item-{item.id}" class="grid items-start gap-2 rounded-lg border p-2 {ROW_GRID}">
           {#if textLocked}
             <span class="pt-1.5 text-sm">{item.no}</span>
             <span class="pt-1.5 text-sm">{item.text}</span>
           {:else}
-            <Input class="w-16" aria-label="Madde no" value={item.no} onchange={(e) => patchItem(listId, item.id, { no: value(e) })} />
-            <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Madde metni" placeholder="Kontrol maddesi" value={item.text} onchange={(e) => patchItem(listId, item.id, { text: value(e) })} />
+            <Input class="w-16" aria-label="Madde no" value={item.no} onchange={(e) => patchItem(item.id, { no: value(e) })} />
+            <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Madde metni" placeholder="Kontrol maddesi" value={item.text} onchange={(e) => patchItem(item.id, { text: value(e) })} />
           {/if}
-          <div class="flex flex-col items-start gap-1.5">
-            <ToggleGroup.Root type="single" variant="outline" aria-label="Madde {item.no} cevabı" value={current.answer} onValueChange={(v) => store.apply((a) => setAnswer(a, listId, scopeId, item.id, v as Answer))}>
-              {#each CHOICES as choice (choice.value)}
-                <ToggleGroup.Item value={choice.value} class={choice.tone}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
-              {/each}
-            </ToggleGroup.Root>
-            <ChecklistItemLinks {list} {item} locationId={scopeId} />
-          </div>
-          <Textarea class="min-h-9 py-1.5" rows={1} aria-label="Açıklama" placeholder="Açıklama / tarih / sorumlu" value={current.note} onchange={(e) => store.apply((a) => setNote(a, listId, scopeId, item.id, value(e)))} />
-          <ConfirmDialog label="Maddeyi sil" title="Madde silinsin mi?" description="Bu kontrol maddesi silinecek." onconfirm={() => store.apply((a) => removeItem(a, listId, item.id))}>
+          <ConfirmDialog label="Maddeyi sil" title="Madde silinsin mi?" description="Bu kontrol maddesi ve cevapları silinecek." onconfirm={() => store.apply((a) => removeItem(a, listId, item.id))}>
             <Trash2 />
           </ConfirmDialog>
         </div>
       {/each}
     </div>
-    <p class="text-sm text-muted-foreground">"Hayır" cevaplanan her madde bir eksiktir; eksikler risk tablosunda puanlanır. U/D: uygulanamaz. Seçili cevaba tekrar basınca cevap silinir.</p>
+    <p class="text-sm text-muted-foreground">Bu bir şablondur; cevaplar Mekânlar bölümünde her mekân için ayrı girilir. "Hayır" cevaplanan her madde bir eksiktir.</p>
     <div class="flex flex-wrap gap-2">
-      <Button onclick={() => addNewItem(listId)}><Plus />Madde ekle</Button>
+      <Button onclick={addNewItem}><Plus />Madde ekle</Button>
       <Button variant="outline" onclick={() => (bankOpen = true)}>Bankadan soru ekle</Button>
     </div>
     <QuestionBankDialog bind:open={bankOpen} {listId} />
   {:else}
-    <p class="py-8 text-center text-sm text-muted-foreground">Kenar çubuğundan bir liste seçin ya da "Bankadan / hazır formdan ekle" ile liste ekleyin.</p>
+    <p class="py-8 text-center text-sm text-muted-foreground">Liste bulunamadı. Kütüphane sayfasından bir liste seçin.</p>
   {/if}
 </section>

@@ -11,13 +11,13 @@ import { conflictingCodes, read as readExcel } from "$lib/domain/excel-import";
 import { readiness, type Readiness } from "$lib/domain/readiness";
 import { transferMissing } from "$lib/domain/transfer";
 import { downloadBlob } from "$lib/export/download";
+import { nav } from "$lib/nav.svelte";
 // Heavy export libraries (xlsx, docx, typst.ts loader) load on first use, not on page load.
 const pdfModule = () => import("$lib/export/pdf");
 const excelModule = () => import("$lib/export/excel");
 const wordModule = () => import("$lib/export/word");
 import starter from "$lib/data/starter.json";
 
-export type Tab = "overview" | "school" | "checklists" | "risk" | "readiness";
 export type ExportKind =
   | "json"
   | "pdf-full"
@@ -66,13 +66,6 @@ class Store {
   busy = $state("");
   /** Gaps found before a full PDF; non-null opens the readiness dialog. */
   readinessGaps = $state.raw<Readiness | null>(null);
-  tab = $state<Tab>("overview");
-  locationId = $state<string | null>(null);
-  checklistId = $state<string | null>(null);
-  /** Set by openRow; LocationEditor opens that row's sheet, then clears it. */
-  openRowRequest = $state<{ locationId: string; rowId: string } | null>(null);
-  /** Incremented to ask the school page to focus its first empty field; the page resets it to 0. */
-  schoolRequest = $state(0);
   /** Incremented whenever a whole assessment is loaded (not on edits). */
   loadCount = $state(0);
   conflict = $state.raw<{ codes: string[]; resolve: (choice: ConflictChoice) => void } | null>(
@@ -155,14 +148,6 @@ class Store {
     this.#undoToast = null;
   }
 
-  get location() {
-    return this.assessment.locations.find((l) => l.id === this.locationId) ?? null;
-  }
-
-  get checklist() {
-    return this.assessment.checklists.find((c) => c.id === this.checklistId) ?? null;
-  }
-
   #readStorage(): Assessment | null {
     try {
       const text = localStorage.getItem(STORAGE_KEY);
@@ -192,13 +177,18 @@ class Store {
     }
   }
 
-  /** Keep selections pointing at existing items. */
+  /** Keep the navigation place pointing at existing items. */
   #settle() {
     const { locations, checklists } = this.assessment;
-    if (!locations.some((l) => l.id === this.locationId))
-      this.locationId = locations[0]?.id ?? null;
-    if (!checklists.some((c) => c.id === this.checklistId))
-      this.checklistId = checklists[0]?.id ?? null;
+    const place = nav.place;
+    const hasLocation = locations.some((l) => l.id === place.locationId);
+    const hasList = checklists.some((c) => c.id === place.listId);
+    if ((place.locationId && !hasLocation) || (place.listId && !hasList))
+      nav.place = {
+        ...place,
+        locationId: hasLocation ? place.locationId : null,
+        listId: hasList && (!place.locationId || hasLocation) ? place.listId : null,
+      };
   }
 
   fail(errors: string[]) {
@@ -303,14 +293,23 @@ class Store {
       );
       return;
     }
+    const grown = result.assessment.locations.filter(
+      (l, i) => l.rows.length > (this.assessment.locations[i]?.rows.length ?? 0),
+    );
+    const open = () =>
+      grown.length === 1
+        ? nav.openLocation(grown[0].id, "risk")
+        : nav.openRegister({ status: "open" });
     this.#applyUndoable(
       () => result.assessment,
-      `${result.created} risk satırı oluşturuldu; puanlamak için risk tablosuna geçin.`,
+      `${result.created} risk satırı oluşturuldu; puanlamak için risk kaydına geçin.`,
       {
+        // The jump is the toast's main action; undo moves to the secondary button.
         notify: ((message, options) =>
           toast.success(message, {
             ...options,
-            cancel: { label: "Risk tablosu", onClick: () => (this.tab = "risk") },
+            action: { label: "Risk kaydını aç", onClick: open },
+            cancel: options?.action,
           })) as typeof toast.success,
       },
     );
@@ -328,31 +327,27 @@ class Store {
     if (await this.#confirmDiscard()) this.#load(emptyAssessment(""), "Boş çalışma açıldı.");
   }
 
+  // Thin wrappers over nav for callers that still go through the store.
   openSchool() {
-    this.tab = "school";
-    this.schoolRequest += 1;
+    nav.openReport(true);
   }
 
   selectLocation(id: string) {
-    this.locationId = id;
-    this.tab = "risk";
+    nav.openLocation(id, "risk");
   }
 
   openRow(locationId: string, rowId: string) {
-    this.selectLocation(locationId);
-    this.openRowRequest = { locationId, rowId };
+    nav.openRow(locationId, rowId);
   }
 
   selectChecklist(id: string) {
-    this.checklistId = id;
-    this.tab = "checklists";
+    nav.openLibrary(id);
   }
 
   addBlankChecklist() {
     const before = this.assessment.checklists.length;
     if (!this.apply((a) => addChecklistFromTemplate(a))) return;
-    this.checklistId = this.assessment.checklists[before]?.id ?? null;
-    this.tab = "checklists";
+    nav.openLibrary(this.assessment.checklists[before]?.id ?? null);
   }
 
   addFromLibrary(locations: LocationTemplate[], checklists: ChecklistTemplate[]) {
@@ -372,8 +367,8 @@ class Store {
     toast.info(
       `Eklendi: ${locations.length} mekân, ${checklists.length} kontrol listesi. İstemediğinizi ilgili ekrandan silebilirsiniz.`,
     );
-    if (locations.length) this.selectLocation(this.assessment.locations[beforeLocations].id);
-    else this.selectChecklist(this.assessment.checklists[beforeLists].id);
+    if (locations.length) nav.openLocation(this.assessment.locations[beforeLocations].id);
+    else nav.openLibrary(this.assessment.checklists[beforeLists]?.id ?? null);
   }
 
   async openFile(file: File) {

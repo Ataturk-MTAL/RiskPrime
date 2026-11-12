@@ -7,6 +7,7 @@
   import { defaultLocationId, hasChecklistRisk, riskRowFromChecklistItem } from '$lib/domain/checklist-risk';
   import type { Checklist } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
+  import { nav } from '$lib/nav.svelte';
 
   /** locationId = the inspection's scope (null = okul geneli); the new row goes to the chosen location. */
   let { list, itemId, locationId: scope }: { list: Checklist; itemId: string; locationId: string | null } = $props();
@@ -30,7 +31,7 @@
     }
     if (!store.apply((a) => riskRowFromChecklistItem(a, list.id, itemId, scope, target.id))) return;
     toast.success(`Risk satırı eklendi: ${target.name}`, {
-      action: { label: 'Git', onClick: () => store.selectLocation(target.id) },
+      action: { label: 'Git', onClick: () => nav.openLocation(target.id, 'risk') },
     });
   }
 </script>

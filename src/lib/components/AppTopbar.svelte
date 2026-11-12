@@ -10,9 +10,13 @@
   import { Separator } from '$lib/components/ui/separator';
   import * as Sidebar from '$lib/components/ui/sidebar';
   import ExportMenu from './ExportMenu.svelte';
-  import { formatHash } from '$lib/route';
+  import { nav } from '$lib/nav.svelte';
+  import { SECTION_LABELS } from '$lib/nav-items';
+  import { formatHash, HOME } from '$lib/nav-route';
   import { store } from '$lib/state.svelte';
   import { downloadBlankTemplate, downloadMebTemplate } from '$lib/templates';
+
+  let { onAbout }: { onAbout: () => void } = $props();
 
   let fileInput: HTMLInputElement;
 
@@ -27,19 +31,31 @@
     return `Son kayıt: ${isToday ? time : `${d.toLocaleDateString('tr-TR')} ${time}`}`;
   });
 
-  const SECTION_TITLES = {
-    overview: 'Genel bakış',
-    school: 'Okul bilgileri',
-    checklists: 'Kontrol listeleri',
-    risk: 'Risk tablosu',
-    readiness: 'Hazırlık ve PDF',
-  } as const;
+  interface Crumb {
+    label: string;
+    href?: string;
+  }
 
-  /** Section name plus the selected item, if the view has one. */
-  const detail = $derived.by(() => {
-    if (store.tab === 'checklists' && store.checklist) return `${store.checklist.code ? `${store.checklist.code} · ` : ''}${store.checklist.name}`;
-    if (store.tab === 'risk' && store.location) return store.location.name || 'Adsız mekân';
-    return '';
+  const templateLabel = (id: string | null) => {
+    const list = store.assessment.checklists.find((c) => c.id === id);
+    return list ? `${list.code ? `${list.code} · ` : ''}${list.name}` : '';
+  };
+
+  /** Section, then the location / view / checklist the place points at; the last crumb is the current page. */
+  const crumbs = $derived.by((): Crumb[] => {
+    const p = nav.place;
+    const root: Crumb = { label: SECTION_LABELS[p.section], href: formatHash({ ...HOME, section: p.section }) };
+    if (p.section === 'library') {
+      const list = templateLabel(p.listId);
+      return list ? [root, { label: list }] : [{ label: root.label }];
+    }
+    const loc = store.assessment.locations.find((l) => l.id === p.locationId);
+    if (p.section !== 'locations' || !loc) return [{ label: root.label }];
+    const locCrumb = { label: loc.name || 'Adsız mekân', href: formatHash({ ...p, locationView: 'inspections', listId: null }) };
+    if (p.locationView === 'risk') return [root, locCrumb, { label: 'Risk tablosu' }];
+    const list = templateLabel(p.listId);
+    if (!list) return [root, locCrumb, { label: 'Denetimler' }];
+    return [root, locCrumb, { label: 'Denetimler', href: formatHash({ ...p, listId: null }) }, { label: list }];
   });
 
   function onPick(event: Event & { currentTarget: HTMLInputElement }) {
@@ -50,21 +66,18 @@
 </script>
 
 <header class="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-  <Sidebar.Trigger />
-  <Separator orientation="vertical" class="h-4" />
+  <Sidebar.Trigger class="max-md:hidden" />
+  <Separator orientation="vertical" class="h-4 max-md:hidden" />
   <Breadcrumb.Root class="min-w-0 flex-1">
-    <Breadcrumb.List class="flex-nowrap">
-      {#if detail}
-        <Breadcrumb.Item class="max-sm:hidden">
-          <Breadcrumb.Link href={formatHash(store.tab, null)}>{SECTION_TITLES[store.tab]}</Breadcrumb.Link>
-        </Breadcrumb.Item>
-        <Breadcrumb.Separator class="max-sm:hidden" />
-        <Breadcrumb.Item class="min-w-0">
-          <Breadcrumb.Page class="block truncate">{detail}</Breadcrumb.Page>
-        </Breadcrumb.Item>
-      {:else}
-        <Breadcrumb.Item><Breadcrumb.Page>{SECTION_TITLES[store.tab]}</Breadcrumb.Page></Breadcrumb.Item>
-      {/if}
+    <Breadcrumb.List class="flex-nowrap overflow-hidden">
+      {#each crumbs as crumb, i (i)}
+        {#if i < crumbs.length - 1}
+          <Breadcrumb.Item class="min-w-0 max-sm:hidden"><Breadcrumb.Link href={crumb.href} class="block max-w-48 truncate whitespace-nowrap" title={crumb.label}>{crumb.label}</Breadcrumb.Link></Breadcrumb.Item>
+          <Breadcrumb.Separator class="max-sm:hidden" />
+        {:else}
+          <Breadcrumb.Item class="min-w-0"><Breadcrumb.Page class="block truncate whitespace-nowrap" title={crumb.label}>{crumb.label}</Breadcrumb.Page></Breadcrumb.Item>
+        {/if}
+      {/each}
     </Breadcrumb.List>
   </Breadcrumb.Root>
 
@@ -101,6 +114,9 @@
           <span class="flex items-center gap-2"><FileSpreadsheet class="size-4" />Boş şablon</span>
           <span class="text-xs text-muted-foreground">Okul bilgileri, kontrol listesi ve risk satırları sayfaları</span>
         </DropdownMenu.Item>
+        <DropdownMenu.Separator class="md:hidden" />
+        <DropdownMenu.Item class="md:hidden" onSelect={() => nav.openLibrary()}>Kütüphane</DropdownMenu.Item>
+        <DropdownMenu.Item class="md:hidden" onSelect={() => afterMenuCloses(onAbout)}>Hakkında</DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
     <input bind:this={fileInput} type="file" accept=".json,application/json,.xlsx,.xls" hidden onchange={onPick} aria-label="Dosya seç" />

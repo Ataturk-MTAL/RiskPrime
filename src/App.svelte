@@ -1,45 +1,44 @@
 <script lang="ts">
   import * as Sidebar from '$lib/components/ui/sidebar';
   import { Toaster } from '$lib/components/ui/sonner';
+  import AboutDialog from '$lib/components/AboutDialog.svelte';
   import AppSidebar from '$lib/components/AppSidebar.svelte';
   import AppTopbar from '$lib/components/AppTopbar.svelte';
-  import ChecklistEditor from '$lib/components/ChecklistEditor.svelte';
+  import BottomNav from '$lib/components/BottomNav.svelte';
   import ConflictDialog from '$lib/components/ConflictDialog.svelte';
+  import DeficienciesPage from '$lib/components/DeficienciesPage.svelte';
   import DiscardDialog from '$lib/components/DiscardDialog.svelte';
-  import LocationEditor from '$lib/components/LocationEditor.svelte';
+  import LibraryPage from '$lib/components/LibraryPage.svelte';
+  import LocationsPage from '$lib/components/LocationsPage.svelte';
   import Notices from '$lib/components/Notices.svelte';
   import OverviewPage from '$lib/components/OverviewPage.svelte';
   import ReadinessDialog from '$lib/components/ReadinessDialog.svelte';
-  import ReadinessPage from '$lib/components/ReadinessPage.svelte';
-  import SchoolCard from '$lib/components/SchoolCard.svelte';
+  import ReportPage from '$lib/components/ReportPage.svelte';
+  import RiskRegisterPage from '$lib/components/RiskRegisterPage.svelte';
   import { dragHasFiles, isOpenableFile, UNSUPPORTED_DROP_MESSAGE } from '$lib/drop';
-  import { formatHash, parseHash } from '$lib/route';
+  import { nav } from '$lib/nav.svelte';
+  import { formatHash, parseHash } from '$lib/nav-route';
   import { store } from '$lib/state.svelte';
 
-  const PAGE_TITLES = {
-    overview: 'Genel bakış',
-    school: 'Okul bilgileri',
-    checklists: 'Kontrol listeleri',
-    risk: 'Risk tablosu',
-    readiness: 'Hazırlık ve PDF',
-  } as const;
+  let aboutOpen = $state(false);
 
-  const currentHash = () => formatHash(store.tab, store.tab === 'checklists' ? store.checklistId : store.tab === 'risk' ? store.locationId : null);
-
-  /** Hash -> view. Ids that no longer exist are ignored; the URL is then rewritten to what is shown. */
+  /** Hash -> place. Ids that no longer exist are dropped; the URL is then rewritten to what is shown. */
   function applyHash() {
-    const { tab, id } = parseHash(location.hash);
-    if (tab === 'checklists' && id && store.assessment.checklists.some((c) => c.id === id)) store.checklistId = id;
-    if (tab === 'risk' && id && store.assessment.locations.some((l) => l.id === id)) store.locationId = id;
-    store.tab = tab;
-    history.replaceState(null, '', currentHash());
+    const place = parseHash(location.hash);
+    const { locations, checklists } = store.assessment;
+    nav.place = {
+      ...place,
+      locationId: locations.some((l) => l.id === place.locationId) ? place.locationId : null,
+      listId: checklists.some((c) => c.id === place.listId) ? place.listId : null,
+    };
+    history.replaceState(null, '', formatHash(nav.place));
   }
 
   applyHash();
 
-  // View -> hash: every view change is a history entry so the back button works.
+  // Place -> hash: every change is a history entry so the back button works.
   $effect(() => {
-    const next = currentHash();
+    const next = formatHash(nav.place);
     if (next !== location.hash) history.pushState(null, '', next);
   });
 
@@ -73,27 +72,30 @@
 <svelte:window ondragover={onDragOver} ondrop={onDrop} onbeforeunload={onBeforeUnload} onhashchange={applyHash} onpopstate={applyHash} />
 
 <Sidebar.Provider>
-  <AppSidebar />
+  <AppSidebar onAbout={() => (aboutOpen = true)} />
   <Sidebar.Inset class="min-w-0">
-    <AppTopbar />
-    <div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col gap-4 p-4">
+    <AppTopbar onAbout={() => (aboutOpen = true)} />
+    <div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col gap-4 p-4 max-md:pb-24">
       <Notices />
-      {#if store.tab !== 'overview'}<h1 class="text-2xl font-semibold">{PAGE_TITLES[store.tab]}</h1>{/if}
-      {#if store.tab === 'overview'}
+      {#if nav.section === 'overview'}
         <OverviewPage />
-      {:else if store.tab === 'school'}
-        <SchoolCard />
-      {:else if store.tab === 'checklists'}
-        <ChecklistEditor />
-      {:else if store.tab === 'risk'}
-        <LocationEditor />
+      {:else if nav.section === 'locations'}
+        <LocationsPage />
+      {:else if nav.section === 'deficiencies'}
+        <DeficienciesPage />
+      {:else if nav.section === 'register'}
+        <RiskRegisterPage />
+      {:else if nav.section === 'report'}
+        <ReportPage />
       {:else}
-        <ReadinessPage />
+        <LibraryPage />
       {/if}
     </div>
   </Sidebar.Inset>
+  <BottomNav />
 </Sidebar.Provider>
 
+<AboutDialog bind:open={aboutOpen} />
 <ReadinessDialog />
 <ConflictDialog />
 <DiscardDialog />

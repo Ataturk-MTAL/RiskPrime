@@ -144,4 +144,24 @@ describe("progress", () => {
       firstIncompleteId: null,
     });
   });
+
+  test("counts open serious risks, the transfer step and school-wide inspections", () => {
+    const p = progress(sample(), today);
+    expect(p.risk.openSerious).toBe(1);
+    expect(p.transfer).toEqual({ total: 1, transferred: 0, untransferred: 1, state: "todo" });
+    expect(p.schoolWide).toEqual({ count: 2, answered: 3, total: 4, missing: 1 });
+  });
+
+  test("a done risk row is not an open serious risk", () => {
+    const a = sample();
+    const locations = a.locations.map((l, i) =>
+      i === 0 ? { ...l, rows: l.rows.map((r) => ({ ...r, status: "done" as const })) } : l,
+    );
+    expect(progress({ ...a, locations }, today).risk.openSerious).toBe(0);
+  });
+
+  test("the signing review is blocked until an earlier step has begun", () => {
+    expect(progress(emptyAssessment(""), today).readiness.state).toBe("blocked");
+    expect(progress(sample(), today).readiness.state).toBe("doing");
+  });
 });

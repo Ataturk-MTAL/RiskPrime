@@ -24,11 +24,10 @@
     <AlertDialog.Footer>
       <AlertDialog.Cancel>Vazgeç</AlertDialog.Cancel>
       <AlertDialog.Action
-        variant="outline"
         onclick={() => {
           close();
           void store.exportAs('pdf-full');
-        }}>Yine de PDF indir</AlertDialog.Action>
+        }}>Yine de PDF oluştur</AlertDialog.Action>
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>

@@ -1,6 +1,14 @@
 // Links between checklist items and risk rows. Pure helpers; every change returns a new Assessment.
 import { answerOf, ensureInspections, findInspection, liveLocationIds } from "./inspections";
-import type { Answer, Assessment, Checklist, ChecklistItem, RiskRow, RiskSource } from "./types";
+import type {
+  Answer,
+  Assessment,
+  Checklist,
+  ChecklistItem,
+  Inspection,
+  RiskRow,
+  RiskSource,
+} from "./types";
 
 export interface ItemRow {
   locationId: string;
@@ -102,17 +110,45 @@ export function setChecklistLocations(
   listId: string,
   locationIds: string[],
 ): Assessment {
-  if (!a.checklists.some((c) => c.id === listId))
-    throw new Error(`Kontrol listesi bulunamadı: ${listId}`);
-  return ensureInspections({
+  const list = a.checklists.find((c) => c.id === listId);
+  if (!list) throw new Error(`Kontrol listesi bulunamadı: ${listId}`);
+  const ids = liveLocationIds(a, { ...list, locationIds });
+  const next = ensureInspections({
     ...a,
     checklists: a.checklists.map((c) => {
       if (c.id !== listId) return c;
       const { locationIds: _old, ...rest } = c;
-      const ids = liveLocationIds(a, { ...c, locationIds });
       return ids.length ? { ...rest, locationIds: ids } : rest;
     }),
   });
+  // A general list getting its first location would drop the school-wide inspection: keep its answers.
+  const schoolWide = findInspection(a, listId, null);
+  const wasGeneral = liveLocationIds(a, list).length === 0;
+  if (!wasGeneral || !ids.length || !schoolWide?.answers.length) return next;
+  return carrySchoolWide(next, listId, schoolWide.answers, ids[0]);
+}
+
+/** Moves school-wide answers and row links of a list to one location's (empty) inspection. */
+function carrySchoolWide(
+  a: Assessment,
+  listId: string,
+  answers: Inspection["answers"],
+  locationId: string,
+): Assessment {
+  const moveSource = (s: RiskSource): RiskSource =>
+    s.listId === listId && s.locationId === null ? { ...s, locationId } : s;
+  return {
+    ...a,
+    inspections: a.inspections.map((i) =>
+      i.checklistId === listId && i.locationId === locationId && !i.answers.length
+        ? { ...i, answers }
+        : i,
+    ),
+    locations: a.locations.map((l) => ({
+      ...l,
+      rows: l.rows.map((r) => (r.sources ? { ...r, sources: r.sources.map(moveSource) } : r)),
+    })),
+  };
 }
 
 /** Row with the given sources; an empty list drops the key. Duplicates are removed, order kept. */

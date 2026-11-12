@@ -1,12 +1,14 @@
 // Counts behind the "Genel bakış" page: one summary per MEB workflow step.
 import { isOverdue } from "./assessment";
 import { summary } from "./checklist";
+import { inspectionSummary } from "./inspections";
 import { LEVELS, riskLevel, type LevelKey } from "./matrix";
 import { readiness } from "./readiness";
 import { countUntransferred } from "./transfer";
 import type { Assessment } from "./types";
 
-export type StepState = "done" | "doing" | "todo";
+/** "blocked" = cannot start yet (the signing review while nothing earlier has begun). */
+export type StepState = "done" | "doing" | "todo" | "blocked";
 
 const META_TOTAL = 4;
 const SERIOUS: readonly LevelKey[] = ["high", "intolerable"];
@@ -47,6 +49,30 @@ export function progress(a: Assessment, today: Date) {
     state: stateOf(answered, total),
   };
 
+  // The eksik (Hayır) answers waiting to become risk rows.
+  const untransferred = countUntransferred(a);
+  const transferred = Math.max(0, checklists.missing - untransferred);
+  const transfer = {
+    total: checklists.missing,
+    transferred,
+    untransferred,
+    state: (untransferred > 0
+      ? stateOf(transferred, checklists.missing)
+      : checklists.state === "todo"
+        ? "todo"
+        : "done") as StepState,
+  };
+  // School-wide inspections (lists without locations) are answered on the report page.
+  const wide = a.inspections
+    .filter((i) => i.locationId === null)
+    .map((i) => inspectionSummary(a, i));
+  const schoolWide = {
+    count: wide.length,
+    answered: wide.reduce((n, s) => n + s.answered, 0),
+    total: wide.reduce((n, s) => n + s.total, 0),
+    missing: wide.reduce((n, s) => n + s.no, 0),
+  };
+
   const levels = Object.fromEntries(Object.keys(LEVELS).map((k) => [k, 0])) as Record<
     LevelKey,
     number
@@ -57,12 +83,15 @@ export function progress(a: Assessment, today: Date) {
     if (level) levels[level.key] += 1;
   }
   const scored = Object.values(levels).reduce((n, c) => n + c, 0);
-  const untransferred = countUntransferred(a);
   const risk = {
     untransferred,
     scored,
     total: rows.length,
     serious: SERIOUS.reduce((n, k) => n + levels[k], 0),
+    openSerious: rows.filter((r) => {
+      const level = riskLevel(r.likelihood, r.severity);
+      return r.status === "open" && level !== null && SERIOUS.includes(level.key);
+    }).length,
     overdue: rows.filter((r) => isOverdue(r, today)).length,
     firstUnscoredLocationId:
       a.locations.find((l) => l.rows.some((r) => riskLevel(r.likelihood, r.severity) === null))
@@ -93,8 +122,8 @@ export function progress(a: Assessment, today: Date) {
   const readinessSummary = {
     hasGaps: gaps.hasGaps,
     gapCount,
-    state: (!gaps.hasGaps ? "done" : started ? "doing" : "todo") as StepState,
+    state: (!gaps.hasGaps ? "done" : started ? "doing" : "blocked") as StepState,
   };
 
-  return { school, checklists, risk, readiness: readinessSummary, levels };
+  return { school, checklists, schoolWide, transfer, risk, readiness: readinessSummary, levels };
 }

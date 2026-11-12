@@ -95,7 +95,7 @@
 <Dialog.Root bind:open>
   <Dialog.Content class="flex max-h-[90vh] flex-col sm:max-w-4xl">
     <Dialog.Header>
-      <Dialog.Title>Hazır formdan ekle</Dialog.Title>
+      <Dialog.Title>Kütüphaneden ekle</Dialog.Title>
       <Dialog.Description class="sr-only">Hazır mekân ve kontrol listelerini seçip ekleyin.</Dialog.Description>
     </Dialog.Header>
     <Input type="search" bind:value={query} placeholder="Ara: ELE9, pano, KL-26…" aria-label="Kütüphanede ara" />

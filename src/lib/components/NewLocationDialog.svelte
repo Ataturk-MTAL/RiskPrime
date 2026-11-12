@@ -6,6 +6,7 @@
   import SelectField from './SelectField.svelte';
   import { addLocation, labels, LOCATION_TYPES, LOCATION_TYPE_LABELS, newId } from '$lib/domain/assessment';
   import type { LocationType } from '$lib/domain/types';
+  import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
   let { open = $bindable(false) }: { open?: boolean } = $props();
@@ -20,13 +21,13 @@
     event.preventDefault();
     const id = newId('a');
     if (!store.apply((a) => addLocation(a, { id, name, type, building, area }))) return;
-    store.selectLocation(id);
+    nav.openLocation(id);
     name = building = area = '';
     open = false;
   }
 </script>
 
-<!-- Also feed the building/area fields of LocationEditor. -->
+<!-- Also feed the building/area fields of the location page. -->
 <datalist id="building-list">{#each labels(store.assessment, 'building') as v (v)}<option value={v}></option>{/each}</datalist>
 <datalist id="area-list">{#each labels(store.assessment, 'area') as v (v)}<option value={v}></option>{/each}</datalist>
 

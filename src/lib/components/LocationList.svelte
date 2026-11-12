@@ -1,0 +1,81 @@
+<script lang="ts">
+  import CircleAlert from '@lucide/svelte/icons/circle-alert';
+  import Clock from '@lucide/svelte/icons/clock';
+  import Plus from '@lucide/svelte/icons/plus';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import NewLocationDialog from './NewLocationDialog.svelte';
+  import { grouped, isOverdue, LOCATION_TYPE_LABELS } from '$lib/domain/assessment';
+  import { inspectionsForLocation, inspectionSummary } from '$lib/domain/inspections';
+  import { riskLevel } from '$lib/domain/matrix';
+  import type { Location } from '$lib/domain/types';
+  import { nav } from '$lib/nav.svelte';
+  import { store } from '$lib/state.svelte';
+
+  const SERIOUS = ['high', 'intolerable'];
+  const today = new Date();
+
+  let query = $state('');
+  let dialogOpen = $state(false);
+
+  const groups = $derived(
+    grouped(store.assessment)
+      .map((g) => ({ ...g, locations: g.locations.filter((l) => (l.name || 'Adsız mekân').toLocaleLowerCase('tr').includes(query.trim().toLocaleLowerCase('tr'))) }))
+      .filter((g) => g.locations.length),
+  );
+
+  function statsOf(l: Location) {
+    const sums = inspectionsForLocation(store.assessment, l.id).map((i) => inspectionSummary(store.assessment, i));
+    const levels = l.rows.map((r) => riskLevel(r.likelihood, r.severity));
+    return {
+      inspections: sums.length,
+      answered: sums.reduce((n, s) => n + s.answered, 0),
+      total: sums.reduce((n, s) => n + s.total, 0),
+      no: sums.reduce((n, s) => n + s.no, 0),
+      scored: levels.filter(Boolean).length,
+      serious: levels.filter((v) => v && SERIOUS.includes(v.key)).length,
+      overdue: l.rows.filter((r) => isOverdue(r, today)).length,
+    };
+  }
+</script>
+
+<div class="space-y-4">
+  <div class="flex flex-wrap items-center gap-2">
+    <h1 class="mr-auto text-2xl font-semibold">Mekânlar</h1>
+    <Button onclick={() => (dialogOpen = true)}><Plus />Mekân ekle</Button>
+  </div>
+  <NewLocationDialog bind:open={dialogOpen} />
+
+  {#if store.assessment.locations.length === 0}
+    <p class="py-8 text-center text-sm text-muted-foreground">Henüz mekân yok. "Mekân ekle" ile başlayın.</p>
+  {:else}
+    <Input type="search" class="max-w-sm" aria-label="Mekânlarda ara" placeholder="Mekân adına göre ara" bind:value={query} />
+    {#each groups as group (group.title)}
+      <section class="space-y-2">
+        {#if group.title}<h2 class="text-sm font-semibold text-muted-foreground">{group.title}</h2>{/if}
+        <ul class="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+          {#each group.locations as l (l.id)}
+            {@const s = statsOf(l)}
+            <li>
+              <button type="button" class="flex min-h-11 w-full flex-col items-start gap-1 rounded-xl border bg-card p-3 text-left hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none" onclick={() => nav.openLocation(l.id)}>
+                <span class="font-semibold">{l.name || 'Adsız mekân'}</span>
+                <span class="text-xs text-muted-foreground">{LOCATION_TYPE_LABELS[l.type]}{l.building ? ` · ${l.building}` : ''}</span>
+                <span class="text-sm">Denetim: {s.answered}/{s.total} cevaplı{#if s.no} · <b class="text-red-600">{s.no} eksik</b>{/if}</span>
+                <span class="text-sm">Risk satırı: {s.scored}/{l.rows.length} puanlı</span>
+                {#if s.serious || s.overdue}
+                  <span class="flex flex-wrap gap-1">
+                    {#if s.serious}<Badge variant="destructive"><CircleAlert />{s.serious} yüksek/tolere edilemez</Badge>{/if}
+                    {#if s.overdue}<Badge variant="outline"><Clock />{s.overdue} süresi geçmiş</Badge>{/if}
+                  </span>
+                {/if}
+              </button>
+            </li>
+          {/each}
+        </ul>
+      </section>
+    {:else}
+      <p class="py-6 text-center text-sm text-muted-foreground">Eşleşen mekân yok.</p>
+    {/each}
+  {/if}
+</div>
