@@ -138,7 +138,7 @@
       <dl class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 text-sm">
         <dt class="text-muted-foreground">Durum</dt>
         <dd><Badge variant={locked ? 'default' : 'secondary'}>{locked ? `İmzalandı${a.meta.signedAt ? ` · ${day(a.meta.signedAt)}` : ''}` : 'Taslak'}</Badge></dd>
-        <dt class="text-muted-foreground">Soru bankası sürümü</dt>
+        <dt class="text-muted-foreground">Kontrol listeleri sürümü</dt>
         <dd>{a.meta.bankVersion}</dd>
         <dt class="text-muted-foreground">Uygulama sürümü</dt>
         <dd>{a.meta.appVersion || APP_VERSION}</dd>

@@ -41,7 +41,7 @@
       <Button onclick={addBlank}><Plus />Boş liste ekle</Button>
       <Button variant="outline" onclick={() => (libraryOpen = true)}>Hazır listelerden ekle</Button>
       {#if changeCount > 0}
-        <Button variant="outline" onclick={() => store.openBankOffer()}>Soru bankası güncellemeleri ({changeCount})</Button>
+        <Button variant="outline" onclick={() => store.openBankOffer()}>Kontrol listeleri güncellemeleri ({changeCount})</Button>
       {/if}
     </div>
     {#if lists.length}

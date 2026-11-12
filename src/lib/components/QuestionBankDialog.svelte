@@ -59,7 +59,7 @@
   function add() {
     const keys = [...selected];
     if (!store.apply((a) => addBankQuestions(a, listId, keys))) return;
-    toast.success(`${keys.length} soru eklendi`);
+    toast.success(`${keys.length} madde eklendi`);
     open = false;
   }
 </script>
@@ -67,11 +67,11 @@
 <Dialog.Root bind:open>
   <Dialog.Content class="flex max-h-[90vh] flex-col sm:max-w-3xl">
     <Dialog.Header>
-      <Dialog.Title>Soru bankasından ekle</Dialog.Title>
-      <Dialog.Description class="sr-only">MEB maddelerini ve RiskPrime ek sorularını arayıp listeye ekleyin.</Dialog.Description>
+      <Dialog.Title>Kontrol listelerinden madde ekle</Dialog.Title>
+      <Dialog.Description class="sr-only">MEB ve RiskPrime kontrol listesi maddelerini arayıp listeye ekleyin.</Dialog.Description>
     </Dialog.Header>
     <div class="grid gap-2 sm:grid-cols-[1fr_11rem_14rem]">
-      <Input type="search" bind:value={query} placeholder="Ara: lehim, KL-26.06, LOTO…" aria-label="Soru bankasında ara" />
+      <Input type="search" bind:value={query} placeholder="Ara: lehim, KL-26.06, LOTO…" aria-label="Kontrol listesi maddelerinde ara" />
       <SelectField options={SOURCE_OPTIONS} value={source} onValueChange={(v) => (source = v)} label="Kaynak" />
       <SelectField options={TAG_OPTIONS} value={tag} onValueChange={(v) => (tag = v)} label="Mekân türü" />
     </div>
@@ -87,7 +87,7 @@
           </span>
         </label>
       {:else}
-        <p class="py-4 text-sm text-muted-foreground" role="status"><b class="block text-foreground">Sonuç yok</b>Aramaya uyan soru bulunamadı.</p>
+        <p class="py-4 text-sm text-muted-foreground" role="status"><b class="block text-foreground">Sonuç yok</b>Aramaya uyan madde bulunamadı.</p>
       {/each}
       {#if results.length > shown.length}
         <p class="py-2 text-xs text-muted-foreground" role="status">{results.length} sonuçtan ilk {MAX_RESULTS} tanesi gösteriliyor; aramayı daraltın.</p>

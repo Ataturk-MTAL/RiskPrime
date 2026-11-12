@@ -24,7 +24,7 @@
   const list = $derived(store.assessment.checklists.find((l) => l.id === listId));
   const outdated = $derived(new Set(bankChanges(store.assessment).updated.filter((u) => u.listId === listId).map((u) => u.itemId)));
   const takeBankText = (itemId: string) =>
-    store.applyWithUndo((a) => applyBankChanges(a, { itemIds: [itemId], addedKeys: [] }), 'Soru metni bankadaki gibi güncellendi.');
+    store.applyWithUndo((a) => applyBankChanges(a, { itemIds: [itemId], addedKeys: [] }), 'Madde metni güncel kontrol listesindeki gibi değiştirildi.');
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
 
   const patchItem = (itemId: string, patch: Partial<Pick<ChecklistItem, 'no' | 'text'>>) =>
@@ -88,7 +88,7 @@
           </ConfirmDialog>
           {#if outdated.has(item.id)}
             <div class="col-start-2 flex flex-wrap items-center gap-2">
-              <Badge variant="secondary">Bankada güncellendi</Badge>
+              <Badge variant="secondary">Güncel metin var</Badge>
               <Button variant="link" size="sm" class="h-auto p-0" onclick={() => takeBankText(item.id)}>Yeni metni al</Button>
             </div>
           {/if}
@@ -98,7 +98,7 @@
     <p class="text-sm text-muted-foreground">Bu bir şablondur; cevaplar Mekânlar bölümünde her mekân için ayrı girilir. "Hayır" cevaplanan her madde bir eksiktir.</p>
     <div class="flex flex-wrap gap-2">
       <Button onclick={addNewItem}><Plus />Madde ekle</Button>
-      <Button variant="outline" onclick={() => (bankOpen = true)}>Bankadan soru ekle</Button>
+      <Button variant="outline" onclick={() => (bankOpen = true)}>Kontrol listelerinden madde ekle</Button>
     </div>
     <QuestionBankDialog bind:open={bankOpen} {listId} />
   {:else}

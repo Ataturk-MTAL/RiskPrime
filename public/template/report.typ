@@ -52,7 +52,7 @@
       [Risk giderilmeden iş başlatılmaz. Önce enerjiyi kes, sonra çalış.],
       [Sayfa #counter(page).display("1 / 1", both: true)])
     if V.at("snapshot", default: none) != none [
-      Soru bankası sürümü: #V.snapshot.bankVersion · Revizyon #V.snapshot.revision
+      Kontrol listeleri sürümü: #V.snapshot.bankVersion · Revizyon #V.snapshot.revision
     ]
   },
 )

@@ -50,16 +50,16 @@
 <Dialog.Root open={offer !== null} onOpenChange={(open) => !open && store.dismissBankOffer()}>
   <Dialog.Content class="flex max-h-[90vh] flex-col sm:max-w-3xl">
     <Dialog.Header>
-      <Dialog.Title>Soru bankasında güncellemeler var</Dialog.Title>
+      <Dialog.Title>Kontrol listelerinde güncellemeler var</Dialog.Title>
       <Dialog.Description>
-        Kontrol listeleriniz soru bankasının {BANK_VERSION} sürümüne göre değişti veya yeni soru içeriyor. Uygulamak istediklerinizi seçin; cevaplarınız korunur.
+        Kontrol listelerinin {BANK_VERSION} sürümünde metni değişen veya yeni eklenen maddeler var. Uygulamak istediklerinizi seçin; cevaplarınız korunur.
       </Dialog.Description>
     </Dialog.Header>
     {#if offer}
       <div class="min-h-0 flex-1 space-y-4 overflow-y-auto">
         {#if offer.updated.length}
           <section class="space-y-1">
-            {@render groupHead('Metni değişen sorular', offer.updated.map((u) => u.itemId))}
+            {@render groupHead('Metni değişen maddeler', offer.updated.map((u) => u.itemId))}
             {#each offer.updated as u (u.itemId)}
               <label class="flex cursor-pointer items-start gap-2 rounded-md p-1.5 hover:bg-muted">
                 <Checkbox class="mt-0.5" checked={picked.has(u.itemId)} onCheckedChange={(v) => toggle(u.itemId, v === true)} />
@@ -74,7 +74,7 @@
         {/if}
         {#if offer.added.length}
           <section class="space-y-1">
-            {@render groupHead('Yeni eklenen sorular', offer.added.map(addedId))}
+            {@render groupHead('Yeni eklenen maddeler', offer.added.map(addedId))}
             {#each offer.added as x (addedId(x))}
               <label class="flex cursor-pointer items-start gap-2 rounded-md p-1.5 hover:bg-muted">
                 <Checkbox class="mt-0.5" checked={picked.has(addedId(x))} onCheckedChange={(v) => toggle(addedId(x), v === true)} />

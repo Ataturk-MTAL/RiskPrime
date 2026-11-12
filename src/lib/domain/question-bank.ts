@@ -46,7 +46,7 @@ export function addBankQuestions(
   const wanted = [...new Set(keys)].filter((k) => !have.has(k));
   const questions = wanted.map((k) => {
     const q = bank.find((b) => b.key === k);
-    if (!q) throw new Error(`Soru bankasında bulunamadı: ${k}`);
+    if (!q) throw new Error(`Kontrol listesi maddesi bulunamadı: ${k}`);
     return q;
   });
   const items = questions.reduce(

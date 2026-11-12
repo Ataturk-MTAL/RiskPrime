@@ -133,7 +133,9 @@ function main() {
   const parsed = parseSources(readSources());
   const problems = validate(parsed, fs.readFileSync(CHANGELOG, "utf8"));
   if (problems.length) {
-    console.error(`Soru bankası geçersiz:\n${problems.map((p) => `  - ${p}`).join("\n")}`);
+    console.error(
+      `Kontrol listeleri kaynağı geçersiz:\n${problems.map((p) => `  - ${p}`).join("\n")}`,
+    );
     process.exit(1);
   }
   const bank = buildBank(parsed);

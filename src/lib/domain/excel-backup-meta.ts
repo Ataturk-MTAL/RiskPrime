@@ -13,7 +13,7 @@ const ROWS: readonly (readonly [keyof AssessmentMeta, string])[] = [
   ["createdAt", "Oluşturulma"],
   ["updatedAt", "Son değişiklik"],
   ["appVersion", "Uygulama sürümü"],
-  ["bankVersion", "Soru bankası sürümü"],
+  ["bankVersion", "Kontrol listeleri sürümü"],
   ["signedAt", "İmza zamanı"],
   ["contentHash", "İçerik özeti"],
   ["previousHash", "Önceki özet"],
@@ -32,9 +32,12 @@ export function readMeta(aoa: unknown[][], base: AssessmentMeta): AssessmentMeta
     createdAt: text("Oluşturulma") || base.createdAt,
     updatedAt: text("Son değişiklik") || base.updatedAt,
     appVersion: text("Uygulama sürümü") || base.appVersion,
-    bankVersion: byLabel.has("Soru bankası sürümü")
-      ? text("Soru bankası sürümü")
-      : base.bankVersion,
+    // Backups before 2026-11 used the label "Soru bankası sürümü".
+    bankVersion: byLabel.has("Kontrol listeleri sürümü")
+      ? text("Kontrol listeleri sürümü")
+      : byLabel.has("Soru bankası sürümü")
+        ? text("Soru bankası sürümü")
+        : base.bankVersion,
     status: "draft",
     revision: revision ? Number(revision) : base.revision,
     ...(previousHash ? { previousHash } : {}),

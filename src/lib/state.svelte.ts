@@ -400,7 +400,7 @@ class Store {
   applyBankSelection(selection: BankSelection) {
     const ok = this.#applyUndoable(
       (a) => applyBankChanges(a, selection),
-      "Soru bankası güncellemeleri uygulandı.",
+      "Kontrol listeleri güncellemeleri uygulandı.",
     );
     if (ok) this.bankOffer = null;
   }

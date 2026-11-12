@@ -1,5 +1,5 @@
-# Soru bankası sürümü.
-# Soruları düzenlemek için: content/questions/*.toml dosyalarını değiştirin,
+# Ortak kontrol listeleri sürümü.
+# Maddeleri düzenlemek için: content/questions/*.toml dosyalarını değiştirin,
 # aşağıdaki sürümü artırın, content/CHANGELOG.md'ye aynı sürümle "## <sürüm>" başlığı ekleyin,
 # sonra `pnpm bank:build` çalıştırın.
 
