@@ -1,6 +1,11 @@
 import { describe, expect, test } from "vite-plus/test";
 import { addLocation, emptyAssessment } from "./assessment";
-import { defaultLocationId, hasChecklistRisk, riskRowFromChecklistItem } from "./checklist-risk";
+import {
+  defaultLocationId,
+  hasChecklistRisk,
+  hazardOf,
+  riskRowFromChecklistItem,
+} from "./checklist-risk";
 import { withAnswers } from "./test-helpers";
 import type { Assessment } from "./types";
 
@@ -29,6 +34,14 @@ function sample(): Assessment {
   };
   return withAnswers(base, "k1", null, { m1: "no", m2: "no" }, { m1: "Yarın kapatılacak" });
 }
+
+describe("hazardOf", () => {
+  test("uses the bank key when the item number already carries the list number", () => {
+    const list = { id: "k", code: "KL-35", name: "Atölye", source: "external" as const, items: [] };
+    const item = { id: "m", no: "35.05", text: "İlkyardım dolabı var mı?", ref: "KL-35.05" };
+    expect(hazardOf(list, item)).toBe("İlkyardım dolabı var mı? (KL-35.05)");
+  });
+});
 
 describe("riskRowFromChecklistItem", () => {
   test("adds a row with hazard, reference and note as action", () => {

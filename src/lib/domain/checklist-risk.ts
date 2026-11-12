@@ -17,7 +17,7 @@ function find(
 
 /** Item text plus its MEB reference when the list has a code; the link itself is kept in row.sources. */
 export const hazardOf = (list: Checklist, item: ChecklistItem) =>
-  list.code.trim() ? `${item.text} (${list.code.trim()}.${item.no})` : item.text;
+  list.code.trim() ? `${item.text} (${item.ref ?? `${list.code.trim()}.${item.no}`})` : item.text;
 
 /** Location whose rows receive the risk row: the inspection's own location, else the chosen one. */
 function rowLocation(a: Assessment, locationId: string | null, rowLocationId?: string): string {
