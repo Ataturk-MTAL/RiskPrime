@@ -8,6 +8,8 @@
   import ConflictDialog from '$lib/components/ConflictDialog.svelte';
   import DeficienciesPage from '$lib/components/DeficienciesPage.svelte';
   import DiscardDialog from '$lib/components/DiscardDialog.svelte';
+  import LockBanner from '$lib/components/LockBanner.svelte';
+  import PeriodsDialog from '$lib/components/PeriodsDialog.svelte';
   import LibraryPage from '$lib/components/LibraryPage.svelte';
   import LocationsPage from '$lib/components/LocationsPage.svelte';
   import Notices from '$lib/components/Notices.svelte';
@@ -21,6 +23,7 @@
   import { store } from '$lib/state.svelte';
 
   let aboutOpen = $state(false);
+  let periodsOpen = $state(false);
 
   /** Hash -> place. Ids that no longer exist are dropped; the URL is then rewritten to what is shown. */
   function applyHash() {
@@ -74,9 +77,11 @@
 <Sidebar.Provider>
   <AppSidebar onAbout={() => (aboutOpen = true)} />
   <Sidebar.Inset class="min-w-0">
-    <AppTopbar onAbout={() => (aboutOpen = true)} />
+    <AppTopbar onAbout={() => (aboutOpen = true)} onPeriods={() => (periodsOpen = true)} />
     <div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col gap-4 p-4 max-md:pb-24">
       <Notices />
+      <LockBanner />
+      {#key store.refusedEdits}
       {#if nav.section === 'overview'}
         <OverviewPage />
       {:else if nav.section === 'locations'}
@@ -86,16 +91,18 @@
       {:else if nav.section === 'register'}
         <RiskRegisterPage />
       {:else if nav.section === 'report'}
-        <ReportPage />
+        <ReportPage onPeriods={() => (periodsOpen = true)} />
       {:else}
         <LibraryPage />
       {/if}
+      {/key}
     </div>
   </Sidebar.Inset>
   <BottomNav />
 </Sidebar.Provider>
 
 <AboutDialog bind:open={aboutOpen} />
+<PeriodsDialog bind:open={periodsOpen} />
 <ReadinessDialog />
 <ConflictDialog />
 <DiscardDialog />

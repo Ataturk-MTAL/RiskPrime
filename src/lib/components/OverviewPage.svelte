@@ -13,6 +13,9 @@
   };
 
   const p = $derived(progress(store.assessment, new Date()));
+  const periodLine = $derived(
+    `Dönem ${store.assessment.period.trim() || 'girilmedi'} · Revizyon ${store.assessment.meta.revision} · ${store.assessment.meta.status === 'signed' ? 'İmzalandı' : 'Taslak'}`,
+  );
   const validUntil = $derived(store.assessment.validUntil.trim() || 'girilmedi');
 
   const tasks = $derived([
@@ -59,6 +62,7 @@
 <div class="flex flex-col gap-6 p-4">
   <div class="flex max-w-2xl flex-col gap-2">
     <h1 class="text-2xl font-semibold">Genel bakış</h1>
+    <p class="text-sm text-muted-foreground">{periodLine}</p>
     <p class="text-sm text-muted-foreground">
       Yıllık risk değerlendirmesi beş adımda hazırlanır. Sırayla ilerleyin; her adımın durumu burada görünür.
     </p>

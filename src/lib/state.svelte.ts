@@ -14,6 +14,7 @@ import { readiness, type Readiness } from "$lib/domain/readiness";
 import { transferMissing } from "$lib/domain/transfer";
 import { downloadBlob } from "$lib/export/download";
 import { nav } from "$lib/nav.svelte";
+import { Archive } from "$lib/archive.svelte";
 // Heavy export libraries (xlsx, docx, typst.ts loader) load on first use, not on page load.
 const pdfModule = () => import("$lib/export/pdf");
 const excelModule = () => import("$lib/export/excel");
@@ -78,6 +79,8 @@ class Store {
   readinessGaps = $state.raw<Readiness | null>(null);
   /** Incremented whenever a whole assessment is loaded (not on edits). */
   loadCount = $state(0);
+  /** Incremented when an edit is refused (locked period) so pages re-render the unchanged values. */
+  refusedEdits = $state(0);
   conflict = $state.raw<{ codes: string[]; resolve: (choice: ConflictChoice) => void } | null>(
     null,
   );
@@ -87,6 +90,30 @@ class Store {
   /** Another tab wrote the assessment; offered, never applied automatically. */
   changedElsewhere = $state(false);
   #undoToast: string | number | null = null;
+  #archive = new Archive((errors) => this.fail(errors));
+
+  /** Archived period snapshots, newest first. */
+  get periods() {
+    return this.#archive.periods;
+  }
+  /** False when IndexedDB is unavailable (private mode): the archive then lasts one session only. */
+  get archiveAvailable() {
+    return this.#archive.available;
+  }
+
+  refreshPeriods() {
+    return this.#archive.refresh();
+  }
+
+  async openPeriod(id: string) {
+    const loaded = await this.#archive.load(id);
+    if (!loaded) return;
+    if (await this.#confirmDiscard()) this.#load(loaded, "Dönem açıldı.");
+  }
+
+  deletePeriod(id: string) {
+    return this.#archive.remove(id, this.assessment);
+  }
 
   constructor() {
     const saved = this.#readStorage();
@@ -103,6 +130,7 @@ class Store {
       this.storageOk = false;
     }
     this.#settle();
+    void this.#archive.refresh();
     if (typeof window !== "undefined") window.addEventListener("storage", this.#onStorage);
   }
 
@@ -221,6 +249,7 @@ class Store {
     // restore = loading a document, undo or a snapshot step: not an edit, so no lock check and no touch.
     if (!restore && isLocked(this.assessment)) {
       this.fail([LOCKED_MESSAGE]);
+      this.refusedEdits += 1;
       return false;
     }
     this.dismissUndo(); // a pending undo would drop edits made after its action
@@ -236,6 +265,7 @@ class Store {
     this.errors = [];
     this.#settle();
     this.#persist();
+    void this.#archive.save(this.assessment, restore); // loads, signing and undo archive at once; edits debounce
     return true;
   }
 

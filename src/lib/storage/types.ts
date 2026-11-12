@@ -36,3 +36,7 @@ export const summaryOf = (a: Assessment): PeriodSummary => ({
   updatedAt: a.meta.updatedAt,
   ...(a.meta.signedAt ? { signedAt: a.meta.signedAt } : {}),
 });
+
+/** Newest first: period descending, then revision descending. */
+export const compareSummaries = (a: PeriodSummary, b: PeriodSummary): number =>
+  b.period.localeCompare(a.period) || b.revision - a.revision;

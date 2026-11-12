@@ -1,12 +1,16 @@
 <script lang="ts">
   import CircleCheck from '@lucide/svelte/icons/circle-check';
   import type { Snippet } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
+  import * as AlertDialog from '$lib/components/ui/alert-dialog';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button, buttonVariants } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
   import InspectionEditor from './InspectionEditor.svelte';
   import ReadinessList from './ReadinessList.svelte';
   import SchoolCard from './SchoolCard.svelte';
   import { inspectionSummary, inspectionsForList } from '$lib/domain/inspections';
+  import { APP_VERSION } from '$lib/domain/app-version';
+  import { isLocked, verifySnapshot, type Verification } from '$lib/domain/snapshot';
   import { progress } from '$lib/domain/progress';
   import { readiness } from '$lib/domain/readiness';
   import { nav } from '$lib/nav.svelte';
@@ -20,7 +24,22 @@
     { kind: 'pdf-checklists', label: 'Yalnız kontrol listeleri (PDF)' },
   ];
 
+  let { onPeriods }: { onPeriods: () => void } = $props();
+
   const a = $derived(store.assessment);
+  const locked = $derived(isLocked(a));
+  const day = (iso: string) => new Date(iso).toLocaleDateString('tr-TR');
+  const hash = $derived(a.meta.contentHash ?? '');
+  let verification = $state<Verification>('unsigned');
+  // Re-verified live: an edit of a signed snapshot flips this to "modified".
+  $effect(() => {
+    const snapshot = a;
+    let isStale = false;
+    verifySnapshot(snapshot).then((v) => {
+      if (!isStale) verification = v;
+    });
+    return () => (isStale = true);
+  });
   const p = $derived(progress(a, new Date()));
   const gaps = $derived(readiness(a));
   const busy = $derived(store.busy !== '');
@@ -109,6 +128,54 @@
   {@render section('report-inspections', 'Denetimler özeti', { label: 'Değiştir', run: () => nav.go('locations') }, inspectionsBody)}
   {@render section('report-risk', 'Risk tablosu özeti', { label: 'Değiştir', run: () => nav.openRegister() }, riskBody)}
   {@render section('report-gaps', 'İmza öncesi açık noktalar', null, gapsBody)}
+
+  <Card.Root>
+    <Card.Header>
+      <Card.Title>Dönem</Card.Title>
+      <Card.Description>{a.period.trim() || 'Dönem girilmedi'} · Revizyon {a.meta.revision}</Card.Description>
+    </Card.Header>
+    <Card.Content class="flex flex-col items-start gap-3">
+      <dl class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 text-sm">
+        <dt class="text-muted-foreground">Durum</dt>
+        <dd><Badge variant={locked ? 'default' : 'secondary'}>{locked ? `İmzalandı${a.meta.signedAt ? ` · ${day(a.meta.signedAt)}` : ''}` : 'Taslak'}</Badge></dd>
+        <dt class="text-muted-foreground">Soru bankası sürümü</dt>
+        <dd>{a.meta.bankVersion}</dd>
+        <dt class="text-muted-foreground">Uygulama sürümü</dt>
+        <dd>{a.meta.appVersion || APP_VERSION}</dd>
+        {#if locked && hash}
+          <dt class="text-muted-foreground">Özet (SHA-256)</dt>
+          <dd class="font-mono" title={hash}>{hash.slice(0, 12)}</dd>
+        {/if}
+      </dl>
+      {#if locked && verification === 'ok'}
+        <Badge variant="outline"><CircleCheck aria-hidden="true" />Bütünlük doğrulandı</Badge>
+      {:else if locked && verification === 'modified'}
+        <Badge variant="destructive">İçerik imzadan sonra değişmiş!</Badge>
+      {/if}
+      <div class="flex flex-wrap gap-2">
+        {#if locked}
+          <Button disabled={busy} onclick={() => store.reviseLocked()}>Düzeltme taslağı aç</Button>
+        {:else}
+          <AlertDialog.Root>
+            <AlertDialog.Trigger class={buttonVariants()} disabled={busy}>Dönemi kapat (imzalandı)</AlertDialog.Trigger>
+            <AlertDialog.Content>
+              <AlertDialog.Header>
+                <AlertDialog.Title>Dönem kapatılsın mı?</AlertDialog.Title>
+                <AlertDialog.Description>
+                  Dönem kilitlenir ve içeriğin özeti (mühür) saklanır. Sonradan değişiklik için düzeltme taslağı açmanız gerekir. Kapatmadan önce PDF'i ve .json kayıt dosyasını indirmeniz önerilir.
+                </AlertDialog.Description>
+              </AlertDialog.Header>
+              <AlertDialog.Footer>
+                <AlertDialog.Cancel>Vazgeç</AlertDialog.Cancel>
+                <AlertDialog.Action onclick={() => store.closePeriod()}>Dönemi kapat</AlertDialog.Action>
+              </AlertDialog.Footer>
+            </AlertDialog.Content>
+          </AlertDialog.Root>
+        {/if}
+        <Button variant="outline" onclick={onPeriods}>Önceki dönemler</Button>
+      </div>
+    </Card.Content>
+  </Card.Root>
 
   <Card.Root>
     <Card.Header>

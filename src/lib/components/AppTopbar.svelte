@@ -16,7 +16,7 @@
   import { store } from '$lib/state.svelte';
   import { downloadBlankTemplate, downloadMebTemplate } from '$lib/templates';
 
-  let { onAbout }: { onAbout: () => void } = $props();
+  let { onAbout, onPeriods }: { onAbout: () => void; onPeriods: () => void } = $props();
 
   let fileInput: HTMLInputElement;
 
@@ -99,6 +99,7 @@
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newFromStarter())}>Yeni (okul verisiyle)</DropdownMenu.Item>
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newEmpty())}>Yeni (boş)</DropdownMenu.Item>
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newPeriod())}>Yeni dönem (bu çalışmadan)</DropdownMenu.Item>
+        <DropdownMenu.Item onSelect={() => afterMenuCloses(onPeriods)}>Dönemler…</DropdownMenu.Item>
         <DropdownMenu.Separator />
         <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={() => fileInput.click()}>
           <span class="font-semibold">Dosya aç…</span>
