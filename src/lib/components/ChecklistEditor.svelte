@@ -116,6 +116,6 @@
     </div>
     <QuestionBankDialog bind:open={bankOpen} {listId} />
   {:else}
-    <p class="py-8 text-center text-sm text-muted-foreground">Soldan bir liste seçin ya da "+ Hazır formdan ekle" ile liste ekleyin.</p>
+    <p class="py-8 text-center text-sm text-muted-foreground">Kenar çubuğundan bir liste seçin ya da "Bankadan / hazır formdan ekle" ile liste ekleyin.</p>
   {/if}
 </section>

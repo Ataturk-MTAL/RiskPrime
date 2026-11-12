@@ -6,7 +6,7 @@
   import { Button, buttonVariants } from '$lib/components/ui/button';
   import { store, type ExportKind } from '$lib/state.svelte';
 
-  // JSON and Excel are restorable backups; Excel templates live in the "Dosya aç" menu (AppHeader).
+  // JSON and Excel are restorable backups; Excel templates live in the "Dosya" menu (AppTopbar).
   const ITEMS: { kind: ExportKind; label: string; hint?: string }[] = [
     { kind: 'json', label: 'Kayıt dosyası (.json)', hint: 'Kayıt: uygulamada tekrar açılır' },
     { kind: 'pdf-checklists', label: 'PDF: yalnız kontrol listeleri' },
@@ -33,12 +33,12 @@
 </script>
 
 <div class="flex">
-  <Button class="rounded-r-none" disabled={busy} aria-busy={busy} onclick={() => store.requestFullPdf()}>
-    {#if busy}<LoaderCircle class="animate-spin motion-reduce:animate-none" />{:else}<Download />{/if}PDF indir
+  <Button class="rounded-r-none" disabled={busy} aria-busy={busy} aria-label="PDF indir" onclick={() => store.requestFullPdf()}>
+    {#if busy}<LoaderCircle class="animate-spin motion-reduce:animate-none" />{:else}<Download />{/if}<span class="max-sm:hidden">PDF indir</span>
   </Button>
   <DropdownMenu.Root>
-    <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline' }) + ' rounded-l-none'} disabled={busy}>
-      Diğer biçimler <ChevronDown />
+    <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' }) + ' rounded-l-none'} disabled={busy} aria-label="Diğer biçimler">
+      <ChevronDown />
     </DropdownMenu.Trigger>
     <DropdownMenu.Content align="end" class="w-72">
       {#each ITEMS as item (item.kind)}

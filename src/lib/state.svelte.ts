@@ -17,7 +17,7 @@ const excelModule = () => import("$lib/export/excel");
 const wordModule = () => import("$lib/export/word");
 import starter from "$lib/data/starter.json";
 
-export type Tab = "risk" | "checklists";
+export type Tab = "overview" | "school" | "checklists" | "risk" | "readiness";
 export type ExportKind =
   | "json"
   | "pdf-full"
@@ -66,12 +66,12 @@ class Store {
   busy = $state("");
   /** Gaps found before a full PDF; non-null opens the readiness dialog. */
   readinessGaps = $state.raw<Readiness | null>(null);
-  tab = $state<Tab>("checklists");
+  tab = $state<Tab>("overview");
   locationId = $state<string | null>(null);
   checklistId = $state<string | null>(null);
   /** Set by openRow; LocationEditor opens that row's sheet, then clears it. */
   openRowRequest = $state<{ locationId: string; rowId: string } | null>(null);
-  /** Incremented to ask the school card to open and take focus. */
+  /** Incremented to ask the school page to focus its first empty field; the page resets it to 0. */
   schoolRequest = $state(0);
   /** Incremented whenever a whole assessment is loaded (not on edits). */
   loadCount = $state(0);
@@ -329,6 +329,7 @@ class Store {
   }
 
   openSchool() {
+    this.tab = "school";
     this.schoolRequest += 1;
   }
 
@@ -351,6 +352,7 @@ class Store {
     const before = this.assessment.checklists.length;
     if (!this.apply((a) => addChecklistFromTemplate(a))) return;
     this.checklistId = this.assessment.checklists[before]?.id ?? null;
+    this.tab = "checklists";
   }
 
   addFromLibrary(locations: LocationTemplate[], checklists: ChecklistTemplate[]) {

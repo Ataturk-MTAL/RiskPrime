@@ -1,24 +1,47 @@
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import * as Tabs from '$lib/components/ui/tabs';
+  import * as Sidebar from '$lib/components/ui/sidebar';
   import { Toaster } from '$lib/components/ui/sonner';
-  import AboutFooter from '$lib/components/AboutFooter.svelte';
-  import AppHeader from '$lib/components/AppHeader.svelte';
+  import AppSidebar from '$lib/components/AppSidebar.svelte';
+  import AppTopbar from '$lib/components/AppTopbar.svelte';
   import ChecklistEditor from '$lib/components/ChecklistEditor.svelte';
-  import ChecklistSidebar from '$lib/components/ChecklistSidebar.svelte';
   import ConflictDialog from '$lib/components/ConflictDialog.svelte';
   import DiscardDialog from '$lib/components/DiscardDialog.svelte';
-  import LibraryDialog from '$lib/components/LibraryDialog.svelte';
   import LocationEditor from '$lib/components/LocationEditor.svelte';
-  import LocationSidebar from '$lib/components/LocationSidebar.svelte';
   import Notices from '$lib/components/Notices.svelte';
+  import OverviewPage from '$lib/components/OverviewPage.svelte';
+  import ReadinessDialog from '$lib/components/ReadinessDialog.svelte';
+  import ReadinessPage from '$lib/components/ReadinessPage.svelte';
   import SchoolCard from '$lib/components/SchoolCard.svelte';
   import { dragHasFiles, isOpenableFile, UNSUPPORTED_DROP_MESSAGE } from '$lib/drop';
-  import { store, type Tab } from '$lib/state.svelte';
+  import { formatHash, parseHash } from '$lib/route';
+  import { store } from '$lib/state.svelte';
 
-  let libraryOpen = $state(false);
-  const rowCount = $derived(store.assessment.locations.reduce((sum, l) => sum + l.rows.length, 0));
+  const PAGE_TITLES = {
+    overview: 'Genel bakış',
+    school: 'Okul bilgileri',
+    checklists: 'Kontrol listeleri',
+    risk: 'Risk tablosu',
+    readiness: 'Hazırlık ve PDF',
+  } as const;
+
+  const currentHash = () => formatHash(store.tab, store.tab === 'checklists' ? store.checklistId : store.tab === 'risk' ? store.locationId : null);
+
+  /** Hash -> view. Ids that no longer exist are ignored; the URL is then rewritten to what is shown. */
+  function applyHash() {
+    const { tab, id } = parseHash(location.hash);
+    if (tab === 'checklists' && id && store.assessment.checklists.some((c) => c.id === id)) store.checklistId = id;
+    if (tab === 'risk' && id && store.assessment.locations.some((l) => l.id === id)) store.locationId = id;
+    store.tab = tab;
+    history.replaceState(null, '', currentHash());
+  }
+
+  applyHash();
+
+  // View -> hash: every view change is a history entry so the back button works.
+  $effect(() => {
+    const next = currentHash();
+    if (next !== location.hash) history.pushState(null, '', next);
+  });
 
   const dialogOpen = () =>
     store.discard !== null ||
@@ -47,37 +70,31 @@
   }
 </script>
 
-<svelte:window ondragover={onDragOver} ondrop={onDrop} onbeforeunload={onBeforeUnload} />
+<svelte:window ondragover={onDragOver} ondrop={onDrop} onbeforeunload={onBeforeUnload} onhashchange={applyHash} onpopstate={applyHash} />
 
-<div class="flex min-h-screen flex-col">
-<AppHeader />
-<div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col gap-4 p-4">
-  <Notices />
-  <SchoolCard />
-
-  <Tabs.Root class="flex-col" value={store.tab} onValueChange={(v) => (store.tab = v as Tab)}>
-    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
-      <Tabs.List class="max-w-full overflow-x-auto">
-        <Tabs.Trigger value="checklists">1. Kontrol listeleri <Badge variant="secondary">{store.assessment.checklists.length}</Badge></Tabs.Trigger>
-        <Tabs.Trigger value="risk">2. Risk tablosu <Badge variant="secondary">{store.assessment.locations.length} mekân<span class="max-sm:hidden"> · {rowCount} satır</span></Badge></Tabs.Trigger>
-      </Tabs.List>
-      <Button variant="outline" onclick={() => (libraryOpen = true)}>+ Hazır formdan ekle</Button>
+<Sidebar.Provider>
+  <AppSidebar />
+  <Sidebar.Inset class="min-w-0">
+    <AppTopbar />
+    <div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col gap-4 p-4">
+      <Notices />
+      {#if store.tab !== 'overview'}<h1 class="text-2xl font-semibold">{PAGE_TITLES[store.tab]}</h1>{/if}
+      {#if store.tab === 'overview'}
+        <OverviewPage />
+      {:else if store.tab === 'school'}
+        <SchoolCard />
+      {:else if store.tab === 'checklists'}
+        <ChecklistEditor />
+      {:else if store.tab === 'risk'}
+        <LocationEditor />
+      {:else}
+        <ReadinessPage />
+      {/if}
     </div>
-    <Tabs.Content value="risk" class="grid grid-cols-[minmax(0,1fr)] items-start gap-4 md:grid-cols-[250px_minmax(0,1fr)]">
-      <LocationSidebar />
-      <LocationEditor />
-    </Tabs.Content>
-    <Tabs.Content value="checklists" class="grid grid-cols-[minmax(0,1fr)] items-start gap-4 md:grid-cols-[250px_minmax(0,1fr)]">
-      <ChecklistSidebar />
-      <ChecklistEditor />
-    </Tabs.Content>
-  </Tabs.Root>
+  </Sidebar.Inset>
+</Sidebar.Provider>
 
-  <AboutFooter />
-</div>
-</div>
-
-<LibraryDialog bind:open={libraryOpen} />
+<ReadinessDialog />
 <ConflictDialog />
 <DiscardDialog />
 <Toaster />

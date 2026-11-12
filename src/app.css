@@ -2,11 +2,11 @@
 @import "tw-animate-css";
 @import "@fontsource-variable/atkinson-hyperlegible-next";
 @custom-variant dark (&:is(.dark *));
-/* shadcn-svelte primitives use data-active/open/... variants; bits-ui 2 only sets data-state and data-orientation. */
-@custom-variant data-active (&[data-state="active"]);
-@custom-variant data-open (&[data-state="open"]);
-@custom-variant data-closed (&[data-state="closed"]);
-@custom-variant data-checked (&[data-state="checked"]);
+/* shadcn-svelte primitives use data-active/open/... variants. bits-ui 2 sets data-state; the sidebar sets data-active="true|false". Match both, never "false". */
+@custom-variant data-active (&:is([data-state="active"], [data-active]:not([data-active="false"])));
+@custom-variant data-open (&:is([data-state="open"], [data-open]:not([data-open="false"])));
+@custom-variant data-closed (&:is([data-state="closed"], [data-closed]:not([data-closed="false"])));
+@custom-variant data-checked (&:is([data-state="checked"], [data-checked]:not([data-checked="false"])));
 @custom-variant data-horizontal (&[data-orientation="horizontal"]);
 @custom-variant data-vertical (&[data-orientation="vertical"]);
 :root {

@@ -107,7 +107,7 @@
 
     <LocationChecklistsPanel locationId={locId} />
     {#if loc.rows.length === 0}
-      <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda risk satırı yok. "Satır ekle" ile başlayın ya da "+ Hazır formdan ekle".</p>
+      <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda risk satırı yok. "Satır ekle" ile başlayın ya da kenar çubuğundan "Hazır formdan ekle".</p>
     {/if}
     {#if loc.rows.length}
       <div class="flex flex-wrap items-end gap-2">
@@ -135,6 +135,6 @@
     <RiskRowSheet rows={loc.rows} locationId={locId} bind:openId />
     <Button id={ADD_ROW_BUTTON_ID} onclick={() => addNewRow(locId)}><Plus />Satır ekle</Button>
   {:else}
-    <p class="py-8 text-center text-sm text-muted-foreground">Soldan bir mekân seçin ya da yeni mekân ekleyin.</p>
+    <p class="py-8 text-center text-sm text-muted-foreground">Kenar çubuğundan bir mekân seçin ya da "Mekân ekle" ile yeni mekân ekleyin.</p>
   {/if}
 </section>
