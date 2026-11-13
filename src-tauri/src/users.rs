@@ -262,6 +262,8 @@ pub fn remove(conn: &Connection, target: &str, actor: &str) -> Res<User> {
         return Err(LockError::msg(MSG_LAST_USER));
     }
     conn.execute("DELETE FROM users WHERE id = ?1", [target])?;
+    // A reset may only complete if it was requested while the install had a single user.
+    conn.execute("UPDATE users SET reset_pending_until = NULL", [])?;
     Ok(user)
 }
 
@@ -460,5 +462,19 @@ mod tests {
                 .message,
             MSG_MULTI_USER
         );
+    }
+
+    #[test]
+    fn removing_a_user_clears_pending_resets() {
+        let c = mem();
+        let a = mk(&c, "Ali");
+        let b = mk(&c, "Veli");
+        c.execute(
+            "UPDATE users SET reset_pending_until = '2020-01-01T00:00:00Z' WHERE id = ?1",
+            [&a.id],
+        )
+        .unwrap();
+        remove(&c, &b.id, &a.id).unwrap();
+        assert_eq!(list(&c, t0()).unwrap()[0].reset_pending_until, None);
     }
 }

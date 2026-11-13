@@ -111,8 +111,14 @@ const SCHEMA_V4: &str = r#"
 ALTER TABLE users ADD COLUMN must_change_pin INTEGER NOT NULL DEFAULT 0;
 "#;
 
+// Resets requested before v4 (when any user could request one in a multi-user install) must not
+// complete later, e.g. after the other users are removed.
+const SCHEMA_V5: &str = r#"
+UPDATE users SET reset_pending_until = NULL;
+"#;
+
 /// Ordered migrations; index + 1 is the `user_version` after applying it.
-const MIGRATIONS: &[&str] = &[SCHEMA_V1, SCHEMA_V2, SCHEMA_V3, SCHEMA_V4];
+const MIGRATIONS: &[&str] = &[SCHEMA_V1, SCHEMA_V2, SCHEMA_V3, SCHEMA_V4, SCHEMA_V5];
 
 #[derive(Debug)]
 pub enum DbError {
@@ -451,7 +457,24 @@ mod tests {
         let v: i64 = c
             .pragma_query_value(None, "user_version", |r| r.get(0))
             .unwrap();
-        assert_eq!(v, 4);
+        assert_eq!(v, 5);
+    }
+
+    #[test]
+    fn v5_clears_resets_requested_under_older_rules() {
+        let mut c = Connection::open_in_memory().unwrap();
+        migrate_to(&mut c, 4).unwrap();
+        c.execute(
+            "INSERT INTO users (id, name, name_key, created_at, reset_pending_until)
+             VALUES ('u', 'A', 'a', 'x', '2020-01-01T00:00:00Z')",
+            [],
+        )
+        .unwrap();
+        migrate(&mut c).unwrap();
+        let pending: Option<String> = c
+            .query_row("SELECT reset_pending_until FROM users", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(pending, None);
     }
 
     fn v2_db_with_pin(pin_hash: Option<&str>) -> Connection {
