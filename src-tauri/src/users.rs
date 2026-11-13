@@ -1,7 +1,7 @@
-//! Users: CRUD, PIN set/reset and the 24 h forgotten-PIN reset. No roles.
+//! Users: CRUD, PIN set/reset (temporary PIN) and the single-user 24 h forgotten-PIN reset. No roles.
 //! Name uniqueness uses `name_key` = trimmed `str::to_lowercase()`, which is not Turkish-aware
 //! (`I` -> `i`, not `ı`; `İ` -> `i̇`): "IŞIK" and "ışık" count as different names. Acceptable.
-use crate::lock::{self, LockError, Res, MSG_NEEDS_PIN, MSG_NO_USER};
+use crate::lock::{self, LockError, Res, MSG_NO_USER, MSG_PIN_CLEARED};
 use argon2::password_hash::rand_core::{OsRng, RngCore};
 use chrono::{DateTime, Duration, Utc};
 use rusqlite::{params, Connection, OptionalExtension};
@@ -13,7 +13,9 @@ const NAME_MAX_CHARS: usize = 80;
 const MSG_NAME_EMPTY: &str = "Ad boş olamaz.";
 const MSG_TOO_LONG: &str = "Ad veya unvan çok uzun.";
 const MSG_NAME_TAKEN: &str = "Bu adda bir kullanıcı zaten var.";
-const MSG_PIN_SET: &str = "Bu kullanıcının PIN'i zaten belirlenmiş.";
+const MSG_RESET_NOT_DUE: &str = "Sıfırlama süresi henüz dolmadı.";
+pub const MSG_MULTI_USER: &str = "Birden çok kullanıcı var: başka bir kullanıcıdan geçici PIN isteyin ya da okul kurtarma kodunu kullanın.";
+pub const MSG_MUST_CHANGE: &str = "Önce yeni PIN belirleyin.";
 pub const MSG_SELF_RESET: &str = "Kendi PIN'inizi buradan sıfırlayamazsınız.";
 pub const MSG_SELF_REMOVE: &str = "Kendinizi silemezsiniz.";
 pub const MSG_LAST_USER: &str = "Son kullanıcı silinemez.";
@@ -34,6 +36,8 @@ pub struct UserInfo {
     pub title: String,
     pub has_pin: bool,
     pub reset_pending_until: Option<String>,
+    /// The 24 h wait is over: `lock_complete_reset` may now set a new PIN.
+    pub reset_due: bool,
 }
 
 fn new_id() -> String {
@@ -90,7 +94,7 @@ pub fn get(conn: &Connection, id: &str) -> Res<Option<User>> {
         .optional()?)
 }
 
-/// Outer `None` = no such user; inner `None` = PIN cleared (must set a new one).
+/// Outer `None` = no such user; inner `None` = no PIN (cleared before v4; recovery code only).
 pub fn pin_hash(conn: &Connection, id: &str) -> Res<Option<Option<String>>> {
     Ok(conn
         .query_row("SELECT pin_hash FROM users WHERE id = ?1", [id], |r| {
@@ -103,29 +107,33 @@ fn require(conn: &Connection, id: &str) -> Res<User> {
     get(conn, id)?.ok_or_else(|| LockError::msg(MSG_NO_USER))
 }
 
-/// Forgotten-PIN reset that came due: the PIN goes, the user and their data stay.
-pub fn apply_due_resets(conn: &Connection, now: DateTime<Utc>) -> Res<()> {
-    conn.execute(
-        "UPDATE users SET pin_hash = NULL, failed_count = 0, retry_after = NULL,
-         reset_pending_until = NULL WHERE reset_pending_until IS NOT NULL AND reset_pending_until <= ?1",
-        [lock::ts(now)],
-    )?;
-    Ok(())
+/// True while the user still holds a temporary PIN (set by a reset) they must replace.
+pub fn must_change_pin(conn: &Connection, id: &str) -> Res<bool> {
+    Ok(conn
+        .query_row(
+            "SELECT must_change_pin FROM users WHERE id = ?1",
+            [id],
+            |r| r.get(0),
+        )
+        .optional()?
+        .unwrap_or(false))
 }
 
 pub fn list(conn: &Connection, now: DateTime<Utc>) -> Res<Vec<UserInfo>> {
-    apply_due_resets(conn, now)?;
+    let now = lock::ts(now);
     let mut stmt = conn.prepare(
-        "SELECT id, name, title, pin_hash IS NOT NULL, reset_pending_until
+        "SELECT id, name, title, pin_hash IS NOT NULL, reset_pending_until,
+                COALESCE(reset_pending_until <= ?1, 0)
          FROM users ORDER BY created_at, rowid",
     )?;
-    let rows = stmt.query_map([], |r| {
+    let rows = stmt.query_map([now], |r| {
         Ok(UserInfo {
             id: r.get(0)?,
             name: r.get(1)?,
             title: r.get(2)?,
             has_pin: r.get(3)?,
             reset_pending_until: r.get(4)?,
+            reset_due: r.get(5)?,
         })
     })?;
     Ok(rows.collect::<Result<_, _>>()?)
@@ -147,9 +155,12 @@ pub fn create(
          VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
         params![id, name, key, title, pin_hash, lock::ts(now)],
     )?;
+    // A delayed (unauthenticated) reset is only safe on a single-user install.
+    conn.execute("UPDATE users SET reset_pending_until = NULL", [])?;
     Ok(User { id, name, title })
 }
 
+/// Edits one user's own name/title; the command passes the logged-in user's id only.
 pub fn update(conn: &Connection, id: &str, name: &str, title: &str) -> Res<User> {
     let (name, title, key) = clean(name, title)?;
     require(conn, id)?;
@@ -165,13 +176,12 @@ pub fn update(conn: &Connection, id: &str, name: &str, title: &str) -> Res<User>
     })
 }
 
-/// Sets a (validated) PIN and clears the user's counters and pending reset.
-pub fn set_pin(conn: &Connection, id: &str, pin: &str) -> Res<()> {
-    let h = lock::hashed_pin(pin)?;
+/// Stores a hashed PIN; clears counters, pending reset, and sets the must-change flag.
+fn store_pin(conn: &Connection, id: &str, hash: &str, must_change: bool) -> Res<()> {
     let n = conn.execute(
-        "UPDATE users SET pin_hash = ?2, failed_count = 0, retry_after = NULL,
-         reset_pending_until = NULL WHERE id = ?1",
-        params![id, h],
+        "UPDATE users SET pin_hash = ?2, must_change_pin = ?3, failed_count = 0,
+         retry_after = NULL, reset_pending_until = NULL WHERE id = ?1",
+        params![id, hash, must_change],
     )?;
     if n == 0 {
         return Err(LockError::msg(MSG_NO_USER));
@@ -179,16 +189,43 @@ pub fn set_pin(conn: &Connection, id: &str, pin: &str) -> Res<()> {
     Ok(())
 }
 
-/// Only for a user whose PIN was cleared by a reset.
-pub fn set_initial_pin(conn: &Connection, id: &str, pin: &str) -> Res<User> {
-    match pin_hash(conn, id)? {
-        None => Err(LockError::msg(MSG_NO_USER)),
-        Some(Some(_)) => Err(LockError::msg(MSG_PIN_SET)),
-        Some(None) => {
-            set_pin(conn, id, pin)?;
-            require(conn, id)
+/// Sets a (validated) user-chosen PIN; this also ends any temporary-PIN state.
+pub fn set_pin(conn: &Connection, id: &str, pin: &str) -> Res<()> {
+    store_pin(conn, id, &lock::hashed_pin(pin)?, false)
+}
+
+/// Random 6-digit PIN from the OS RNG (rejection sampling, no modulo bias).
+fn random_temp_pin() -> String {
+    const LIMIT: u32 = u32::MAX - (u32::MAX % 1_000_000);
+    loop {
+        let v = OsRng.next_u32();
+        if v < LIMIT {
+            return format!("{:06}", v % 1_000_000);
         }
     }
+}
+
+/// Completes the single-user 24 h reset: needs exactly one user and the deadline passed.
+pub fn complete_reset(conn: &Connection, id: &str, new_pin: &str, now: DateTime<Utc>) -> Res<User> {
+    lock::validate_pin(new_pin)?;
+    if count(conn)? != 1 {
+        return Err(LockError::msg(MSG_MULTI_USER));
+    }
+    let user = require(conn, id)?;
+    let until: Option<String> = conn.query_row(
+        "SELECT reset_pending_until FROM users WHERE id = ?1",
+        [id],
+        |r| r.get(0),
+    )?;
+    if !until
+        .as_deref()
+        .and_then(lock::parse)
+        .is_some_and(|t| t <= now)
+    {
+        return Err(LockError::msg(MSG_RESET_NOT_DUE));
+    }
+    set_pin(conn, id, new_pin)?;
+    Ok(user)
 }
 
 pub fn change_pin(
@@ -203,18 +240,16 @@ pub fn change_pin(
     set_pin(conn, id, new_pin)
 }
 
-/// Clears `target`'s PIN (they choose a new one at next login). Never one's own.
-pub fn reset_pin(conn: &Connection, target: &str, actor: &str) -> Res<User> {
+/// Gives `target` a random temporary PIN they must replace at first login (returned once, for
+/// the actor to hand over). Never one's own.
+pub fn reset_pin(conn: &Connection, target: &str, actor: &str) -> Res<(User, String)> {
     if target == actor {
         return Err(LockError::msg(MSG_SELF_RESET));
     }
     let user = require(conn, target)?;
-    conn.execute(
-        "UPDATE users SET pin_hash = NULL, failed_count = 0, retry_after = NULL,
-         reset_pending_until = NULL WHERE id = ?1",
-        [target],
-    )?;
-    Ok(user)
+    let temp = random_temp_pin();
+    store_pin(conn, target, &lock::hashed_pin(&temp)?, true)?;
+    Ok((user, temp))
 }
 
 /// Returns the removed user (for the audit entry).
@@ -230,14 +265,17 @@ pub fn remove(conn: &Connection, target: &str, actor: &str) -> Res<User> {
     Ok(user)
 }
 
-/// Idempotent (an earlier deadline is kept). Returns (deadline, newly requested).
+/// Single-user installs only. Idempotent (an earlier deadline is kept).
+/// Returns (deadline, newly requested).
 pub fn request_reset(conn: &Connection, id: &str, now: DateTime<Utc>) -> Res<(String, bool)> {
-    apply_due_resets(conn, now)?;
+    if count(conn)? != 1 {
+        return Err(LockError::msg(MSG_MULTI_USER));
+    }
     let has_pin = pin_hash(conn, id)?
         .ok_or_else(|| LockError::msg(MSG_NO_USER))?
         .is_some();
     if !has_pin {
-        return Err(LockError::msg(MSG_NEEDS_PIN));
+        return Err(LockError::msg(MSG_PIN_CLEARED));
     }
     let existing: Option<String> = conn.query_row(
         "SELECT reset_pending_until FROM users WHERE id = ?1",
@@ -301,26 +339,52 @@ mod tests {
     }
 
     #[test]
-    fn reset_pin_forces_initial_pin_and_only_for_others() {
+    fn reset_pin_issues_temp_pin_that_must_be_changed_and_only_for_others() {
         let c = mem();
         let (a, b) = (mk(&c, "Ali"), mk(&c, "Veli"));
         assert_eq!(
             reset_pin(&c, &a.id, &a.id).unwrap_err().message,
             MSG_SELF_RESET
         );
-        reset_pin(&c, &b.id, &a.id).unwrap();
-        assert!(!list(&c, t0()).unwrap()[1].has_pin);
+        let (_, temp) = reset_pin(&c, &b.id, &a.id).unwrap();
+        assert_eq!(temp.len(), 6);
+        assert!(temp.bytes().all(|d| d.is_ascii_digit()));
+        assert!(must_change_pin(&c, &b.id).unwrap());
+        assert!(!must_change_pin(&c, &a.id).unwrap());
         assert_eq!(
-            login(&c, &b.id, "1234", t0()).unwrap_err().message,
-            MSG_NEEDS_PIN
+            login(&c, &b.id, "1234", t0()).unwrap(),
+            Attempt::Wrong(None)
         );
-        set_initial_pin(&c, &b.id, "5678").unwrap();
+        assert_eq!(login(&c, &b.id, &temp, t0()).unwrap(), Attempt::Ok);
+        // Changing with the temp PIN clears the flag; the old temp PIN stops working.
+        change_pin(&c, &b.id, &temp, "5678", t0()).unwrap();
+        assert!(!must_change_pin(&c, &b.id).unwrap());
         assert_eq!(login(&c, &b.id, "5678", t0()).unwrap(), Attempt::Ok);
-        // Not allowed once a PIN exists.
+    }
+
+    #[test]
+    fn v3_null_pin_row_is_not_claimable() {
+        let c = mem();
+        let a = mk(&c, "Ali");
+        c.execute("UPDATE users SET pin_hash = NULL", []).unwrap();
         assert_eq!(
-            set_initial_pin(&c, &b.id, "1111").unwrap_err().message,
-            MSG_PIN_SET
+            login(&c, &a.id, "1234", t0()).unwrap_err().message,
+            MSG_PIN_CLEARED
         );
+        assert_eq!(
+            request_reset(&c, &a.id, t0()).unwrap_err().message,
+            MSG_PIN_CLEARED
+        );
+        assert!(!list(&c, t0()).unwrap()[0].has_pin);
+    }
+
+    #[test]
+    fn update_changes_only_the_given_user() {
+        let c = mem();
+        let (a, b) = (mk(&c, "Ali"), mk(&c, "Veli"));
+        update(&c, &a.id, "Ali K.", "Müdür").unwrap();
+        assert_eq!(get(&c, &b.id).unwrap().unwrap().name, "Veli");
+        assert_eq!(get(&c, &a.id).unwrap().unwrap().name, "Ali K.");
     }
 
     #[test]
@@ -350,7 +414,7 @@ mod tests {
     }
 
     #[test]
-    fn reset_is_idempotent_and_clears_pin_after_24h_keeping_user() {
+    fn single_user_reset_completes_only_after_24h() {
         let c = mem();
         let a = mk(&c, "Ali");
         let (first, new) = request_reset(&c, &a.id, t0()).unwrap();
@@ -358,29 +422,43 @@ mod tests {
         assert_eq!(first, "2026-01-02T00:00:00Z");
         let again = request_reset(&c, &a.id, t0() + Duration::hours(1)).unwrap();
         assert_eq!(again, (first.clone(), false));
-        let before = list(&c, t0() + Duration::seconds(86_399)).unwrap();
-        assert!(before[0].has_pin);
+        let early = t0() + Duration::seconds(86_399);
+        assert!(!list(&c, early).unwrap()[0].reset_due);
         assert_eq!(
-            before[0].reset_pending_until.as_deref(),
-            Some(first.as_str())
-        );
-        let after = list(&c, t0() + Duration::seconds(86_400)).unwrap();
-        assert!(!after[0].has_pin);
-        assert_eq!(after[0].reset_pending_until, None);
-        assert_eq!(
-            login(&c, &a.id, "1234", t0() + Duration::days(2))
+            complete_reset(&c, &a.id, "5678", early)
                 .unwrap_err()
                 .message,
-            MSG_NEEDS_PIN
+            MSG_RESET_NOT_DUE
+        );
+        // The old PIN stays valid until the reset completes.
+        assert!(list(&c, early).unwrap()[0].has_pin);
+        let due = t0() + Duration::seconds(86_400);
+        assert!(list(&c, due).unwrap()[0].reset_due);
+        complete_reset(&c, &a.id, "5678", due).unwrap();
+        assert_eq!(login(&c, &a.id, "5678", due).unwrap(), Attempt::Ok);
+        assert_eq!(list(&c, due).unwrap()[0].reset_pending_until, None);
+        assert_eq!(
+            complete_reset(&c, &a.id, "1111", due).unwrap_err().message,
+            MSG_RESET_NOT_DUE
         );
     }
 
     #[test]
-    fn reset_due_is_applied_by_login_too() {
+    fn reset_request_is_refused_with_two_users_and_second_user_cancels_pending() {
         let c = mem();
         let a = mk(&c, "Ali");
         request_reset(&c, &a.id, t0()).unwrap();
-        let e = login(&c, &a.id, "1234", t0() + Duration::hours(25)).unwrap_err();
-        assert_eq!(e.message, MSG_NEEDS_PIN);
+        let b = mk(&c, "Veli");
+        assert_eq!(list(&c, t0()).unwrap()[0].reset_pending_until, None);
+        assert_eq!(
+            request_reset(&c, &a.id, t0()).unwrap_err().message,
+            MSG_MULTI_USER
+        );
+        assert_eq!(
+            complete_reset(&c, &b.id, "5678", t0() + Duration::days(3))
+                .unwrap_err()
+                .message,
+            MSG_MULTI_USER
+        );
     }
 }

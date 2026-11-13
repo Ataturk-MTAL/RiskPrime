@@ -18,6 +18,15 @@
   const openId = $derived(periodKey(store.assessment.period, store.assessment.meta.revision));
 
   /** Period label for a row: the archive's name and revision when known, else the raw id. */
+  /** Who did it: the current name, the then-name when it differs, "(silinmiş)" for removed users. */
+  const userLabel = (row: AuditRow) => {
+    if (!row.userId) return row.userName;
+    if (row.currentName === null) return `${row.userName} (silinmiş)`;
+    return row.currentName === row.userName
+      ? row.currentName
+      : `${row.currentName} (o zamanki adı: ${row.userName})`;
+  };
+
   const periodLabel = (id: string | null) => {
     if (!id) return '';
     const item = store.periods.find((p) => p.id === id);
@@ -73,7 +82,7 @@
             {#each rows as row (row.id)}
               <Table.Row>
                 <Table.Cell class="whitespace-nowrap">{formatTimeRange(row.startedAt, row.at)}</Table.Cell>
-                <Table.Cell>{row.userName}</Table.Cell>
+                <Table.Cell>{userLabel(row)}</Table.Cell>
                 <Table.Cell class="whitespace-normal">
                   {row.action}{#if row.detail}<span class="block text-xs text-muted-foreground">{row.detail}</span>{/if}
                 </Table.Cell>

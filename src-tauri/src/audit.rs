@@ -13,7 +13,8 @@ pub const USER_CREATED: &str = "kullanıcı eklendi";
 pub const USER_UPDATED: &str = "kullanıcı güncellendi";
 pub const USER_REMOVED: &str = "kullanıcı silindi";
 pub const PIN_RESET: &str = "PIN sıfırlandı";
-pub const PIN_RESET_REQUESTED: &str = "PIN sıfırlama istendi";
+pub const PIN_RESET_REQUESTED: &str = "PIN sıfırlama istendi (kilit ekranından)";
+pub const PIN_RESET_COMPLETED: &str = "PIN sıfırlandı (24 saat doldu)";
 pub const PIN_CHANGED: &str = "PIN değiştirildi";
 pub const RECOVERY_USED: &str = "kurtarma kodu kullanıldı";
 pub const RECOVERY_RENEWED: &str = "yeni kurtarma kodu üretildi";
@@ -23,6 +24,7 @@ pub const PERIOD_SIGNED: &str = "dönem kapatıldı";
 pub const PERIOD_EDITED: &str = "düzenledi";
 pub const PERIOD_REMOVED: &str = "dönem silindi";
 
+const ANONYMOUS: &str = "—";
 const COALESCE_MINUTES: i64 = 10;
 const MAX_LIST: i64 = 1000;
 const WORK_ACTIONS: [&str; 4] = [
@@ -38,7 +40,10 @@ pub struct Entry {
     pub id: i64,
     pub started_at: String,
     pub at: String,
+    pub user_id: Option<String>,
     pub user_name: String,
+    /// The user's name now; `None` when the user was removed (or the row is anonymous).
+    pub current_name: Option<String>,
     pub action: String,
     pub period_id: Option<String>,
     pub detail: String,
@@ -62,6 +67,21 @@ pub fn log(
         "INSERT INTO audit_log (started_at, at, user_id, user_name, action, period_id)
          VALUES (?1, ?1, ?2, ?3, ?4, ?5)",
         params![ts(now), user.id, user.name, action, period_id],
+    )?;
+    Ok(())
+}
+
+/// Entry nobody is logged in for (lock-screen request): no user id, name "—", target in `detail`.
+pub fn log_anonymous(
+    conn: &Connection,
+    action: &str,
+    detail: &str,
+    now: DateTime<Utc>,
+) -> rusqlite::Result<()> {
+    conn.execute(
+        "INSERT INTO audit_log (started_at, at, user_id, user_name, action, detail)
+         VALUES (?1, ?1, NULL, ?2, ?3, ?4)",
+        params![ts(now), ANONYMOUS, action, detail],
     )?;
     Ok(())
 }
@@ -157,18 +177,21 @@ pub fn list(
     period_id: Option<&str>,
 ) -> rusqlite::Result<Vec<Entry>> {
     let mut stmt = conn.prepare(
-        "SELECT id, started_at, at, user_name, action, period_id, detail FROM audit_log
-         WHERE (?1 IS NULL OR period_id = ?1) ORDER BY id DESC LIMIT ?2",
+        "SELECT a.id, a.started_at, a.at, a.user_id, a.user_name, u.name, a.action, a.period_id, a.detail
+         FROM audit_log a LEFT JOIN users u ON u.id = a.user_id
+         WHERE (?1 IS NULL OR a.period_id = ?1) ORDER BY a.id DESC LIMIT ?2",
     )?;
     let rows = stmt.query_map(params![period_id, limit.clamp(1, MAX_LIST)], |r| {
         Ok(Entry {
             id: r.get(0)?,
             started_at: r.get(1)?,
             at: r.get(2)?,
-            user_name: r.get(3)?,
-            action: r.get(4)?,
-            period_id: r.get(5)?,
-            detail: r.get(6)?,
+            user_id: r.get(3)?,
+            user_name: r.get(4)?,
+            current_name: r.get(5)?,
+            action: r.get(6)?,
+            period_id: r.get(7)?,
+            detail: r.get(8)?,
         })
     })?;
     rows.collect()
@@ -299,6 +322,29 @@ mod tests {
         let le = last_editor(&c, "p#r1").unwrap().unwrap();
         assert_eq!((le.user_name.as_str(), le.at), ("Veli", ts(t0())));
         assert_eq!(last_editor(&c, "zzz").unwrap(), None);
+    }
+
+    #[test]
+    fn list_returns_user_id_and_current_name_and_anonymous_rows() {
+        let mut c = mem();
+        let (a, b) = (mk(&c, "Ali"), mk(&c, "Veli"));
+        save_with_audit(&mut c, &a, &doc("p", 1, "draft"), t0()).unwrap();
+        save_with_audit(&mut c, &b, &doc("q", 1, "draft"), min(1)).unwrap();
+        log_anonymous(&c, PIN_RESET_REQUESTED, "Ali", min(2)).unwrap();
+        users::update(&c, &a.id, "Ali K.", "").unwrap();
+        users::remove(&c, &b.id, &a.id).unwrap();
+        let rows = list(&c, 10, None).unwrap();
+        let anon = &rows[0];
+        assert_eq!(anon.user_id, None);
+        assert_eq!(
+            (anon.user_name.as_str(), anon.detail.as_str()),
+            ("—", "Ali")
+        );
+        assert_eq!(anon.current_name, None);
+        assert_eq!(rows[1].current_name, None); // Veli removed
+        assert_eq!(rows[1].user_id.as_deref(), Some(b.id.as_str()));
+        assert_eq!(rows[2].user_name, "Ali");
+        assert_eq!(rows[2].current_name.as_deref(), Some("Ali K."));
     }
 
     #[test]

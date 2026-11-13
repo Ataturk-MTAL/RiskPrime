@@ -55,14 +55,24 @@ fn current(conn: &Connection, session: &State<Session>) -> Res<User> {
     }
 }
 
-/// Same as `run` but for the period commands: refuses unless someone is logged in.
+/// `current`, but refuses while the user still holds a temporary PIN.
+fn active(conn: &Connection, session: &State<Session>) -> Res<User> {
+    let user = current(conn, session)?;
+    if users::must_change_pin(conn, &user.id)? {
+        return Err(LockError::msg(users::MSG_MUST_CHANGE));
+    }
+    Ok(user)
+}
+
+/// Same as `run` but for the period commands: refuses unless someone is logged in (and past
+/// the forced PIN change).
 fn with_user_conn<T>(
     state: &State<Archive>,
     session: &State<Session>,
     f: impl FnOnce(&mut Connection, &User) -> Result<T, DbError>,
 ) -> Result<T, String> {
     let mut conn = state.0.lock().map_err(|_| MSG_UNAVAILABLE.to_string())?;
-    let user = current(&conn, session).map_err(|e| e.message)?;
+    let user = active(&conn, session).map_err(|e| e.message)?;
     f(&mut conn, &user).map_err(|e| {
         eprintln!("archive error: {e}");
         e.user_message().to_string()
@@ -159,6 +169,13 @@ pub struct CreatedUser {
 pub struct LoginResult {
     ok: bool,
     retry_after_sec: Option<u64>,
+    must_change_pin: bool,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TempPin {
+    temp_pin: String,
 }
 
 #[derive(Serialize)]
@@ -170,10 +187,15 @@ pub struct ResetPending {
 #[tauri::command]
 pub fn lock_status(state: State<Archive>, session: State<Session>) -> Result<LockStatus, String> {
     run(&state, |c| {
-        users::apply_due_resets(c, Utc::now())?;
         let user = match session_id(&session)? {
             Some(id) => users::get(c, &id)?,
             None => None,
+        };
+        // A session still pending its forced PIN change (e.g. after a webview reload) is
+        // logged out: the temp PIN is not kept anywhere, so the user signs in again.
+        let user = match user {
+            Some(u) if users::must_change_pin(c, &u.id)? => None,
+            other => other,
         };
         if user.is_none() {
             set_current(&session, None)?;
@@ -208,7 +230,7 @@ pub fn user_create(
         let actor = if first {
             None
         } else {
-            Some(current(c, &session)?)
+            Some(active(c, &session)?)
         };
         let tx = c.transaction()?;
         let user = users::create(&tx, &name, &title, &pin, now)?;
@@ -246,30 +268,18 @@ pub fn user_login(
             Attempt::Wrong(r) => (false, r),
             Attempt::Throttled(s) => (false, Some(s)),
         };
+        let mut must_change_pin = false;
         if ok {
             let user = users::get(c, &user_id)?.ok_or_else(|| LockError::msg(lock::MSG_NO_USER))?;
             audit::log(c, &user, audit::LOGIN, None, now)?;
+            must_change_pin = users::must_change_pin(c, &user.id)?;
             set_current(&session, Some(user.id))?;
         }
         Ok(LoginResult {
             ok,
             retry_after_sec,
+            must_change_pin,
         })
-    })
-}
-
-/// Only for a user whose PIN was cleared by a reset; logs them in.
-#[tauri::command]
-pub fn user_set_initial_pin(
-    state: State<Archive>,
-    session: State<Session>,
-    user_id: String,
-    pin: String,
-) -> Result<(), String> {
-    run(&state, |c| {
-        let user = users::set_initial_pin(c, &user_id, &pin)?;
-        audit::log(c, &user, audit::LOGIN, None, Utc::now())?;
-        set_current(&session, Some(user.id))
     })
 }
 
@@ -285,17 +295,17 @@ pub fn lock_now(state: State<Archive>, session: State<Session>) -> Result<(), St
     })
 }
 
+/// Edits the logged-in user's OWN name/title (nobody can rename someone else).
 #[tauri::command]
-pub fn user_update(
+pub fn user_update_self(
     state: State<Archive>,
     session: State<Session>,
-    user_id: String,
     name: String,
     title: String,
 ) -> Result<(), String> {
     run(&state, |c| {
-        let actor = current(c, &session)?;
-        let user = users::update(c, &user_id, &name, &title)?;
+        let actor = active(c, &session)?;
+        let user = users::update(c, &actor.id, &name, &title)?;
         audit::log_target(c, &actor, audit::USER_UPDATED, &user.name, Utc::now())?;
         Ok(())
     })
@@ -317,18 +327,19 @@ pub fn user_change_pin(
     })
 }
 
-/// Clears ANOTHER user's PIN; they choose a new one at next login.
+/// Gives ANOTHER user a random temporary PIN (shown once to the actor); they must replace it
+/// at first login.
 #[tauri::command]
 pub fn user_reset_pin(
     state: State<Archive>,
     session: State<Session>,
     user_id: String,
-) -> Result<(), String> {
+) -> Result<TempPin, String> {
     run(&state, |c| {
-        let actor = current(c, &session)?;
-        let user = users::reset_pin(c, &user_id, &actor.id)?;
+        let actor = active(c, &session)?;
+        let (user, temp_pin) = users::reset_pin(c, &user_id, &actor.id)?;
         audit::log_target(c, &actor, audit::PIN_RESET, &user.name, Utc::now())?;
-        Ok(())
+        Ok(TempPin { temp_pin })
     })
 }
 
@@ -339,7 +350,7 @@ pub fn user_remove(
     user_id: String,
 ) -> Result<(), String> {
     run(&state, |c| {
-        let actor = current(c, &session)?;
+        let actor = active(c, &session)?;
         let user = users::remove(c, &user_id, &actor.id)?;
         audit::log_target(c, &actor, audit::USER_REMOVED, &user.name, Utc::now())?;
         Ok(())
@@ -382,7 +393,7 @@ pub fn lock_new_recovery_code(
 ) -> Result<RecoveryCode, String> {
     run(&state, |c| {
         let now = Utc::now();
-        let user = current(c, &session)?;
+        let user = active(c, &session)?;
         lock::verify_pin(c, &user.id, &pin, now)?;
         let (code, rhash) = lock::new_recovery()?;
         lock::store_recovery(c, &rhash)?;
@@ -393,7 +404,8 @@ pub fn lock_new_recovery_code(
     })
 }
 
-/// Forgotten PIN: after 24 h the user's PIN is cleared (data kept). No login needed.
+/// Forgotten PIN on a single-user install: starts the 24 h wait. No login needed, so the
+/// audit row is anonymous (the target is only in `detail`).
 #[tauri::command]
 pub fn lock_request_reset(state: State<Archive>, user_id: String) -> Result<ResetPending, String> {
     run(&state, |c| {
@@ -401,11 +413,27 @@ pub fn lock_request_reset(state: State<Archive>, user_id: String) -> Result<Rese
         let (until, newly) = users::request_reset(c, &user_id, now)?;
         if newly {
             if let Some(user) = users::get(c, &user_id)? {
-                audit::log(c, &user, audit::PIN_RESET_REQUESTED, None, now)?;
+                audit::log_anonymous(c, audit::PIN_RESET_REQUESTED, &user.name, now)?;
             }
         }
         Ok(ResetPending {
             reset_pending_until: until,
         })
+    })
+}
+
+/// Single-user install, 24 h passed: sets the new PIN and logs in.
+#[tauri::command]
+pub fn lock_complete_reset(
+    state: State<Archive>,
+    session: State<Session>,
+    user_id: String,
+    new_pin: String,
+) -> Result<(), String> {
+    run(&state, |c| {
+        let now = Utc::now();
+        let user = users::complete_reset(c, &user_id, &new_pin, now)?;
+        audit::log(c, &user, audit::PIN_RESET_COMPLETED, None, now)?;
+        set_current(&session, Some(user.id))
     })
 }

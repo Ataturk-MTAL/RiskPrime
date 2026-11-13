@@ -17,6 +17,7 @@
     pickUser: 'Kullanıcı seçin',
     pin: 'PIN girin',
     initialPin: 'Yeni PIN belirleyin',
+    changePin: 'Yeni PIN belirleyin',
     recover: 'PIN\'i kurtar',
     unlocked: '',
   } as const;
@@ -56,7 +57,12 @@
 
   function submitInitialPin() {
     formError = pinProblem(pin, pin2);
-    if (!formError) void lock.setInitialPin(pin);
+    if (!formError) void lock.completeReset(pin);
+  }
+
+  function submitChangePin() {
+    formError = pinProblem(pin, pin2);
+    if (!formError) void lock.changeTempPin(pin);
   }
 
   function submitRecover() {
@@ -121,11 +127,17 @@
             {@const user = lock.selectedUser}
             {#if forgot === 'explain'}
               <div class="space-y-4">
-                <p class="text-sm">Başka bir kullanıcı giriş yapıp PIN'inizi sıfırlayabilir. Okul kurtarma kodunuz varsa şimdi yeni PIN belirleyebilirsiniz.</p>
-                {#if user.resetPendingUntil}<p class="text-sm" role="status">{resetNote(user.resetPendingUntil)}</p>{/if}
+                {#if lock.users.length === 1}
+                  <p class="text-sm">Okul kurtarma kodunuz varsa şimdi yeni PIN belirleyebilirsiniz.</p>
+                  {#if user.resetPendingUntil}<p class="text-sm" role="status">{resetNote(user.resetPendingUntil)}</p>{/if}
+                {:else}
+                  <p class="text-sm">Başka bir kullanıcı giriş yapıp size geçici PIN verebilir ya da okul kurtarma kodunu kullanabilirsiniz.</p>
+                {/if}
                 <div class="flex flex-wrap gap-2">
                   <Button type="button" onclick={() => lock.showRecoverForm()}>Kurtarma koduyla yenile</Button>
-                  <Button type="button" variant="outline" disabled={!!user.resetPendingUntil} onclick={() => (forgot = 'confirm')}>Kurtarma kodum yok</Button>
+                  {#if lock.users.length === 1}
+                    <Button type="button" variant="outline" disabled={!!user.resetPendingUntil} onclick={() => (forgot = 'confirm')}>Kurtarma kodum yok</Button>
+                  {/if}
                 </div>
                 <Button type="button" variant="link" class="h-auto p-0" onclick={() => (forgot = 'none')}>Geri</Button>
               </div>
@@ -159,11 +171,18 @@
             {/if}
           {:else if lock.state === 'initialPin' && lock.selectedUser}
             <form class="space-y-4" onsubmit={(e) => { e.preventDefault(); submitInitialPin(); }}>
-              <p id="pin-hint" class="text-sm text-muted-foreground">{lock.selectedUser.name}, PIN'iniz sıfırlandı. Yeni bir PIN belirleyin. {PIN_HINT}</p>
+              <p id="pin-hint" class="text-sm text-muted-foreground">{lock.selectedUser.name}, 24 saatlik bekleme doldu. Yeni bir PIN belirleyin. {PIN_HINT}</p>
               <PinField id="lock-pin" label="Yeni PIN" bind:value={pin} autofocus autocomplete="new-password" describedBy="pin-hint" />
               <PinField id="lock-pin2" label="Yeni PIN (tekrar)" bind:value={pin2} autocomplete="new-password" />
               <Button type="submit" class="w-full" disabled={lock.busy}>PIN'i belirle</Button>
               <Button type="button" variant="link" class="h-auto p-0" onclick={() => lock.showPicker()}>Başka kullanıcı</Button>
+            </form>
+          {:else if lock.state === 'changePin' && lock.selectedUser}
+            <form class="space-y-4" onsubmit={(e) => { e.preventDefault(); submitChangePin(); }}>
+              <p id="pin-hint" class="text-sm text-muted-foreground">{lock.selectedUser.name}, geçici PIN ile girdiniz. Devam etmek için kendi PIN'inizi belirleyin. {PIN_HINT}</p>
+              <PinField id="lock-pin" label="Yeni PIN" bind:value={pin} autofocus autocomplete="new-password" describedBy="pin-hint" />
+              <PinField id="lock-pin2" label="Yeni PIN (tekrar)" bind:value={pin2} autocomplete="new-password" />
+              <Button type="submit" class="w-full" disabled={lock.busy}>PIN'i belirle</Button>
             </form>
           {:else if lock.state === 'recover'}
             <form class="space-y-4" onsubmit={(e) => { e.preventDefault(); submitRecover(); }}>

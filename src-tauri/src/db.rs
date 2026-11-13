@@ -105,8 +105,14 @@ CREATE TABLE audit_log (
 CREATE INDEX audit_log_at ON audit_log(at);
 "#;
 
+/// A PIN reset now issues a temporary PIN that must be changed at first login. Rows whose PIN
+/// was already cleared (NULL) stay NULL: they are refused at login, not claimable.
+const SCHEMA_V4: &str = r#"
+ALTER TABLE users ADD COLUMN must_change_pin INTEGER NOT NULL DEFAULT 0;
+"#;
+
 /// Ordered migrations; index + 1 is the `user_version` after applying it.
-const MIGRATIONS: &[&str] = &[SCHEMA_V1, SCHEMA_V2, SCHEMA_V3];
+const MIGRATIONS: &[&str] = &[SCHEMA_V1, SCHEMA_V2, SCHEMA_V3, SCHEMA_V4];
 
 #[derive(Debug)]
 pub enum DbError {
@@ -445,7 +451,7 @@ mod tests {
         let v: i64 = c
             .pragma_query_value(None, "user_version", |r| r.get(0))
             .unwrap();
-        assert_eq!(v, 3);
+        assert_eq!(v, 4);
     }
 
     fn v2_db_with_pin(pin_hash: Option<&str>) -> Connection {
@@ -483,6 +489,24 @@ mod tests {
             )
             .unwrap();
         assert_eq!((pin, rec.as_str(), n), (None, "rec", 0));
+    }
+
+    #[test]
+    fn v4_keeps_null_pin_rows_null_and_unflagged() {
+        let mut c = Connection::open_in_memory().unwrap();
+        migrate_to(&mut c, 3).unwrap();
+        c.execute(
+            "INSERT INTO users (id, name, name_key, created_at) VALUES ('u', 'A', 'a', 'x')",
+            [],
+        )
+        .unwrap();
+        migrate(&mut c).unwrap();
+        let (pin, must): (Option<String>, i64) = c
+            .query_row("SELECT pin_hash, must_change_pin FROM users", [], |r| {
+                Ok((r.get(0)?, r.get(1)?))
+            })
+            .unwrap();
+        assert_eq!((pin, must), (None, 0));
     }
 
     #[test]

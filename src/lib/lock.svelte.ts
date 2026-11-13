@@ -7,6 +7,7 @@ export type LockState =
   | "pickUser"
   | "pin"
   | "initialPin"
+  | "changePin"
   | "recover"
   | "unlocked";
 export type Invoke = <T>(command: string, args?: Record<string, unknown>) => Promise<T>;
@@ -16,9 +17,6 @@ const COUNTDOWN_TICK_MS = 1000;
 export const AUDIT_LIMIT = 200;
 export const PIN_PATTERN = /^\d{4,8}$/;
 export const PIN_HINT = "PIN 4–8 haneli rakamlardan oluşmalıdır.";
-/** Rust error for a user whose PIN was reset; answered by user_set_initial_pin. */
-export const NEEDS_INITIAL_PIN = "Bu kullanıcı için yeni PIN belirlenmeli.";
-
 export interface LockUser {
   id: string;
   name: string;
@@ -28,13 +26,19 @@ export interface LockUser {
 export interface UserRow extends LockUser {
   hasPin: boolean;
   resetPendingUntil: string | null;
+  /** The 24 h wait of a single-user reset is over (answered by completeReset). */
+  resetDue: boolean;
 }
 
 export interface AuditRow {
   id: number;
   startedAt: string;
   at: string;
+  userId: string | null;
+  /** Name when the row was written. */
   userName: string;
+  /** Name now; null when the user was removed or the row is anonymous. */
+  currentName: string | null;
   action: string;
   periodId: string | null;
   detail: string;
@@ -74,6 +78,8 @@ export class LockController {
   users = $state<UserRow[]>([]);
   selectedUser = $state<UserRow | null>(null);
   currentUser = $state<LockUser | null>(null);
+  /** The temporary PIN just used to log in; kept only until the forced change is done. */
+  #tempPin = "";
   #invoke: Invoke;
   #desktop: boolean;
   #idleMs: number;
@@ -116,11 +122,12 @@ export class LockController {
   selectUser(user: UserRow) {
     this.selectedUser = user;
     this.#startCountdown(null);
-    this.#enter(user.hasPin ? "pin" : "initialPin");
+    this.#enter(user.resetDue ? "initialPin" : "pin");
   }
 
   showPicker() {
     this.selectedUser = null;
+    this.#tempPin = "";
     this.#startCountdown(null);
     this.#enter("pickUser");
   }
@@ -128,25 +135,37 @@ export class LockController {
   unlock(pin: string) {
     return this.#run(async () => {
       const user = this.#selected();
-      try {
-        const result = await this.#invoke<{ ok: boolean; retryAfterSec: number | null }>(
-          "user_login",
-          { userId: user.id, pin },
-        );
-        if (result.ok) return this.#loggedIn(user);
-        this.#startCountdown(result.retryAfterSec);
-        this.error = result.retryAfterSec ? "Çok fazla hatalı deneme." : "PIN yanlış.";
-      } catch (e) {
-        if (errorMessage(e) !== NEEDS_INITIAL_PIN) throw e;
-        this.#enter("initialPin");
+      const result = await this.#invoke<{
+        ok: boolean;
+        retryAfterSec: number | null;
+        mustChangePin: boolean;
+      }>("user_login", { userId: user.id, pin });
+      if (result.ok && result.mustChangePin) {
+        // Logged in on the backend but gated: nothing works until the PIN is replaced.
+        this.#tempPin = pin;
+        return this.#enter("changePin");
       }
+      if (result.ok) return this.#loggedIn(user);
+      this.#startCountdown(result.retryAfterSec);
+      this.error = result.retryAfterSec ? "Çok fazla hatalı deneme." : "PIN yanlış.";
     });
   }
 
-  setInitialPin(pin: string) {
+  /** Forced step after a login with a temporary PIN. */
+  changeTempPin(newPin: string) {
     return this.#run(async () => {
       const user = this.#selected();
-      await this.#invoke("user_set_initial_pin", { userId: user.id, pin });
+      await this.#invoke("user_change_pin", { pin: this.#tempPin, newPin });
+      this.#tempPin = "";
+      this.#loggedIn(user);
+    });
+  }
+
+  /** Single-user install, 24 h reset is due: sets the new PIN and logs in. */
+  completeReset(newPin: string) {
+    return this.#run(async () => {
+      const user = this.#selected();
+      await this.#invoke("lock_complete_reset", { userId: user.id, newPin });
       this.#loggedIn(user);
     });
   }
@@ -201,6 +220,7 @@ export class LockController {
     }
     this.currentUser = null;
     this.selectedUser = null;
+    this.#tempPin = "";
     this.#enter("pickUser");
     this.error = failure;
   }
@@ -213,13 +233,15 @@ export class LockController {
     return this.#invoke("user_create", { ...user });
   }
 
-  async updateUser(userId: string, name: string, title: string) {
-    await this.#invoke("user_update", { userId, name, title });
-    if (this.currentUser?.id === userId) this.currentUser = { id: userId, name, title };
+  /** Edits the logged-in user's own name/title. */
+  async updateSelf(name: string, title: string) {
+    await this.#invoke("user_update_self", { name, title });
+    if (this.currentUser) this.currentUser = { id: this.currentUser.id, name, title };
   }
 
-  resetUserPin(userId: string) {
-    return this.#invoke("user_reset_pin", { userId });
+  /** Returns the one-time temporary PIN to hand to that user. */
+  async resetUserPin(userId: string) {
+    return (await this.#invoke<{ tempPin: string }>("user_reset_pin", { userId })).tempPin;
   }
 
   removeUser(userId: string) {

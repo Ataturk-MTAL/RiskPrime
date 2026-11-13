@@ -31,15 +31,15 @@ pub fn run() {
             commands::users_list,
             commands::user_create,
             commands::user_login,
-            commands::user_set_initial_pin,
             commands::lock_now,
-            commands::user_update,
+            commands::user_update_self,
             commands::user_change_pin,
             commands::user_reset_pin,
             commands::user_remove,
             commands::lock_recover,
             commands::lock_new_recovery_code,
-            commands::lock_request_reset
+            commands::lock_request_reset,
+            commands::lock_complete_reset
         ])
         .run(tauri::generate_context!())
         .expect("error while running RiskPrime");

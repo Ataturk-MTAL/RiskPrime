@@ -21,6 +21,8 @@
   let pin2 = $state('');
   let error = $state('');
   let busy = $state(false);
+  /** The one-time temporary PIN of the user whose PIN was just reset. */
+  let issued = $state<{ name: string; pin: string } | null>(null);
 
   const users = $derived(lock.users);
 
@@ -28,6 +30,7 @@
     if (!open) return;
     form = null;
     error = '';
+    issued = null;
     void reload();
   });
 
@@ -72,10 +75,26 @@
       if (error) return;
     }
     const saved = await act(
-      () => (target === 'new' ? lock.createUser({ name: name.trim(), title: title.trim(), pin }) : lock.updateUser(target.id, name.trim(), title.trim())),
+      () => (target === 'new' ? lock.createUser({ name: name.trim(), title: title.trim(), pin }) : lock.updateSelf(name.trim(), title.trim())),
       target === 'new' ? 'Kullanıcı eklendi.' : 'Kullanıcı güncellendi.',
     );
     if (saved) form = null;
+  }
+
+  async function resetPin(user: UserRow) {
+    issued = null;
+    await act(async () => {
+      issued = { name: user.name, pin: await lock.resetUserPin(user.id) };
+    }, 'Geçici PIN oluşturuldu.');
+  }
+
+  async function copyPin() {
+    try {
+      await navigator.clipboard.writeText(issued?.pin ?? '');
+      toast.success('PIN kopyalandı.');
+    } catch {
+      error = 'Kopyalanamadı; PIN\'i elle yazın.';
+    }
   }
 
   const removeBlocker = (user: UserRow) =>
@@ -120,22 +139,23 @@
                   <span class="flex flex-wrap items-center gap-2 text-sm font-medium">
                     <span class="truncate">{user.name}</span>
                     {#if user.id === lock.currentUser?.id}<Badge variant="outline">Siz</Badge>{/if}
-                    {#if !user.hasPin}<Badge variant="secondary">PIN bekleniyor</Badge>{/if}
+                    {#if !user.hasPin}<Badge variant="secondary">PIN sıfırlanmış</Badge>{/if}
                   </span>
                   {#if user.title}<span class="truncate text-xs text-muted-foreground">{user.title}</span>{/if}
                 </div>
               </div>
               <div class="flex flex-wrap gap-2">
-                <Button size="sm" variant="outline" onclick={() => openForm(user)}>Düzenle</Button>
-                {#if user.id !== lock.currentUser?.id}
+                {#if user.id === lock.currentUser?.id}
+                  <Button size="sm" variant="outline" onclick={() => openForm(user)}>Düzenle</Button>
+                {:else}
                   <ConfirmDialog
                     title="PIN sıfırlansın mı?"
-                    description="{user.name} bir sonraki girişte yeni PIN belirleyecek."
+                    description="{user.name} için geçici bir PIN oluşturulur; ilk girişte kendi PIN'ini belirleyecek."
                     confirmLabel="PIN'i sıfırla"
                     label="PIN'i sıfırla: {user.name}"
                     variant="outline"
                     size="sm"
-                    onconfirm={() => void act(() => lock.resetUserPin(user.id), 'PIN sıfırlandı.')}
+                    onconfirm={() => void resetPin(user)}
                   >
                     PIN'i sıfırla
                   </ConfirmDialog>
@@ -163,6 +183,15 @@
           {/each}
         </ul>
       </Tooltip.Provider>
+      {#if issued}
+        <div class="space-y-2 rounded-lg border p-3" role="status">
+          <p class="text-sm">Bu geçici PIN'i {issued.name} ile paylaşın; ilk girişte kendi PIN'ini belirleyecek.</p>
+          <div class="flex items-center gap-2">
+            <code class="rounded bg-muted px-3 py-1.5 font-mono text-lg tracking-widest select-all">{issued.pin}</code>
+            <Button size="sm" variant="outline" onclick={() => void copyPin()}>Kopyala</Button>
+          </div>
+        </div>
+      {/if}
       <div aria-live="polite" class="min-h-5 text-sm text-destructive">{#if error}<p role="alert">{error}</p>{/if}</div>
       <Dialog.Footer>
         <Button type="button" onclick={() => openForm('new')}>Kullanıcı ekle</Button>

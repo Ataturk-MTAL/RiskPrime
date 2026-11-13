@@ -20,7 +20,7 @@ const CROCKFORD: &[u8; 32] = b"0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 
 pub const MSG_LOCKED: &str = "Uygulama kilitli.";
 pub const MSG_NO_USER: &str = "Kullanıcı bulunamadı.";
-pub const MSG_NEEDS_PIN: &str = "Bu kullanıcı için yeni PIN belirlenmeli.";
+pub const MSG_PIN_CLEARED: &str = "Bu kullanıcının PIN'i sıfırlanmış; başka bir kullanıcıdan geçici PIN isteyin ya da okul kurtarma kodunu kullanın.";
 const MSG_BAD_PIN_FORMAT: &str = "PIN 4-8 haneli rakamlardan oluşmalı.";
 const MSG_WRONG_PIN: &str = "PIN hatalı.";
 const MSG_WRONG_RECOVERY: &str = "Kurtarma kodu hatalı.";
@@ -250,13 +250,11 @@ fn into_result(a: Attempt, wrong_msg: &str) -> Res<()> {
     }
 }
 
-/// Per-user PIN attempt. Applies due 24 h resets first; a user with no PIN yields
-/// `MSG_NEEDS_PIN` (the caller then asks for a new one).
+/// Per-user PIN attempt; a user with no PIN (cleared before v4) is refused, never claimable.
 pub fn login(conn: &Connection, user_id: &str, pin: &str, now: DateTime<Utc>) -> Res<Attempt> {
-    users::apply_due_resets(conn, now)?;
     let phc = users::pin_hash(conn, user_id)?
         .ok_or_else(|| LockError::msg(MSG_NO_USER))?
-        .ok_or_else(|| LockError::msg(MSG_NEEDS_PIN))?;
+        .ok_or_else(|| LockError::msg(MSG_PIN_CLEARED))?;
     check(conn, Who::User(user_id), pin, Some(&phc), now)
 }
 

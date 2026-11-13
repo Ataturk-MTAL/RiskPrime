@@ -1,11 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test";
-import {
-  IDLE_LOCK_MS,
-  LockController,
-  NEEDS_INITIAL_PIN,
-  resetNote,
-  type Invoke,
-} from "./lock.svelte";
+import { IDLE_LOCK_MS, LockController, resetNote, type Invoke } from "./lock.svelte";
 
 type Handler = (args?: Record<string, unknown>) => unknown;
 
@@ -113,23 +107,59 @@ describe("LockController", () => {
     expect(c.selectedUser).toBeNull();
   });
 
-  it("sets an initial PIN for a user without one", async () => {
-    const { c, calls } = await pickerController({ user_set_initial_pin: () => undefined }, [
-      row({ hasPin: false }),
-    ]);
+  it("forces a new PIN after a login with a temporary PIN", async () => {
+    const { c, calls } = await pickerController({
+      user_login: () => ({ ok: true, retryAfterSec: null, mustChangePin: true }),
+      user_change_pin: () => undefined,
+    });
     c.selectUser(c.users[0]);
-    expect(c.state).toBe("initialPin");
-    await c.setInitialPin("4321");
-    expect(calls.at(-1)).toEqual(["user_set_initial_pin", { userId: "u1", pin: "4321" }]);
+    await c.unlock("493021");
+    expect(c.state).toBe("changePin");
+    expect(c.currentUser).toBeNull();
+    await c.changeTempPin("4321");
+    expect(calls.at(-1)).toEqual(["user_change_pin", { pin: "493021", newPin: "4321" }]);
     expect(c.state).toBe("unlocked");
     expect(c.currentUser).toEqual(ada);
   });
 
-  it("falls to initialPin when login says the PIN must be set", async () => {
-    const { c } = await pickerController({ user_login: () => Promise.reject(NEEDS_INITIAL_PIN) });
+  it("stays on the forced step when the new PIN is refused", async () => {
+    const { c } = await pickerController({
+      user_login: () => ({ ok: true, retryAfterSec: null, mustChangePin: true }),
+      user_change_pin: () => Promise.reject("PIN hatalı."),
+    });
     c.selectUser(c.users[0]);
-    await c.unlock("1234");
+    await c.unlock("493021");
+    await c.changeTempPin("4321");
+    expect(c.state).toBe("changePin");
+    expect(c.error).toBe("PIN hatalı.");
+  });
+
+  it("completes a due single-user reset through lock_complete_reset", async () => {
+    const { c, calls } = await pickerController({ lock_complete_reset: () => undefined }, [
+      row({ resetDue: true, resetPendingUntil: "2030-01-02T10:30:00Z" }),
+    ]);
+    c.selectUser(c.users[0]);
     expect(c.state).toBe("initialPin");
+    await c.completeReset("4321");
+    expect(calls.at(-1)).toEqual(["lock_complete_reset", { userId: "u1", newPin: "4321" }]);
+    expect(c.state).toBe("unlocked");
+  });
+
+  it("shows the PIN screen (not a claim form) for a user without a PIN", async () => {
+    const { c } = await pickerController({}, [row({ hasPin: false })]);
+    c.selectUser(c.users[0]);
+    expect(c.state).toBe("pin");
+  });
+
+  it("returns the temporary PIN from a reset", async () => {
+    const { invoke, calls } = fake({
+      lock_status: () => status({ unlocked: true, currentUser: ada }),
+      user_reset_pin: () => ({ tempPin: "493021" }),
+    });
+    const c = new LockController({ invoke, desktop: true });
+    await c.init();
+    expect(await c.resetUserPin("u2")).toBe("493021");
+    expect(calls.at(-1)).toEqual(["user_reset_pin", { userId: "u2" }]);
   });
 
   it("counts a wrong-PIN lockout down and unlocks on the right PIN", async () => {
@@ -209,13 +239,14 @@ describe("LockController", () => {
   });
 
   it("keeps the current user in sync when they edit themselves", async () => {
-    const { invoke } = fake({
+    const { invoke, calls } = fake({
       lock_status: () => status({ unlocked: true, currentUser: ada }),
-      user_update: () => undefined,
+      user_update_self: () => undefined,
     });
     const c = new LockController({ invoke, desktop: true });
     await c.init();
-    await c.updateUser("u1", "Ada K.", "Müdür");
+    await c.updateSelf("Ada K.", "Müdür");
+    expect(calls.at(-1)).toEqual(["user_update_self", { name: "Ada K.", title: "Müdür" }]);
     expect(c.currentUser).toEqual({ id: "u1", name: "Ada K.", title: "Müdür" });
   });
 
