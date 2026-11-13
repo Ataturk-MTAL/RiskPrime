@@ -1,0 +1,91 @@
+name: Release (desktop)
+
+# Push a tag like v0.3.0 (same as package.json "version") to build the desktop app for
+# Windows, macOS and Linux and attach the installers to a draft GitHub Release.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.18.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: node scripts/check-version.mjs "$GITHUB_REF_NAME"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm bank:check
+      - run: pnpm test
+      - run: pnpm check
+      - run: pnpm lint
+      - run: pnpm lint:english
+
+  build:
+    needs: verify
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-latest
+            args: ""
+          - platform: macos-latest
+            args: "--target universal-apple-darwin"
+          - platform: ubuntu-22.04
+            args: ""
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tauri system dependencies (Linux)
+        if: startsWith(matrix.platform, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.18.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ startsWith(matrix.platform, 'macos') && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: pnpm install --frozen-lockfile
+      # Builds the web app (beforeBuildCommand), the Rust app and the installers, then uploads them
+      # to one draft release shared by all three jobs.
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: RiskPrime ${{ github.ref_name }}
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
+          releaseBody: |
+            ## Kurulum
+
+            - **Windows:** `RiskPrime_*_x64-setup.exe` (önerilen) ya da `.msi`
+            - **macOS (Apple Silicon ve Intel):** `RiskPrime_*_universal.dmg`
+            - **Linux:** `.AppImage`, `.deb` ya da `.rpm`
+
+            Bu sürüm kod imzası taşımaz. Windows "Windows bilgisayarınızı korudu" uyarısında
+            **Ek bilgi → Yine de çalıştır**; macOS'ta ilk açılışta uygulamaya sağ tıklayıp **Aç** deyin.
+
+            Değişiklikler için commit geçmişine ve `content/CHANGELOG.md` dosyasına bakın.
