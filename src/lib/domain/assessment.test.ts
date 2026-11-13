@@ -102,8 +102,8 @@ describe("assessment", () => {
 
   test("adds, updates and removes signatories", () => {
     let a = m.emptyAssessment();
-    a = m.updateSignatory(a, 4, { name: "" });
-    expect(a.school.signatories[4].name).toBe("");
+    a = m.updateSignatory(a, 4, { name: "Ayşe ÖRNEK" });
+    expect(a.school.signatories[4].name).toBe("Ayşe ÖRNEK");
     a = m.addSignatory(a, "Atölye Öğretmeni");
     expect(a.school.signatories).toHaveLength(6);
     a = m.removeSignatory(a, 0);

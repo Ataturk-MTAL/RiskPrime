@@ -1,6 +1,5 @@
 //! Users: CRUD, PIN set/reset (temporary PIN) and the single-user 24 h forgotten-PIN reset. No roles.
-//! Name uniqueness uses `name_key` = trimmed `str::to_lowercase()`, which is not Turkish-aware
-//! (`I` -> `i`, not `ı`; `İ` -> `i̇`): "IŞIK" and "ışık" count as different names. Acceptable.
+//! Name uniqueness uses `name_key` (see `name_key`): Turkish-aware lowercase, inner whitespace collapsed.
 use crate::lock::{self, LockError, Res, MSG_NO_USER, MSG_PIN_CLEARED};
 use argon2::password_hash::rand_core::{OsRng, RngCore};
 use chrono::{DateTime, Duration, Utc};
@@ -55,7 +54,24 @@ fn clean(name: &str, title: &str) -> Res<(String, String, String)> {
     if name.chars().count() > NAME_MAX_CHARS || title.chars().count() > NAME_MAX_CHARS {
         return Err(LockError::msg(MSG_TOO_LONG));
     }
-    Ok((name.to_string(), title.to_string(), name.to_lowercase()))
+    Ok((name.to_string(), title.to_string(), name_key(name)))
+}
+
+/// Uniqueness key: Turkish lowercase (`I` -> `ı`, `İ` -> `i`) with runs of whitespace collapsed.
+/// Plain `to_lowercase` would map `I` to `i` and `İ` to `i̇` (i + combining dot).
+pub fn name_key(name: &str) -> String {
+    name.split_whitespace()
+        .map(|w| {
+            w.chars()
+                .map(|c| match c {
+                    'I' => 'ı'.to_string(),
+                    'İ' => "i".to_string(),
+                    _ => c.to_lowercase().collect(),
+                })
+                .collect::<String>()
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 fn ensure_name_free(conn: &Connection, key: &str, except_id: Option<&str>) -> Res<()> {
@@ -322,12 +338,26 @@ mod tests {
         assert_eq!(a.name, "Ali");
         assert_eq!(a.id.len(), 16);
         assert_eq!(
-            create(&c, "ALI", "", "1234", t0()).unwrap_err().message,
+            create(&c, "ALİ", "", "1234", t0()).unwrap_err().message,
             MSG_NAME_TAKEN
         );
         assert!(create(&c, "  ", "", "1234", t0()).is_err());
         assert!(create(&c, "Veli", "", "12", t0()).is_err());
         assert_eq!(count(&c).unwrap(), 1);
+    }
+
+    #[test]
+    fn names_collide_turkish_aware() {
+        let c = mem();
+        mk(&c, "IŞIK");
+        assert!(create(&c, "ışık", "", "1234", t0()).is_err());
+        mk(&c, "İnci");
+        assert!(create(&c, "inci", "", "1234", t0()).is_err());
+        assert!(create(&c, "İNCİ", "", "1234", t0()).is_err());
+        assert!(create(&c, "Işık", "", "1234", t0()).is_err());
+        assert!(create(&c, "Isik", "", "1234", t0()).is_ok());
+        mk(&c, "Ali  Veli");
+        assert!(create(&c, "ali veli", "", "1234", t0()).is_err());
     }
 
     #[test]

@@ -68,5 +68,6 @@ Akış: öneri formu veya bot → `madde-onerisi` etiketli issue → otomatik ko
 - Otomatik kontrol geçersiz öneriye `eksik-bilgi`, bankadaki veya açık önerilerdeki benzer maddeye (skor ≥ 0,6) `olası-kopya` etiketi ve tek bir (güncellenen) yorum ekler.
 - Depoda şu etiketleri oluşturun: `madde-onerisi`, `olası-kopya`, `eksik-bilgi`, `onaylandı`.
 - `onaylandı` etiketini yalnızca bakım sorumluları ekleyebilmelidir (etiket yazma yetkisi yalnızca onlarda olmalı); etiket PR'ı otomatik açar.
-- Ayarlar → Actions → General: "Allow GitHub Actions to create and approve pull requests" açık olmalıdır. `GITHUB_TOKEN` ile açılan PR'da CI otomatik başlamaz; PR'ı kapatıp yeniden açın.
+- Ayarlar → Actions → General: "Allow GitHub Actions to create and approve pull requests" açık olmalıdır.
+- Botun açtığı PR'da CI başlamaz: `GITHUB_TOKEN` ile üretilen olaylar iş akışı tetiklemez. Çözümler: (1) PR'ı kapatıp yeniden açmak (elle, geçici); (2) `PROPOSAL_PR_TOKEN` gizli değişkenini tanımlamak: yalnızca bu depoda `contents` ve `pull requests` yazma yetkili ince ayarlı kişisel erişim jetonu (fine-grained PAT) ya da GitHub App jetonu. `proposal-approve.yml` bu gizli değişken varsa onu kullanır (`secrets.PROPOSAL_PR_TOKEN || github.token`), böylece PR'da CI çalışır; yoksa eski davranış sürer.
 - Yerelde deneme: `GITHUB_TOKEN=… GITHUB_REPOSITORY=sahip/depo node scripts/proposal.mjs triage <no>`.

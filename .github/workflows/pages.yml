@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -31,13 +33,39 @@ jobs:
       - run: pnpm test
       - run: pnpm check
       - run: pnpm lint
+      - run: pnpm lint:english
       - run: pnpm fmt:check
       - run: pnpm build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
+  # Desktop (Tauri) crate checks. Independent of deploy: Pages ships from the web build only.
+  desktop:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src-tauri
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      # tauri::generate_context! needs the frontend dist dir to exist; a stub is enough here.
+      - run: mkdir -p ../dist && echo '<!doctype html>' > ../dist/index.html
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:

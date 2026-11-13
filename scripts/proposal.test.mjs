@@ -8,6 +8,8 @@ import {
   setBankVersion,
   insertChangelog,
   triageDecision,
+  listAll,
+  MAX_PAGES,
   LABEL_INVALID,
   LABEL_DUPLICATE,
 } from "./proposal.mjs";
@@ -16,6 +18,31 @@ const body = (text, reason = "Güvenlik için gerekli bir kontrol.") =>
   `### Madde metni\n\n${text}\n\n### İlgili MEB listesi\n\n_No response_\n\n### Mekân türleri\n\nworkshop\n\n### Dayanak (mevzuat/standart)\n\n_No response_\n\n### Gerekçe\n\n${reason}`;
 
 const TEXT = "Lehim tezgâhında duman emiş sistemi çalışıyor ve filtresi temiz mi?";
+
+describe("listAll paging", () => {
+  const items = (n) => Array.from({ length: n }, (_, i) => ({ number: i }));
+
+  it("follows pages until a short page", async () => {
+    const calls = [];
+    const gh = async (route) => {
+      calls.push(route);
+      return route.endsWith("&page=1") ? items(100) : items(7);
+    };
+    expect(await listAll(gh, "/issues?state=open")).toHaveLength(107);
+    expect(calls).toEqual([
+      "/issues?state=open&per_page=100&page=1",
+      "/issues?state=open&per_page=100&page=2",
+    ]);
+  });
+
+  it("uses ? when the route has no query and stops at the cap", async () => {
+    const calls = [];
+    const gh = async (route) => (calls.push(route), items(100));
+    await listAll(gh, "/issues/1/comments");
+    expect(calls).toHaveLength(MAX_PAGES);
+    expect(calls[0]).toBe("/issues/1/comments?per_page=100&page=1");
+  });
+});
 
 describe("proposal helpers", () => {
   it("computes the next EE key with at least two digits", () => {

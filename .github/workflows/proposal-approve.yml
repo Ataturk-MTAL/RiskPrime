@@ -37,6 +37,8 @@ jobs:
       - id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
+          # PRs opened with GITHUB_TOKEN do not trigger CI; a PAT / App token does (see README).
+          token: ${{ secrets.PROPOSAL_PR_TOKEN || github.token }}
           branch: oneri/${{ github.event.issue.number }}
           title: "Madde önerisi #${{ github.event.issue.number }}: ${{ steps.add.outputs.key }}"
           commit-message: "feat: ${{ steps.add.outputs.key }} maddesi eklendi (öneri #${{ github.event.issue.number }})"

@@ -123,6 +123,39 @@ describe("excel-backup", () => {
     expect(rows[5][header.indexOf("Cevap")]).toBe("Hayır");
   });
 
+  test("round-trips ChecklistItem.fromBank", () => {
+    const a = fullAssessment();
+    const flagged: Assessment = {
+      ...a,
+      checklists: a.checklists.map((l, i) =>
+        i === 0
+          ? {
+              ...l,
+              items: l.items.map((m, j) => (j === 1 ? { ...m, fromBank: true as const } : m)),
+            }
+          : l,
+      ),
+    };
+    const restored = ok(restoreBackup(sheetsOf(flagged)));
+    expect(restored.checklists[0].items.map((m) => m.fromBank)).toEqual([
+      undefined,
+      true,
+      undefined,
+      undefined,
+    ]);
+    expect(normalized(restored)).toEqual(normalized(flagged));
+  });
+
+  test("a Kontrol Listesi without the Bankadan column restores with fromBank absent", () => {
+    const sheets = sheetsOf(fullAssessment());
+    const rows = sheets["Kontrol Listesi"];
+    const at = rows[0].indexOf("Bankadan");
+    expect(at).toBeGreaterThan(-1);
+    const old = { ...sheets, "Kontrol Listesi": rows.map((r) => r.filter((_, j) => j !== at)) };
+    const restored = ok(restoreBackup(old));
+    expect(restored.checklists.flatMap((l) => l.items).some((m) => m.fromBank)).toBe(false);
+  });
+
   test("restored assessment gets fresh ids", () => {
     const a = fullAssessment();
     const restored = ok(restoreBackup(sheetsOf(a)));

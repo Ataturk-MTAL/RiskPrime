@@ -117,8 +117,35 @@ const SCHEMA_V5: &str = r#"
 UPDATE users SET reset_pending_until = NULL;
 "#;
 
+// Turkish-aware `name_key`: no SQL here, `recompute_name_keys` runs right after this step.
+const SCHEMA_V6: &str = "";
+
 /// Ordered migrations; index + 1 is the `user_version` after applying it.
-const MIGRATIONS: &[&str] = &[SCHEMA_V1, SCHEMA_V2, SCHEMA_V3, SCHEMA_V4, SCHEMA_V5];
+const MIGRATIONS: &[&str] = &[
+    SCHEMA_V1, SCHEMA_V2, SCHEMA_V3, SCHEMA_V4, SCHEMA_V5, SCHEMA_V6,
+];
+const NAME_KEY_MIGRATION: usize = 6;
+
+/// Recompute every `name_key` with the Turkish-aware rule. Users that now collide all keep
+/// their row: the later one (by created_at, then rowid) gets "#<id>" appended to its key, so
+/// nothing is deleted or merged. Silent by design.
+fn recompute_name_keys(tx: &Transaction) -> Result<(), DbError> {
+    let rows: Vec<(String, String)> = tx
+        .prepare("SELECT id, name FROM users ORDER BY created_at, rowid")?
+        .query_map([], |r| Ok((r.get(0)?, r.get(1)?)))?
+        .collect::<Result<_, _>>()?;
+    // Free the unique index first: new keys may equal another row's not-yet-updated old key.
+    tx.execute("UPDATE users SET name_key = id", [])?;
+    let mut seen = std::collections::HashSet::new();
+    for (id, name) in rows {
+        let mut key = crate::users::name_key(&name);
+        if !seen.insert(key.clone()) {
+            key = format!("{key}#{id}");
+        }
+        tx.execute("UPDATE users SET name_key = ?2 WHERE id = ?1", [&id, &key])?;
+    }
+    Ok(())
+}
 
 #[derive(Debug)]
 pub enum DbError {
@@ -182,6 +209,9 @@ fn migrate_to(conn: &mut Connection, target: usize) -> Result<(), DbError> {
     for (i, sql) in MIGRATIONS.iter().enumerate().take(target).skip(current) {
         let tx = conn.transaction()?;
         tx.execute_batch(sql)?;
+        if i + 1 == NAME_KEY_MIGRATION {
+            recompute_name_keys(&tx)?;
+        }
         tx.pragma_update(None, "user_version", i + 1)?;
         tx.commit()?;
     }
@@ -457,7 +487,7 @@ mod tests {
         let v: i64 = c
             .pragma_query_value(None, "user_version", |r| r.get(0))
             .unwrap();
-        assert_eq!(v, 5);
+        assert_eq!(v, 6);
     }
 
     #[test]
@@ -475,6 +505,49 @@ mod tests {
             .query_row("SELECT reset_pending_until FROM users", [], |r| r.get(0))
             .unwrap();
         assert_eq!(pending, None);
+    }
+
+    fn keys(c: &Connection) -> Vec<(String, String)> {
+        c.prepare("SELECT id, name_key FROM users ORDER BY id")
+            .unwrap()
+            .query_map([], |r| Ok((r.get(0)?, r.get(1)?)))
+            .unwrap()
+            .map(Result::unwrap)
+            .collect()
+    }
+
+    #[test]
+    fn v6_recomputes_name_keys_turkish_aware() {
+        let mut c = Connection::open_in_memory().unwrap();
+        migrate_to(&mut c, 5).unwrap();
+        c.execute(
+            "INSERT INTO users (id, name, name_key, created_at) VALUES ('a', 'IŞIK  Er', 'işik  er', 'x')",
+            [],
+        )
+        .unwrap();
+        migrate(&mut c).unwrap();
+        assert_eq!(keys(&c), vec![("a".to_string(), "ışık er".to_string())]);
+    }
+
+    #[test]
+    fn v6_keeps_both_users_when_keys_collide_and_suffixes_the_later() {
+        let mut c = Connection::open_in_memory().unwrap();
+        migrate_to(&mut c, 5).unwrap();
+        for (id, name, at) in [("a", "IŞIK", "1"), ("b", "ışık", "2")] {
+            c.execute(
+                "INSERT INTO users (id, name, name_key, created_at) VALUES (?1, ?2, ?3, ?4)",
+                [id, name, &name.to_lowercase(), at],
+            )
+            .unwrap();
+        }
+        migrate(&mut c).unwrap();
+        assert_eq!(
+            keys(&c),
+            vec![
+                ("a".to_string(), "ışık".to_string()),
+                ("b".to_string(), "ışık#b".to_string())
+            ]
+        );
     }
 
     fn v2_db_with_pin(pin_hash: Option<&str>) -> Connection {

@@ -141,3 +141,33 @@ describe("deficienciesWithState", () => {
     expect(deficienciesWithState(a).map(isTransferred)).toEqual([true]);
   });
 });
+
+describe("filterDeficiencies with merged common items", () => {
+  const merged = {
+    listId: "k1",
+    listName: "A",
+    listCode: "A",
+    itemId: "m1",
+    itemNo: "1",
+    text: "Ortak soru",
+    locationId: "l1",
+    locationName: "Depo",
+    note: "",
+    rowIds: [],
+    siblings: [{ listId: "k2", itemId: "m2", ref: "X" }],
+  };
+  const filter = (listId: string) => ({ ...ALL_DEFICIENCIES, listId });
+
+  test("matches by the representative's list", () => {
+    expect(filterDeficiencies([merged], filter("k1"))).toHaveLength(1);
+  });
+
+  test("matches by a sibling's list, and counts agree", () => {
+    expect(filterDeficiencies([merged], filter("k2"))).toHaveLength(1);
+    expect(deficiencyCounts([merged], filter("k2")).all).toBe(1);
+  });
+
+  test("does not match an unrelated list", () => {
+    expect(filterDeficiencies([merged], filter("k3"))).toHaveLength(0);
+  });
+});

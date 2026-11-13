@@ -67,13 +67,23 @@ export async function installationToken(env: GithubEnv): Promise<string> {
   return ((await res.json()) as { token: string }).token;
 }
 
-/** Open proposals, newest first (first 100 are enough for duplicate detection). */
+const PAGE_SIZE = 100;
+/** Cap: at most 10 pages = 1000 open proposals are checked for duplicates; older ones are ignored. */
+export const MAX_PAGES = 10;
+
+/** Open proposals, newest first, paged until a short page or MAX_PAGES. */
 export async function listOpenProposals(token: string, repo: string): Promise<OpenIssue[]> {
-  const res = await call(
-    token,
-    `/repos/${repo}/issues?state=open&labels=madde-onerisi&per_page=100`,
-  );
-  return (await res.json()) as OpenIssue[];
+  const all: OpenIssue[] = [];
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const res = await call(
+      token,
+      `/repos/${repo}/issues?state=open&labels=madde-onerisi&per_page=${PAGE_SIZE}&page=${page}`,
+    );
+    const items = (await res.json()) as OpenIssue[];
+    all.push(...items);
+    if (items.length < PAGE_SIZE) break;
+  }
+  return all;
 }
 
 export async function addComment(

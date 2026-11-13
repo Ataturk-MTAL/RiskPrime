@@ -103,6 +103,22 @@ export function triageDecision(body, bank, openIssues) {
 
 // ---------- GitHub API ----------
 
+const PAGE_SIZE = 100;
+/** Cap: at most 10 pages = 1000 items are read; anything older is ignored. */
+export const MAX_PAGES = 10;
+
+/** GET a list route page by page (per_page=100) until a short page or MAX_PAGES. */
+export async function listAll(gh, route) {
+  const sep = route.includes("?") ? "&" : "?";
+  const all = [];
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const items = await gh(`${route}${sep}per_page=${PAGE_SIZE}&page=${page}`);
+    all.push(...items);
+    if (items.length < PAGE_SIZE) break;
+  }
+  return all;
+}
+
 function api() {
   const { GITHUB_TOKEN: token, GITHUB_REPOSITORY: repo } = process.env;
   if (!token || !repo) throw new Error("GITHUB_TOKEN ve GITHUB_REPOSITORY gerekli");
@@ -144,7 +160,7 @@ async function loadProposalIssue(gh, number) {
 async function triage(number) {
   const gh = api();
   const issue = await loadProposalIssue(gh, number);
-  const open = await gh(`/issues?state=open&labels=${PROPOSAL_LABEL}&per_page=100`);
+  const open = await listAll(gh, `/issues?state=open&labels=${PROPOSAL_LABEL}`);
   const others = open.filter((i) => !i.pull_request && i.number !== issue.number);
   const { labels, comment } = triageDecision(issue.body ?? "", loadBank(), others);
 
@@ -155,7 +171,7 @@ async function triage(number) {
       await gh(`/issues/${number}/labels/${encodeURIComponent(name)}`, "DELETE");
   }
   const text = `${TRIAGE_MARKER}\n${comment}`;
-  const comments = await gh(`/issues/${number}/comments?per_page=100`);
+  const comments = await listAll(gh, `/issues/${number}/comments`);
   const mine = comments.find((c) => c.body?.startsWith(TRIAGE_MARKER));
   if (mine) {
     if (mine.body !== text) await gh(`/issues/comments/${mine.id}`, "PATCH", { body: text });

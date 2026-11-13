@@ -1,4 +1,5 @@
 allowBuilds:
+  "@ast-grep/cli": true
   esbuild: false
 minimumReleaseAgeExclude:
   - "@lucide/svelte@1.72.0"

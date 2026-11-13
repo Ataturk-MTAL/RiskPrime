@@ -21,6 +21,8 @@ export const LOCATION_KEY_HEADER = "Mekân No";
 const LIST_LOCATIONS_HEADER = "Mekân Nolar";
 /** Question bank key of an item (e.g. KL-26.06, EE-03); optional, older backups lack it. */
 const ITEM_REF_HEADER = "Soru Anahtarı";
+/** Optional column: "Evet" when the item was taken verbatim from the shared checklists (fromBank). */
+const BANK_HEADER = "Bankadan";
 const ADDED_TEXT = "Evet";
 const REF_SCOPE_SEPARATOR = "@";
 
@@ -90,6 +92,7 @@ export function checklistSheet(a: Assessment): Table {
           note,
           m.added ? ADDED_TEXT : "",
           locationNos(l),
+          m.fromBank ? ADDED_TEXT : "",
           m.ref ?? "",
           scopeNo(locationId),
         ];
@@ -97,12 +100,13 @@ export function checklistSheet(a: Assessment): Table {
     );
     return itemRows.length
       ? itemRows
-      : [[...head(l, i), "", "", "", "", "", locationNos(l), "", ""]];
+      : [[...head(l, i), "", "", "", "", "", locationNos(l), "", "", ""]];
   });
   return [
     [
       ...LIST_COLUMNS.map(([, h]) => h),
       LIST_LOCATIONS_HEADER,
+      BANK_HEADER,
       ITEM_REF_HEADER,
       LOCATION_KEY_HEADER,
     ],
@@ -131,6 +135,7 @@ export function readLists(aoa: unknown[][], errors: string[]): KeyedList[] {
   }
   const locationsAt = optionalColumn(aoa[0], LIST_LOCATIONS_HEADER);
   const refAt = optionalColumn(aoa[0], ITEM_REF_HEADER);
+  const bankAt = optionalColumn(aoa[0], BANK_HEADER);
   const scopeAt = keyColumn(aoa[0]);
   const states = new Map<string, ListState>();
   for (const { rowNo, cells: v } of dataRows(aoa, cols.positions, "listNo")) {
@@ -172,7 +177,8 @@ export function readLists(aoa: unknown[][], errors: string[]): KeyedList[] {
     if (v.no === "" && v.text === "" && v.added === "") continue;
     const scope = scopeAt < 0 ? "" : cell(aoa[rowNo - 1][scopeAt]);
     const ref = refAt < 0 ? "" : cell(aoa[rowNo - 1][refAt]);
-    addItemRow(state, scope, rowNo, { v, answer: answer as Answer, ref }, errors);
+    const fromBank = bankAt >= 0 && norm(cell(aoa[rowNo - 1][bankAt])) === norm(ADDED_TEXT);
+    addItemRow(state, scope, rowNo, { v, answer: answer as Answer, ref, fromBank }, errors);
   }
   return [...states.values()].map((s) => s.keyed);
 }
@@ -182,7 +188,7 @@ function addItemRow(
   state: ListState,
   scope: string,
   rowNo: number,
-  row: { v: Record<string, string>; answer: Answer; ref: string },
+  row: { v: Record<string, string>; answer: Answer; ref: string; fromBank: boolean },
   errors: string[],
 ): void {
   const { keyed } = state;
@@ -197,6 +203,7 @@ function addItemRow(
       text: row.v.text,
       ...(row.v.added ? { added: true } : {}),
       ...(row.ref ? { ref: row.ref } : {}),
+      ...(row.fromBank ? { fromBank: true as const } : {}),
     };
     keyed.list = { ...keyed.list, items: [...keyed.list.items, item] };
   } else if (!item) {

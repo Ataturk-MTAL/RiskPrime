@@ -49,7 +49,9 @@ function withoutState(list: Deficiency[], f: DeficiencyFilter): Deficiency[] {
         (f.locationId === SCHOOL_WIDE_FILTER
           ? d.locationId === null
           : d.locationId === f.locationId)) &&
-      (f.listId === null || d.listId === f.listId) &&
+      (f.listId === null ||
+        d.listId === f.listId ||
+        !!d.siblings?.some((s) => s.listId === f.listId)) &&
       matches(f.query, [d.text, d.note, d.itemNo, d.listName, d.listCode, d.ref, d.locationName]),
   );
 }

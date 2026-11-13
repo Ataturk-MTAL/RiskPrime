@@ -46,19 +46,34 @@
   });
   // Desktop only: who last edited the open period (the web build has no users).
   let lastEditor = $state<{ userName: string; at: string } | null>(null);
+  let editorPeriodId = '';
+  // Refreshed when the assessment changes (debounced, after the 1 s archive save) and on unlock.
+  const EDITOR_REFRESH_MS = 2000;
   $effect(() => {
     if (!isDesktop()) return;
+    if (lock.state !== 'unlocked') {
+      editorPeriodId = ''; // next unlock reloads at once
+      return;
+    }
     const id = periodKey(a.period, a.meta.revision);
+    // First load of a period is immediate; later edits of the same period wait for the save.
+    const delay = id === editorPeriodId ? EDITOR_REFRESH_MS : 0;
+    editorPeriodId = id;
     let isStale = false;
-    lock
-      .lastEditor(id)
-      .then((editor) => {
-        if (!isStale) lastEditor = editor;
-      })
-      .catch(() => {
-        if (!isStale) lastEditor = null;
-      });
-    return () => (isStale = true);
+    const timer = setTimeout(() => {
+      lock
+        .lastEditor(id)
+        .then((editor) => {
+          if (!isStale) lastEditor = editor;
+        })
+        .catch(() => {
+          if (!isStale) lastEditor = null;
+        });
+    }, delay);
+    return () => {
+      isStale = true;
+      clearTimeout(timer);
+    };
   });
   const p = $derived(progress(a, new Date()));
   const gaps = $derived(readiness(a));
