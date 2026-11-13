@@ -19,6 +19,6 @@ export default defineConfig({
     alias: { $lib: fileURLToPath(new URL("./src/lib", import.meta.url)) },
   },
   test: {
-    include: ["src/**/*.test.ts", "scripts/**/*.test.mjs"],
+    include: ["src/**/*.test.ts", "relay/**/*.test.ts", "scripts/**/*.test.mjs"],
   },
 });

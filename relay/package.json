@@ -1,0 +1,6 @@
+{
+  "name": "riskprime-relay",
+  "private": true,
+  "description": "Cloudflare Worker that turns app proposals into GitHub issues.",
+  "type": "module"
+}

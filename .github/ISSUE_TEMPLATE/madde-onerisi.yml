@@ -1,0 +1,46 @@
+name: Madde önerisi
+description: Kontrol listesine yeni bir madde önerin.
+title: "Madde önerisi: "
+labels: ["madde-onerisi"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Önerdiğiniz madde "evet/hayır" ile cevaplanabilen bir soru olmalı. Başlıklar otomatik kontrol için kullanılır, değiştirmeyin.
+  - type: textarea
+    id: text
+    attributes:
+      label: Madde metni
+      description: '10-300 karakter. Örnek: "Lehim tezgâhında duman emiş sistemi çalışıyor mu?"'
+    validations:
+      required: true
+  - type: input
+    id: list-code
+    attributes:
+      label: İlgili MEB listesi
+      description: Varsa MEB kontrol listesi numarası (KL-01 biçiminde).
+      placeholder: KL-35
+    validations:
+      required: false
+  - type: input
+    id: tags
+    attributes:
+      label: Mekân türleri
+      description: "Virgülle ayırın. İzin verilen değerler: workshop, storage, office, wet, common."
+      placeholder: workshop, storage
+    validations:
+      required: false
+  - type: input
+    id: basis
+    attributes:
+      label: Dayanak (mevzuat/standart)
+      description: Maddenin dayandığı yönetmelik veya standart (en çok 200 karakter).
+    validations:
+      required: false
+  - type: textarea
+    id: reason
+    attributes:
+      label: Gerekçe
+      description: Bu madde neden gerekli? (10-1000 karakter)
+    validations:
+      required: true

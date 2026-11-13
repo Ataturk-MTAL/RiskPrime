@@ -9,6 +9,7 @@
   import { addBankQuestions, searchBank } from '$lib/domain/question-bank';
   import type { BankSource, LocationType } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
+  import ProposeItemDialog from './ProposeItemDialog.svelte';
   import SelectField from './SelectField.svelte';
   import type { SelectOption } from './score-options';
 
@@ -27,6 +28,7 @@
   ];
 
   let query = $state('');
+  let proposeOpen = $state(false);
   let source = $state(ALL);
   let tag = $state(ALL);
   let selected = $state.raw<ReadonlySet<string>>(new Set());
@@ -88,6 +90,7 @@
         </label>
       {:else}
         <p class="py-4 text-sm text-muted-foreground" role="status"><b class="block text-foreground">Sonuç yok</b>Aramaya uyan madde bulunamadı.</p>
+        <p class="pb-4 text-sm"><Button variant="link" class="h-auto p-0" onclick={() => (proposeOpen = true)}>Aradığınız madde yok mu? Önerin</Button></p>
       {/each}
       {#if results.length > shown.length}
         <p class="py-2 text-xs text-muted-foreground" role="status">{results.length} sonuçtan ilk {MAX_RESULTS} tanesi gösteriliyor; aramayı daraltın.</p>
@@ -99,3 +102,4 @@
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
+<ProposeItemDialog bind:open={proposeOpen} initialText={query.trim()} />

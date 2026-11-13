@@ -51,3 +51,14 @@ Yapı:
 2. `content/questions/bank.toml` içindeki `version` değerini artırın.
 3. `content/CHANGELOG.md` dosyasına aynı sürümle bir `## <sürüm>` girişi ekleyin.
 4. `pnpm bank:build` çalıştırın: doğrular, `src/lib/data/questions.json` dosyasını (ve `library.json` metinlerini) yeniden üretir. CI `pnpm bank:check` ile güncelliği denetler.
+
+## Madde önerileri
+
+Akış: öneri formu veya bot → `madde-onerisi` etiketli issue → otomatik kontrol (`proposal-triage`) → bakım sorumlusu `onaylandı` etiketini ekler → otomatik PR (`oneri/<no>`: yeni `EE-NN` maddesi, sürüm artışı, CHANGELOG) → PR birleştirilir → Pages yeni sürümü yayımlar.
+
+- Issue formu: `.github/ISSUE_TEMPLATE/madde-onerisi.yml`. Başlıkları `src/lib/domain/proposal.ts` ile aynıdır.
+- Otomatik kontrol geçersiz öneriye `eksik-bilgi`, bankadaki veya açık önerilerdeki benzer maddeye (skor ≥ 0,6) `olası-kopya` etiketi ve tek bir (güncellenen) yorum ekler.
+- Depoda şu etiketleri oluşturun: `madde-onerisi`, `olası-kopya`, `eksik-bilgi`, `onaylandı`.
+- `onaylandı` etiketini yalnızca bakım sorumluları ekleyebilmelidir (etiket yazma yetkisi yalnızca onlarda olmalı); etiket PR'ı otomatik açar.
+- Ayarlar → Actions → General: "Allow GitHub Actions to create and approve pull requests" açık olmalıdır. `GITHUB_TOKEN` ile açılan PR'da CI otomatik başlamaz; PR'ı kapatıp yeniden açın.
+- Yerelde deneme: `GITHUB_TOKEN=… GITHUB_REPOSITORY=sahip/depo node scripts/proposal.mjs triage <no>`.

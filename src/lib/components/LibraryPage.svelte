@@ -6,12 +6,14 @@
   import * as Table from '$lib/components/ui/table';
   import ChecklistEditor from './ChecklistEditor.svelte';
   import LibraryDialog from './LibraryDialog.svelte';
+  import ProposeItemDialog from './ProposeItemDialog.svelte';
   import { bankChanges } from '$lib/domain/bank-sync';
   import { liveLocationIds } from '$lib/domain/inspections';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
   let libraryOpen = $state(false);
+  let proposeOpen = $state(false);
   const lists = $derived(store.assessment.checklists);
   const changes = $derived(bankChanges(store.assessment));
   const changeCount = $derived(changes.updated.length + changes.added.length);
@@ -40,6 +42,7 @@
     <div class="flex flex-wrap gap-2">
       <Button onclick={addBlank}><Plus />Boş liste ekle</Button>
       <Button variant="outline" onclick={() => (libraryOpen = true)}>Hazır listelerden ekle</Button>
+      <Button variant="outline" onclick={() => (proposeOpen = true)}>Madde öner</Button>
       {#if changeCount > 0}
         <Button variant="outline" onclick={() => store.openBankOffer()}>Kontrol listeleri güncellemeleri ({changeCount})</Button>
       {/if}
@@ -76,5 +79,6 @@
       <p class="py-8 text-sm text-muted-foreground" role="status">Henüz liste yok. "Hazır listelerden ekle" ile MEB listelerini ekleyin ya da boş bir liste başlatın.</p>
     {/if}
     <LibraryDialog bind:open={libraryOpen} />
+    <ProposeItemDialog bind:open={proposeOpen} />
   {/if}
 </div>
