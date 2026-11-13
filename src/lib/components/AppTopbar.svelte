@@ -10,7 +10,10 @@
   import { Separator } from '$lib/components/ui/separator';
   import * as Sidebar from '$lib/components/ui/sidebar';
   import ExportMenu from './ExportMenu.svelte';
+  import HistoryDialog from './HistoryDialog.svelte';
   import LockSettingsDialog, { type LockSettingsMode } from './LockSettingsDialog.svelte';
+  import UserAvatar from './UserAvatar.svelte';
+  import UsersDialog from './UsersDialog.svelte';
   import { lock } from '$lib/lock.svelte';
   import { isDesktop } from '$lib/platform';
   import { nav } from '$lib/nav.svelte';
@@ -24,6 +27,8 @@
   let fileInput: HTMLInputElement;
   let lockDialogOpen = $state(false);
   let lockDialogMode = $state<LockSettingsMode>('change');
+  let usersOpen = $state(false);
+  let historyOpen = $state(false);
 
   const openLockDialog = (mode: LockSettingsMode) =>
     afterMenuCloses(() => {
@@ -126,21 +131,33 @@
           <span class="flex items-center gap-2"><FileSpreadsheet class="size-4" />Boş şablon</span>
           <span class="text-xs text-muted-foreground">Okul bilgileri, kontrol listesi ve risk satırları sayfaları</span>
         </DropdownMenu.Item>
-        {#if isDesktop()}
-          <DropdownMenu.Separator />
-          <DropdownMenu.Item onSelect={() => void lock.lockNow()}>Kilitle</DropdownMenu.Item>
-          <DropdownMenu.Item onSelect={() => openLockDialog('change')}>PIN'i değiştir…</DropdownMenu.Item>
-          <DropdownMenu.Item onSelect={() => openLockDialog('recovery')}>Yeni kurtarma kodu…</DropdownMenu.Item>
-        {/if}
         <DropdownMenu.Separator class="md:hidden" />
         <DropdownMenu.Item class="md:hidden" onSelect={() => nav.openLibrary()}>Kütüphane</DropdownMenu.Item>
         <DropdownMenu.Item class="md:hidden" onSelect={() => afterMenuCloses(onAbout)}>Hakkında</DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
     <input bind:this={fileInput} type="file" accept=".json,application/json,.xlsx,.xls" hidden onchange={onPick} aria-label="Dosya seç" />
+    {#if isDesktop() && lock.currentUser}
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger class={buttonVariants({ variant: 'ghost' })} aria-label="Kullanıcı menüsü: {lock.currentUser.name}">
+          <UserAvatar name={lock.currentUser.name} class="size-6 text-[10px]" /><span class="max-w-32 truncate max-md:hidden">{lock.currentUser.name}</span>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content align="end" class="w-64">
+          <DropdownMenu.Label class="grid font-normal"><span class="truncate font-medium">{lock.currentUser.name}</span>{#if lock.currentUser.title}<span class="truncate text-xs text-muted-foreground">{lock.currentUser.title}</span>{/if}</DropdownMenu.Label>
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item onSelect={() => void lock.lockNow()}>Kilitle / Kullanıcı değiştir</DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={() => openLockDialog('change')}>PIN'imi değiştir…</DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={() => afterMenuCloses(() => (usersOpen = true))}>Kullanıcılar…</DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={() => afterMenuCloses(() => (historyOpen = true))}>Değişiklik geçmişi…</DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={() => openLockDialog('recovery')}>Yeni okul kurtarma kodu…</DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+    {/if}
   </div>
 </header>
 
 {#if isDesktop()}
   <LockSettingsDialog bind:open={lockDialogOpen} mode={lockDialogMode} />
+  <UsersDialog bind:open={usersOpen} />
+  <HistoryDialog bind:open={historyOpen} />
 {/if}

@@ -70,8 +70,43 @@ CREATE TABLE app_lock (
 );
 "#;
 
+/// Multi-user: per-user PIN + counters move from `app_lock` (which keeps only the installation
+/// recovery hash and its own counters) to `users`. An existing v2 PIN becomes "Kullanıcı 1".
+/// `name_key` is the normalised unique name (see users.rs for the Turkish-lowercase caveat).
+const SCHEMA_V3: &str = r#"
+CREATE TABLE users (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  name_key TEXT NOT NULL,
+  title TEXT NOT NULL DEFAULT '',
+  pin_hash TEXT NULL,
+  failed_count INTEGER NOT NULL DEFAULT 0,
+  retry_after TEXT NULL,
+  reset_pending_until TEXT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE UNIQUE INDEX users_name_key ON users(name_key);
+INSERT INTO users (id, name, name_key, pin_hash, failed_count, retry_after, reset_pending_until, created_at)
+  SELECT lower(hex(randomblob(8))), 'Kullanıcı 1', 'kullanıcı 1', pin_hash, failed_count,
+         retry_after, reset_pending_until, strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+  FROM app_lock WHERE pin_hash IS NOT NULL;
+UPDATE app_lock SET pin_hash = NULL, failed_count = 0, retry_after = NULL, reset_pending_until = NULL;
+
+CREATE TABLE audit_log (
+  id INTEGER PRIMARY KEY,
+  started_at TEXT NOT NULL,
+  at TEXT NOT NULL,
+  user_id TEXT NULL,
+  user_name TEXT NOT NULL,
+  action TEXT NOT NULL,
+  period_id TEXT NULL,
+  detail TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX audit_log_at ON audit_log(at);
+"#;
+
 /// Ordered migrations; index + 1 is the `user_version` after applying it.
-const MIGRATIONS: &[&str] = &[SCHEMA_V1, SCHEMA_V2];
+const MIGRATIONS: &[&str] = &[SCHEMA_V1, SCHEMA_V2, SCHEMA_V3];
 
 #[derive(Debug)]
 pub enum DbError {
@@ -126,9 +161,13 @@ pub fn open(path: &Path) -> Result<Connection, DbError> {
 }
 
 pub fn migrate(conn: &mut Connection) -> Result<(), DbError> {
+    migrate_to(conn, MIGRATIONS.len())
+}
+
+fn migrate_to(conn: &mut Connection, target: usize) -> Result<(), DbError> {
     conn.pragma_update(None, "foreign_keys", true)?;
     let current: usize = conn.pragma_query_value(None, "user_version", |r| r.get(0))?;
-    for (i, sql) in MIGRATIONS.iter().enumerate().skip(current) {
+    for (i, sql) in MIGRATIONS.iter().enumerate().take(target).skip(current) {
         let tx = conn.transaction()?;
         tx.execute_batch(sql)?;
         tx.pragma_update(None, "user_version", i + 1)?;
@@ -173,6 +212,13 @@ pub fn load(conn: &Connection, id: &str) -> Result<Option<String>, DbError> {
 pub fn remove(conn: &Connection, id: &str) -> Result<(), DbError> {
     conn.execute("DELETE FROM periods WHERE id = ?1", [id])?;
     Ok(())
+}
+
+/// Summary of a document without storing it (id/status for audit classification).
+pub fn peek(document: &str) -> Result<PeriodSummary, DbError> {
+    let doc: Value =
+        serde_json::from_str(document).map_err(|_| DbError::Invalid("Dönem belgesi geçersiz"))?;
+    summary_of(&doc)
 }
 
 pub fn save(conn: &mut Connection, document: &str) -> Result<PeriodSummary, DbError> {
@@ -399,7 +445,51 @@ mod tests {
         let v: i64 = c
             .pragma_query_value(None, "user_version", |r| r.get(0))
             .unwrap();
-        assert_eq!(v, 2);
+        assert_eq!(v, 3);
+    }
+
+    fn v2_db_with_pin(pin_hash: Option<&str>) -> Connection {
+        let mut c = Connection::open_in_memory().unwrap();
+        migrate_to(&mut c, 2).unwrap();
+        c.execute(
+            "INSERT INTO app_lock (id, pin_hash, recovery_hash, failed_count, retry_after)
+             VALUES (1, ?1, 'rec', 3, '2030-01-01T00:00:00Z')",
+            [pin_hash],
+        )
+        .unwrap();
+        c
+    }
+
+    #[test]
+    fn v2_pin_migrates_to_kullanici_1_and_clears_app_lock_pin() {
+        let mut c = v2_db_with_pin(Some("HASH"));
+        migrate(&mut c).unwrap();
+        let (id, name, hash, failed): (String, String, String, i64) = c
+            .query_row(
+                "SELECT id, name, pin_hash, failed_count FROM users",
+                [],
+                |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
+            )
+            .unwrap();
+        assert_eq!(
+            (id.len(), name.as_str(), hash.as_str(), failed),
+            (16, "Kullanıcı 1", "HASH", 3)
+        );
+        let (pin, rec, n): (Option<String>, String, i64) = c
+            .query_row(
+                "SELECT pin_hash, recovery_hash, failed_count FROM app_lock",
+                [],
+                |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+            )
+            .unwrap();
+        assert_eq!((pin, rec.as_str(), n), (None, "rec", 0));
+    }
+
+    #[test]
+    fn v2_without_pin_creates_no_user() {
+        let mut c = v2_db_with_pin(None);
+        migrate(&mut c).unwrap();
+        assert_eq!(count(&c, "users"), 0);
     }
 
     #[test]

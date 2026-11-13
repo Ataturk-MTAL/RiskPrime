@@ -51,8 +51,8 @@
 <Dialog.Root bind:open>
   <Dialog.Content class="max-h-[90vh] overflow-y-auto sm:max-w-sm">
     <Dialog.Header>
-      <Dialog.Title>{mode === 'change' ? "PIN'i değiştir" : 'Yeni kurtarma kodu'}</Dialog.Title>
-      <Dialog.Description>{mode === 'change' ? 'Geçerli PIN ve yeni PIN gerekir.' : 'Eski kurtarma kodu geçersiz olur.'}</Dialog.Description>
+      <Dialog.Title>{mode === 'change' ? "PIN'i değiştir" : 'Yeni okul kurtarma kodu'}</Dialog.Title>
+      <Dialog.Description>{mode === 'change' ? 'Geçerli PIN ve yeni PIN gerekir.' : 'Eski okul kurtarma kodu geçersiz olur.'}</Dialog.Description>
     </Dialog.Header>
     {#if newCode}
       <RecoveryCodeSave code={newCode} onContinue={() => (open = false)} />

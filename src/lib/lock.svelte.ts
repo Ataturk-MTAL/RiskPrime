@@ -1,18 +1,55 @@
 import { isDesktop } from "$lib/platform";
 
-export type LockState = "checking" | "setup" | "showRecovery" | "locked" | "recover" | "unlocked";
+export type LockState =
+  | "checking"
+  | "firstUser"
+  | "showRecovery"
+  | "pickUser"
+  | "pin"
+  | "initialPin"
+  | "recover"
+  | "unlocked";
 export type Invoke = <T>(command: string, args?: Record<string, unknown>) => Promise<T>;
 
 export const IDLE_LOCK_MS = 10 * 60 * 1000;
 const COUNTDOWN_TICK_MS = 1000;
+export const AUDIT_LIMIT = 200;
 export const PIN_PATTERN = /^\d{4,8}$/;
 export const PIN_HINT = "PIN 4–8 haneli rakamlardan oluşmalıdır.";
+/** Rust error for a user whose PIN was reset; answered by user_set_initial_pin. */
+export const NEEDS_INITIAL_PIN = "Bu kullanıcı için yeni PIN belirlenmeli.";
+
+export interface LockUser {
+  id: string;
+  name: string;
+  title: string;
+}
+
+export interface UserRow extends LockUser {
+  hasPin: boolean;
+  resetPendingUntil: string | null;
+}
+
+export interface AuditRow {
+  id: number;
+  startedAt: string;
+  at: string;
+  userName: string;
+  action: string;
+  periodId: string | null;
+  detail: string;
+}
+
+export interface NewUser {
+  name: string;
+  title: string;
+  pin: string;
+}
 
 interface LockStatus {
   configured: boolean;
   unlocked: boolean;
-  retryAfterSec: number | null;
-  resetPendingUntil: string | null;
+  currentUser: LockUser | null;
 }
 
 const tauriInvoke: Invoke = async (command, args) =>
@@ -25,6 +62,8 @@ export const errorMessage = (error: unknown): string =>
 export const resetNote = (until: string): string =>
   `Sıfırlama ${new Date(until).toLocaleString("tr-TR", { dateStyle: "long", timeStyle: "short" })} tarihinde gerçekleşecek.`;
 
+const toLockUser = ({ id, name, title }: LockUser): LockUser => ({ id, name, title });
+
 /** App-lock state machine for the desktop shell; on the web it is always unlocked and never calls out. */
 export class LockController {
   state = $state<LockState>("checking");
@@ -32,7 +71,9 @@ export class LockController {
   busy = $state(false);
   recoveryCode = $state("");
   retryAfterSec = $state<number | null>(null);
-  resetPendingUntil = $state<string | null>(null);
+  users = $state<UserRow[]>([]);
+  selectedUser = $state<UserRow | null>(null);
+  currentUser = $state<LockUser | null>(null);
   #invoke: Invoke;
   #desktop: boolean;
   #idleMs: number;
@@ -52,67 +93,98 @@ export class LockController {
   async init() {
     if (!this.#desktop) return this.#enter("unlocked");
     try {
-      const status = await this.#invoke<LockStatus>("lock_status");
-      this.#apply(status);
-      this.#enter(!status.configured ? "setup" : status.unlocked ? "unlocked" : "locked");
+      await this.#route(await this.#invoke<LockStatus>("lock_status"));
     } catch (e) {
+      this.#enter("pickUser");
       this.error = errorMessage(e);
-      this.#enter("locked");
     }
   }
 
-  setup(pin: string) {
+  /** First run: creates the first user, who is logged in; the school recovery code is shown once. */
+  createFirstUser(user: NewUser) {
     return this.#run(async () => {
-      this.recoveryCode = (
-        await this.#invoke<{ recoveryCode: string }>("lock_setup", { pin })
-      ).recoveryCode;
-      this.#enter("showRecovery");
+      const result = await this.#invoke<{ user: LockUser; recoveryCode: string | null }>(
+        "user_create",
+        { ...user },
+      );
+      this.currentUser = toLockUser(result.user);
+      this.recoveryCode = result.recoveryCode ?? "";
+      this.#enter(result.recoveryCode ? "showRecovery" : "unlocked");
     });
+  }
+
+  selectUser(user: UserRow) {
+    this.selectedUser = user;
+    this.#startCountdown(null);
+    this.#enter(user.hasPin ? "pin" : "initialPin");
+  }
+
+  showPicker() {
+    this.selectedUser = null;
+    this.#startCountdown(null);
+    this.#enter("pickUser");
   }
 
   unlock(pin: string) {
     return this.#run(async () => {
-      const result = await this.#invoke<{ ok: boolean; retryAfterSec: number | null }>(
-        "lock_unlock",
-        { pin },
-      );
-      if (result.ok) {
-        this.#startCountdown(null);
-        this.resetPendingUntil = null;
-        return this.#enter("unlocked");
+      const user = this.#selected();
+      try {
+        const result = await this.#invoke<{ ok: boolean; retryAfterSec: number | null }>(
+          "user_login",
+          { userId: user.id, pin },
+        );
+        if (result.ok) return this.#loggedIn(user);
+        this.#startCountdown(result.retryAfterSec);
+        this.error = result.retryAfterSec ? "Çok fazla hatalı deneme." : "PIN yanlış.";
+      } catch (e) {
+        if (errorMessage(e) !== NEEDS_INITIAL_PIN) throw e;
+        this.#enter("initialPin");
       }
-      this.#startCountdown(result.retryAfterSec);
-      this.error = result.retryAfterSec ? "Çok fazla hatalı deneme." : "PIN yanlış.";
     });
   }
 
-  recover(recoveryCode: string, newPin: string) {
+  setInitialPin(pin: string) {
+    return this.#run(async () => {
+      const user = this.#selected();
+      await this.#invoke("user_set_initial_pin", { userId: user.id, pin });
+      this.#loggedIn(user);
+    });
+  }
+
+  showRecoverForm() {
+    this.#enter("recover");
+  }
+
+  recover(userId: string, recoveryCode: string, newPin: string) {
     return this.#run(async () => {
       const result = await this.#invoke<{ recoveryCode: string }>("lock_recover", {
         recoveryCode,
+        userId,
         newPin,
       });
+      this.currentUser = this.users.find((u) => u.id === userId) ?? null;
       this.recoveryCode = result.recoveryCode;
       this.#enter("showRecovery");
     });
   }
 
+  /** Starts the 24 h PIN reset for the selected user. */
   requestReset() {
     return this.#run(async () => {
-      this.resetPendingUntil = (
-        await this.#invoke<{ resetPendingUntil: string }>("lock_request_reset")
-      ).resetPendingUntil;
+      const user = this.#selected();
+      const { resetPendingUntil } = await this.#invoke<{ resetPendingUntil: string }>(
+        "lock_request_reset",
+        { userId: user.id },
+      );
+      this.selectedUser = { ...user, resetPendingUntil };
+      this.users = this.users.map((u) => (u.id === user.id ? { ...u, resetPendingUntil } : u));
     });
   }
 
-  /** The new recovery code was saved: continue into the app (or the PIN screen if the backend did not unlock). */
+  /** The new recovery code was saved: continue into the app (or the picker if the backend did not log in). */
   finishRecovery() {
     this.recoveryCode = "";
-    return this.#run(async () => {
-      const status = await this.#invoke<LockStatus>("lock_status");
-      this.#apply(status);
-      this.#enter(status.unlocked ? "unlocked" : "locked");
-    });
+    return this.#run(async () => this.#route(await this.#invoke<LockStatus>("lock_status")));
   }
 
   /** Runs before locking (App sets it to flush the archive, which refuses writes while locked). */
@@ -120,29 +192,57 @@ export class LockController {
 
   async lockNow() {
     await this.beforeLock();
+    let failure = "";
     try {
       await this.#invoke("lock_now");
+      await this.#loadUsers();
     } catch (e) {
-      this.error = errorMessage(e);
+      failure = errorMessage(e);
     }
-    this.#enter("locked");
+    this.currentUser = null;
+    this.selectedUser = null;
+    this.#enter("pickUser");
+    this.error = failure;
   }
 
-  showRecoverForm() {
-    this.#enter("recover");
+  async usersList(): Promise<UserRow[]> {
+    return (this.users = await this.#invoke<UserRow[]>("users_list"));
   }
 
-  showLocked() {
-    this.#enter("locked");
+  createUser(user: NewUser) {
+    return this.#invoke("user_create", { ...user });
+  }
+
+  async updateUser(userId: string, name: string, title: string) {
+    await this.#invoke("user_update", { userId, name, title });
+    if (this.currentUser?.id === userId) this.currentUser = { id: userId, name, title };
+  }
+
+  resetUserPin(userId: string) {
+    return this.#invoke("user_reset_pin", { userId });
+  }
+
+  removeUser(userId: string) {
+    return this.#invoke("user_remove", { userId });
   }
 
   async change(pin: string, newPin: string) {
-    await this.#invoke("lock_change", { pin, newPin });
+    await this.#invoke("user_change_pin", { pin, newPin });
   }
 
   async newRecoveryCode(pin: string) {
     return (await this.#invoke<{ recoveryCode: string }>("lock_new_recovery_code", { pin }))
       .recoveryCode;
+  }
+
+  auditList(periodId: string | null) {
+    return this.#invoke<AuditRow[]>("audit_list", { limit: AUDIT_LIMIT, periodId });
+  }
+
+  lastEditor(periodId: string) {
+    return this.#invoke<{ userName: string; at: string } | null>("periods_last_editor", {
+      periodId,
+    });
   }
 
   /** Call on pointer/keyboard activity; restarts the idle timer while unlocked. */
@@ -152,9 +252,29 @@ export class LockController {
     this.#idle = setTimeout(() => void this.lockNow(), this.#idleMs);
   }
 
-  #apply(status: LockStatus) {
-    this.resetPendingUntil = status.resetPendingUntil;
-    this.#startCountdown(status.retryAfterSec);
+  #selected(): UserRow {
+    if (!this.selectedUser) throw new Error("Kullanıcı seçilmedi.");
+    return this.selectedUser;
+  }
+
+  #loggedIn(user: LockUser) {
+    this.#startCountdown(null);
+    this.currentUser = toLockUser(user);
+    this.#enter("unlocked");
+  }
+
+  async #loadUsers() {
+    this.users = await this.#invoke<UserRow[]>("users_list");
+  }
+
+  async #route(status: LockStatus) {
+    if (!status.configured) return this.#enter("firstUser");
+    if (status.unlocked) {
+      this.currentUser = status.currentUser;
+      return this.#enter("unlocked");
+    }
+    await this.#loadUsers();
+    this.#enter("pickUser");
   }
 
   #enter(state: LockState) {

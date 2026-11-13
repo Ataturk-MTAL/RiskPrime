@@ -1,6 +1,8 @@
+mod audit;
 mod commands;
 mod db;
 mod lock;
+mod users;
 
 use std::sync::Mutex;
 use tauri::Manager;
@@ -23,12 +25,19 @@ pub fn run() {
             commands::periods_load,
             commands::periods_save,
             commands::periods_remove,
+            commands::periods_last_editor,
+            commands::audit_list,
             commands::lock_status,
-            commands::lock_setup,
-            commands::lock_unlock,
+            commands::users_list,
+            commands::user_create,
+            commands::user_login,
+            commands::user_set_initial_pin,
             commands::lock_now,
+            commands::user_update,
+            commands::user_change_pin,
+            commands::user_reset_pin,
+            commands::user_remove,
             commands::lock_recover,
-            commands::lock_change,
             commands::lock_new_recovery_code,
             commands::lock_request_reset
         ])

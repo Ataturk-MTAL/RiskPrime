@@ -13,7 +13,11 @@
   import { isLocked, verifySnapshot, type Verification } from '$lib/domain/snapshot';
   import { progress } from '$lib/domain/progress';
   import { readiness } from '$lib/domain/readiness';
+  import { formatStamp } from '$lib/lock-format';
+  import { lock } from '$lib/lock.svelte';
   import { nav } from '$lib/nav.svelte';
+  import { isDesktop } from '$lib/platform';
+  import { periodKey } from '$lib/storage/types';
   import { store, type ExportKind } from '$lib/state.svelte';
 
   const OTHER_OUTPUTS: { kind: ExportKind; label: string }[] = [
@@ -38,6 +42,22 @@
     verifySnapshot(snapshot).then((v) => {
       if (!isStale) verification = v;
     });
+    return () => (isStale = true);
+  });
+  // Desktop only: who last edited the open period (the web build has no users).
+  let lastEditor = $state<{ userName: string; at: string } | null>(null);
+  $effect(() => {
+    if (!isDesktop()) return;
+    const id = periodKey(a.period, a.meta.revision);
+    let isStale = false;
+    lock
+      .lastEditor(id)
+      .then((editor) => {
+        if (!isStale) lastEditor = editor;
+      })
+      .catch(() => {
+        if (!isStale) lastEditor = null;
+      });
     return () => (isStale = true);
   });
   const p = $derived(progress(a, new Date()));
@@ -138,6 +158,10 @@
       <dl class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 text-sm">
         <dt class="text-muted-foreground">Durum</dt>
         <dd><Badge variant={locked ? 'default' : 'secondary'}>{locked ? `İmzalandı${a.meta.signedAt ? ` · ${day(a.meta.signedAt)}` : ''}` : 'Taslak'}</Badge></dd>
+        {#if isDesktop() && lastEditor}
+          <dt class="text-muted-foreground max-md:hidden">Son düzenleyen</dt>
+          <dd class="max-md:hidden">{lastEditor.userName}, {formatStamp(lastEditor.at)}</dd>
+        {/if}
         <dt class="text-muted-foreground">Kontrol listeleri sürümü</dt>
         <dd>{a.meta.bankVersion}</dd>
         <dt class="text-muted-foreground">Uygulama sürümü</dt>

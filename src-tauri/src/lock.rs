@@ -1,10 +1,12 @@
-//! App lock (PIN gate, not encryption): Argon2id-hashed PIN + recovery code with
-//! failure backoff and a 24 h "forgotten recovery code" reset. Pure functions over a
-//! `Connection`; the clock is passed in so tests control time.
+//! Secrets + failure backoff shared by per-user PINs and the installation recovery code
+//! (PIN gate, not encryption). Argon2id hashes; the clock is passed in so tests control time.
+//! Counters live on the `users` row (PIN) or the `app_lock` row (recovery code).
+use crate::users;
 use argon2::password_hash::rand_core::{OsRng, RngCore};
 use argon2::password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
 use argon2::Argon2;
 use chrono::{DateTime, Duration, SecondsFormat, Utc};
+use rusqlite::types::Value;
 use rusqlite::{params, Connection, OptionalExtension};
 
 const PIN_MIN: usize = 4;
@@ -12,17 +14,16 @@ const PIN_MAX: usize = 8;
 const FREE_ATTEMPTS: i64 = 5;
 const BACKOFF_BASE_SECS: i64 = 30;
 const BACKOFF_CAP_SECS: i64 = 15 * 60;
-const RESET_DELAY_HOURS: i64 = 24;
 const RECOVERY_LEN: usize = 16;
 /// Crockford base32 (no I, L, O, U); 32 symbols so `byte & 31` is unbiased.
 const CROCKFORD: &[u8; 32] = b"0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 
 pub const MSG_LOCKED: &str = "Uygulama kilitli.";
+pub const MSG_NO_USER: &str = "Kullanıcı bulunamadı.";
+pub const MSG_NEEDS_PIN: &str = "Bu kullanıcı için yeni PIN belirlenmeli.";
 const MSG_BAD_PIN_FORMAT: &str = "PIN 4-8 haneli rakamlardan oluşmalı.";
 const MSG_WRONG_PIN: &str = "PIN hatalı.";
 const MSG_WRONG_RECOVERY: &str = "Kurtarma kodu hatalı.";
-const MSG_ALREADY: &str = "PIN zaten belirlenmiş.";
-const MSG_NOT_CONFIGURED: &str = "PIN henüz belirlenmemiş.";
 const MSG_INTERNAL: &str = "Kilit durumu okunamadı veya yazılamadı.";
 
 #[derive(Debug, PartialEq)]
@@ -32,7 +33,7 @@ pub struct LockError {
 }
 
 impl LockError {
-    fn msg(m: &str) -> Self {
+    pub fn msg(m: &str) -> Self {
         Self {
             message: m.to_string(),
             retry_after_sec: None,
@@ -47,14 +48,7 @@ impl From<rusqlite::Error> for LockError {
     }
 }
 
-type Res<T> = Result<T, LockError>;
-
-#[derive(Debug, PartialEq)]
-pub struct Status {
-    pub configured: bool,
-    pub retry_after_sec: Option<u64>,
-    pub reset_pending_until: Option<String>,
-}
+pub type Res<T> = Result<T, LockError>;
 
 #[derive(Debug, PartialEq)]
 pub enum Attempt {
@@ -63,11 +57,26 @@ pub enum Attempt {
     Throttled(u64),
 }
 
-fn ts(t: DateTime<Utc>) -> String {
+/// Whose failure counters an attempt touches.
+#[derive(Clone, Copy)]
+enum Who<'a> {
+    User(&'a str),
+    Install,
+}
+
+/// (table, key) of the row holding the counters; both tables key on `id`.
+fn target(who: Who) -> (&'static str, Value) {
+    match who {
+        Who::User(id) => ("users", Value::Text(id.to_string())),
+        Who::Install => ("app_lock", Value::Integer(1)),
+    }
+}
+
+pub fn ts(t: DateTime<Utc>) -> String {
     t.to_rfc3339_opts(SecondsFormat::Secs, true)
 }
 
-fn parse(s: &str) -> Option<DateTime<Utc>> {
+pub fn parse(s: &str) -> Option<DateTime<Utc>> {
     DateTime::parse_from_rfc3339(s)
         .ok()
         .map(|d| d.with_timezone(&Utc))
@@ -75,30 +84,6 @@ fn parse(s: &str) -> Option<DateTime<Utc>> {
 
 fn secs_until(deadline: DateTime<Utc>, now: DateTime<Utc>) -> u64 {
     ((deadline - now).num_milliseconds().max(0) as u64).div_ceil(1000)
-}
-
-struct Row {
-    pin_hash: Option<String>,
-    recovery_hash: Option<String>,
-    retry_after: Option<String>,
-    reset_pending_until: Option<String>,
-}
-
-fn read_row(conn: &Connection) -> Res<Option<Row>> {
-    Ok(conn
-        .query_row(
-            "SELECT pin_hash, recovery_hash, retry_after, reset_pending_until FROM app_lock WHERE id = 1",
-            [],
-            |r| {
-                Ok(Row {
-                    pin_hash: r.get(0)?,
-                    recovery_hash: r.get(1)?,
-                    retry_after: r.get(2)?,
-                    reset_pending_until: r.get(3)?,
-                })
-            },
-        )
-        .optional()?)
 }
 
 fn hash(secret: &str) -> Res<String> {
@@ -131,6 +116,12 @@ pub fn validate_pin(pin: &str) -> Res<()> {
     }
 }
 
+/// Validated + hashed PIN, ready to store.
+pub fn hashed_pin(pin: &str) -> Res<String> {
+    validate_pin(pin)?;
+    hash(pin)
+}
+
 /// 16 Crockford chars, uppercase, no separators.
 fn generate_code() -> String {
     let mut bytes = [0u8; RECOVERY_LEN];
@@ -159,101 +150,46 @@ fn normalize_code(input: &str) -> String {
 }
 
 /// New code (grouped for display) + its hash (over the normalised, ungrouped form).
-fn new_recovery() -> Res<(String, String)> {
+pub fn new_recovery() -> Res<(String, String)> {
     let code = generate_code();
     let h = hash(&code)?;
     Ok((group_code(&code), h))
 }
 
-pub fn status(conn: &Connection, now: DateTime<Utc>) -> Res<Status> {
-    let Some(row) = read_row(conn)? else {
-        return Ok(Status {
-            configured: false,
-            retry_after_sec: None,
-            reset_pending_until: None,
-        });
-    };
-    let reset_due = row
-        .reset_pending_until
-        .as_deref()
-        .and_then(parse)
-        .is_some_and(|t| t <= now);
-    if reset_due {
-        // Forgotten-recovery reset: credentials go, period data stays.
-        conn.execute(
-            "UPDATE app_lock SET pin_hash = NULL, recovery_hash = NULL, failed_count = 0,
-             retry_after = NULL, reset_pending_until = NULL WHERE id = 1",
-            [],
-        )?;
-        return Ok(Status {
-            configured: false,
-            retry_after_sec: None,
-            reset_pending_until: None,
-        });
-    }
-    Ok(Status {
-        configured: row.pin_hash.is_some(),
-        retry_after_sec: row
-            .retry_after
-            .as_deref()
-            .and_then(parse)
-            .filter(|t| *t > now)
-            .map(|t| secs_until(t, now)),
-        reset_pending_until: row.reset_pending_until,
-    })
-}
-
-pub fn is_configured(conn: &Connection, now: DateTime<Utc>) -> Res<bool> {
-    Ok(status(conn, now)?.configured)
-}
-
-/// Gate for the period commands: configured AND unlocked.
-pub fn ensure_unlocked(
-    conn: &Connection,
-    unlocked: bool,
-    now: DateTime<Utc>,
-) -> Result<(), String> {
-    if unlocked && is_configured(conn, now).map_err(|e| e.message)? {
-        Ok(())
-    } else {
-        Err(MSG_LOCKED.to_string())
-    }
-}
-
-fn store_credentials(conn: &Connection, pin: &str, recovery_hash: &str) -> Res<()> {
+/// Installation-wide recovery hash; also clears that counter.
+pub fn store_recovery(conn: &Connection, recovery_hash: &str) -> Res<()> {
     conn.execute(
-        "INSERT INTO app_lock (id, pin_hash, recovery_hash, failed_count, retry_after, reset_pending_until)
-         VALUES (1, ?1, ?2, 0, NULL, NULL)
-         ON CONFLICT(id) DO UPDATE SET pin_hash = ?1, recovery_hash = ?2, failed_count = 0,
-           retry_after = NULL, reset_pending_until = NULL",
-        params![hash(pin)?, recovery_hash],
+        "INSERT INTO app_lock (id, recovery_hash) VALUES (1, ?1)
+         ON CONFLICT(id) DO UPDATE SET recovery_hash = ?1, failed_count = 0, retry_after = NULL",
+        [recovery_hash],
     )?;
     Ok(())
 }
 
-pub fn setup(conn: &Connection, pin: &str, now: DateTime<Utc>) -> Res<String> {
-    if is_configured(conn, now)? {
-        return Err(LockError::msg(MSG_ALREADY));
-    }
-    validate_pin(pin)?;
-    let (code, rhash) = new_recovery()?;
-    store_credentials(conn, pin, &rhash)?;
-    Ok(code)
-}
-
-fn throttle(conn: &Connection, now: DateTime<Utc>) -> Res<Option<u64>> {
-    Ok(read_row(conn)?
-        .and_then(|r| r.retry_after)
+fn throttle(conn: &Connection, who: Who, now: DateTime<Utc>) -> Res<Option<u64>> {
+    let (table, key) = target(who);
+    let until: Option<String> = conn
+        .query_row(
+            &format!("SELECT retry_after FROM {table} WHERE id = ?1"),
+            [key],
+            |r| r.get(0),
+        )
+        .optional()?
+        .flatten();
+    Ok(until
         .as_deref()
         .and_then(parse)
         .filter(|t| *t > now)
         .map(|t| secs_until(t, now)))
 }
 
-fn register_failure(conn: &Connection, now: DateTime<Utc>) -> Res<Option<u64>> {
+fn register_failure(conn: &Connection, who: Who, now: DateTime<Utc>) -> Res<Option<u64>> {
+    let (table, key) = target(who);
     let failures: i64 = conn.query_row(
-        "UPDATE app_lock SET failed_count = failed_count + 1 WHERE id = 1 RETURNING failed_count",
-        [],
+        &format!(
+            "UPDATE {table} SET failed_count = failed_count + 1 WHERE id = ?1 RETURNING failed_count"
+        ),
+        [key.clone()],
         |r| r.get(0),
     )?;
     if failures < FREE_ATTEMPTS {
@@ -263,40 +199,40 @@ fn register_failure(conn: &Connection, now: DateTime<Utc>) -> Res<Option<u64>> {
     let delay = (BACKOFF_BASE_SECS * 2i64.pow(exp)).min(BACKOFF_CAP_SECS);
     let until = now + Duration::seconds(delay);
     conn.execute(
-        "UPDATE app_lock SET retry_after = ?1 WHERE id = 1",
-        [ts(until)],
+        &format!("UPDATE {table} SET retry_after = ?2 WHERE id = ?1"),
+        params![key, ts(until)],
     )?;
     Ok(Some(secs_until(until, now)))
 }
 
-fn reset_counters(conn: &Connection) -> Res<()> {
+/// A success also cancels a pending forgotten-PIN reset.
+fn reset_counters(conn: &Connection, who: Who) -> Res<()> {
+    let (table, key) = target(who);
     conn.execute(
-        "UPDATE app_lock SET failed_count = 0, retry_after = NULL, reset_pending_until = NULL WHERE id = 1",
-        [],
+        &format!(
+            "UPDATE {table} SET failed_count = 0, retry_after = NULL, reset_pending_until = NULL WHERE id = ?1"
+        ),
+        [key],
     )?;
     Ok(())
 }
 
-/// Check a secret against the chosen hash column, applying throttle + failure counting.
-fn attempt(conn: &Connection, secret: &str, recovery: bool, now: DateTime<Utc>) -> Res<Attempt> {
-    if !is_configured(conn, now)? {
-        return Err(LockError::msg(MSG_NOT_CONFIGURED));
-    }
-    if let Some(s) = throttle(conn, now)? {
+/// Check `secret` against `phc`, applying throttle + failure counting.
+fn check(
+    conn: &Connection,
+    who: Who,
+    secret: &str,
+    phc: Option<&str>,
+    now: DateTime<Utc>,
+) -> Res<Attempt> {
+    if let Some(s) = throttle(conn, who, now)? {
         return Ok(Attempt::Throttled(s));
     }
-    let row = read_row(conn)?.ok_or_else(|| LockError::msg(MSG_NOT_CONFIGURED))?;
-    let phc = if recovery {
-        row.recovery_hash
-    } else {
-        row.pin_hash
-    }
-    .unwrap_or_default();
-    if matches(secret, &phc) {
-        reset_counters(conn)?;
+    if phc.is_some_and(|p| matches(secret, p)) {
+        reset_counters(conn, who)?;
         Ok(Attempt::Ok)
     } else {
-        Ok(Attempt::Wrong(register_failure(conn, now)?))
+        Ok(Attempt::Wrong(register_failure(conn, who, now)?))
     }
 }
 
@@ -314,60 +250,33 @@ fn into_result(a: Attempt, wrong_msg: &str) -> Res<()> {
     }
 }
 
-fn verify_pin_or_err(conn: &Connection, pin: &str, now: DateTime<Utc>) -> Res<()> {
-    into_result(attempt(conn, pin, false, now)?, MSG_WRONG_PIN)
+/// Per-user PIN attempt. Applies due 24 h resets first; a user with no PIN yields
+/// `MSG_NEEDS_PIN` (the caller then asks for a new one).
+pub fn login(conn: &Connection, user_id: &str, pin: &str, now: DateTime<Utc>) -> Res<Attempt> {
+    users::apply_due_resets(conn, now)?;
+    let phc = users::pin_hash(conn, user_id)?
+        .ok_or_else(|| LockError::msg(MSG_NO_USER))?
+        .ok_or_else(|| LockError::msg(MSG_NEEDS_PIN))?;
+    check(conn, Who::User(user_id), pin, Some(&phc), now)
 }
 
-pub fn unlock(conn: &Connection, pin: &str, now: DateTime<Utc>) -> Res<Attempt> {
-    attempt(conn, pin, false, now)
+pub fn verify_pin(conn: &Connection, user_id: &str, pin: &str, now: DateTime<Utc>) -> Res<()> {
+    into_result(login(conn, user_id, pin, now)?, MSG_WRONG_PIN)
 }
 
-pub fn change(conn: &Connection, pin: &str, new_pin: &str, now: DateTime<Utc>) -> Res<()> {
-    validate_pin(new_pin)?;
-    verify_pin_or_err(conn, pin, now)?;
-    conn.execute(
-        "UPDATE app_lock SET pin_hash = ?1 WHERE id = 1",
-        [hash(new_pin)?],
-    )?;
-    Ok(())
-}
-
-pub fn new_recovery_code(conn: &Connection, pin: &str, now: DateTime<Utc>) -> Res<String> {
-    verify_pin_or_err(conn, pin, now)?;
-    let (code, rhash) = new_recovery()?;
-    conn.execute(
-        "UPDATE app_lock SET recovery_hash = ?1 WHERE id = 1",
-        [rhash],
-    )?;
-    Ok(code)
-}
-
-/// Recovery shares the PIN's failure counter. Returns the rotated code.
-pub fn recover(conn: &Connection, code: &str, new_pin: &str, now: DateTime<Utc>) -> Res<String> {
-    validate_pin(new_pin)?;
-    into_result(
-        attempt(conn, &normalize_code(code), true, now)?,
-        MSG_WRONG_RECOVERY,
-    )?;
-    let (new_code, rhash) = new_recovery()?;
-    store_credentials(conn, new_pin, &rhash)?;
-    Ok(new_code)
-}
-
-/// Idempotent: an existing (earlier) deadline is kept.
-pub fn request_reset(conn: &Connection, now: DateTime<Utc>) -> Res<String> {
-    if !is_configured(conn, now)? {
-        return Err(LockError::msg(MSG_NOT_CONFIGURED));
-    }
-    if let Some(existing) = read_row(conn)?.and_then(|r| r.reset_pending_until) {
-        return Ok(existing);
-    }
-    let until = ts(now + Duration::hours(RESET_DELAY_HOURS));
-    conn.execute(
-        "UPDATE app_lock SET reset_pending_until = ?1 WHERE id = 1",
-        [&until],
-    )?;
-    Ok(until)
+/// Checks the installation recovery code (installation-level counter in `app_lock`).
+pub fn verify_recovery(conn: &Connection, code: &str, now: DateTime<Utc>) -> Res<()> {
+    let phc: Option<String> = conn
+        .query_row("SELECT recovery_hash FROM app_lock WHERE id = 1", [], |r| {
+            r.get(0)
+        })
+        .optional()?
+        .flatten();
+    let Some(phc) = phc else {
+        return Err(LockError::msg(MSG_WRONG_RECOVERY));
+    };
+    let a = check(conn, Who::Install, &normalize_code(code), Some(&phc), now)?;
+    into_result(a, MSG_WRONG_RECOVERY)
 }
 
 #[cfg(test)]
@@ -389,23 +298,28 @@ mod tests {
         Duration::seconds(n)
     }
 
-    fn failed(c: &Connection) -> i64 {
-        c.query_row("SELECT failed_count FROM app_lock", [], |r| r.get(0))
-            .unwrap()
+    fn user(c: &Connection, name: &str) -> String {
+        users::create(c, name, "", "1234", t0()).unwrap().id
     }
 
-    fn fail_n(c: &Connection, n: usize, now: DateTime<Utc>) -> Attempt {
+    fn failed(c: &Connection, id: &str) -> i64 {
+        c.query_row("SELECT failed_count FROM users WHERE id = ?1", [id], |r| {
+            r.get(0)
+        })
+        .unwrap()
+    }
+
+    fn fail_n(c: &Connection, id: &str, n: usize, now: DateTime<Utc>) -> Attempt {
         let mut last = Attempt::Ok;
         for _ in 0..n {
-            last = unlock(c, "0000", now).unwrap();
+            last = login(c, id, "0000", now).unwrap();
         }
         last
     }
 
     #[test]
-    fn setup_returns_grouped_crockford_code_and_hashes_with_argon2id() {
-        let c = mem();
-        let code = setup(&c, "1234", t0()).unwrap();
+    fn recovery_code_is_grouped_crockford_and_argon2id() {
+        let (code, h) = new_recovery().unwrap();
         let ok = code.len() == 19
             && code.split('-').count() == 4
             && code.split('-').all(|g| g.len() == 4)
@@ -414,61 +328,57 @@ mod tests {
                 .filter(|c| *c != '-')
                 .all(|c| CROCKFORD.contains(&(c as u8)));
         assert!(ok, "bad code {code}");
-        let pin_hash: String = c
-            .query_row("SELECT pin_hash FROM app_lock", [], |r| r.get(0))
-            .unwrap();
-        assert!(pin_hash.starts_with("$argon2id$"));
-        assert!(setup(&c, "1234", t0()).is_err());
+        assert!(h.starts_with("$argon2id$"));
     }
 
     #[test]
     fn pin_format_is_validated() {
-        let c = mem();
         for bad in ["123", "123456789", "12a4", "", "１２３４"] {
             assert_eq!(
-                setup(&c, bad, t0()).unwrap_err().message,
+                validate_pin(bad).unwrap_err().message,
                 MSG_BAD_PIN_FORMAT,
                 "{bad}"
             );
         }
-        assert!(!is_configured(&c, t0()).unwrap());
     }
 
     #[test]
-    fn unlock_ok_and_wrong() {
+    fn login_ok_and_wrong() {
         let c = mem();
-        setup(&c, "1234", t0()).unwrap();
-        assert_eq!(unlock(&c, "1234", t0()).unwrap(), Attempt::Ok);
-        assert_eq!(unlock(&c, "9999", t0()).unwrap(), Attempt::Wrong(None));
-        assert_eq!(failed(&c), 1);
+        let id = user(&c, "Ali");
+        assert_eq!(login(&c, &id, "1234", t0()).unwrap(), Attempt::Ok);
+        assert_eq!(login(&c, &id, "9999", t0()).unwrap(), Attempt::Wrong(None));
+        assert_eq!(failed(&c, &id), 1);
+        assert_eq!(
+            login(&c, "nope", "1234", t0()).unwrap_err().message,
+            MSG_NO_USER
+        );
     }
 
     #[test]
     fn backoff_starts_at_fifth_failure_doubles_and_caps() {
         let c = mem();
-        setup(&c, "1234", t0()).unwrap();
-        assert_eq!(fail_n(&c, 4, t0()), Attempt::Wrong(None));
-        assert_eq!(unlock(&c, "0000", t0()).unwrap(), Attempt::Wrong(Some(30)));
+        let id = user(&c, "Ali");
+        assert_eq!(fail_n(&c, &id, 4, t0()), Attempt::Wrong(None));
+        assert_eq!(
+            login(&c, &id, "0000", t0()).unwrap(),
+            Attempt::Wrong(Some(30))
+        );
         // Throttled: not checked (even the right PIN is refused), counter untouched.
         assert_eq!(
-            unlock(&c, "1234", t0() + secs(10)).unwrap(),
+            login(&c, &id, "1234", t0() + secs(10)).unwrap(),
             Attempt::Throttled(20)
         );
-        assert_eq!(failed(&c), 5);
+        assert_eq!(failed(&c, &id), 5);
         assert_eq!(
-            status(&c, t0() + secs(10)).unwrap().retry_after_sec,
-            Some(20)
-        );
-        // 6th failure after the wait -> 60 s, then 120, ... capped at 900.
-        assert_eq!(
-            unlock(&c, "0000", t0() + secs(30)).unwrap(),
+            login(&c, &id, "0000", t0() + secs(30)).unwrap(),
             Attempt::Wrong(Some(60))
         );
         let mut now = t0() + secs(30);
         let mut last = 60;
         for _ in 0..10 {
             now += secs(last as i64);
-            if let Attempt::Wrong(Some(s)) = unlock(&c, "0000", now).unwrap() {
+            if let Attempt::Wrong(Some(s)) = login(&c, &id, "0000", now).unwrap() {
                 last = s;
             }
         }
@@ -476,11 +386,24 @@ mod tests {
     }
 
     #[test]
+    fn backoff_is_isolated_between_users() {
+        let c = mem();
+        let (a, b) = (user(&c, "Ali"), user(&c, "Veli"));
+        fail_n(&c, &a, 5, t0());
+        assert_eq!(
+            login(&c, &a, "1234", t0() + secs(1)).unwrap(),
+            Attempt::Throttled(29)
+        );
+        assert_eq!(login(&c, &b, "1234", t0() + secs(1)).unwrap(), Attempt::Ok);
+        assert_eq!(failed(&c, &b), 0);
+    }
+
+    #[test]
     fn throttle_message_is_turkish_with_seconds() {
         let c = mem();
-        setup(&c, "1234", t0()).unwrap();
-        fail_n(&c, 5, t0());
-        let e = change(&c, "1234", "5678", t0() + secs(5)).unwrap_err();
+        let id = user(&c, "Ali");
+        fail_n(&c, &id, 5, t0());
+        let e = verify_pin(&c, &id, "1234", t0() + secs(5)).unwrap_err();
         assert_eq!(
             e.message,
             "Çok fazla hatalı deneme. 25 saniye sonra tekrar deneyin."
@@ -489,87 +412,32 @@ mod tests {
     }
 
     #[test]
-    fn success_resets_counters() {
+    fn success_resets_counters_and_pending_reset() {
         let c = mem();
-        setup(&c, "1234", t0()).unwrap();
-        fail_n(&c, 5, t0());
-        assert_eq!(unlock(&c, "1234", t0() + secs(31)).unwrap(), Attempt::Ok);
-        assert_eq!(failed(&c), 0);
-        assert_eq!(status(&c, t0() + secs(31)).unwrap().retry_after_sec, None);
+        let id = user(&c, "Ali");
+        users::request_reset(&c, &id, t0()).unwrap();
+        fail_n(&c, &id, 5, t0());
+        assert_eq!(
+            login(&c, &id, "1234", t0() + secs(31)).unwrap(),
+            Attempt::Ok
+        );
+        assert_eq!(failed(&c, &id), 0);
+        assert_eq!(users::list(&c, t0()).unwrap()[0].reset_pending_until, None);
     }
 
     #[test]
-    fn recover_rotates_code_sets_pin_and_shares_backoff() {
+    fn recovery_uses_installation_counter_not_user_counter() {
         let c = mem();
-        let old = setup(&c, "1234", t0()).unwrap();
+        let id = user(&c, "Ali");
+        let (code, h) = new_recovery().unwrap();
+        store_recovery(&c, &h).unwrap();
         // Case/dash/space-insensitive.
-        let sloppy = old.to_lowercase().replace('-', " ");
-        let new_code = recover(&c, &sloppy, "5678", t0()).unwrap();
-        assert_ne!(new_code, old);
-        assert_eq!(unlock(&c, "5678", t0()).unwrap(), Attempt::Ok);
-        assert_eq!(unlock(&c, "1234", t0()).unwrap(), Attempt::Wrong(None));
-        assert_eq!(
-            recover(&c, &old, "1111", t0()).unwrap_err().message,
-            MSG_WRONG_RECOVERY
-        );
-        assert!(recover(&c, &new_code, "1111", t0()).is_ok());
-        // Recovery failures feed the same counter.
-        let before = failed(&c);
-        recover(&c, "AAAA-AAAA-AAAA-AAAA", "1111", t0()).unwrap_err();
-        assert_eq!(failed(&c), before + 1);
-    }
-
-    #[test]
-    fn change_and_new_recovery_code_require_the_current_pin() {
-        let c = mem();
-        let old = setup(&c, "1234", t0()).unwrap();
-        assert!(change(&c, "0000", "5678", t0()).is_err());
-        change(&c, "1234", "5678", t0()).unwrap();
-        assert_eq!(unlock(&c, "5678", t0()).unwrap(), Attempt::Ok);
-        assert!(change(&c, "5678", "12", t0()).is_err());
-        let fresh = new_recovery_code(&c, "5678", t0()).unwrap();
-        assert!(recover(&c, &old, "1111", t0()).is_err());
-        assert!(recover(&c, &fresh, "1111", t0()).is_ok());
-    }
-
-    #[test]
-    fn reset_is_idempotent_and_clears_credentials_after_24h_keeping_data() {
-        let mut c = mem();
-        setup(&c, "1234", t0()).unwrap();
-        let doc = r#"{"period":"p","meta":{"revision":1,"status":"draft"}}"#;
-        db::save(&mut c, doc).unwrap();
-        let first = request_reset(&c, t0()).unwrap();
-        assert_eq!(first, "2026-01-02T00:00:00Z");
-        assert_eq!(request_reset(&c, t0() + secs(3600)).unwrap(), first);
-        let before = status(&c, t0() + secs(86_399)).unwrap();
-        assert!(before.configured);
-        assert_eq!(before.reset_pending_until.as_deref(), Some(first.as_str()));
-        let after = status(&c, t0() + secs(86_400)).unwrap();
-        assert!(!after.configured);
-        assert_eq!(after.reset_pending_until, None);
-        assert!(db::load(&c, "p#r1").unwrap().is_some());
-        // A new PIN can be set up again.
-        assert!(setup(&c, "4321", t0() + secs(86_401)).is_ok());
-    }
-
-    #[test]
-    fn successful_unlock_cancels_pending_reset() {
-        let c = mem();
-        setup(&c, "1234", t0()).unwrap();
-        request_reset(&c, t0()).unwrap();
-        unlock(&c, "1234", t0() + secs(60)).unwrap();
-        assert_eq!(
-            status(&c, t0() + secs(60)).unwrap().reset_pending_until,
-            None
-        );
-    }
-
-    #[test]
-    fn gate_refuses_when_locked_or_unconfigured() {
-        let c = mem();
-        assert_eq!(ensure_unlocked(&c, true, t0()).unwrap_err(), MSG_LOCKED);
-        setup(&c, "1234", t0()).unwrap();
-        assert_eq!(ensure_unlocked(&c, false, t0()).unwrap_err(), MSG_LOCKED);
-        assert!(ensure_unlocked(&c, true, t0()).is_ok());
+        verify_recovery(&c, &code.to_lowercase().replace('-', " "), t0()).unwrap();
+        verify_recovery(&c, "AAAA-AAAA-AAAA-AAAA", t0()).unwrap_err();
+        let n: i64 = c
+            .query_row("SELECT failed_count FROM app_lock", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(n, 1);
+        assert_eq!(failed(&c, &id), 0);
     }
 }
