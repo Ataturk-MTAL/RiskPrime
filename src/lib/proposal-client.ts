@@ -2,6 +2,8 @@
 import type { Proposal } from "./domain/proposal";
 
 export const REPO_URL = "https://github.com/Ataturk-MTAL/RiskPrime";
+/** The web app; the desktop app hands proposals over to it (no third-party scripts in the desktop window). */
+export const WEB_APP_URL = "https://ataturk-mtal.github.io/RiskPrime/";
 export const GITHUB_PROPOSAL_URL = `${REPO_URL}/issues/new?template=madde-onerisi.yml`;
 
 export const NETWORK_ERROR = "İnternet bağlantısı yok ya da öneri sunucusuna ulaşılamadı.";

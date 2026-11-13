@@ -10,6 +10,9 @@
   import { Separator } from '$lib/components/ui/separator';
   import * as Sidebar from '$lib/components/ui/sidebar';
   import ExportMenu from './ExportMenu.svelte';
+  import LockSettingsDialog, { type LockSettingsMode } from './LockSettingsDialog.svelte';
+  import { lock } from '$lib/lock.svelte';
+  import { isDesktop } from '$lib/platform';
   import { nav } from '$lib/nav.svelte';
   import { SECTION_LABELS } from '$lib/nav-items';
   import { formatHash, HOME } from '$lib/nav-route';
@@ -19,6 +22,14 @@
   let { onAbout, onPeriods }: { onAbout: () => void; onPeriods: () => void } = $props();
 
   let fileInput: HTMLInputElement;
+  let lockDialogOpen = $state(false);
+  let lockDialogMode = $state<LockSettingsMode>('change');
+
+  const openLockDialog = (mode: LockSettingsMode) =>
+    afterMenuCloses(() => {
+      lockDialogMode = mode;
+      lockDialogOpen = true;
+    });
 
   /** Lets the menu finish closing (and restore focus) before a dialog opens. */
   const afterMenuCloses = (action: () => void) => setTimeout(action, 0);
@@ -115,6 +126,12 @@
           <span class="flex items-center gap-2"><FileSpreadsheet class="size-4" />Boş şablon</span>
           <span class="text-xs text-muted-foreground">Okul bilgileri, kontrol listesi ve risk satırları sayfaları</span>
         </DropdownMenu.Item>
+        {#if isDesktop()}
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item onSelect={() => void lock.lockNow()}>Kilitle</DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={() => openLockDialog('change')}>PIN'i değiştir…</DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={() => openLockDialog('recovery')}>Yeni kurtarma kodu…</DropdownMenu.Item>
+        {/if}
         <DropdownMenu.Separator class="md:hidden" />
         <DropdownMenu.Item class="md:hidden" onSelect={() => nav.openLibrary()}>Kütüphane</DropdownMenu.Item>
         <DropdownMenu.Item class="md:hidden" onSelect={() => afterMenuCloses(onAbout)}>Hakkında</DropdownMenu.Item>
@@ -123,3 +140,7 @@
     <input bind:this={fileInput} type="file" accept=".json,application/json,.xlsx,.xls" hidden onchange={onPick} aria-label="Dosya seç" />
   </div>
 </header>
+
+{#if isDesktop()}
+  <LockSettingsDialog bind:open={lockDialogOpen} mode={lockDialogMode} />
+{/if}

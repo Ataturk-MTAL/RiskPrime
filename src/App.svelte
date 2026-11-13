@@ -19,9 +19,24 @@
   import ReportPage from '$lib/components/ReportPage.svelte';
   import RiskRegisterPage from '$lib/components/RiskRegisterPage.svelte';
   import { dragHasFiles, isOpenableFile, UNSUPPORTED_DROP_MESSAGE } from '$lib/drop';
+  import LockScreen from '$lib/components/LockScreen.svelte';
+  import { lock } from '$lib/lock.svelte';
+  import { isDesktop } from '$lib/platform';
   import { nav } from '$lib/nav.svelte';
   import { formatHash, parseHash } from '$lib/nav-route';
   import { store } from '$lib/state.svelte';
+
+  lock.beforeLock = () => store.flushArchive();
+  void lock.init();
+
+  // The archive is unreadable while locked on desktop; load it (again) on every unlock.
+  $effect(() => {
+    if (lock.state === 'unlocked') {
+      if (isDesktop()) void store.refreshPeriods();
+    } else {
+      aboutOpen = periodsOpen = false;
+    }
+  });
 
   let aboutOpen = $state(false);
   let periodsOpen = $state(false);
@@ -73,8 +88,11 @@
   }
 </script>
 
-<svelte:window ondragover={onDragOver} ondrop={onDrop} onbeforeunload={onBeforeUnload} onhashchange={applyHash} onpopstate={applyHash} />
+<svelte:window ondragover={onDragOver} ondrop={onDrop} onbeforeunload={onBeforeUnload} onhashchange={applyHash} onpopstate={applyHash} onpointerdown={() => lock.touch()} onpointermove={() => lock.touch()} onkeydown={() => lock.touch()} />
 
+{#if lock.state !== 'unlocked'}
+  <LockScreen />
+{:else}
 <Sidebar.Provider>
   <AppSidebar onAbout={() => (aboutOpen = true)} />
   <Sidebar.Inset class="min-w-0">
@@ -108,4 +126,5 @@
 <BankUpdatesDialog />
 <ConflictDialog />
 <DiscardDialog />
+{/if}
 <Toaster />

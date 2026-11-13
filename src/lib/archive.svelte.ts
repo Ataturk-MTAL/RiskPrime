@@ -48,6 +48,15 @@ export class Archive {
     }, ARCHIVE_DEBOUNCE_MS);
   }
 
+  /** Writes a debounced edit now, e.g. before the desktop app locks and refuses archive calls. */
+  async flush() {
+    if (this.#timer) clearTimeout(this.#timer);
+    this.#timer = null;
+    const pending = this.#pending;
+    this.#pending = null;
+    if (pending) await this.#write(pending);
+  }
+
   async #write(a: Assessment) {
     try {
       await this.#store.save(a);

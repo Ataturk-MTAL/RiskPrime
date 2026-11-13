@@ -22,6 +22,7 @@ import { transferMissing } from "$lib/domain/transfer";
 import { downloadBlob } from "$lib/export/download";
 import { nav } from "$lib/nav.svelte";
 import { Archive } from "$lib/archive.svelte";
+import { isDesktop } from "$lib/platform";
 // Heavy export libraries (xlsx, docx, typst.ts loader) load on first use, not on page load.
 const pdfModule = () => import("$lib/export/pdf");
 const excelModule = () => import("$lib/export/excel");
@@ -114,6 +115,10 @@ class Store {
     return this.#archive.refresh();
   }
 
+  flushArchive() {
+    return this.#archive.flush();
+  }
+
   async openPeriod(id: string) {
     const loaded = await this.#archive.load(id);
     if (!loaded) return;
@@ -139,7 +144,8 @@ class Store {
       this.storageOk = false;
     }
     this.#settle();
-    void this.#archive.refresh();
+    // Desktop: the archive stays locked until the PIN is entered; App refreshes it after unlock.
+    if (!isDesktop()) void this.#archive.refresh();
     if (typeof window !== "undefined") window.addEventListener("storage", this.#onStorage);
   }
 

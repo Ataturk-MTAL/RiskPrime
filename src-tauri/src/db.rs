@@ -59,8 +59,19 @@ CREATE TABLE row_sources (
 CREATE INDEX row_sources_row ON row_sources(period_id, location_id, row_id);
 "#;
 
+const SCHEMA_V2: &str = r#"
+CREATE TABLE app_lock (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  pin_hash TEXT,
+  recovery_hash TEXT,
+  failed_count INTEGER NOT NULL DEFAULT 0,
+  retry_after TEXT NULL,
+  reset_pending_until TEXT NULL
+);
+"#;
+
 /// Ordered migrations; index + 1 is the `user_version` after applying it.
-const MIGRATIONS: &[&str] = &[SCHEMA_V1];
+const MIGRATIONS: &[&str] = &[SCHEMA_V1, SCHEMA_V2];
 
 #[derive(Debug)]
 pub enum DbError {
@@ -385,8 +396,10 @@ mod tests {
     fn migrate_sets_version_and_is_idempotent() {
         let mut c = mem();
         migrate(&mut c).unwrap();
-        let v: i64 = c.pragma_query_value(None, "user_version", |r| r.get(0)).unwrap();
-        assert_eq!(v, 1);
+        let v: i64 = c
+            .pragma_query_value(None, "user_version", |r| r.get(0))
+            .unwrap();
+        assert_eq!(v, 2);
     }
 
     #[test]
@@ -430,7 +443,9 @@ mod tests {
         assert_eq!(count(&c, "risk_rows"), 2);
         assert_eq!(count(&c, "row_sources"), 2);
         let h: String = c
-            .query_row("SELECT hazard FROM risk_rows WHERE id = 'r1'", [], |r| r.get(0))
+            .query_row("SELECT hazard FROM risk_rows WHERE id = 'r1'", [], |r| {
+                r.get(0)
+            })
             .unwrap();
         assert_eq!(h, "new");
     }
@@ -469,15 +484,23 @@ mod tests {
         let mut c = mem();
         let s = save(&mut c, STARTER).unwrap();
         let doc: Value = serde_json::from_str(STARTER).unwrap();
-        let rows: usize = items(&doc["locations"]).map(|l| items(&l["rows"]).count()).sum();
+        let rows: usize = items(&doc["locations"])
+            .map(|l| items(&l["rows"]).count())
+            .sum();
         let sources: usize = items(&doc["locations"])
             .flat_map(|l| items(&l["rows"]))
             .map(|r| items(&r["sources"]).count())
             .sum();
         assert_eq!(count(&c, "risk_rows"), rows as i64);
         assert_eq!(count(&c, "row_sources"), sources as i64);
-        assert_eq!(count(&c, "locations"), items(&doc["locations"]).count() as i64);
-        assert_eq!(count(&c, "checklists"), items(&doc["checklists"]).count() as i64);
+        assert_eq!(
+            count(&c, "locations"),
+            items(&doc["locations"]).count() as i64
+        );
+        assert_eq!(
+            count(&c, "checklists"),
+            items(&doc["checklists"]).count() as i64
+        );
         assert_eq!(load(&c, &s.id).unwrap().as_deref(), Some(STARTER));
     }
 }

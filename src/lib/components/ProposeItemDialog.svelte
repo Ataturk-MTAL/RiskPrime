@@ -42,7 +42,8 @@
   import { LIMITS, PROPOSAL_TAGS, validateProposal, type ProposalTag } from '$lib/domain/proposal';
   import { loadBank } from '$lib/domain/question-bank';
   import { findSimilarGrouped } from '$lib/domain/similarity';
-  import { GITHUB_PROPOSAL_URL, proposalConfig, sendProposal, type SendResult } from '$lib/proposal-client';
+  import { externalLink, isDesktop, openExternal } from '$lib/platform';
+  import { GITHUB_PROPOSAL_URL, proposalConfig, sendProposal, WEB_APP_URL, type SendResult } from '$lib/proposal-client';
   import SelectField from './SelectField.svelte';
 
   let { open = $bindable(false), initialText = '' }: { open?: boolean; initialText?: string } = $props();
@@ -158,10 +159,18 @@
       <Dialog.Description>Kontrol listelerinde olmayan bir madde önerin.</Dialog.Description>
     </Dialog.Header>
 
-    {#if !config.enabled}
+    {#if isDesktop()}
+      <div class="space-y-3 text-sm">
+        <p>Öneriler tarayıcıda gönderilir.</p>
+        <div class="flex flex-wrap gap-2">
+          <Button onclick={() => void openExternal(`${WEB_APP_URL}?oner=${encodeURIComponent(text.trim().slice(0, LIMITS.textMax))}#kutuphane`)}>Tarayıcıda aç</Button>
+          <Button variant="outline" href={GITHUB_PROPOSAL_URL} target="_blank" rel="noopener noreferrer" {@attach externalLink}>GitHub üzerinden öner (hesap gerekir)</Button>
+        </div>
+      </div>
+    {:else if !config.enabled}
       <div class="space-y-3 text-sm">
         <p role="status">Bu kurulumda öneri gönderme açık değil.</p>
-        <Button variant="outline" href={GITHUB_PROPOSAL_URL} target="_blank" rel="noopener noreferrer">GitHub üzerinden öner (hesap gerekir)</Button>
+        <Button variant="outline" href={GITHUB_PROPOSAL_URL} target="_blank" rel="noopener noreferrer" {@attach externalLink}>GitHub üzerinden öner (hesap gerekir)</Button>
       </div>
     {:else if result?.ok}
       <p class="text-sm" role="status">

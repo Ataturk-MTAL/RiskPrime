@@ -8,12 +8,16 @@
   import LibraryDialog from './LibraryDialog.svelte';
   import ProposeItemDialog from './ProposeItemDialog.svelte';
   import { bankChanges } from '$lib/domain/bank-sync';
+  import { LIMITS } from '$lib/domain/proposal';
   import { liveLocationIds } from '$lib/domain/inspections';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
   let libraryOpen = $state(false);
-  let proposeOpen = $state(false);
+  // The desktop app hands a proposal over as ?oner=<text>; open the dialog prefilled, then drop the param.
+  const prefill = new URLSearchParams(location.search).get('oner')?.trim().slice(0, LIMITS.textMax) ?? '';
+  let proposeOpen = $state(prefill !== '');
+  if (prefill) history.replaceState(null, '', location.pathname + location.hash);
   const lists = $derived(store.assessment.checklists);
   const changes = $derived(bankChanges(store.assessment));
   const changeCount = $derived(changes.updated.length + changes.added.length);
@@ -79,6 +83,6 @@
       <p class="py-8 text-sm text-muted-foreground" role="status">Henüz liste yok. "Hazır listelerden ekle" ile MEB listelerini ekleyin ya da boş bir liste başlatın.</p>
     {/if}
     <LibraryDialog bind:open={libraryOpen} />
-    <ProposeItemDialog bind:open={proposeOpen} />
+    <ProposeItemDialog bind:open={proposeOpen} initialText={prefill} />
   {/if}
 </div>

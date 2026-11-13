@@ -74,6 +74,17 @@ describe("Archive", () => {
     expect(archive.periods).toHaveLength(2);
   });
 
+  it("flush writes a pending edit at once and cancels the timer", async () => {
+    const store = createMemoryStore();
+    const archive = new Archive(vi.fn(), { store, available: true });
+    void archive.save(period("2026-2027"), false);
+    await archive.flush();
+    expect(archive.periods).toHaveLength(1);
+    const save = vi.spyOn(store, "save");
+    await vi.advanceTimersByTimeAsync(ARCHIVE_DEBOUNCE_MS);
+    expect(save).not.toHaveBeenCalled();
+  });
+
   it("refuses to delete the open snapshot", async () => {
     const fail = vi.fn();
     const archive = new Archive(fail, { store: createMemoryStore(), available: true });

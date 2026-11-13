@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as Dialog from '$lib/components/ui/dialog';
-  import { isDesktop } from '$lib/platform';
+  import { externalLink, isDesktop } from '$lib/platform';
   import { version } from '../../../package.json';
 
   let { open = $bindable(false) }: { open?: boolean } = $props();
@@ -19,7 +19,7 @@
       <dt class="font-medium text-foreground">Geliştiren</dt>
       <dd>Elektrik-Elektronik Teknolojisi Alanı</dd>
       <dt class="font-medium text-foreground">Okul</dt>
-      <dd><a class="underline underline-offset-2 hover:text-foreground" href="https://mersinataturkmtal.meb.k12.tr/" rel="noopener">mersinataturkmtal.meb.k12.tr</a></dd>
+      <dd><a class="underline underline-offset-2 hover:text-foreground" href="https://mersinataturkmtal.meb.k12.tr/" rel="noopener" {@attach externalLink}>mersinataturkmtal.meb.k12.tr</a></dd>
       <dt class="font-medium text-foreground">Gizlilik</dt>
       <dd>
         Veriler yalnız bu tarayıcıda işlenir; hiçbir sunucuya gönderilmez. Kalıcı kayıt indirilen .json ya da Excel (.xlsx) dosyasıdır; ikisi de
