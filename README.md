@@ -53,6 +53,16 @@ Web uygulamasının aynısı, Tauri 2 kabuğunda masaüstü programı olarak ça
 - Veri konumu: işletim sisteminin uygulama veri klasöründe `riskprime.db`.
 - Resmî kayıt yine imzalanmış `.json` dönem dosyasıdır; veritabanı yalnız çalışma arşividir.
 
+### Sürüm yayınlama
+
+Kurulum paketlerini GitHub derler (`.github/workflows/release.yml`):
+
+1. `package.json` ve `src-tauri/Cargo.toml` içindeki `version` alanını aynı değere getirin (örn. `0.3.0`); `node scripts/check-version.mjs` tutarlılığı denetler.
+2. Commit'leyip etiketi gönderin: `git tag v0.3.0 && git push origin v0.3.0`.
+3. CI testleri çalıştırır, Windows (`.exe`/`.msi`), macOS (universal `.dmg`) ve Linux (`.AppImage`/`.deb`/`.rpm`) paketlerini derler ve **taslak** bir Release'e ekler. Kontrol edip "Publish" ile yayınlayın.
+
+Etiket sürümle aynı değilse derleme başlamadan durur. Paketler kod imzası taşımaz (Windows SmartScreen ve macOS Gatekeeper uyarı gösterir); imza için sertifika gerekir.
+
 ## Kontrol listelerini güncelleme
 
 1. `content/questions/*.toml` dosyalarını düzenleyin (`meb.toml`: MEB maddeleri, `riskprime-*.toml`: RiskPrime maddeleri; `common.toml`: farklı listelerde aynı şeyi soran MEB maddelerinin ortak grupları, `[[common]] id, title, keys`).
