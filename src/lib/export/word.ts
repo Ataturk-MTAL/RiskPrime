@@ -58,7 +58,7 @@ function wordTable<T>(rows: T[], columns: readonly Column<T>[]): Table {
 const heading = (text: string, level: (typeof HeadingLevel)[keyof typeof HeadingLevel]) =>
   new Paragraph({ text, heading: level });
 
-export async function downloadWord(a: Assessment): Promise<void> {
+export async function downloadWord(a: Assessment): Promise<boolean> {
   const signatories = a.school.signatories.map(
     (s) => new Paragraph(`${s.title}: ${s.name || "................"}    İmza: ........`),
   );
@@ -93,5 +93,5 @@ export async function downloadWord(a: Assessment): Promise<void> {
       },
     ],
   });
-  downloadBlob(await Packer.toBlob(doc), outputName(a, "docx"));
+  return downloadBlob(await Packer.toBlob(doc), outputName(a, "docx"));
 }

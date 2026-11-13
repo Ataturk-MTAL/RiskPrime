@@ -45,6 +45,14 @@ Yapı:
 - `public/template/report.typ`: PDF şablonu; `public/fonts/`: IBM Plex Sans (OFL).
 - Tasarım: `docs/superpowers/specs/2026-11-11-riskprime-design.md`.
 
+## Masaüstü sürümü
+
+Web uygulamasının aynısı, Tauri 2 kabuğunda masaüstü programı olarak çalışır. Dönem arşivi tarayıcı yerine yerel bir SQLite veritabanında tutulur; dosya kaydetme işletim sisteminin "Farklı kaydet" penceresiyle yapılır. "Madde öner" dışında tamamen çevrimdışı çalışır.
+
+- Derleme: `pnpm desktop:build` (Rust araç zinciri gerekir). Windows kurulum paketleri Windows'ta ya da CI'da derlenmelidir.
+- Veri konumu: işletim sisteminin uygulama veri klasöründe `riskprime.db`.
+- Resmî kayıt yine imzalanmış `.json` dönem dosyasıdır; veritabanı yalnız çalışma arşividir.
+
 ## Kontrol listelerini güncelleme
 
 1. `content/questions/*.toml` dosyalarını düzenleyin (`meb.toml`: MEB maddeleri, `riskprime-*.toml`: RiskPrime maddeleri; `common.toml`: farklı listelerde aynı şeyi soran MEB maddelerinin ortak grupları, `[[common]] id, title, keys`).

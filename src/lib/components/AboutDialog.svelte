@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as Dialog from '$lib/components/ui/dialog';
+  import { isDesktop } from '$lib/platform';
   import { version } from '../../../package.json';
 
   let { open = $bindable(false) }: { open?: boolean } = $props();
@@ -27,7 +28,7 @@
       <dt class="font-medium text-foreground">Kütüphaneler</dt>
       <dd>Svelte, shadcn-svelte ve bits-ui (MIT), typst.ts (Apache-2.0), SheetJS (Apache-2.0), docx (MIT); yazı tipleri Atkinson Hyperlegible Next ve IBM Plex Sans (OFL)</dd>
       <dt class="font-medium text-foreground">Sürüm</dt>
-      <dd>{version}</dd>
+      <dd>{version} · {isDesktop() ? 'Masaüstü' : 'Web'}</dd>
     </dl>
   </Dialog.Content>
 </Dialog.Root>

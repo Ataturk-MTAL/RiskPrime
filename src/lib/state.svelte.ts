@@ -175,7 +175,7 @@ class Store {
     try {
       const text = localStorage.getItem(UNREADABLE_KEY);
       if (text !== null)
-        downloadBlob(new Blob([text], { type: "application/json" }), RECOVERY_FILE);
+        void downloadBlob(new Blob([text], { type: "application/json" }), RECOVERY_FILE);
     } catch {
       this.fail(["Eski veri tarayıcıdan okunamadı."]);
     }
@@ -545,15 +545,15 @@ class Store {
 
   async exportAs(kind: ExportKind) {
     if (kind === "json") {
-      downloadBlob(
+      const saved = await downloadBlob(
         new Blob([serialize(this.assessment)], { type: "application/json" }),
         fileName(this.assessment),
       );
-      this.#markSaved();
+      if (saved) this.#markSaved();
       return;
     }
     const a = this.assessment;
-    const jobs: Record<Exclude<ExportKind, "json">, () => Promise<void> | void> = {
+    const jobs: Record<Exclude<ExportKind, "json">, () => Promise<boolean>> = {
       "pdf-full": async () => (await pdfModule()).downloadPdf(a, PDF_KINDS["pdf-full"]),
       "pdf-checklists": async () => (await pdfModule()).downloadPdf(a, PDF_KINDS["pdf-checklists"]),
       "pdf-blank": async () => (await pdfModule()).downloadPdf(a, PDF_KINDS["pdf-blank"]),
@@ -567,8 +567,8 @@ class Store {
         : "Dosya hazırlanıyor…";
     this.clearErrors();
     try {
-      await jobs[kind]();
-      if (kind === "xlsx") this.#markSaved(); // the Excel file is a full backup, like .json
+      const saved = await jobs[kind]();
+      if (saved && kind === "xlsx") this.#markSaved(); // the Excel file is a full backup, like .json
     } catch (error) {
       this.fail([`Çıktı alınamadı: ${error instanceof Error ? error.message : ""}`]);
     } finally {

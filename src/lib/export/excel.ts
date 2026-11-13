@@ -1,5 +1,6 @@
 // Excel export (full backup), import template and workbook reading (SheetJS).
 import * as XLSX from "xlsx";
+import { downloadBlob } from "./download";
 import { backupSheets } from "../domain/excel-backup";
 import { template } from "../domain/excel-import";
 import { outputName } from "../domain/export-data";
@@ -39,14 +40,22 @@ export async function readWorkbook(file: File): Promise<Record<string, unknown[]
   );
 }
 
-export function downloadImportTemplate(): void {
+const XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+const saveWorkbook = (book: XLSX.WorkBook, name: string): Promise<boolean> =>
+  downloadBlob(
+    new Blob([XLSX.write(book, { bookType: "xlsx", type: "array" })], { type: XLSX_MIME }),
+    name,
+  );
+
+export function downloadImportTemplate(): Promise<boolean> {
   const book = XLSX.utils.book_new();
   for (const [name, rows] of Object.entries(template())) {
     const sheet = XLSX.utils.aoa_to_sheet(rows);
     sheet["!cols"] = rows[0].map((h) => ({ wch: Math.max(10, String(h).length + 4) }));
     XLSX.utils.book_append_sheet(book, sheet, name);
   }
-  XLSX.writeFile(book, TEMPLATE_FILE);
+  return saveWorkbook(book, TEMPLATE_FILE);
 }
 
 /** Column widths from the longest cell of each column, within sane limits. */
@@ -59,12 +68,12 @@ function columnWidths(rows: (string | number)[][]): { wch: number }[] {
 }
 
 /** Full backup workbook: "Dosya aç" restores it (see domain/excel-backup). */
-export function downloadExcel(a: Assessment): void {
+export function downloadExcel(a: Assessment): Promise<boolean> {
   const book = XLSX.utils.book_new();
   for (const [name, rows] of Object.entries(backupSheets(a))) {
     const sheet = XLSX.utils.aoa_to_sheet(rows);
     sheet["!cols"] = columnWidths(rows);
     XLSX.utils.book_append_sheet(book, sheet, name);
   }
-  XLSX.writeFile(book, outputName(a, "xlsx"));
+  return saveWorkbook(book, outputName(a, "xlsx"));
 }

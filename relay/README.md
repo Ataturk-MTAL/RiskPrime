@@ -36,7 +36,9 @@ açık bir öneriye benziyor mu (>= 0.6, varsa yorum eklenir), değilse yeni iss
 1. Cloudflare hesabı açın. Turnstile > Add widget: alan adı olarak uygulamanın yayın alan adını
    (örn. `OWNER.github.io`) ekleyin. **Site key** uygulama için, **Secret key** Worker için.
 2. `relay/wrangler.toml` içindeki `ALLOWED_ORIGINS`, `GITHUB_REPO`, `GITHUB_APP_ID`,
-   `GITHUB_INSTALLATION_ID` değerlerini doldurun.
+   `GITHUB_INSTALLATION_ID` değerlerini doldurun. Masaüstü sürümü de bu Worker'ı kullanacaksa
+   `ALLOWED_ORIGINS` içine `tauri://localhost` (macOS/Linux) ve `http://tauri.localhost`
+   (Windows) de eklenmelidir.
 3. Dağıtım ve gizli değerler (`relay/` klasöründen):
 
    ```sh

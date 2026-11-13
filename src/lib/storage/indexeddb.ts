@@ -18,11 +18,13 @@ export const toRecord = (a: Assessment): PeriodRecord => ({
 });
 
 /** Parses through file.ts so migrations apply; null when the record is unreadable. */
-export const fromRecord = (record: PeriodRecord | undefined): Assessment | null => {
-  if (!record) return null;
-  const result = parse(record.text);
+export const fromText = (text: string): Assessment | null => {
+  const result = parse(text);
   return "errors" in result ? null : result.assessment;
 };
+
+export const fromRecord = (record: PeriodRecord | undefined): Assessment | null =>
+  record ? fromText(record.text) : null;
 
 const wrap = <T>(request: IDBRequest<T>): Promise<T> =>
   new Promise((resolve, reject) => {

@@ -20,12 +20,17 @@
     "generate:starter": "node scripts/generate-starter.mjs",
     "generate:library": "node scripts/generate-library.mjs",
     "generate:qr": "node scripts/generate-qr.mjs",
-    "generate:sample": "node scripts/generate-sample.mjs"
+    "generate:sample": "node scripts/generate-sample.mjs",
+    "tauri": "tauri",
+    "desktop:build": "tauri build"
   },
   "dependencies": {
     "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
     "@myriaddreamin/typst-ts-web-compiler": "0.7.0",
     "@myriaddreamin/typst.ts": "0.7.0",
+    "@tauri-apps/api": "^2.12.4",
+    "@tauri-apps/plugin-dialog": "^2.8.4",
+    "@tauri-apps/plugin-fs": "^2.7.1",
     "docx": "^9.5.0",
     "xlsx": "file:vendor/xlsx-0.20.3.tgz"
   },
@@ -34,6 +39,7 @@
     "@lucide/svelte": "^1.72.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
     "@tailwindcss/vite": "^4.1.0",
+    "@tauri-apps/cli": "^2.12.4",
     "@tsconfig/svelte": "^5.0.4",
     "bits-ui": "^2.20.6",
     "cn": "^0.5.2",

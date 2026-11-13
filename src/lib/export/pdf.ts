@@ -57,13 +57,13 @@ export async function downloadPdf(
   a: Assessment,
   kind: PdfKind,
   locationId?: string,
-): Promise<void> {
+): Promise<boolean> {
   const data = pdfData(a, kind, locationId);
   const typst = await getCompiler();
   await typst.mapShadow("/data.json", new TextEncoder().encode(JSON.stringify(data)));
   const pdf = await typst.pdf({ mainFilePath: "/report.typ" });
   if (!pdf) throw new Error("PDF derlenemedi; ayrıntı tarayıcı konsolunda.");
-  downloadBlob(
+  return downloadBlob(
     new Blob([pdf as BlobPart], { type: "application/pdf" }),
     outputName(
       a,
