@@ -30,7 +30,8 @@
     "category": "Education",
     "shortDescription": "Okullar için İSG risk değerlendirmesi",
     "windows": {
-      "nsis": { "languages": ["Turkish", "English"] }
+      "nsis": { "languages": ["Turkish", "English"] },
+      "wix": { "language": "tr-TR" }
     },
     "icon": [
       "icons/32x32.png",
