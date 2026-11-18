@@ -3,7 +3,7 @@
 area = "Bilişim Teknolojileri"
 
 [[location]]
-name = "Yazılım Geliştirme Laboratuvarı"
+name = "Yazılım ve Grafik Tasarım Laboratuvarı"
 type = "workshop"
 checklists = ["KL-27", "KL-19", "KL-20", "KL-24", "KL-26"]
 
@@ -36,9 +36,16 @@ action = "Ekranlar pencereye dik, perde var; havalandırma ve klima bakımı dü
 responsible = "Okul müdürü"
 
 [[location]]
-name = "Bilgisayar Donanım ve Ağ Sistemleri Atölyesi"
+name = "Ağ ve Siber Güvenlik Laboratuvarı"
 type = "workshop"
-checklists = ["KL-37", "KL-26", "KL-34", "KL-21", "KL-27", "KL-18", "KL-33"]
+checklists = ["KL-37", "KL-27", "KL-19", "KL-20", "KL-26", "KL-34", "KL-21", "KL-18", "KL-33"]
+
+[[location.row]]
+equipment = "Bilgisayar ve ekran"
+hazard = "Uzun süre ekran başında çalışma: göz yorgunluğu, boyun, bel ve bilek ağrısı"
+affected = "Öğrenci, öğretmen"
+action = "Ekran göz hizasında ve 50-80 cm uzakta; ayarlanabilir sandalye; düzenli ara verilir (KL-27)"
+responsible = "Atölye öğretmeni"
 
 [[location.row]]
 equipment = "Bilgisayar kasası ve güç kaynağı"
@@ -81,6 +88,46 @@ hazard = "Kırık ekran ve kartla kesilme; pillerin evsel atığa karışması"
 affected = "Öğrenci, personel"
 action = "Atık pil kutusu; elektronik atık ayrı toplanır ve lisanslı firmaya verilir (KL-33)"
 responsible = "Okul müdürü"
+
+[[location]]
+name = "Bilgisayar ve Robotik Kodlama Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-26", "KL-43", "KL-30", "KL-32", "KL-21", "KL-34", "KL-27", "KL-33"]
+
+[[location.row]]
+equipment = "Lityum pil (Li-ion, LiPo) ve şarj"
+hazard = "Hasarlı, şişmiş veya aşırı şarj edilen pilin alev alması"
+affected = "Herkes"
+action = "Uygun şarj cihazı; şarj gözetimli ve yanmaz yüzeyde veya yanmaz şarj torbasında; şişmiş veya darbe almış pil kullanılmaz, kumlu metal kapta ayrılıp atık olarak verilir; söndürücü yakında (KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Hareketli robotlar, motorlar ve dişliler"
+hazard = "Beklenmedik hareketle çarpma; dişli ve pervaneye parmak kaptırma"
+affected = "Öğrenci"
+action = "Robot denemeleri ayrılmış test alanında; programı yüklemeden önce robot kaldırılır veya tekerlekleri boşa alınır; pervaneli araçlarda pervane koruyucusu; acil kapatma anahtarı erişilebilir (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Lehimleme istasyonu"
+hazard = "Sıcak uca temas: yanık; lehim dumanı"
+affected = "Öğrenci"
+action = "Havya yuvasında bırakılır; kullanılmayan istasyon kapatılır; lokal lehim dumanı emici; kurşunlu lehimde masada yiyecek ve içecek yok; el yıkama (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Sıcak silikon tabancası, maket bıçağı ve el aletleri"
+hazard = "Sıcak silikon ve uçla yanık; kesilme"
+affected = "Öğrenci"
+action = "Silikon tabancası standında bırakılır; maket bıçağı kilitli ve kapaklı, kesim altlık üzerinde kendinden uzağa (KL-21, KL-34)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Bilgisayar başında çalışma"
+hazard = "Göz yorgunluğu, boyun, bel ve bilek ağrısı"
+affected = "Öğrenci, öğretmen"
+action = "Ekran göz hizasında; ayarlanabilir sandalye; düzenli ara (KL-27)"
+responsible = "Atölye öğretmeni"
 
 [[location]]
 name = "Sunucu ve Sistem Odası"

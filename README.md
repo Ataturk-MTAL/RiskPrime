@@ -8,7 +8,7 @@ Mersin Atatürk Mesleki ve Teknik Anadolu Lisesi Elektrik-Elektronik Teknolojisi
 
 1. Yayınlanmış sayfayı açın (ya da yerelde `pnpm dev`).
 2. Mekânları (bina ve alan etiketiyle) ve risk satırlarını ekleyin, düzenleyin, silin. O ve Ş seçince skor ve renkli düzey görünür.
-   - "+ Hazır formdan ekle": hazır mekânları (risk satırlarıyla; Elektrik-Elektronik, Makine ve Tasarım, Metal, İnşaat, Kimya, Harita-Tapu-Kadastro, Bilişim) ve kontrol listelerini, MEB KL-01–KL-43 listelerini seçip ekleyin; istemediğinizi silin. Hazır mekân eklenince ona uygun MEB listeleri de eklenip mekâna bağlanır.
+   - "+ Hazır formdan ekle": hazır mekânları (risk satırlarıyla; Elektrik-Elektronik, Makine ve Tasarım, Metal, İnşaat, Kimya, Harita-Tapu-Kadastro, Bilişim, Tesisat ve İklimlendirme) ve kontrol listelerini, MEB KL-01–KL-43 listelerini seçip ekleyin; istemediğinizi silin. Hazır mekân eklenince ona uygun MEB listeleri de eklenip mekâna bağlanır.
    - "Kontrol listeleri" sekmesi: Evet / Hayır / U-D işaretleyin, açıklama yazın. MEB listesinin hazır metni kilitlidir; madde eklenip çıkarılabilir.
    - Excel üç sayfadır: "Okul Bilgileri" (okul, dönem, tarihler, gruplama, imzacılar), "Kontrol Listesi", "Risk Satırları". Menüdeki "Excel şablonu: MEB KL-01–KL-43" dosyasında MEB kontrol listelerinin tamamı hazır; okul sayfasını doldurup "Dosya aç" ile yükleyin.
    - Kendi listeniz ya da risk satırlarınız için "diğer biçimler → Excel içe alma şablonu"nu doldurup "Dosya aç" ile yükleyin.

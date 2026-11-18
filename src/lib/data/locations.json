@@ -1,6 +1,6 @@
 [
   {
-    "name": "Yazılım Geliştirme Laboratuvarı",
+    "name": "Yazılım ve Grafik Tasarım Laboratuvarı",
     "type": "workshop",
     "building": "",
     "area": "Bilişim Teknolojileri",
@@ -41,12 +41,20 @@
     ]
   },
   {
-    "name": "Bilgisayar Donanım ve Ağ Sistemleri Atölyesi",
+    "name": "Ağ ve Siber Güvenlik Laboratuvarı",
     "type": "workshop",
     "building": "",
     "area": "Bilişim Teknolojileri",
-    "checklists": ["KL-37", "KL-26", "KL-34", "KL-21", "KL-27", "KL-18", "KL-33"],
+    "checklists": ["KL-37", "KL-27", "KL-19", "KL-20", "KL-26", "KL-34", "KL-21", "KL-18", "KL-33"],
     "rows": [
+      {
+        "equipment": "Bilgisayar ve ekran",
+        "hazard": "Uzun süre ekran başında çalışma: göz yorgunluğu, boyun, bel ve bilek ağrısı",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Ekran göz hizasında ve 50-80 cm uzakta; ayarlanabilir sandalye; düzenli ara verilir (KL-27)",
+        "responsible": "Atölye öğretmeni"
+      },
       {
         "equipment": "Bilgisayar kasası ve güç kaynağı",
         "hazard": "Fiş takılıyken kasa içine müdahale; güç kaynağını açma: elektrik çarpması",
@@ -94,6 +102,55 @@
         "existingControls": "Yok",
         "action": "Atık pil kutusu; elektronik atık ayrı toplanır ve lisanslı firmaya verilir (KL-33)",
         "responsible": "Okul müdürü"
+      }
+    ]
+  },
+  {
+    "name": "Bilgisayar ve Robotik Kodlama Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "Bilişim Teknolojileri",
+    "checklists": ["KL-37", "KL-26", "KL-43", "KL-30", "KL-32", "KL-21", "KL-34", "KL-27", "KL-33"],
+    "rows": [
+      {
+        "equipment": "Lityum pil (Li-ion, LiPo) ve şarj",
+        "hazard": "Hasarlı, şişmiş veya aşırı şarj edilen pilin alev alması",
+        "affected": "Herkes",
+        "existingControls": "Yok",
+        "action": "Uygun şarj cihazı; şarj gözetimli ve yanmaz yüzeyde veya yanmaz şarj torbasında; şişmiş veya darbe almış pil kullanılmaz, kumlu metal kapta ayrılıp atık olarak verilir; söndürücü yakında (KL-30)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Hareketli robotlar, motorlar ve dişliler",
+        "hazard": "Beklenmedik hareketle çarpma; dişli ve pervaneye parmak kaptırma",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Robot denemeleri ayrılmış test alanında; programı yüklemeden önce robot kaldırılır veya tekerlekleri boşa alınır; pervaneli araçlarda pervane koruyucusu; acil kapatma anahtarı erişilebilir (KL-43)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Lehimleme istasyonu",
+        "hazard": "Sıcak uca temas: yanık; lehim dumanı",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Havya yuvasında bırakılır; kullanılmayan istasyon kapatılır; lokal lehim dumanı emici; kurşunlu lehimde masada yiyecek ve içecek yok; el yıkama (KL-32)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Sıcak silikon tabancası, maket bıçağı ve el aletleri",
+        "hazard": "Sıcak silikon ve uçla yanık; kesilme",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Silikon tabancası standında bırakılır; maket bıçağı kilitli ve kapaklı, kesim altlık üzerinde kendinden uzağa (KL-21, KL-34)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Bilgisayar başında çalışma",
+        "hazard": "Göz yorgunluğu, boyun, bel ve bilek ağrısı",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Ekran göz hizasında; ayarlanabilir sandalye; düzenli ara (KL-27)",
+        "responsible": "Atölye öğretmeni"
       }
     ]
   },
@@ -395,7 +452,7 @@
     ]
   },
   {
-    "name": "Ahşap Kalıp ve Marangozluk Atölyesi",
+    "name": "Kalıp Atölyesi",
     "type": "workshop",
     "building": "",
     "area": "İnşaat Teknolojisi",
@@ -438,7 +495,7 @@
         "responsible": "Atölye öğretmeni"
       },
       {
-        "equipment": "Vernik, boya, tiner ve tutkal",
+        "equipment": "Kalıp yağı, vernik, boya, tiner ve tutkal",
         "hazard": "Çözücü buharı soluma; buharın kıvılcım veya talaş tozuyla birlikte tutuşması; cilt tahrişi",
         "affected": "Öğrenci, öğretmen",
         "existingControls": "Yok",
@@ -467,6 +524,131 @@
         "affected": "Öğrenci, öğretmen",
         "existingControls": "Yok",
         "action": "Gürültü ölçümü yapılır; 80 dB(A) üstünde kulak koruyucu verilir, 85 dB(A) üstünde kullanılması zorunlu ve alan işaretli; makine çalışma süresi sınırlanır (KL-31.02, KL-31.05)",
+        "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
+    "name": "Yapı Yüzey Kaplama Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "İnşaat Teknolojisi",
+    "checklists": ["KL-37", "KL-36", "KL-32", "KL-34", "KL-25", "KL-31", "KL-18", "KL-26", "KL-21"],
+    "rows": [
+      {
+        "equipment": "Seramik ve taş kesme (sulu kesme makinesi, spiral)",
+        "hazard": "Diskle kesilme; disk kırılması; kristal silika tozu; sulu kesmede elektrik çarpması",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Öğrenci makineyi yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; disk koruyucusu takılı; mümkünse sulu kesme; FFP3 toz maskesi, gözlük, kulak koruyucu; sulu kesme makinesi kaçak akım korumalı (KL-34, KL-26)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Seramik yapıştırıcısı, derz dolgusu ve epoksi",
+        "hazard": "Cilt tahrişi ve alerji; toz halindeki ürünü soluma",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Nitril eldiven; karıştırmada FFP2 toz maskesi; epoksi karışımı havalandırmalı yerde (KL-32)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Boya, astar ve tiner",
+        "hazard": "Çözücü buharı soluma; buharın kıvılcımla tutuşması",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Boyama havalandırmalı yerde; kutular kapalı, yanıcı madde dolabında; organik buhar filtreli (A tipi) yarım yüz maskesi, nitril eldiven; boyalı bezler kapaklı metal kovada (KL-36, KL-32)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Diz çökerek ve eğilerek uygulama",
+        "hazard": "Diz ve bel rahatsızlıkları",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Dizlik kullanılır; sık ara verilir; mümkün olan uygulama tezgâh yüksekliğinde yapılır (KL-18)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Kırık seramik ve keskin kenarlar",
+        "hazard": "Kesilme",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Kesilmeye dayanıklı eldiven; kırıklar ayrı ve sağlam kapta toplanır (KL-21)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Duvarın üst kısmında ve tavanda uygulama",
+        "hazard": "Yüksekten düşme",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Korkuluklu sehpa iskele; sandalye veya kovaya çıkılmaz; uygulama düşük yükseklikte (KL-25)",
+        "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
+    "name": "Cephe Sistemleri ve PVC Doğrama Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "İnşaat Teknolojisi",
+    "checklists": [
+      "KL-37",
+      "KL-42",
+      "KL-43",
+      "KL-31",
+      "KL-26",
+      "KL-18",
+      "KL-21",
+      "KL-23",
+      "KL-34",
+      "KL-25"
+    ],
+    "rows": [
+      {
+        "equipment": "PVC ve alüminyum profil kesme makinesi",
+        "hazard": "Testereye el temas; profilin fırlaması",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Öğrenci makineyi yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; bıçak koruyucusu ve iki el kumandası veya otomatik koruyucu çalışır; profil mengeneyle sabit (KL-43)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "PVC kaynak makinesi (sıcak plaka) ve köşe temizleme makinesi",
+        "hazard": "Sıcak plakaya temas: yanık; sıkıştırma mengeneleri arasında el sıkışması; kaynak dumanı",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Öğrenci makineyi yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; koruyucu kapak kapalı; çalışırken mengene bölgesine el sokulmaz; havalandırma (KL-43, KL-23)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Cam taşıma ve montaj",
+        "hazard": "Camın kırılması: ağır kesik; ağır cam paneli taşıma: bel yaralanması",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Kesilmeye dayanıklı eldiven ve kol koruyucu; cam vantuzu; büyük cam iki kişiyle taşınır ve dik cam sehpasında saklanır (KL-21, KL-18)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Kopya freze, matkap ve vidalama",
+        "hazard": "Talaş ve parça fırlaması; hasarlı kabloyla çarpma",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Koruyucu gözlük; profil sabitlenir; el aletleri aylık kontrol edilir (KL-34, KL-26)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Kesme ve frezeleme gürültüsü",
+        "hazard": "Uzun süreli gürültü: işitme kaybı",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Gürültü ölçümü yapılır; 80 dB(A) üstünde kulak koruyucu verilir, 85 dB(A) üstünde kullanılması zorunlu ve alan işaretli (KL-31.02, KL-31.05)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Doğrama ve cephe montaj uygulaması",
+        "hazard": "Yüksekte montajda düşme; montaj sırasında doğramanın düşmesi",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Montaj uygulaması yere yakın montaj sehpasında yapılır; öğrenci yüksekte ve cephede çalışmaz; doğrama montaj sırasında desteklenir (KL-25)",
         "responsible": "Atölye öğretmeni"
       }
     ]
@@ -1006,6 +1188,176 @@
     ]
   },
   {
+    "name": "Makine Bakım Onarım Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "Makine ve Tasarım Teknolojisi",
+    "checklists": [
+      "KL-37",
+      "KL-42",
+      "KL-43",
+      "KL-41",
+      "KL-28",
+      "KL-34",
+      "KL-26",
+      "KL-18",
+      "KL-32",
+      "KL-31",
+      "KL-23"
+    ],
+    "rows": [
+      {
+        "equipment": "Makine sökme, takma ve bakım",
+        "hazard": "Bakımdaki makinenin beklenmedik çalışması veya hareket etmesi: sıkışma, kesilme, ezilme",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Öğrenci yalnız öğretmen gözetiminde çalışır; enerji kesilir, ana şalter kilitlenir ve etiketlenir; hidrolik ve pnömatik basınç boşaltılır, yerçekimiyle inebilecek parçalar desteklenir; yeniden çalıştırmayı öğretmen yapar (KL-43)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Kaldırma ekipmanı (caraskal, vinç, kriko)",
+        "hazard": "Yükün veya sapanın düşmesi: ezilme; askıdaki yükün altında durma",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Kaldırma ekipmanı ve sapanlar periyodik kontrollü, yük sınırı etiketli; askıdaki yükün altında durulmaz; krikoyla kaldırılan parça altına takoz veya sehpa konur; kaldırma öğretmen gözetiminde (KL-41)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Hidrolik ve pnömatik sistemler, kompresör",
+        "hazard": "Basınçlı hortumun patlaması veya çıkması; basınçlı yağ jetinin cilde girmesi; basınçlı hava jeti",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Bağlantı sökülmeden önce basınç boşaltılır; hortum ve bağlantılar kontrol edilir; kaçak elle aranmaz; basınçlı havayla vücut veya giysi temizlenmez; kompresör ve hava tankı periyodik kontrollü (KL-28)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Rulman, dişli, kayış montajı; çektirme ve el presi",
+        "hazard": "Çektirmede veya preste parçanın fırlaması; dişli ve kayış arasına el sıkışması; ısıtılmış rulmanla yanık",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Parçaya uygun çektirme ve pres aparatı; koruyucu gözlük; kayış ve dişli koruyucuları bakım sonrası yerine takılır; rulman ısıtmada ısıya dayanıklı eldiven (KL-34, KL-23)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Yağ, gres ve parça temizleme sıvısı",
+        "hazard": "Cilt tahrişi; yağlı zeminde kayma; çözücü buharı ve yangın",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Nitril eldiven; dökülen yağ hemen emici malzemeyle alınır; parça temizliği mümkünse sulu temizleyiciyle veya havalandırmalı yıkama tezgâhında, benzin veya tinerle yıkanmaz; yağlı bez kapaklı metal kovada (KL-32)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Ağır parça, motor ve redüktör taşıma",
+        "hazard": "Bel yaralanması; ayağa düşme",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Kaldırma aparatı veya iki kişiyle taşınır; iş ayakkabısı (KL-18)",
+        "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
+    "name": "Elektrik Atölyesi (Makine Bakım Onarım)",
+    "type": "workshop",
+    "building": "",
+    "area": "Makine ve Tasarım Teknolojisi",
+    "checklists": ["KL-37", "KL-26", "KL-43", "KL-34"],
+    "rows": [
+      {
+        "equipment": "Kumanda ve motor bağlantı deneyleri",
+        "hazard": "Enerjili devreye bağlantı yaparken veya kablo sökerken elektrik çarpması",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Bağlantı enerji kesikken yapılır; öğretmen devreyi kontrol ettikten sonra enerji verir; deney masaları 30 mA kaçak akım korumalı ve acil durdurma butonlu; yalıtkan paspas (KL-26)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Elektrik motoru deneyleri",
+        "hazard": "Dönen mil ve kaplinlere temas; motorun sabitlenmeden çalıştırılması",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Motor deney masasına sabitlenir; kaplin ve mil koruyucusu takılı; çalışırken mile dokunulmaz (KL-43)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Ölçü aletleri ve el aletleri",
+        "hazard": "Yanlış kademede ölçüm: ark, yanık; yalıtımı bozuk alet",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Ölçümden önce kademe ve uçlar kontrol edilir; yalıtımlı el aletleri kullanılır, hasarlısı ayrılır (KL-34)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Pano ve atölye tesisatı",
+        "hazard": "Açık pano veya yetkisiz müdahale: elektrik çarpması; aşırı yük: yangın",
+        "affected": "Herkes",
+        "existingControls": "Sigorta",
+        "action": "Pano kilitli, yalnız yetkili açar; kaçak akım rölesi düzenli denenir; yıllık topraklama ve tesisat ölçümü (KL-26)",
+        "responsible": "Okul müdürü"
+      }
+    ]
+  },
+  {
+    "name": "Modelcilik Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "Makine ve Tasarım Teknolojisi",
+    "checklists": [
+      "KL-37",
+      "KL-43",
+      "KL-32",
+      "KL-30",
+      "KL-24",
+      "KL-21",
+      "KL-34",
+      "KL-26",
+      "KL-31",
+      "KL-33"
+    ],
+    "rows": [
+      {
+        "equipment": "3B yazıcı (filament ve reçine)",
+        "hazard": "Sıcak nozul ve tablayla yanık; eriyen filament dumanı; sıvı reçineyle cilt hassasiyeti",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Baskı sırasında içeri el sokulmaz, parça soğumadan alınmaz; yazıcı havalandırılan yerde veya kapalı kabinde; reçineyle nitril eldiven ve gözlük; reçine yıkamada kullanılan izopropil alkol kapalı kapta, alevden uzakta; kürlenmemiş reçine ve kirli alkol tehlikeli atık olarak ayrı toplanır (KL-32, KL-33)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "CNC router ve lazer kesici",
+        "hazard": "Dönen takıma temas; lazer ışınıyla göz hasarı; lazerle kesilen malzemede yangın ve zehirli duman",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Öğrenci makineyi yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; kapak kilidi çalışır; lazer kesim sırasında makine başından ayrılınmaz; PVC gibi zehirli gaz çıkaran malzeme lazerle kesilmez; duman emişi çalışır; söndürücü yakında (KL-43, KL-30)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Model tozları (MDF, ahşap, köpük)",
+        "hazard": "Toz soluma; biriken tozla yangın",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Toz emiş bağlantısı; FFP2 toz maskesi; süpürme yerine vakumla temizlik (KL-24, KL-30)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Reçine, yapıştırıcı ve boya",
+        "hazard": "Çözücü buharı soluma; cilt teması",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Havalandırmalı yerde çalışılır; nitril eldiven; kaplar kapalı ve etiketli (KL-32)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Maket bıçağı, sıcak tel köpük kesici ve el aletleri",
+        "hazard": "Kesilme; sıcak tele temas: yanık",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Maket bıçağı kilitli ve kapaklı, kesim kendinden uzağa yapılır; kesme altlığı kullanılır; sıcak tel kesici kullanılmadığında kapatılır (KL-21, KL-34)",
+        "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
     "name": "Makine Atölyesi Deposu",
     "type": "storage",
     "building": "",
@@ -1225,6 +1577,298 @@
         "existingControls": "Yok",
         "action": "Hurda ayrı kasada; elektrot artıkları metal kovada; atıklar ayrı toplanır (KL-33)",
         "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
+    "name": "Temel Tesisat Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "Tesisat Teknolojisi ve İklimlendirme",
+    "checklists": [
+      "KL-37",
+      "KL-34",
+      "KL-43",
+      "KL-29",
+      "KL-30",
+      "KL-23",
+      "KL-18",
+      "KL-21",
+      "KL-31",
+      "KL-26"
+    ],
+    "rows": [
+      {
+        "equipment": "Boru kesme ve diş açma makinesi",
+        "hazard": "Dönen boruya giysi veya eldiven kaptırma; çapakla kesilme",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Öğrenci makineyi yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; ayak pedalı ve acil durdurma çalışır; dönen makinede eldiven giyilmez; kesilen boru çapaklanır (KL-43)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "El aletleri (boru anahtarı, boru kesici, pafta, eğe)",
+        "hazard": "Kayan boru anahtarıyla el ve parmak yaralanması; sapsız eğe, hasarlı alet",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Aletler ders başında gözle kontrol edilir; boru mengeneye sabitlenir; boru anahtarına uzatma borusu takılmaz; hasarlı alet kullanılmaz (KL-34)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Plastik boru (PPR) kaynak makinesi",
+        "hazard": "Isıtıcı uca temas: yanık",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Makine standında bırakılır; kullanılmayan makine kapatılır; soğumadan dokunulmaz (KL-23)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Bakır boru lehimi (propan hamlacı) ve gaz tüpü",
+        "hazard": "Alevle yanık; tüp kaçağıyla yangın",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Öğrenci yalnız öğretmen gözetiminde lehim yapar; tüp dik ve devrilmeye karşı sabit, vanayı öğretmen açıp kapatır; yanıcı malzeme uzakta; söndürücü yakında (KL-29, KL-30)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Boru ve ağır malzeme taşıma",
+        "hazard": "Bel yaralanması; uzun boruyla çarpma; ayağa düşme",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Ağır ve uzun malzeme iki kişiyle taşınır; iş ayakkabısı (KL-18)",
+        "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
+    "name": "Sıhhi Tesisat Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "Tesisat Teknolojisi ve İklimlendirme",
+    "checklists": ["KL-37", "KL-26", "KL-18", "KL-34", "KL-21", "KL-32"],
+    "rows": [
+      {
+        "equipment": "Tesisat basınç testi (su veya hava)",
+        "hazard": "Basınç altında tapa veya bağlantının fırlaması",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Test öncelikle suyla yapılır; hava testi yalnız düşük basınçta ve öğretmence; basınç kademeli verilir; manometre ve tapalar test basıncına uygun ve test öncesi kontrol edilir (KL-28.02); test sırasında bağlantıların önünde durulmaz; test basıncı tesisatın dayanımını aşmaz",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Test suyu ve ıslak zemin",
+        "hazard": "Kayma, düşme; su ile elektrik temasında çarpma",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Test sonrası zemin kurulanır; prizler ve uzatmalar su sıçramasından korunaklı ve kaçak akım korumalı (KL-26)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Vitrifiye (lavabo, klozet) ve batarya montajı",
+        "hazard": "Ağır vitrifiyeyi kaldırma: bel yaralanması; kırılan vitrifiyeyle derin kesik",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Vitrifiye iki kişiyle taşınır; kesilmeye dayanıklı eldiven; kırık vitrifiye hemen toplanır (KL-18, KL-21)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "PVC pis su borusu kesme ve yapıştırma",
+        "hazard": "Testereyle kesilme; yapıştırıcı çözücü buharı soluma, cilde temas",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Boru mengene veya kesme aparatında sabit; yapıştırma havalandırmalı yerde; nitril eldiven; yapıştırıcı kapağı kapalı tutulur (KL-34, KL-32)",
+        "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
+    "name": "Isıtma ve Doğal Gaz Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "Tesisat Teknolojisi ve İklimlendirme",
+    "checklists": ["KL-37", "KL-29", "KL-30", "KL-24", "KL-23", "KL-28", "KL-18", "KL-26", "KL-40"],
+    "rows": [
+      {
+        "equipment": "Doğal gaz iç tesisatı uygulaması ve sızdırmazlık testi",
+        "hazard": "Gaz kaçağıyla yangın ve patlama; test basıncıyla bağlantının fırlaması",
+        "affected": "Herkes",
+        "existingControls": "Yok",
+        "action": "Uygulama tesisatına gaz verilmez, sızdırmazlık testi hava veya azotla ve regülatörle yapılır; test basıncı aşılmaz; köpükle kaçak kontrolü (KL-29, KL-30)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Çelik boru kaynağı",
+        "hazard": "Ark ışığı, kaynak dumanı, sıcak parça ve kıvılcımla yanık ve yangın",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Öğrenci yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kaynak yapar; kaynak maskesi, deri eldiven ve önlük; lokal emiş; yanıcı malzeme uzakta, söndürücü yakında (KL-40, KL-30)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Kalorifer ve sıcak su devresi eğitim setleri",
+        "hazard": "Sıcak su ve boruyla yanık; aşırı basınç",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Emniyet ventili ve manometre çalışır; set çalışırken bağlantı sökülmez; sıcak yüzeyler işaretli (KL-23, KL-28)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Radyatör, kazan ve ağır ekipman taşıma",
+        "hazard": "Bel yaralanması; ayağa düşme",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "İki kişiyle veya taşıma arabasıyla taşınır; iş ayakkabısı (KL-18)",
+        "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
+    "name": "Gaz Yakıcı Cihazlar Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "Tesisat Teknolojisi ve İklimlendirme",
+    "checklists": ["KL-37", "KL-29", "KL-30", "KL-24", "KL-23", "KL-26"],
+    "rows": [
+      {
+        "equipment": "Kombi ve gaz yakıcı cihazların çalıştırılması",
+        "hazard": "Gaz kaçağıyla yangın, patlama; baca gazında karbon monoksit zehirlenmesi",
+        "affected": "Herkes",
+        "existingControls": "Yok",
+        "action": "Cihazlar gaz verilmeden çalışılır; gazlı çalıştırma yalnız dağıtım şirketinden sertifikalı (yetki belgeli) personelce, onaylı tesisatta ve bacası uygun yerde (ilgili mevzuat doğrulanmalı); öğrenci gaz vanasına ve bağlantısına müdahale etmez; gaz dedektörü otomatik kesme vanasına bağlı, karbon monoksit dedektörü test edilmiş; baş ağrısı veya baş dönmesinde çalışma durdurulur, ortam boşaltılıp havalandırılır (KL-24, KL-30.15)",
+        "responsible": "Okul müdürü"
+      },
+      {
+        "equipment": "Baca bağlantısı ve yanma havası",
+        "hazard": "Bacası bağlanmamış veya sızdıran cihazda karbon monoksit birikmesi",
+        "affected": "Herkes",
+        "existingControls": "Yok",
+        "action": "Gazlı çalıştırmadan önce baca bağlantısı öğretmence kontrol edilir; yanma havası menfezleri açık; karbon monoksit dedektörü test edilmiş (KL-24)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Cihaz elektronik kartı ve elektrik bağlantısı",
+        "hazard": "Enerjili kart ve klemenslere temas: elektrik çarpması",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Müdahale öncesi fiş çekilir; cihazlar topraklı prize bağlı; kaçak akım koruması (KL-26)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Eşanjör, brülör ve sıcak cihaz parçaları",
+        "hazard": "Sıcak parçaya temas: yanık",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Cihaz kapatılıp soğuması beklendikten sonra sökülür; ısıya dayanıklı eldiven (KL-23)",
+        "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
+    "name": "Temel Soğutma ve İklimlendirme Atölyesi",
+    "type": "workshop",
+    "building": "",
+    "area": "Tesisat Teknolojisi ve İklimlendirme",
+    "checklists": [
+      "KL-37",
+      "KL-29",
+      "KL-28",
+      "KL-26",
+      "KL-23",
+      "KL-30",
+      "KL-24",
+      "KL-34",
+      "KL-18",
+      "KL-25"
+    ],
+    "rows": [
+      {
+        "equipment": "Soğutucu akışkan dolumu ve boşaltılması",
+        "hazard": "Sıvı akışkanla soğuk yanığı, göze sıçrama; kapalı alanda gaz birikmesiyle boğulma; yanıcı akışkanlarda (R290, R600a, R32) yangın",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Öğrenci yalnız öğretmen gözetiminde çalışır; koruyucu gözlük ve eldiven; dolum havalandırmalı yerde; yanıcı akışkanla çalışırken açık alev ve kıvılcım yok; akışkan atmosfere salınmaz, geri kazanım cihazıyla toplanır; yanıcı akışkanda geri kazanım cihazı ve vakum pompası bu akışkana uygun (kıvılcımsız); akışkan havadan ağır olduğundan zemin seviyesi ve çukurlar havalandırılır; geri kazanım tüpü aşırı doldurulmaz; florlu gazlarla çalışma sertifikalı öğretmenin yönetiminde (Florlu Sera Gazları Yönetmeliği; KL-29, KL-23, KL-30.15)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Sert lehim (oksi-asetilen veya propan hamlacı)",
+        "hazard": "Alev ve sıcak boruyla yanık; tüp veya hortum kaçağıyla yangın; içinde akışkan kalan boruyu ısıtma: zehirli bozunma ürünleri",
+        "affected": "Öğrenci, öğretmen",
+        "existingControls": "Yok",
+        "action": "Öğrenci yalnız öğretmen gözetiminde lehim yapar; tüp dik ve zincirli, vanayı öğretmen açıp kapatır; lehim öncesi akışkan geri kazanılır, boru azotla süpürülür; yanıcı akışkanlı sistemde lehimden önce ortam ve boru yanıcı gaz dedektörüyle ölçülür; yanıcı malzeme uzakta, söndürücü yakında (KL-29, KL-30)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Basınç testi ve vakum (azot tüpü, manifold)",
+        "hazard": "Aşırı basınçla boru, hortum veya manometrenin patlaması",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Azot tüpünde basınç düşürücü regülatör kullanılır, sisteme doğrudan tüp basıncı verilmez; test basıncı sistemin dayanımını aşmaz; manifold ve hortumlar kontrol edilir; test sırasında bağlantıların önünde durulmaz (KL-28)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Soğutma ve klima eğitim setlerinin elektrik bağlantısı",
+        "hazard": "Enerjili klemense veya kompresör kondansatörüne temas: elektrik çarpması",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Müdahale öncesi enerji kesilir ve ölçülerek kontrol edilir; kondansatör deşarj edilir; setler kaçak akım korumalı (KL-26)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Kompresör, fan ve sıcak hatlar",
+        "hazard": "Dönen fana temas; basma hattı ve kompresör gövdesiyle yanık",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Fan koruyucu kapağı takılı; sıcak hatlar işaretli, çalışma sonrası soğuması beklenir (KL-23)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Klima dış ünitesi taşıma ve montajı",
+        "hazard": "Ağır ünite taşıma: bel yaralanması, ayağa düşme; yüksekte montaj: düşme",
+        "affected": "Öğrenci",
+        "existingControls": "Yok",
+        "action": "Ünite iki kişiyle veya taşıma arabasıyla taşınır; montaj uygulaması yere yakın sehpada yapılır, öğrenci cephede ve yüksekte çalışmaz (KL-18, KL-25)",
+        "responsible": "Atölye öğretmeni"
+      }
+    ]
+  },
+  {
+    "name": "Tesisat Deposu",
+    "type": "storage",
+    "building": "",
+    "area": "Tesisat Teknolojisi ve İklimlendirme",
+    "checklists": ["KL-22", "KL-29", "KL-30", "KL-18"],
+    "rows": [
+      {
+        "equipment": "Boru istifi",
+        "hazard": "İstifin devrilmesi veya kayması; uzun boruyla çarpma",
+        "affected": "Öğretmen, personel",
+        "existingControls": "Yok",
+        "action": "Borular yatay raflarda, uçları geçişe taşmaz; istif yüksekliği sınırlı (KL-22)",
+        "responsible": "Okul müdürü"
+      },
+      {
+        "equipment": "Soğutucu akışkan, propan ve azot tüpleri",
+        "hazard": "Tüpün devrilmesi, ısınması veya sızıntısı: yangın, patlama, boğulma",
+        "affected": "Herkes",
+        "existingControls": "Yok",
+        "action": "Tüpler dik ve zincirli (KL-29.07); yanıcı (propan, R290, R600a, R32), inert (azot) ve diğer akışkan tüpleri sınıflarına göre ayrı (KL-29.05); dolu ve boş ayrı ve etiketli; vana başlıkları takılı; depo bodrumda değil, havadar, güneşten ve ısı kaynağından uzak (KL-30.11)",
+        "responsible": "Okul müdürü"
+      },
+      {
+        "equipment": "Yapıştırıcı, PVC solüsyonu ve gres",
+        "hazard": "Yanıcı buharla yangın",
+        "affected": "Herkes",
+        "existingControls": "Yok",
+        "action": "Kapları kapalı, kapaklı dolapta; söndürücü kapı yanında (KL-30)",
+        "responsible": "Atölye öğretmeni"
+      },
+      {
+        "equipment": "Kombi, radyatör ve ağır malzeme",
+        "hazard": "Raftan düşme; tek başına kaldırma: bel yaralanması",
+        "affected": "Öğretmen, personel",
+        "existingControls": "Yok",
+        "action": "Ağır malzeme alt rafta; iki kişiyle taşınır (KL-18)",
+        "responsible": "Okul müdürü"
       }
     ]
   }
