@@ -4,14 +4,17 @@
   import { Checkbox } from '$lib/components/ui/checkbox';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Input } from '$lib/components/ui/input';
-  import type { Library } from '$lib/domain/types';
+  import type { Library, LocationTemplate } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
   import libraryData from '$lib/data/library.json';
+  import areaLocations from '$lib/data/locations.json';
   import { downloadBlankTemplate, downloadMebTemplate } from '$lib/templates';
 
   let { open = $bindable(false) }: { open?: boolean } = $props();
 
   const library = libraryData as unknown as Library;
+  // Elektrik-Elektronik templates (library.json) first, then the other areas (content/locations).
+  const locationTemplates: LocationTemplate[] = [...library.locations, ...(areaLocations as LocationTemplate[])];
   const norm = (s: string) => s.toLocaleLowerCase('tr');
   type Entry = { key: string; title: string; sub: string; present: boolean; group: string };
 
@@ -26,7 +29,13 @@
 
   const locationEntries = $derived.by<Entry[]>(() => {
     const have = new Set(store.assessment.locations.map((l) => norm(l.name)));
-    return library.locations.map((l, i) => ({ key: `m:${i}`, title: l.name, sub: `${l.rows.length} risk satırı`, present: have.has(norm(l.name)), group: '' }));
+    return locationTemplates.map((l, i) => ({
+      key: `m:${i}`,
+      title: l.name,
+      sub: `${l.rows.length} risk satırı${l.checklists?.length ? `, ${l.checklists.length} MEB listesi: ${l.checklists.join(', ')}` : ''}`,
+      present: have.has(norm(l.name)),
+      group: l.area,
+    }));
   });
   const checklistEntries = $derived.by<Entry[]>(() => {
     const have = new Set(store.assessment.checklists.map((c) => norm(`${c.code}|${c.name}`)));
@@ -39,13 +48,14 @@
     }));
   });
 
-  const matches = (e: Entry) => !query.trim() || norm(`${e.title} ${e.sub}`).includes(norm(query.trim()));
-  const visibleLocations = $derived(locationEntries.filter(matches));
-  const checklistGroups = $derived.by(() => {
+  const matches = (e: Entry) => !query.trim() || norm(`${e.title} ${e.sub} ${e.group}`).includes(norm(query.trim()));
+  const byGroup = (entries: Entry[]) => {
     const groups = new Map<string, Entry[]>();
-    for (const e of checklistEntries.filter(matches)) groups.set(e.group, [...(groups.get(e.group) ?? []), e]);
+    for (const e of entries.filter(matches)) groups.set(e.group, [...(groups.get(e.group) ?? []), e]);
     return [...groups];
-  });
+  };
+  const locationGroups = $derived(byGroup(locationEntries));
+  const checklistGroups = $derived(byGroup(checklistEntries));
 
   function toggle(key: string, on: boolean) {
     const next = new Set(selected);
@@ -64,7 +74,11 @@
   }
   function add() {
     const pick = (prefix: string) => [...selected].filter((k) => k.startsWith(prefix)).map((k) => Number(k.slice(2)));
-    store.addFromLibrary(pick('m:').map((i) => library.locations[i]), pick('l:').map((i) => library.checklists[i]));
+    store.addFromLibrary(
+      pick('m:').map((i) => locationTemplates[i]),
+      pick('l:').map((i) => library.checklists[i]),
+      library.checklists,
+    );
     open = false;
   }
 </script>
@@ -98,14 +112,15 @@
       <Dialog.Title>Kütüphaneden ekle</Dialog.Title>
       <Dialog.Description class="sr-only">Hazır mekân ve kontrol listelerini seçip ekleyin.</Dialog.Description>
     </Dialog.Header>
-    <Input type="search" bind:value={query} placeholder="Ara: ELE9, pano, KL-26…" aria-label="Kütüphanede ara" />
+    <Input type="search" bind:value={query} placeholder="Ara: CNC, Kimya, ELE9, KL-26…" aria-label="Kütüphanede ara" />
     <div class="grid min-h-0 flex-1 gap-4 overflow-y-auto md:grid-cols-2">
       <section class="space-y-1">
         <h3 class="font-semibold">Mekânlar (risk satırlarıyla)</h3>
-        {#if visibleLocations.length}
-          {@render groupHeading('Elektrik-Elektronik hazır form', visibleLocations)}
-          {@render entryList(visibleLocations)}
-        {:else if !checklistGroups.length}
+        {#each locationGroups as [group, entries] (group)}
+          {@render groupHeading(group, entries)}
+          {@render entryList(entries)}
+        {/each}
+        {#if !locationGroups.length && !checklistGroups.length}
           {@render empty()}
         {/if}
       </section>

@@ -1,9 +1,9 @@
 import { toast } from "svelte-sonner";
 import { tick } from "svelte";
 import type { ChecklistTemplate, LocationTemplate } from "$lib/domain/types";
-import { addLocationFromTemplate, emptyAssessment } from "$lib/domain/assessment";
+import { emptyAssessment } from "$lib/domain/assessment";
 import { addChecklist as addChecklistFromTemplate } from "$lib/domain/checklist";
-import { autoAssign } from "$lib/domain/auto-assign";
+import { addFromLibrary } from "$lib/domain/library";
 import {
   applyBankChanges,
   bankChanges,
@@ -178,22 +178,19 @@ class Store extends StoreCore {
     nav.openLibrary(this.assessment.checklists[before]?.id ?? null);
   }
 
-  addFromLibrary(locations: LocationTemplate[], checklists: ChecklistTemplate[]) {
+  /** `library`: where the MEB lists named by location templates are taken from. */
+  addFromLibrary(
+    locations: LocationTemplate[],
+    checklists: ChecklistTemplate[],
+    library: ChecklistTemplate[],
+  ) {
     const beforeLocations = this.assessment.locations.length;
     const beforeLists = this.assessment.checklists.length;
-    const ok = this.apply((a) => {
-      const added = checklists.reduce(
-        (acc, tpl) => addChecklistFromTemplate(acc, tpl),
-        locations.reduce(addLocationFromTemplate, a),
-      );
-      return autoAssign(
-        added,
-        added.checklists.slice(beforeLists).map((c) => c.id),
-      );
-    });
+    const ok = this.apply((a) => addFromLibrary(a, locations, checklists, library));
     if (!ok) return;
+    const addedLists = this.assessment.checklists.length - beforeLists;
     toast.info(
-      `Eklendi: ${locations.length} mekân, ${checklists.length} kontrol listesi. İstemediğinizi ilgili ekrandan silebilirsiniz.`,
+      `Eklendi: ${locations.length} mekân, ${addedLists} kontrol listesi. İstemediğinizi ilgili ekrandan silebilirsiniz.`,
     );
     if (locations.length) nav.openLocation(this.assessment.locations[beforeLocations].id);
     else nav.openLibrary(this.assessment.checklists[beforeLists]?.id ?? null);

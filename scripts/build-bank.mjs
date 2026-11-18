@@ -1,19 +1,25 @@
 #!/usr/bin/env node
-// Compiles content/questions/*.toml into src/lib/data/questions.json and syncs the text of
-// external items in library.json. Usage: node scripts/build-bank.mjs [--check]
+// Compiles content/questions/*.toml into src/lib/data/questions.json, syncs the text of external
+// items in library.json and compiles content/locations/*.toml into src/lib/data/locations.json.
+// Usage: node scripts/build-bank.mjs [--check]
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "smol-toml";
+import {
+  LOCATION_TYPES,
+  buildLocations,
+  parseLocationFiles,
+  validateLocations,
+} from "./location-templates.mjs";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const QUESTIONS_DIR = path.join(ROOT, "content", "questions");
 const CHANGELOG = path.join(ROOT, "content", "CHANGELOG.md");
 const BANK_JSON = path.join(ROOT, "src", "lib", "data", "questions.json");
 const LIBRARY_JSON = path.join(ROOT, "src", "lib", "data", "library.json");
-
-// Keep in sync with LocationType in src/lib/domain/types.ts.
-const LOCATION_TYPES = ["workshop", "storage", "office", "wet", "common"];
+const LOCATIONS_DIR = path.join(ROOT, "content", "locations");
+const LOCATIONS_JSON = path.join(ROOT, "src", "lib", "data", "locations.json");
 const KEY_PATTERNS = { meb: /^KL-\d{2}\.\d{2}$/, riskprime: /^[A-Z]{2,}-\d{2,}$/ };
 const BANK_FILE = "bank.toml";
 const COMMON_FILE = "common.toml";
@@ -163,43 +169,54 @@ export function syncLibrary(library, bank) {
 
 const toJson = (v) => JSON.stringify(v, null, 2) + "\n";
 
-function readSources() {
+function readSources(dir) {
   return fs
-    .readdirSync(QUESTIONS_DIR)
+    .readdirSync(dir)
     .filter((n) => n.endsWith(".toml"))
     .sort()
-    .map((name) => ({ name, content: fs.readFileSync(path.join(QUESTIONS_DIR, name), "utf8") }));
+    .map((name) => ({ name, content: fs.readFileSync(path.join(dir, name), "utf8") }));
+}
+
+function fail(what, problems) {
+  console.error(`${what} geçersiz:\n${problems.map((p) => `  - ${p}`).join("\n")}`);
+  process.exit(1);
 }
 
 function main() {
   const check = process.argv.includes("--check");
-  const parsed = parseSources(readSources());
+  const parsed = parseSources(readSources(QUESTIONS_DIR));
   const problems = validate(parsed, fs.readFileSync(CHANGELOG, "utf8"));
-  if (problems.length) {
-    console.error(
-      `Kontrol listeleri kaynağı geçersiz:\n${problems.map((p) => `  - ${p}`).join("\n")}`,
-    );
-    process.exit(1);
-  }
+  if (problems.length) fail("Kontrol listeleri kaynağı", problems);
   const bank = buildBank(parsed);
   const library = syncLibrary(JSON.parse(fs.readFileSync(LIBRARY_JSON, "utf8")), bank);
+  const locationSources = parseLocationFiles(readSources(LOCATIONS_DIR));
+  const locationProblems = validateLocations(locationSources, {
+    mebCodes: new Set(library.checklists.filter((c) => c.source === "external").map((c) => c.code)),
+    takenNames: new Set(library.locations.map((l) => l.name)),
+  });
+  if (locationProblems.length) fail("Mekân şablonları", locationProblems);
   const outputs = [
     [BANK_JSON, toJson(bank)],
     [LIBRARY_JSON, toJson(library)],
+    [LOCATIONS_JSON, toJson(buildLocations(locationSources))],
   ];
   // Compare content, not bytes: the formatter may re-wrap the committed JSON.
   const same = (file, text) =>
+    fs.existsSync(file) &&
     JSON.stringify(JSON.parse(fs.readFileSync(file, "utf8"))) === JSON.stringify(JSON.parse(text));
   const stale = outputs.filter(([file, text]) => !same(file, text));
   if (check) {
     if (stale.length) {
-      console.error("questions.json güncel değil: pnpm bank:build çalıştırın");
+      const names = stale.map(([file]) => path.basename(file)).join(", ");
+      console.error(`${names} güncel değil: pnpm bank:build çalıştırın`);
       process.exit(1);
     }
     return;
   }
   stale.forEach(([file, text]) => fs.writeFileSync(file, text));
-  console.log(`${bank.items.length} soru, sürüm ${bank.version}`);
+  console.log(
+    `${bank.items.length} soru, sürüm ${bank.version}; ${locationSources.areas.length} alan şablonu`,
+  );
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();

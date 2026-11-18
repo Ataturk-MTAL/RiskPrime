@@ -180,6 +180,8 @@ export interface LocationTemplate {
   building: string;
   area: string;
   rows: RowTemplate[];
+  /** MEB list codes (e.g. "KL-37") bound to the location when it is added. */
+  checklists?: string[];
 }
 
 export interface Library {
