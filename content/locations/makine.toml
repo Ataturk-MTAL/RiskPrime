@@ -5,7 +5,18 @@ area = "Makine ve Tasarım Teknolojisi"
 [[location]]
 name = "CNC Atölyesi"
 type = "workshop"
-checklists = ["KL-37", "KL-42", "KL-43", "KL-26", "KL-30", "KL-31", "KL-32", "KL-33", "KL-21"]
+checklists = [
+  "KL-37",
+  "KL-42",
+  "KL-43",
+  "KL-26",
+  "KL-30",
+  "KL-31",
+  "KL-32",
+  "KL-33",
+  "KL-21",
+  "KL-24",
+]
 
 [[location.row]]
 equipment = "CNC torna ve freze tezgâhı"
@@ -47,6 +58,13 @@ equipment = "Tezgâh başında çalışma, gürültü"
 hazard = "Bol giysi, uzun saç, takı veya eldivenin dönen parçaya kaptırılması; uzun süreli tezgâh gürültüsü"
 affected = "Öğrenci"
 action = "Koruyucu gözlük, dar kollu iş önlüğü; saç toplu, takı yok; dönen tezgâhta eldiven giyilmez; gürültü ölçümü yapılır, 80 dB(A) üstünde kulak koruyucu verilir, 85 dB(A) üstünde kullanılması zorunlu ve alan işaretli (KL-31.02, KL-31.05)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Lazer markalama, kesim ve kaynak tezgâhı (fiber, CO₂)"
+hazard = "Görünmez lazer ışınıyla göz ve cilt hasarı; kesilen malzemede yangın; zehirli duman"
+affected = "Öğrenci"
+action = "Öğrenci tezgâhı yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; kabin kapalı ve kapı kilidi çalışır; el tipi açık lazer kaynak öğrenciye kullandırılmaz; açık sistemde çalışma alanı perdeyle ayrılır, kullanıcı ve çevredekiler lazerin dalga boyuna uygun koruyucu gözlük takar; PVC gibi klor içeren malzeme kesilmez; duman emişi çalışır; kesim sırasında tezgâh başından ayrılınmaz; söndürücü yakında (KL-30, KL-24)"
 responsible = "Atölye öğretmeni"
 
 [[location.row]]
@@ -327,6 +345,20 @@ action = "Toz emiş bağlantısı; FFP2 toz maskesi; süpürme yerine vakumla te
 responsible = "Atölye öğretmeni"
 
 [[location.row]]
+equipment = "Kompozit modelleme (epoksi, polyester, cam elyafı)"
+hazard = "Epoksi ve sertleştiriciyle cilt alerjisi; polyester reçinede stiren buharı; cam elyafı lifleriyle cilt ve göz tahrişi; kürlenmiş parçayı zımparalarken toz"
+affected = "Öğrenci"
+action = "Nitril eldiven, uzun kollu önlük, gözlük; çalışma lokal emiş altında veya havalandırmalı yerde, lokal emiş yoksa stiren için organik buhar filtreli (A tipi) maske; sertleştirici (MEKP) ile hızlandırıcı (kobalt) doğrudan birbirine karıştırılmaz, ayrı yerde saklanır; MEKP ile çalışırken gözlük zorunlu, göz duşu yakında; zımparalamada FFP2 toz maskesi; artık reçine kürlendikten sonra atık olarak ayrılır (KL-32, KL-33)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Silikon kalıp ve döküm reçineleri"
+hazard = "Cilt teması; büyük miktarda karışan reçinenin kendiliğinden ısınması; poliüretan reçinede izosiyanat buharı: astım"
+affected = "Öğrenci"
+action = "Eldiven ve gözlük; poliüretan döküm lokal emiş altında ve güvenlik bilgi formundaki KKD ile; karışım küçük miktarlarda hazırlanır; ısınan karışım kabına dokunulmaz, yanmaz yüzeyde bırakılır (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
 equipment = "Reçine, yapıştırıcı ve boya"
 hazard = "Çözücü buharı soluma; cilt teması"
 affected = "Öğrenci"
@@ -338,6 +370,68 @@ equipment = "Maket bıçağı, sıcak tel köpük kesici ve el aletleri"
 hazard = "Kesilme; sıcak tele temas: yanık"
 affected = "Öğrenci"
 action = "Maket bıçağı kilitli ve kapaklı, kesim kendinden uzağa yapılır; kesme altlığı kullanılır; sıcak tel kesici kullanılmadığında kapatılır (KL-21, KL-34)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Endüstriyel Kalıp Atölyesi"
+type = "workshop"
+checklists = [
+  "KL-37",
+  "KL-42",
+  "KL-43",
+  "KL-39",
+  "KL-28",
+  "KL-30",
+  "KL-32",
+  "KL-23",
+  "KL-24",
+  "KL-26",
+  "KL-31",
+  "KL-33",
+  "KL-41",
+  "KL-18",
+]
+
+[[location.row]]
+equipment = "Tel erozyon ve dalma erozyon tezgâhı"
+hazard = "Dalma erozyonda dielektrik yağın tutuşması; elektrot ve iş parçasındaki gerilimle elektrik çarpması; yağ buharı soluma"
+affected = "Öğrenci, öğretmen"
+action = "Öğrenci tezgâhı yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; dielektrik yağ seviyesi iş parçasının üzerinde yeterli yükseklikte (değer üretici talimatından, doğrulanmalı) ve sıcaklık koruması çalışır; işlem sırasında elektrota ve parçaya dokunulmaz; tezgâh başından ayrılınmaz; yağ buharı emişi; yanında B sınıfı yangına uygun (CO₂ veya kuru kimyevi tozlu) söndürücü (KL-30.21, KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Düzlem yüzey taşlama tezgâhı"
+hazard = "Taşın kırılıp fırlaması; manyetik tablası açılmadan veya yetersiz tutan parçanın fırlaması; kıvılcım ve parçacıkla göz yaralanması"
+affected = "Öğrenci"
+action = "Öğrenci tezgâhı yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; taş takılmadan önce muayene edilir ve devri tezgâha uygun (KL-39.03, KL-39.06); manyetik tablanın tuttuğu çalıştırmadan önce kontrol edilir; taş siperi takılı; koruyucu gözlük"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Eksantrik ve hidrolik pres (kalıp denemesi)"
+hazard = "Kalıp arasına el kaptırma: uzuv kopması"
+affected = "Öğrenci"
+action = "Öğrenci presi yalnız öğretmen gözetiminde, iki el kumandası veya ışık perdesi çalışırken kullanır; eksantrik preste tekrar vuruş önleyici (tek vuruş emniyeti) çalışır; ayak pedalı kapaklı, öğrenci pedalla değil iki el kumandasıyla çalıştırır; kalıp bağlama ve ayarı enerji kesilip koçbaşı emniyet takozuyla desteklenerek yalnız öğretmence yapılır (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Plastik enjeksiyon makinesi"
+hazard = "Sıcak eriyik ve kovanla yanık; kalıp kapanırken sıkışma; eriyen plastik dumanı"
+affected = "Öğrenci"
+action = "Öğrenci makineyi yalnız öğretmen gözetiminde kullanır; koruyucu kapı kilidi çalışır; nozuldan malzeme boşaltılırken yüz siperi ve ısıya dayanıklı eldiven; havalandırma (KL-43, KL-23)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Isıl işlem fırını ve su verme"
+hazard = "Sıcak parça ve fırınla yanık; su verme yağının tutuşması veya sıçraması"
+affected = "Öğrenci, öğretmen"
+action = "Isıl işlem öğretmen gözetiminde; ısıya dayanıklı eldiven, yüz siperi, deri önlük ve maşa; su verme tankına su karışması önlenir; parça tamamen ve hızla daldırılır; tank kapağı yanında, yağ yangını kapak kapatılarak boğulur, su ile söndürülmez; yanında yağ yangınına uygun söndürücü; sıcak parça işaretli yerde soğutulur (KL-23, KL-30.21)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Ağır kalıp taşıma ve bağlama"
+hazard = "Kalıbın düşmesi: ezilme; el sıkışması"
+affected = "Öğrenci, öğretmen"
+action = "Kalıp caraskal veya kaldırma aparatıyla taşınır; askıdaki yükün altında durulmaz; iş ayakkabısı (KL-41, KL-18)"
 responsible = "Atölye öğretmeni"
 
 [[location]]
