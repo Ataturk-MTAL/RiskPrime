@@ -191,11 +191,28 @@ describe("excel-backup", () => {
     const oldSheets = Object.fromEntries(
       Object.entries(sheets).map(([name, rows]) => [
         name,
-        rows.map((row) => row.map((c) => (c === "Okul geneli (tüm mekânlar)" ? "Ortak" : c))),
+        rows.map((row) => row.map((c) => (c === "Ortak (tüm mekânlar)" ? "Ortak" : c))),
       ]),
     ) as Sheets;
     expect(JSON.stringify(oldSheets)).toContain('"Ortak"');
     const restored = ok(restoreBackup(oldSheets));
+    expect(restored.locations[0].type).toBe("common");
+  });
+
+  test("a common location is written with the old Ortak label so older versions can open it", () => {
+    // Arrange
+    const base = fullAssessment();
+    const withCommon = {
+      ...base,
+      locations: base.locations.map((l, i) => (i === 0 ? { ...l, type: "common" as const } : l)),
+    };
+    // Act
+    const sheets = sheetsOf(withCommon);
+    const restored = ok(restoreBackup(sheets));
+    // Assert
+    expect(sheets["Mekânlar"][1][1]).toBe("Ortak (tüm mekânlar)");
+    expect(sheets["Risk Satırları"][1][1]).toBe("Ortak (tüm mekânlar)");
+    expect(JSON.stringify(sheets)).not.toContain("Okul geneli");
     expect(restored.locations[0].type).toBe("common");
   });
 
