@@ -53,6 +53,8 @@
       locationId: locations.some((l) => l.id === place.locationId) ? place.locationId : null,
       listId: checklists.some((c) => c.id === place.listId) ? place.listId : null,
     };
+    // Riskler keeps its location filter in the URL (back button, saved links).
+    if (nav.place.section === 'register') nav.registerFilter = { ...nav.registerFilter, locationId: nav.place.locationId };
     history.replaceState(null, '', formatHash(nav.place));
   }
 

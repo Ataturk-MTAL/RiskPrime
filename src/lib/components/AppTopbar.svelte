@@ -67,13 +67,20 @@
       const list = templateLabel(p.listId);
       return list ? [root, { label: list }] : [{ label: root.label }];
     }
+    const register: Crumb = { label: SECTION_LABELS.register, href: formatHash({ ...HOME, section: 'register' }) };
+    // The deficiency view lives under Riskler.
+    if (p.section === 'deficiencies') return [register, { label: SECTION_LABELS.deficiencies }];
     const loc = store.assessment.locations.find((l) => l.id === p.locationId);
-    if (p.section !== 'locations' || !loc) return [{ label: root.label }];
-    const locCrumb = { label: loc.name || 'Adsız mekân', href: formatHash({ ...p, locationView: 'inspections', listId: null }) };
-    if (p.locationView === 'risk') return [root, locCrumb, { label: 'Risk tablosu' }];
+    if (!loc) return [{ label: root.label }];
+    const locName = loc.name || 'Adsız mekân';
+    // Riskler filtered to one location: the location crumb leads back to its checklists.
+    if (p.section === 'register') {
+      const locHref = formatHash({ ...HOME, section: 'locations', locationId: loc.id });
+      return [register, { label: locName, href: locHref }, { label: 'Risk satırları' }];
+    }
     const list = templateLabel(p.listId);
-    if (!list) return [root, locCrumb, { label: 'Denetimler' }];
-    return [root, locCrumb, { label: 'Denetimler', href: formatHash({ ...p, listId: null }) }, { label: list }];
+    if (!list) return [root, { label: locName }];
+    return [root, { label: locName, href: formatHash({ ...p, listId: null }) }, { label: list }];
   });
 
   function onPick(event: Event & { currentTarget: HTMLInputElement }) {

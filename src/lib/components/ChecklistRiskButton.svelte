@@ -31,7 +31,7 @@
     }
     if (!store.apply((a) => riskRowFromChecklistItem(a, list.id, itemId, scope, target.id))) return;
     toast.success(`Risk satırı eklendi: ${target.name}`, {
-      action: { label: 'Git', onClick: () => nav.openLocation(target.id, 'risk') },
+      action: { label: 'Git', onClick: () => nav.openRegister({ locationId: target.id }) },
     });
   }
 </script>

@@ -83,7 +83,7 @@ class Store extends StoreCore {
     );
     const open = () =>
       grown.length === 1
-        ? nav.openLocation(grown[0].id, "risk")
+        ? nav.openRegister({ locationId: grown[0].id })
         : nav.openRegister({ status: "open" });
     this.applyUndoable(
       () => result.assessment,
@@ -158,14 +158,6 @@ class Store extends StoreCore {
   // Thin wrappers over nav for callers that still go through the store.
   openSchool() {
     nav.openReport(true);
-  }
-
-  selectLocation(id: string) {
-    nav.openLocation(id, "risk");
-  }
-
-  openRow(locationId: string, rowId: string) {
-    nav.openRow(locationId, rowId);
   }
 
   selectChecklist(id: string) {

@@ -22,7 +22,7 @@
     onpick();
   }
   const openSchool = () => go(() => nav.openReport(true));
-  const openRisks = (id: string) => go(() => nav.openLocation(id, 'risk'));
+  const openRisks = (id: string) => go(() => nav.openRegister({ locationId: id }));
   // Gap ids of checklist entries are template ids; the answers live in the locations.
   const openUnanswered = () => go(() => nav.go('locations'));
   const openUntransferred = (listId: string) =>

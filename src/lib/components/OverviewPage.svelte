@@ -37,7 +37,7 @@
       key: 'risk',
       title: 'Riskleri puanlayın',
       detail: `${p.risk.scored}/${p.risk.total} satır puanlandı`,
-      run: () => (p.risk.firstUnscoredLocationId ? nav.openLocation(p.risk.firstUnscoredLocationId, 'risk') : nav.openRegister()),
+      run: () => (nav.openRegister({ level: 'unscored' })),
     },
     {
       key: 'readiness',

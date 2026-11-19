@@ -1,7 +1,7 @@
 // Where the user is and what the school-wide lists are filtered by. The hash mirrors `place`.
-import { HOME, type LocationView, type Place, type Section } from "./nav-route";
+import { HOME, type Place, type Section } from "./nav-route";
 
-export type { LocationView, Place, Section } from "./nav-route";
+export type { Place, Section } from "./nav-route";
 
 export interface RegisterFilter {
   /** "serious" = Yüksek + Tolere edilemez; "unscored" = olasılık ya da şiddet boş. */
@@ -40,7 +40,7 @@ class Nav {
   deficiencyFilter = $state<DeficiencyFilter>(ALL_DEFICIENCIES);
   /** Incremented to ask the report page to show and focus the school details. */
   schoolRequest = $state(0);
-  /** Set to open a risk row's sheet; the location's risk view clears it. */
+  /** Set to open a risk row's sheet; the row's LocationEditor in Riskler clears it. */
   rowRequest = $state<{ locationId: string; rowId: string } | null>(null);
 
   get section(): Section {
@@ -48,31 +48,24 @@ class Nav {
   }
 
   go(section: Section) {
+    if (section === "register") return this.openRegister();
     this.place = { ...HOME, section };
   }
 
-  openLocation(
-    locationId: string,
-    view: LocationView = "inspections",
-    listId: string | null = null,
-  ) {
-    this.place = {
-      section: "locations",
-      locationId,
-      locationView: view,
-      listId: view === "inspections" ? listId : null,
-    };
+  openLocation(locationId: string, listId: string | null = null) {
+    this.place = { section: "locations", locationId, listId };
   }
 
-  /** Opens a location's risk table and the sheet of one row. */
+  /** Opens Riskler on the row's location and asks for that row's sheet. */
   openRow(locationId: string, rowId: string) {
-    this.openLocation(locationId, "risk");
+    this.openRegister({ locationId });
     this.rowRequest = { locationId, rowId };
   }
 
+  /** Riskler with a fresh filter; the location filter is part of the URL. */
   openRegister(filter: Partial<RegisterFilter> = {}) {
     this.registerFilter = { ...ALL_RISKS, ...filter };
-    this.go("register");
+    this.place = { ...HOME, section: "register", locationId: this.registerFilter.locationId };
   }
 
   openDeficiencies(filter: Partial<DeficiencyFilter> = {}) {

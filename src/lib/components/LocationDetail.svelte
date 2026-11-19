@@ -10,9 +10,7 @@
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
-  import * as Tabs from '$lib/components/ui/tabs';
   import InspectionEditor from './InspectionEditor.svelte';
-  import LocationEditor from './LocationEditor.svelte';
   import SelectField from './SelectField.svelte';
   import { INTERACTIVE_ROW } from './shared-classes';
   import { duplicateLocation, groupNeighbourId, LOCATION_TYPES, LOCATION_TYPE_LABELS, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
@@ -20,7 +18,7 @@
   import { setChecklistLocations } from '$lib/domain/links';
   import { riskLevel } from '$lib/domain/matrix';
   import type { Location, LocationType } from '$lib/domain/types';
-  import { nav, type LocationView } from '$lib/nav.svelte';
+  import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
   let { location: loc }: { location: Location } = $props();
@@ -53,7 +51,7 @@
     const list = store.assessment.checklists.find((c) => c.id === listId);
     if (!list) return;
     const next = [...liveLocationIds(store.assessment, list), id];
-    if (store.apply((a) => setChecklistLocations(a, listId, next))) nav.openLocation(id, 'inspections', listId);
+    if (store.apply((a) => setChecklistLocations(a, listId, next))) nav.openLocation(id, listId);
   }
 
   function duplicate() {
@@ -86,6 +84,7 @@
       <h1 class="truncate text-2xl font-semibold">{loc.name || 'Adsız mekân'}</h1>
       <p class="truncate text-sm text-muted-foreground">{LOCATION_TYPE_LABELS[loc.type]}{loc.building ? ` · ${loc.building}` : ''}{loc.area ? ` · ${loc.area}` : ''}</p>
     </div>
+    <Button variant="outline" onclick={() => nav.openRegister({ locationId: id })}>Riskler ({scoredRows}/{loc.rows.length} puanlı)</Button>
     <DropdownMenu.Root>
       <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' })} aria-label="Mekân işlemleri"><Ellipsis /></DropdownMenu.Trigger>
       <DropdownMenu.Content align="end">
@@ -135,12 +134,7 @@
     </Collapsible.Content>
   </Collapsible.Root>
 
-  <Tabs.Root value={nav.place.locationView} onValueChange={(v) => nav.openLocation(id, v as LocationView)}>
-    <Tabs.List>
-      <Tabs.Trigger value="inspections">Denetimler ({inspections.length})</Tabs.Trigger>
-      <Tabs.Trigger value="risk">Risk tablosu ({scoredRows}/{loc.rows.length})</Tabs.Trigger>
-    </Tabs.List>
-    <Tabs.Content value="inspections" class="space-y-3 pt-3">
+  <div class="space-y-3">
       {#if openListId}
         {#key openListId}<InspectionEditor listId={openListId} locationId={id} />{/key}
       {:else}
@@ -150,7 +144,7 @@
         <ul class="space-y-2">
           {#each inspections as i (i.list.id)}
             <li>
-              <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border bg-card p-3 text-left" onclick={() => nav.openLocation(id, 'inspections', i.list.id)}>
+              <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border bg-card p-3 text-left" onclick={() => nav.openLocation(id, i.list.id)}>
                 <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
                   {i.answered}/{i.total} cevaplı
@@ -168,9 +162,5 @@
           </div>
         {/if}
       {/if}
-    </Tabs.Content>
-    <Tabs.Content value="risk" class="pt-3">
-      {#key id}<LocationEditor locationId={id} items={loc.rows.map((row, i) => ({ row, number: i + 1 }))} />{/key}
-    </Tabs.Content>
-  </Tabs.Root>
+  </div>
 </div>

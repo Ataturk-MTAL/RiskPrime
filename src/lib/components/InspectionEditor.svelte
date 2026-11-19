@@ -53,7 +53,7 @@
   function removeFromLocation() {
     if (!list || !locationId) return;
     const rest = liveLocationIds(store.assessment, list).filter((id) => id !== locationId);
-    if (store.apply((a) => setChecklistLocations(a, listId, rest))) nav.openLocation(locationId, 'inspections');
+    if (store.apply((a) => setChecklistLocations(a, listId, rest))) nav.openLocation(locationId);
   }
 </script>
 

@@ -97,6 +97,6 @@
         {/if}
       </Popover.Content>
     </Popover.Root>
-    <Button variant="ghost" size="sm" onclick={() => (d.locationId ? nav.openLocation(d.locationId, 'inspections', d.listId) : nav.openReport())}><ExternalLink />Denetimde aç</Button>
+    <Button variant="ghost" size="sm" onclick={() => (d.locationId ? nav.openLocation(d.locationId, d.listId) : nav.openReport())}><ExternalLink />Denetimde aç</Button>
   </div>
 </article>
