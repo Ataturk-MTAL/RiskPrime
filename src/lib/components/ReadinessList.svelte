@@ -2,7 +2,6 @@
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
   import { Button } from '$lib/components/ui/button';
   import { progress, unansweredScope } from '$lib/domain/progress';
-  import { countUntransferred } from '$lib/domain/transfer';
   import type { GapEntry, MetaField, Readiness } from '$lib/domain/readiness';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
@@ -14,10 +13,9 @@
     validUntil: 'Geçerlilik tarihi',
   };
 
-  /** `onpick` runs after any jump or transfer, so the dialog can close itself. */
+  /** `onpick` runs after any jump, so the dialog can close itself. */
   let { gaps, onpick = () => {} }: { gaps: Readiness; onpick?: () => void } = $props();
 
-  const untransferred = $derived(countUntransferred(store.assessment));
   const total = (list: GapEntry[]) => list.reduce((n, g) => n + g.count, 0);
 
   function go(select: () => void) {
@@ -82,13 +80,7 @@
   {@render group('Yüksek/tolere edilemez riskte önlem ya da sorumlu boş', gaps.missingAction, 'satır', openRisks)}
   {@render group('Tehlike ve risk alanı boş satırlar', gaps.emptyHazard, 'satır', openRisks)}
   {@render group('Tamamlandı ama önlem sonrası puanı yok', gaps.doneWithoutAfter, 'satır', openRisks)}
-  {#if gaps.noWithoutRow.length}
-    <details class="group">
-      {@render summary('Risk tablosuna aktarılmamış eksikler', gaps.noWithoutRow)}
-      {@render entries(gaps.noWithoutRow, 'eksik', openUntransferred)}
-      <Button variant="outline" size="sm" class="mt-1" disabled={untransferred === 0} onclick={() => go(() => store.transferMissing())}>Tüm eksikleri aktar ({untransferred})</Button>
-    </details>
-  {/if}
+  {@render group('Riske eklenmemiş eksikler', gaps.noWithoutRow, 'eksik', openUntransferred)}
   {@render group('Eksiği giderilmiş (Evet olmuş) ama açık satırlar', gaps.sourceNowYes, 'satır', openRisks)}
   {@render group('Cevaplanmamış kontrol listesi maddeleri', gaps.unanswered, 'madde', openUnanswered)}
 </div>

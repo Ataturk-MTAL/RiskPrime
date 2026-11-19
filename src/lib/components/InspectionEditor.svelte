@@ -13,7 +13,8 @@
   import { commonById } from '$lib/domain/question-bank';
   import { answerOf, findInspection, inspectionSummary, liveLocationIds, scopeName } from '$lib/domain/inspections';
   import { setChecklistLocations } from '$lib/domain/links';
-  import { countUntransferredInspection, transferInspection } from '$lib/domain/transfer-inspection';
+  import { SCHOOL_WIDE_FILTER } from '$lib/domain/filters';
+  import { pending } from '$lib/domain/transfer';
   import type { Answer } from '$lib/domain/types';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
@@ -31,7 +32,8 @@
   const list = $derived(store.assessment.checklists.find((c) => c.id === listId));
   const inspection = $derived(findInspection(store.assessment, listId, locationId));
   const stats = $derived(inspection ? inspectionSummary(store.assessment, inspection) : { total: 0, answered: 0, no: 0 });
-  const pending = $derived(countUntransferredInspection(store.assessment, listId, locationId));
+  // Deficiencies of this inspection with no risk row yet (common items counted once, like the bulk add).
+  const pendingCount = $derived(inspection ? pending(store.assessment, inspection).length : 0);
   const isLastLocation = $derived(list ? liveLocationIds(store.assessment, list).length <= 1 : false);
   /** Refs of the same question in other lists at this location (answered together). */
   const siblingRefs = (itemId: string) =>
@@ -40,15 +42,6 @@
       return ref ? [ref] : [];
     });
   const value = (e: Event) => (e.currentTarget as HTMLTextAreaElement).value.trim();
-
-  function transfer() {
-    const result = transferInspection(store.assessment, listId, locationId);
-    if (!result.created) return;
-    store.applyWithUndo(
-      () => result.assessment,
-      `${result.created} risk satırı oluşturuldu; Riskler'de puanlayın.`,
-    );
-  }
 
   function removeFromLocation() {
     if (!list || !locationId) return;
@@ -80,7 +73,11 @@
       <span class="text-sm text-muted-foreground">
         {stats.answered}/{stats.total} cevaplandı{#if stats.no}{' '}· <b class="text-red-600">{stats.no} eksik</b>{/if}
       </span>
-      <Button variant="outline" size="sm" disabled={pending === 0} onclick={transfer}>Eksikleri risk tablosuna aktar ({pending})</Button>
+      {#if pendingCount}
+        <Button variant="link" size="sm" class="h-auto p-0" onclick={() => nav.openDeficiencies({ locationId: locationId ?? SCHOOL_WIDE_FILTER, listId, state: 'untransferred' })}>
+          {pendingCount} eksik riske eklenmedi — topluca ekle
+        </Button>
+      {/if}
     </div>
 
     <div class="@container space-y-2">

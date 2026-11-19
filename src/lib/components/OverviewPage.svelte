@@ -29,8 +29,8 @@
     },
     {
       key: 'transfer',
-      title: 'Eksikleri risk tablosuna aktarın',
-      detail: `${p.transfer.untransferred} aktarılmamış eksik`,
+      title: 'Eksikleri riske ekleyin',
+      detail: `${p.transfer.untransferred} riske eklenmemiş eksik`,
       run: () => nav.openDeficiencies({ state: 'untransferred' }),
     },
     {

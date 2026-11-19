@@ -16,7 +16,6 @@ import { APP_VERSION, nowIso } from "$lib/domain/app-version";
 import { signSnapshot, reviseDraft, touch } from "$lib/domain/snapshot";
 import { parse } from "$lib/domain/file";
 import { readiness, type Readiness } from "$lib/domain/readiness";
-import { transferMissing } from "$lib/domain/transfer";
 import { nav } from "$lib/nav.svelte";
 import { runExport, isPdfKind } from "$lib/export-jobs";
 import { openExcel } from "$lib/excel-import-flow";
@@ -66,38 +65,6 @@ class Store extends StoreCore {
     });
     if (choice === "save") await this.exportAs("json");
     return choice !== null;
-  }
-  /** Moves untransferred deficiencies into the risk table (undoable) and offers a jump to it. */
-  transferMissing(listId?: string) {
-    const result = transferMissing(this.assessment, listId);
-    if (!result.created) {
-      toast.info(
-        result.skippedNoLocation
-          ? "Risk satırı açılacak mekân yok; önce bir mekân ekleyin."
-          : "Aktarılacak eksik yok.",
-      );
-      return;
-    }
-    const grown = result.assessment.locations.filter(
-      (l, i) => l.rows.length > (this.assessment.locations[i]?.rows.length ?? 0),
-    );
-    const open = () =>
-      grown.length === 1
-        ? nav.openRegister({ locationId: grown[0].id })
-        : nav.openRegister({ status: "open" });
-    this.applyUndoable(
-      () => result.assessment,
-      `${result.created} risk satırı oluşturuldu; puanlamak için Riskler'e geçin.`,
-      {
-        // The jump is the toast's main action; undo moves to the secondary button.
-        notify: ((message, options) =>
-          toast.success(message, {
-            ...options,
-            action: { label: "Riskleri aç", onClick: open },
-            cancel: options?.action,
-          })) as typeof toast.success,
-      },
-    );
   }
 
   async newFromStarter() {

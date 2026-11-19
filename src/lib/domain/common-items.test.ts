@@ -9,9 +9,7 @@ import {
   siblingTargets,
 } from "./common-items";
 import { deficienciesWithState } from "./filters";
-import { rowsForItem } from "./links";
-import { countUntransferred, isUntransferred, transferMissing } from "./transfer";
-import { countUntransferredInspection, transferInspection } from "./transfer-inspection";
+import { countUntransferred, transferMissing } from "./transfer";
 import { withAnswers } from "./test-helpers";
 import type { Assessment, BankQuestion } from "./types";
 
@@ -153,18 +151,6 @@ describe("common deficiencies and transfer", () => {
     const scoped = transferMissing(answered(), "kc");
     expect(scoped.created).toBe(1);
     expect(countUntransferred(scoped.assessment)).toBe(0);
-  });
-
-  test("single-inspection transfer marks the siblings transferred", () => {
-    const a = answered();
-    const r = transferInspection(a, "kb", "l1");
-    expect(r.created).toBe(1);
-    expect(rowsForItem(r.assessment, "ka", "a1", "l1")).toHaveLength(1);
-    expect(countUntransferredInspection(r.assessment, "ka", "l1")).toBe(0);
-    const list = r.assessment.checklists[0];
-    expect(isUntransferred(r.assessment, list, list.items[0], r.assessment.inspections[0])).toBe(
-      false,
-    );
   });
 
   test("deficienciesWithState reports the merged deficiency transferred after one transfer", () => {

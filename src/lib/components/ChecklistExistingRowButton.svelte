@@ -32,14 +32,14 @@
   function link(rowId: string) {
     open = false;
     if (!store.apply((a) => addRowSource(a, locationId, rowId, { listId: list.id, itemId, locationId: scope }))) return;
-    toast.success('Madde var olan satıra bağlandı');
+    toast.success('Eksik var olan riske bağlandı');
   }
 </script>
 
 <Popover.Root {open} {onOpenChange}>
   <Popover.Trigger>
     {#snippet child({ props })}
-      <Button {...props} variant="outline" size="sm"><Link />Var olan satıra bağla</Button>
+      <Button {...props} variant="outline" size="sm"><Link />Var olan riske bağla</Button>
     {/snippet}
   </Popover.Trigger>
   <Popover.Content class="w-72 space-y-3">

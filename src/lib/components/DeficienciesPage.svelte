@@ -6,7 +6,7 @@
   import DeficiencyItem from './DeficiencyItem.svelte';
   import SelectField from './SelectField.svelte';
   import { SECTION_TITLE } from './shared-classes';
-  import { defaultLocationId, riskRowFromChecklistItem } from '$lib/domain/checklist-risk';
+  import { defaultLocationId, hasChecklistRisk, riskRowFromChecklistItem } from '$lib/domain/checklist-risk';
   import { deficienciesWithState, deficiencyCounts, filterDeficiencies, groupByLocation, isTransferred, SCHOOL_WIDE_FILTER } from '$lib/domain/filters';
   import { SCHOOL_WIDE_LABEL } from '$lib/domain/inspections';
   import { nav, type DeficiencyFilter } from '$lib/nav.svelte';
@@ -49,10 +49,19 @@
       toast.info('Risk satırı açılacak mekân yok; önce bir mekân ekleyin.');
       return;
     }
-    store.applyWithUndo(
-      (x) => targets.reduce((acc, { d, target }) => riskRowFromChecklistItem(acc, d.listId, d.itemId, d.locationId, target), x),
-      `${targets.length} risk satırı oluşturuldu; puanlamak için Riskler'e geçin.`,
+    // Skip items that already have a row (a common sibling added earlier in this run, or a legacy unlinked row).
+    const next = targets.reduce(
+      (acc, { d, target }) =>
+        hasChecklistRisk(acc, d.listId, d.itemId, d.locationId, target) ? acc : riskRowFromChecklistItem(acc, d.listId, d.itemId, d.locationId, target),
+      a,
     );
+    const rowCount = (x: typeof a) => x.locations.reduce((n, l) => n + l.rows.length, 0);
+    const created = rowCount(next) - rowCount(a);
+    if (!created) {
+      toast.info('Görünen eksiklerin hepsinin risk satırı zaten var.');
+      return;
+    }
+    store.applyWithUndo(() => next, `${created} risk satırı oluşturuldu; puanlamak için Riskler'e geçin.`);
   }
 </script>
 
