@@ -30,8 +30,16 @@
   const today = new Date();
   const toneOf = (r: RiskRow) => {
     const level = riskLevel(r.likelihood, r.severity);
-    return level ? RISK_TONE[level.key] : null;
+    return level ? { ...RISK_TONE[level.key], keep: KEEP_TINT[level.key] } : null;
   };
+  // Keeps the risk tint under TableRow's grey hover/selected fills (selection is shown by the ring). Full literals for Tailwind.
+  const KEEP_TINT = {
+    negligible: 'hover:bg-risk-negligible-soft data-[state=selected]:bg-risk-negligible-soft',
+    low: 'hover:bg-risk-low-soft data-[state=selected]:bg-risk-low-soft',
+    medium: 'hover:bg-risk-medium-soft data-[state=selected]:bg-risk-medium-soft',
+    high: 'hover:bg-risk-high-soft data-[state=selected]:bg-risk-high-soft',
+    intolerable: 'hover:bg-risk-intolerable-soft data-[state=selected]:bg-risk-intolerable-soft',
+  } as const;
   const clamp = 'line-clamp-3 whitespace-normal hyphens-auto';
 </script>
 
@@ -56,7 +64,7 @@
       {#each items as { row, number: n } (row.id)}
         {@const tone = toneOf(row)}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-        <Table.Row id="trow-{row.id}" class="cursor-pointer align-top transition-colors duration-150 motion-reduce:transition-none data-[state=selected]:ring-2 data-[state=selected]:ring-inset data-[state=selected]:ring-ring {tone?.fill ?? ''} {dimIds.has(row.id) ? 'opacity-60' : ''}" data-state={openId === row.id ? 'selected' : undefined} onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}>
+        <Table.Row id="trow-{row.id}" class="cursor-pointer align-top transition-colors duration-150 motion-reduce:transition-none data-[state=selected]:ring-2 data-[state=selected]:ring-inset data-[state=selected]:ring-ring {tone?.fill ?? ""} {tone?.keep ?? ""} {dimIds.has(row.id) ? 'opacity-60' : ''}" data-state={openId === row.id ? 'selected' : undefined} onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}>
           <Table.Cell class="font-semibold text-muted-foreground {tone?.stripe ?? ''}">{n}{#if dimIds.has(row.id)}<span class="block text-xs font-normal">{dimLabel}</span>{/if}</Table.Cell>
           <Table.Cell class="font-medium"><div class={clamp} title={row.equipment}>{row.equipment}</div></Table.Cell>
           <Table.Cell><div class={clamp} title={row.hazard}>{row.hazard}</div><SourceBadge {row} {locationId} /></Table.Cell>

@@ -5,6 +5,7 @@
 </script>
 
 <script lang="ts">
+  import CircleCheck from '@lucide/svelte/icons/circle-check';
   import { Badge } from '$lib/components/ui/badge';
   import { sourceLabel, sourcesOf } from '$lib/domain/links';
   import type { RiskRow } from '$lib/domain/types';
@@ -27,6 +28,6 @@
       </button>
     {/each}
     {#if infos.length > MAX_BADGES}<Badge variant="outline">+{infos.length - MAX_BADGES}</Badge>{/if}
-    {#if nowYes}<Badge variant="destructive">Madde Evet oldu</Badge>{/if}
+    {#if nowYes}<Badge variant="outline"><CircleCheck aria-hidden="true" />Madde Evet oldu</Badge>{/if}
   </span>
 {/if}
