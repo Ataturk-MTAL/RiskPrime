@@ -16,6 +16,7 @@
   import SelectField from './SelectField.svelte';
   import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';
   import { duplicateLocation, groupNeighbourId, LOCATION_TYPES, LOCATION_TYPE_LABELS, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
+  import { listLabel } from '$lib/domain/checklist';
   import { inspectionsForLocation, inspectionSummary, liveLocationIds } from '$lib/domain/inspections';
   import { setChecklistLocations } from '$lib/domain/links';
   import { riskLevel } from '$lib/domain/matrix';
@@ -27,7 +28,6 @@
 
   const TYPE_OPTIONS = LOCATION_TYPES.map((value) => ({ value, label: LOCATION_TYPE_LABELS[value] }));
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
-  const listLabel = (code: string, name: string) => `${code ? `${code} · ` : ''}${name || 'Adsız liste'}`;
 
   let deleteOpen = $state(false);
   const id = $derived(loc.id);

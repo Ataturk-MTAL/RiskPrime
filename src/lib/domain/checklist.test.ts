@@ -138,3 +138,26 @@ describe("checklist", () => {
     expect(c.summary(a, l.id)).toEqual({ total: 3, answered: 2, no: 1 });
   });
 });
+
+describe("listLabel", () => {
+  test("shows only the name when there is no code", () => {
+    // Arrange / Act
+    const label = c.listLabel("", "Yangın");
+    // Assert
+    expect(label).toBe("Yangın");
+  });
+
+  test("falls back to Adsız liste when there is no name", () => {
+    // Arrange / Act
+    const label = c.listLabel("KL-26", "");
+    // Assert
+    expect(label).toBe("KL-26 · Adsız liste");
+  });
+
+  test("joins code and name", () => {
+    // Arrange / Act
+    const label = c.listLabel("KL-26", "Elektrik");
+    // Assert
+    expect(label).toBe("KL-26 · Elektrik");
+  });
+});

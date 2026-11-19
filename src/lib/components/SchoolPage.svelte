@@ -8,6 +8,7 @@
   import PageHeader from './PageHeader.svelte';
   import SchoolCard from './SchoolCard.svelte';
   import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';
+  import { listLabel } from '$lib/domain/checklist';
   import { inspectionSummary, inspectionsForList } from '$lib/domain/inspections';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
@@ -37,7 +38,7 @@
           <li>
             <Collapsible.Root open={isOpen} onOpenChange={(o) => (openWideId = o ? item.list.id : null)}>
               <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
-                <span class="min-w-0 font-medium">{item.list.code} {item.list.name}</span>
+                <span class="min-w-0 font-medium">{listLabel(item.list.code, item.list.name)}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
                   {item.answered}/{item.total}{#if item.no}{' '}· <b class="text-deficiency">{item.no} eksik</b>{/if}
                   <ChevronDown class="size-4 transition-transform duration-200 motion-reduce:transition-none {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
