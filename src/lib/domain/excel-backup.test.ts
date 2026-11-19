@@ -181,6 +181,24 @@ describe("excel-backup", () => {
     expect("assessment" in r).toBe(true);
   });
 
+  test("a backup written with the old Ortak label still restores", () => {
+    const base = fullAssessment();
+    const withCommon = {
+      ...base,
+      locations: base.locations.map((l, i) => (i === 0 ? { ...l, type: "common" as const } : l)),
+    };
+    const sheets = sheetsOf(withCommon);
+    const oldSheets = Object.fromEntries(
+      Object.entries(sheets).map(([name, rows]) => [
+        name,
+        rows.map((row) => row.map((c) => (c === "Okul geneli (tüm mekânlar)" ? "Ortak" : c))),
+      ]),
+    ) as Sheets;
+    expect(JSON.stringify(oldSheets)).toContain('"Ortak"');
+    const restored = ok(restoreBackup(oldSheets));
+    expect(restored.locations[0].type).toBe("common");
+  });
+
   test("a bad Durum reports sheet and row", () => {
     const sheets = sheetsOf(fullAssessment());
     const header = sheets["Risk Satırları"][0];
