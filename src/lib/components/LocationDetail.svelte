@@ -121,7 +121,7 @@
     <Collapsible.Trigger class="flex min-h-11 w-full items-center justify-between gap-2 px-3 text-left text-sm">
       Mekân bilgilerini düzenle<ChevronsUpDown class="size-4 text-muted-foreground" aria-hidden="true" />
     </Collapsible.Trigger>
-    <Collapsible.Content class="@container border-t p-3">
+    <Collapsible.Content class="overflow-hidden data-open:animate-collapsible-down data-closed:animate-collapsible-up motion-reduce:data-open:animate-none motion-reduce:data-closed:animate-none @container border-t p-3">
       {#key id}
         <div class="grid gap-2 @lg:grid-cols-2">
           <Label class="flex flex-col items-start gap-1 @lg:col-span-2">Mekân adı
@@ -155,10 +155,10 @@
                 <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
                   {i.answered}/{i.total}{#if i.no}{' '}· <b class="text-deficiency">{i.no} eksik</b>{/if}
-                  <ChevronDown class="size-4 transition-transform motion-reduce:transition-none {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
+                  <ChevronDown class="size-4 transition-transform duration-200 motion-reduce:transition-none {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
                 </span>
               </Collapsible.Trigger>
-              <Collapsible.Content class="border-t p-3">
+              <Collapsible.Content class="overflow-hidden data-open:animate-collapsible-down motion-reduce:data-open:animate-none border-t p-3">
                 {#if isOpen}<InspectionEditor listId={i.list.id} locationId={id} />{/if}
               </Collapsible.Content>
             </Collapsible.Root>

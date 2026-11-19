@@ -139,7 +139,7 @@
               </h2>
               <Button variant="ghost" size="icon-sm" aria-label="Yalnız {name}" title="Yalnız bu mekân" onclick={() => nav.openRegister({ ...filter, locationId: g.key })}><Funnel /></Button>
             </div>
-            <Collapsible.Content class="px-3 pb-3">
+            <Collapsible.Content class="overflow-hidden data-open:animate-collapsible-down data-closed:animate-collapsible-up motion-reduce:data-open:animate-none motion-reduce:data-closed:animate-none px-3 pb-3">
               <LocationEditor locationId={g.key} items={g.items} {dimIds} {dimLabel} />
             </Collapsible.Content>
           </Collapsible.Root>
