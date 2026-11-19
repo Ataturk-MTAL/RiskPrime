@@ -1,10 +1,9 @@
 <script lang="ts">
   import ArrowLeft from '@lucide/svelte/icons/arrow-left';
-  import ChevronRight from '@lucide/svelte/icons/chevron-right';
+  import ChevronDown from '@lucide/svelte/icons/chevron-down';
   import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
   import Ellipsis from '@lucide/svelte/icons/ellipsis';
   import * as AlertDialog from '$lib/components/ui/alert-dialog';
-  import { Badge } from '$lib/components/ui/badge';
   import { Button, buttonVariants } from '$lib/components/ui/button';
   import * as Collapsible from '$lib/components/ui/collapsible';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -12,7 +11,7 @@
   import { Label } from '$lib/components/ui/label';
   import InspectionEditor from './InspectionEditor.svelte';
   import SelectField from './SelectField.svelte';
-  import { INTERACTIVE_ROW } from './shared-classes';
+  import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';
   import { duplicateLocation, groupNeighbourId, LOCATION_TYPES, LOCATION_TYPE_LABELS, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
   import { inspectionsForLocation, inspectionSummary, liveLocationIds } from '$lib/domain/inspections';
   import { setChecklistLocations } from '$lib/domain/links';
@@ -136,33 +135,36 @@
     </Collapsible.Content>
   </Collapsible.Root>
 
-  <div class="space-y-3">
-    {#if openListId}
-      {#key openListId}<InspectionEditor listId={openListId} locationId={id} />{/key}
+  <section class="space-y-2" aria-labelledby="location-lists">
+    <h2 id="location-lists" class={SECTION_TITLE}>Kontrol listeleri</h2>
+    {#if inspections.length === 0}
+      <p class="py-4 text-center text-sm text-muted-foreground">Bu mekâna atanmış kontrol listesi yok.</p>
     {:else}
-      {#if inspections.length === 0}
-        <p class="py-4 text-center text-sm text-muted-foreground">Bu mekâna atanmış kontrol listesi yok.</p>
-      {/if}
-      <ul class="space-y-2">
+      <ul class="divide-y rounded-md border">
         {#each inspections as i (i.list.id)}
+          {@const isOpen = openListId === i.list.id}
           <li>
-            <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border bg-card p-3 text-left" onclick={() => nav.openLocation(id, i.list.id)}>
-              <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
-              <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
-                {i.answered}/{i.total} cevaplı
-                {#if i.no}<Badge variant="destructive">{i.no} eksik</Badge>{/if}
-                <ChevronRight class="size-4" aria-hidden="true" />
-              </span>
-            </button>
+            <Collapsible.Root open={isOpen} onOpenChange={(o) => nav.openLocation(id, o ? i.list.id : null)}>
+              <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
+                <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
+                <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
+                  {i.answered}/{i.total}{#if i.no}{' '}· {i.no} eksik{/if}
+                  <ChevronDown class="size-4 transition-transform motion-reduce:transition-none {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
+                </span>
+              </Collapsible.Trigger>
+              <Collapsible.Content class="border-t p-3">
+                {#if isOpen}<InspectionEditor listId={i.list.id} locationId={id} />{/if}
+              </Collapsible.Content>
+            </Collapsible.Root>
           </li>
         {/each}
       </ul>
-      {#if addable.length}
-        <div class="max-w-sm space-y-1">
-          <span class="text-xs text-muted-foreground" aria-hidden="true">Bu mekâna liste ekle</span>
-          <SelectField label="Bu mekâna liste ekle" options={addable} value="" onValueChange={addList} />
-        </div>
-      {/if}
     {/if}
-  </div>
+    {#if addable.length}
+      <div class="max-w-sm space-y-1">
+        <span class="text-xs text-muted-foreground" aria-hidden="true">Bu mekâna liste ekle</span>
+        <SelectField label="Bu mekâna liste ekle" options={addable} value="" onValueChange={addList} />
+      </div>
+    {/if}
+  </section>
 </div>

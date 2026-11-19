@@ -52,8 +52,7 @@
 
 {#if list && inspection}
   <div class="space-y-3">
-    <div class="flex flex-wrap items-center gap-2">
-      <h2 class="min-w-0 flex-1 font-semibold">{list.code ? `${list.code} · ` : ''}{list.name || 'Adsız liste'}</h2>
+    <div class="flex flex-wrap items-center justify-end gap-2">
       <Button variant="outline" size="sm" onclick={() => nav.openLibrary(listId)}><Pencil />Listeyi düzenle</Button>
       {#if locationId}
       <ConfirmDialog

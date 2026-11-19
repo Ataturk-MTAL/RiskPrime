@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
+  import ChevronDown from '@lucide/svelte/icons/chevron-down';
+  import * as Collapsible from '$lib/components/ui/collapsible';
   import InspectionEditor from './InspectionEditor.svelte';
   import PageHeader from './PageHeader.svelte';
   import SchoolCard from './SchoolCard.svelte';
-  import { SECTION_TITLE } from './shared-classes';
+  import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';
   import { inspectionSummary, inspectionsForList } from '$lib/domain/inspections';
   import { store } from '$lib/state.svelte';
 
@@ -25,21 +26,22 @@
   <section class="flex flex-col gap-3" aria-labelledby="school-wide">
     <h2 id="school-wide" class={SECTION_TITLE}>Okul geneli kontrol listeleri</h2>
     {#if schoolWideLists.length}
-      <ul class="flex flex-col gap-1 text-sm">
+      <ul class="divide-y rounded-md border">
         {#each schoolWideLists as item (item.list.id)}
+          {@const isOpen = openWideId === item.list.id}
           <li>
-            <Button
-              variant="link"
-              class="h-auto p-0 text-left whitespace-normal"
-              aria-expanded={openWideId === item.list.id}
-              onclick={() => (openWideId = openWideId === item.list.id ? null : item.list.id)}
-            >
-              {item.list.code} {item.list.name}
-            </Button>
-            <span class="text-muted-foreground">: {item.answered}/{item.total} madde yanıtlandı{item.no ? `, ${item.no} eksik` : ''}</span>
-            {#if openWideId === item.list.id}
-              <div class="mt-3 rounded-lg border p-3"><InspectionEditor listId={item.list.id} locationId={null} /></div>
-            {/if}
+            <Collapsible.Root open={isOpen} onOpenChange={(o) => (openWideId = o ? item.list.id : null)}>
+              <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
+                <span class="min-w-0 font-medium">{item.list.code} {item.list.name}</span>
+                <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
+                  {item.answered}/{item.total}{#if item.no}{' '}· {item.no} eksik{/if}
+                  <ChevronDown class="size-4 transition-transform motion-reduce:transition-none {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
+                </span>
+              </Collapsible.Trigger>
+              <Collapsible.Content class="border-t p-3">
+                {#if isOpen}<InspectionEditor listId={item.list.id} locationId={null} />{/if}
+              </Collapsible.Content>
+            </Collapsible.Root>
           </li>
         {/each}
       </ul>
