@@ -130,7 +130,7 @@ describe("inspection queries", () => {
     expect(other && inspectionSummary(a, other)).toEqual({ total: 2, answered: 0, no: 0 });
   });
 
-  test("scopeName: location name or Okul geneli", () => {
+  test("scopeName: location name or the school-wide label", () => {
     const a = sample();
     expect(scopeName(a, "l1")).toBe("Depo");
     expect(scopeName(a, null)).toBe("Okul geneli");

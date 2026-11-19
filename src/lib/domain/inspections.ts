@@ -1,4 +1,4 @@
-// Inspections (denetim): a checklist template filled in for one location, or once school-wide when
+// Inspections: a checklist template filled in for one location, or once school-wide when
 // the list has no locations. Pure helpers; every change returns a new Assessment.
 import { newId } from "./ids";
 import { riskLevel, type Level } from "./matrix";
