@@ -19,7 +19,7 @@
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
-  // One list answered in one location (an inspection); null = okul geneli (shown on the report page).
+  // One list answered in one location (an inspection); null = okul geneli (shown on the Okul page).
   let { listId, locationId }: { listId: string; locationId: string | null } = $props();
 
   const CHOICES: { value: Exclude<Answer, ''>; tone: string }[] = [
