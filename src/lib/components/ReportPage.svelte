@@ -1,31 +1,21 @@
 <script lang="ts">
   import CircleCheck from '@lucide/svelte/icons/circle-check';
-  import type { Snippet } from 'svelte';
   import * as AlertDialog from '$lib/components/ui/alert-dialog';
   import { Badge } from '$lib/components/ui/badge';
   import { Button, buttonVariants } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
+  import ExportMenu from './ExportMenu.svelte';
+  import PageHeader from './PageHeader.svelte';
   import ReadinessList from './ReadinessList.svelte';
+  import { SECTION_TITLE } from './shared-classes';
   import { APP_VERSION } from '$lib/domain/app-version';
   import { isLocked, verifySnapshot, type Verification } from '$lib/domain/snapshot';
-  import { progress } from '$lib/domain/progress';
   import { readiness } from '$lib/domain/readiness';
   import { formatStamp } from '$lib/lock-format';
   import { lock } from '$lib/lock.svelte';
-  import { nav } from '$lib/nav.svelte';
   import { isDesktop } from '$lib/platform';
   import { periodKey } from '$lib/storage/types';
-  import { store, type ExportKind } from '$lib/state.svelte';
-
-  const OTHER_OUTPUTS: { kind: ExportKind; label: string }[] = [
-    { kind: 'json', label: 'Kayıt dosyası (.json)' },
-    { kind: 'xlsx', label: 'Excel kayıt (.xlsx)' },
-    { kind: 'docx', label: 'Word (.docx)' },
-    { kind: 'pdf-blank', label: 'Boş form (PDF)' },
-    { kind: 'pdf-checklists', label: 'Yalnız kontrol listeleri (PDF)' },
-  ];
-
-  let { onPeriods }: { onPeriods: () => void } = $props();
+  import { store } from '$lib/state.svelte';
 
   const a = $derived(store.assessment);
   const locked = $derived(isLocked(a));
@@ -72,50 +62,21 @@
       clearTimeout(timer);
     };
   });
-  const p = $derived(progress(a, new Date()));
   const gaps = $derived(readiness(a));
   const busy = $derived(store.busy !== '');
 </script>
 
-{#snippet section(id: string, title: string, change: { label: string; run: () => void } | null, body: Snippet)}
-  <section class="flex flex-col gap-3 rounded-xl border bg-card p-4" aria-labelledby={id}>
-    <div class="flex items-center justify-between gap-2">
-      <h2 {id} class="text-lg font-medium">{title}</h2>
-      {#if change}<Button variant="link" class="h-auto p-0" onclick={change.run}>{change.label}</Button>{/if}
-    </div>
-    {@render body()}
+<div class="mx-auto flex w-full max-w-3xl flex-col gap-6">
+  <PageHeader title="Rapor" />
+
+  <section class="flex flex-col gap-3" aria-labelledby="report-gaps">
+    <h2 id="report-gaps" class={SECTION_TITLE}>İmza öncesi açık noktalar</h2>
+    {#if gaps.hasGaps}
+      <ReadinessList {gaps} />
+    {:else}
+      <p class="flex items-center gap-2 text-sm font-medium"><CircleCheck class="size-4" aria-hidden="true" />Açık nokta yok, PDF imzaya hazır.</p>
+    {/if}
   </section>
-{/snippet}
-
-{#snippet inspectionsBody()}
-  <p class="text-sm">
-    {p.checklists.answered}/{p.checklists.total} madde yanıtlandı, {p.checklists.missing} eksik (Hayır),
-    {p.transfer.untransferred} eksik risk tablosuna aktarılmadı.
-  </p>
-{/snippet}
-
-{#snippet riskBody()}
-  <p class="text-sm">
-    {p.risk.scored}/{p.risk.total} satır puanlandı; {p.risk.openSerious} açık yüksek/tolere edilemez risk,
-    {p.risk.overdue} süresi geçmiş satır.
-  </p>
-{/snippet}
-
-{#snippet gapsBody()}
-  {#if gaps.hasGaps}
-    <p class="text-sm text-muted-foreground">İmzalanacak belgede şu açık noktalar var:</p>
-    <ReadinessList {gaps} />
-  {:else}
-    <p class="flex items-center gap-2 text-sm font-medium"><CircleCheck class="size-4" aria-hidden="true" />Açık nokta yok, PDF imzaya hazır.</p>
-  {/if}
-{/snippet}
-
-<div class="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4">
-  <h1 class="text-2xl font-semibold">Rapor</h1>
-
-  {@render section('report-inspections', 'Denetimler özeti', { label: 'Değiştir', run: () => nav.go('locations') }, inspectionsBody)}
-  {@render section('report-risk', 'Risk tablosu özeti', { label: 'Değiştir', run: () => nav.openRegister() }, riskBody)}
-  {@render section('report-gaps', 'İmza öncesi açık noktalar', null, gapsBody)}
 
   <Card.Root>
     <Card.Header>
@@ -147,6 +108,7 @@
       <div class="flex flex-wrap gap-2">
         {#if locked}
           <Button disabled={busy} onclick={() => store.reviseLocked()}>Düzeltme taslağı aç</Button>
+          <Button variant="link" class="h-auto p-0" disabled={busy} onclick={() => store.newPeriod()}>Yeni dönem başlat</Button>
         {:else}
           <AlertDialog.Root>
             <AlertDialog.Trigger class={buttonVariants()} disabled={busy}>Dönemi kapat (imzalandı)</AlertDialog.Trigger>
@@ -164,34 +126,12 @@
             </AlertDialog.Content>
           </AlertDialog.Root>
         {/if}
-        <Button variant="outline" onclick={onPeriods}>Önceki dönemler</Button>
       </div>
     </Card.Content>
   </Card.Root>
 
   <Card.Root>
-    <Card.Header>
-      <Card.Title>Çıktılar</Card.Title>
-    </Card.Header>
-    <Card.Content class="flex flex-col items-start gap-3">
-      <Button disabled={busy} onclick={() => store.requestFullPdf()}>İmzaya hazır PDF oluştur</Button>
-      <div class="flex flex-wrap gap-2">
-        {#each OTHER_OUTPUTS as out (out.kind)}
-          <Button variant="outline" disabled={busy} onclick={() => store.exportAs(out.kind)}>{out.label}</Button>
-        {/each}
-      </div>
-    </Card.Content>
-  </Card.Root>
-
-  <Card.Root>
-    <Card.Header>
-      <Card.Title>Yeni dönem başlat</Card.Title>
-      <Card.Description>
-        Dönem: {a.period.trim() || 'girilmedi'} · Geçerlilik: {a.validUntil.trim() || 'girilmedi'}. Mekânlar, listeler ve risk satırları kalır; önlem sonrası puanlar yeni puan olur, kontrol listesi cevapları ve tarihler sıfırlanır.
-      </Card.Description>
-    </Card.Header>
-    <Card.Content>
-      <Button variant="outline" disabled={busy} onclick={() => store.newPeriod()}>Yeni dönem başlat</Button>
-    </Card.Content>
+    <Card.Header><Card.Title>Çıktılar</Card.Title></Card.Header>
+    <Card.Content><ExportMenu /></Card.Content>
   </Card.Root>
 </div>

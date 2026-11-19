@@ -116,7 +116,7 @@
       {:else if nav.section === 'deficiencies' || nav.section === 'register'}
         <RiskRegisterPage />
       {:else if nav.section === 'report'}
-        <ReportPage onPeriods={() => (periodsOpen = true)} />
+        <ReportPage />
       {:else}
         <LibraryPage />
       {/if}

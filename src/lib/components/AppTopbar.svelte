@@ -9,7 +9,6 @@
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Separator } from '$lib/components/ui/separator';
   import * as Sidebar from '$lib/components/ui/sidebar';
-  import ExportMenu from './ExportMenu.svelte';
   import HistoryDialog from './HistoryDialog.svelte';
   import LockSettingsDialog, { type LockSettingsMode } from './LockSettingsDialog.svelte';
   import UserAvatar from './UserAvatar.svelte';
@@ -115,7 +114,6 @@
       {/if}
     </div>
     <Button variant="outline" aria-label="Kaydet (.json)" onclick={() => store.exportAs('json')}><Save /><span class="max-sm:hidden">Kaydet</span></Button>
-    <ExportMenu />
     <DropdownMenu.Root>
       <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline' })} aria-label="Dosya işlemleri">
         <Ellipsis class="sm:hidden" aria-hidden="true" /><span class="max-sm:hidden">Dosya</span><ChevronDown class="max-sm:hidden" aria-hidden="true" />
