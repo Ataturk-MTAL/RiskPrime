@@ -136,7 +136,7 @@ describe("similarRows", () => {
     // Arrange
     const { a, listId, itemId } = sample();
     // Act
-    const hits = similarRows(a, listId, itemId, "l1");
+    const hits = similarRows(a, listId, itemId, null, "l1");
     // Assert
     expect(hits.map((h) => [h.rowId, h.number])).toEqual([["r2", 2]]);
   });
@@ -144,18 +144,18 @@ describe("similarRows", () => {
   test("a borderline row below the row threshold is not suggested", () => {
     const { a, listId, itemId } = sample();
     expect(ROW_SIMILAR_THRESHOLD).toBe(0.45);
-    expect(similarRows(a, listId, itemId, "l1").some((h) => h.rowId === "r3")).toBe(false);
+    expect(similarRows(a, listId, itemId, null, "l1").some((h) => h.rowId === "r3")).toBe(false);
   });
 
   test("skips rows already linked to the item", () => {
     const { a, listId, itemId } = sample();
     // the list has only its okul geneli inspection, so the link comes from there
     const linked = addRowSource(a, "l1", "r2", { listId, itemId, locationId: null });
-    expect(similarRows(linked, listId, itemId, "l1")).toEqual([]);
+    expect(similarRows(linked, listId, itemId, null, "l1")).toEqual([]);
   });
 
   test("an unknown location has no suggestions", () => {
     const { a, listId, itemId } = sample();
-    expect(similarRows(a, listId, itemId, "yok")).toEqual([]);
+    expect(similarRows(a, listId, itemId, null, "yok")).toEqual([]);
   });
 });

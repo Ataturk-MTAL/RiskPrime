@@ -17,7 +17,7 @@
   let locationId = $state('');
   const options = $derived(store.assessment.locations.map((l) => ({ value: l.id, label: l.name || 'Adsız mekân' })));
   const target = $derived(scope ?? locationId);
-  const similar = $derived(target ? similarRows(store.assessment, list.id, itemId, target) : []);
+  const similar = $derived(target ? similarRows(store.assessment, list.id, itemId, scope, target) : []);
 
   function onOpenChange(next: boolean) {
     open = next;
@@ -42,11 +42,12 @@
   }
 </script>
 
-<!-- inline: below the item's buttons; w-0 min-w-full keeps the long text from widening the answer column -->
+<!-- Shown only where the target location is known: the scoped inspection, or the popover's chosen
+     "Hedef mekân". Inline: below the item's buttons; w-0 min-w-full keeps the text from widening the answer column. -->
 {#snippet hint(inline: boolean)}
   {#if similar[0]}
     {@const s = similar[0]}
-    <p class="flex min-w-0 items-center gap-1 text-xs text-muted-foreground {inline ? 'order-last w-0 min-w-full' : 'w-full'}">
+    <p class="flex items-center gap-1 text-xs text-muted-foreground {inline ? 'order-last w-0 min-w-full' : 'w-full min-w-0'}">
       <span class="truncate" title={s.text}>Benzer: #{s.number} {s.text}</span>
       <span aria-hidden="true">·</span>
       <Button variant="link" size="sm" class="h-auto shrink-0 p-0 text-xs" aria-label="Benzer satır #{s.number} ile bağla" onclick={() => link(s.rowId)}><Link class="size-3" />Bağla</Button>
@@ -56,6 +57,7 @@
 
 {#if scope}
   <Button variant="outline" size="sm" onclick={() => create(scope ?? '')}><ShieldAlert />Riske ekle</Button>
+  {@render hint(true)}
 {:else}
   <Popover.Root {open} {onOpenChange}>
     <Popover.Trigger>
@@ -74,4 +76,3 @@
     </Popover.Content>
   </Popover.Root>
 {/if}
-{#if !open}{@render hint(true)}{/if}

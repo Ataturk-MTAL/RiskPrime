@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vite-plus/test";
 import { addLocation, addRow, emptyAssessment } from "./assessment";
-import { hasDeficiencyRisk, itemRiskRows } from "./checklist-risk";
+import { hasDeficiencyRisk, itemRiskRows, similarRows } from "./checklist-risk";
 import { answerOf, deficiencies, ensureInspections } from "./inspections";
 import {
   commonOfItem,
@@ -183,6 +183,25 @@ describe("common deficiencies and transfer", () => {
     expect(rows.map((r) => r.rowId)).toEqual(["r1"]);
     expect(hasDeficiencyRisk(a, "ka", "a1", "l1", "l1", BANK)).toBe(true);
     expect(hasDeficiencyRisk(answered(), "ka", "a1", "l1", "l1", BANK)).toBe(false);
+  });
+
+  test("a row linked via a sibling is not suggested as a similar row", () => {
+    // Arrange: r1 reads exactly like A's item and is linked only to the sibling B at l1
+    const hazard = "x (KL-01.17)";
+    const unlinked = addRow(answered(), "l1", { id: "r1", hazard });
+    const linked = addRowSource(unlinked, "l1", "r1", {
+      listId: "kb",
+      itemId: "b1",
+      locationId: "l1",
+    });
+
+    // Act
+    const before = similarRows(unlinked, "ka", "a1", "l1", "l1", BANK);
+    const after = similarRows(linked, "ka", "a1", "l1", "l1", BANK);
+
+    // Assert
+    expect(before.map((h) => h.rowId)).toEqual(["r1"]);
+    expect(after).toEqual([]);
   });
 
   test("item rows list a row linked to several siblings once", () => {

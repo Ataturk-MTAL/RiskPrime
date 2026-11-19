@@ -125,18 +125,29 @@ export interface SimilarRow {
   score: number;
 }
 
-/** Rows of the target location not yet linked to the item whose hazard reads like the item: link instead of duplicating. */
+/**
+ * Rows of the target location whose hazard reads like the item, skipping rows already linked to it
+ * (from any inspection, or via a common sibling of this inspection): link instead of duplicating.
+ * locationId = the inspection's scope (null = okul geneli); rowLocationId = where the rows live.
+ */
 export function similarRows(
   a: Assessment,
   listId: string,
   itemId: string,
+  locationId: string | null,
   rowLocationId: string,
+  bank: BankQuestion[] = loadBank(),
 ): SimilarRow[] {
   const loc = a.locations.find((l) => l.id === rowLocationId);
   if (!loc) return [];
   const { list, item } = find(a, listId, itemId);
+  const viaSiblings = new Set(
+    itemRiskRows(a, listId, itemId, locationId, bank)
+      .filter((r) => r.locationId === rowLocationId)
+      .map((r) => r.rowId),
+  );
   const isLinked = (r: RiskRow) =>
-    !!r.sources?.some((s) => s.listId === listId && s.itemId === itemId);
+    viaSiblings.has(r.id) || !!r.sources?.some((s) => s.listId === listId && s.itemId === itemId);
   const candidates = loc.rows.flatMap((r) =>
     isLinked(r) || !r.hazard.trim() ? [] : [{ key: r.id, text: r.hazard }],
   );
