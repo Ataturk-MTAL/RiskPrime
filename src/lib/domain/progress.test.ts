@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vite-plus/test";
 import { emptyAssessment } from "./assessment";
-import { progress } from "./progress";
+import { nextStep, progress, type StepState } from "./progress";
 import { withAnswers } from "./test-helpers";
 import type { Assessment, ChecklistItem, RiskRow } from "./types";
 
@@ -163,5 +163,38 @@ describe("progress", () => {
   test("the signing review is blocked until an earlier step has begun", () => {
     expect(progress(emptyAssessment(""), today).readiness.state).toBe("blocked");
     expect(progress(sample(), today).readiness.state).toBe("doing");
+  });
+});
+
+describe("nextStep", () => {
+  const steps = (
+    school: StepState,
+    checklists: StepState,
+    transfer: StepState,
+    risk: StepState,
+    readiness: StepState,
+  ) => ({
+    school: { state: school },
+    checklists: { state: checklists },
+    transfer: { state: transfer },
+    risk: { state: risk },
+    readiness: { state: readiness },
+  });
+
+  test("returns the first step that is not done", () => {
+    // Arrange
+    const input = steps("done", "doing", "todo", "todo", "doing");
+    // Act
+    const next = nextStep(input);
+    // Assert
+    expect(next).toBe("checklists");
+  });
+
+  test("an empty assessment starts with the school step", () => {
+    expect(nextStep(progress(emptyAssessment(""), today))).toBe("school");
+  });
+
+  test("returns null when every step is done", () => {
+    expect(nextStep(steps("done", "done", "done", "done", "done"))).toBeNull();
   });
 });
