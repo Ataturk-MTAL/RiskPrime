@@ -4,6 +4,7 @@ import { noSiblings, siblingTargets } from "./common-items";
 import { answerOf, liveLocationIds, scopeName } from "./inspections";
 import { rowsForItem, type ItemRow } from "./links";
 import { loadBank } from "./question-bank";
+import { findSimilar } from "./similarity";
 import type { Assessment, BankQuestion, Checklist, ChecklistItem, RiskRow } from "./types";
 
 /** Rows linked to the item or to any common sibling at the same location, each row once. */
@@ -111,4 +112,38 @@ export function defaultLocationId(a: Assessment, list: Checklist): string {
     return n && keys.some((k) => k.includes(n) || n.includes(k));
   });
   return (match ?? a.locations[0])?.id ?? "";
+}
+
+/** Stricter than the item-proposal threshold (0.35): a wrong "similar row" hint leads to a wrong link. Measure on a real school file. */
+export const ROW_SIMILAR_THRESHOLD = 0.45;
+
+export interface SimilarRow {
+  rowId: string;
+  /** 1-based row number inside its location. */
+  number: number;
+  text: string;
+  score: number;
+}
+
+/** Rows of the target location not yet linked to the item whose hazard reads like the item: link instead of duplicating. */
+export function similarRows(
+  a: Assessment,
+  listId: string,
+  itemId: string,
+  rowLocationId: string,
+): SimilarRow[] {
+  const loc = a.locations.find((l) => l.id === rowLocationId);
+  if (!loc) return [];
+  const { list, item } = find(a, listId, itemId);
+  const isLinked = (r: RiskRow) =>
+    !!r.sources?.some((s) => s.listId === listId && s.itemId === itemId);
+  const candidates = loc.rows.flatMap((r) =>
+    isLinked(r) || !r.hazard.trim() ? [] : [{ key: r.id, text: r.hazard }],
+  );
+  return findSimilar(hazardOf(list, item), candidates, ROW_SIMILAR_THRESHOLD).map((h) => ({
+    rowId: h.key,
+    number: loc.rows.findIndex((r) => r.id === h.key) + 1,
+    text: h.text,
+    score: h.score,
+  }));
 }

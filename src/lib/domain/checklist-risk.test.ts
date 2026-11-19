@@ -1,11 +1,15 @@
 import { describe, expect, test } from "vite-plus/test";
-import { addLocation, emptyAssessment } from "./assessment";
+import { addLocation, addRow, emptyAssessment } from "./assessment";
+import { addChecklist } from "./checklist";
 import {
   defaultLocationId,
   hasChecklistRisk,
   hazardOf,
   riskRowFromChecklistItem,
+  ROW_SIMILAR_THRESHOLD,
+  similarRows,
 } from "./checklist-risk";
+import { addRowSource } from "./links";
 import { withAnswers } from "./test-helpers";
 import type { Assessment } from "./types";
 
@@ -107,5 +111,51 @@ describe("defaultLocationId", () => {
   test("returns empty string without locations", () => {
     const a = { ...sample(), locations: [] };
     expect(defaultLocationId(a, a.checklists[0])).toBe("");
+  });
+});
+
+describe("similarRows", () => {
+  function sample() {
+    let a = emptyAssessment("2026-2027");
+    a = addLocation(a, { id: "l1", name: "ELE9" });
+    a = addChecklist(a, {
+      code: "KL-27",
+      name: "Ekranlı araçlar",
+      source: "external",
+      items: [{ no: "1", text: "Ekranlar ayarlanabilir, yansımasız; mesafe 50-80 cm" }],
+    });
+    const list = a.checklists[0];
+    a = addRow(a, "l1", { id: "r1", hazard: "Yangın tüpü eksik" });
+    a = addRow(a, "l1", { id: "r2", hazard: "Ekranlar ayarlanabilir ve yansımasız olmalı" });
+    // 2 of 5 meaningful words shared = 0.40: similar enough for the old 0.35, not for rows.
+    a = addRow(a, "l1", { id: "r3", hazard: "Ekranlar ayarlanabilir olmalı" });
+    return { a, listId: list.id, itemId: list.items[0].id };
+  }
+
+  test("suggests rows of the target location whose hazard is similar", () => {
+    // Arrange
+    const { a, listId, itemId } = sample();
+    // Act
+    const hits = similarRows(a, listId, itemId, "l1");
+    // Assert
+    expect(hits.map((h) => [h.rowId, h.number])).toEqual([["r2", 2]]);
+  });
+
+  test("a borderline row below the row threshold is not suggested", () => {
+    const { a, listId, itemId } = sample();
+    expect(ROW_SIMILAR_THRESHOLD).toBe(0.45);
+    expect(similarRows(a, listId, itemId, "l1").some((h) => h.rowId === "r3")).toBe(false);
+  });
+
+  test("skips rows already linked to the item", () => {
+    const { a, listId, itemId } = sample();
+    // the list has only its okul geneli inspection, so the link comes from there
+    const linked = addRowSource(a, "l1", "r2", { listId, itemId, locationId: null });
+    expect(similarRows(linked, listId, itemId, "l1")).toEqual([]);
+  });
+
+  test("an unknown location has no suggestions", () => {
+    const { a, listId, itemId } = sample();
+    expect(similarRows(a, listId, itemId, "yok")).toEqual([]);
   });
 });
