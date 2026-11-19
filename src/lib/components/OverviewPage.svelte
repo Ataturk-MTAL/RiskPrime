@@ -5,6 +5,7 @@
   import { nextStep, progress, type StepKey } from '$lib/domain/progress';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
+  import { INTERACTIVE_ROW } from './shared-classes';
 
   const p = $derived(progress(store.assessment, new Date()));
   const next = $derived(nextStep(p));
@@ -69,7 +70,7 @@
       <li>
         <button
           type="button"
-          class="flex min-h-11 w-full items-center justify-between gap-4 p-4 text-left hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none {isNext ? 'border-l-4 border-l-primary' : ''}"
+          class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-4 p-4 text-left {isNext ? 'border-l-4 border-l-primary' : ''}"
           aria-current={isNext ? 'step' : undefined}
           onclick={task.run}
         >

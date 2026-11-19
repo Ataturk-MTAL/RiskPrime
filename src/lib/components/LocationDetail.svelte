@@ -14,6 +14,7 @@
   import InspectionEditor from './InspectionEditor.svelte';
   import LocationEditor from './LocationEditor.svelte';
   import SelectField from './SelectField.svelte';
+  import { INTERACTIVE_ROW } from './shared-classes';
   import { duplicateLocation, groupNeighbourId, LOCATION_TYPES, LOCATION_TYPE_LABELS, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
   import { inspectionsForLocation, inspectionSummary, liveLocationIds } from '$lib/domain/inspections';
   import { setChecklistLocations } from '$lib/domain/links';
@@ -149,7 +150,7 @@
         <ul class="space-y-2">
           {#each inspections as i (i.list.id)}
             <li>
-              <button type="button" class="flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border bg-card p-3 text-left hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none" onclick={() => nav.openLocation(id, 'inspections', i.list.id)}>
+              <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border bg-card p-3 text-left" onclick={() => nav.openLocation(id, 'inspections', i.list.id)}>
                 <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
                   {i.answered}/{i.total} cevaplı

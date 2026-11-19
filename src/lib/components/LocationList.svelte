@@ -8,6 +8,7 @@
   import { Input } from '$lib/components/ui/input';
   import LibraryDialog from './LibraryDialog.svelte';
   import NewLocationDialog from './NewLocationDialog.svelte';
+  import { INTERACTIVE_ROW } from './shared-classes';
   import { grouped, isOverdue, LOCATION_TYPE_LABELS } from '$lib/domain/assessment';
   import { inspectionsForLocation, inspectionSummary } from '$lib/domain/inspections';
   import { riskLevel } from '$lib/domain/matrix';
@@ -63,7 +64,7 @@
           {#each group.locations as l (l.id)}
             {@const s = statsOf(l)}
             <li>
-              <button type="button" class="flex min-h-11 w-full flex-col items-start gap-1 rounded-xl border bg-card p-3 text-left hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none" onclick={() => nav.openLocation(l.id)}>
+              <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full flex-col items-start gap-1 rounded-xl border bg-card p-3 text-left" onclick={() => nav.openLocation(l.id)}>
                 <span class="font-semibold">{l.name || 'Adsız mekân'}</span>
                 <span class="text-xs text-muted-foreground">{LOCATION_TYPE_LABELS[l.type]}{l.building ? ` · ${l.building}` : ''}</span>
                 <span class="text-sm">Denetim: {s.answered}/{s.total} cevaplı{#if s.no} · <b class="text-red-600">{s.no} eksik</b>{/if}</span>

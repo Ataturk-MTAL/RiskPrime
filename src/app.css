@@ -11,70 +11,105 @@
 @custom-variant data-vertical (&[data-orientation="vertical"]);
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.985 0.004 85);
+  --foreground: oklch(0.2 0.01 260);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.2 0.01 260);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.2 0.01 260);
   --primary: oklch(0.34 0.08 258);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.955 0.008 85);
+  --secondary-foreground: oklch(0.25 0.01 260);
+  --muted: oklch(0.96 0.006 85);
+  --muted-foreground: oklch(0.5 0.01 260);
+  /* Hover/selection: cool neutral grey, so it never reads as the amber "eksik". */
+  --accent: oklch(0.945 0.006 250);
+  --accent-foreground: oklch(0.2 0.01 260);
   --destructive: oklch(0.55 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.7 0.17 50);
+  --border: oklch(0.89 0.01 85);
+  /* Form field edge: >= 3:1 against paper and card (the mock-up's 0.66 measured 2.98:1). */
+  --input: oklch(0.64 0.01 85);
+  /* Focus ring = the one accent colour, opaque (ring/50 measured 1.98:1). */
+  --ring: oklch(0.34 0.08 258);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar: oklch(0.97 0.006 85);
+  --sidebar-foreground: oklch(0.2 0.01 260);
+  --sidebar-primary: oklch(0.34 0.08 258);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-accent: oklch(0.935 0.008 250);
+  --sidebar-accent-foreground: oklch(0.2 0.01 260);
+  --sidebar-border: oklch(0.89 0.01 85);
+  --sidebar-ring: oklch(0.34 0.08 258);
+  /* "Hayır" / eksik: neutral amber, never red. */
+  --deficiency: oklch(0.52 0.12 65);
+  --deficiency-foreground: oklch(0.99 0.01 85);
+  --deficiency-soft: oklch(0.96 0.04 85);
+  /* Risk levels on screen: strong = ledger stripe, soft = fill. PDF/Excel keep the MEB fills in matrix.ts. */
+  --risk-negligible: oklch(0.78 0 0);
+  --risk-negligible-soft: oklch(0.955 0 0);
+  --risk-low: oklch(0.7 0.16 135);
+  --risk-low-soft: oklch(0.95 0.045 135);
+  --risk-medium: oklch(0.83 0.16 95);
+  --risk-medium-soft: oklch(0.965 0.06 95);
+  --risk-high: oklch(0.58 0.21 27);
+  --risk-high-soft: oklch(0.94 0.035 27);
+  --risk-intolerable: oklch(0.2 0.01 260);
+  /* Row fill only; the intolerable badge is the solid --risk-intolerable. */
+  --risk-intolerable-soft: oklch(0.9 0.02 27);
+  --risk-intolerable-foreground: oklch(0.985 0 0);
 }
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.269 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.371 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.17 0.005 85);
+  --foreground: oklch(0.94 0.006 85);
+  --card: oklch(0.205 0.006 85);
+  --card-foreground: oklch(0.94 0.006 85);
+  --popover: oklch(0.23 0.006 85);
+  --popover-foreground: oklch(0.94 0.006 85);
+  --primary: oklch(0.78 0.08 258);
+  --primary-foreground: oklch(0.18 0.03 258);
+  --secondary: oklch(0.25 0.006 85);
+  --secondary-foreground: oklch(0.94 0.006 85);
+  --muted: oklch(0.25 0.006 85);
+  --muted-foreground: oklch(0.72 0.01 85);
+  --accent: oklch(0.27 0.008 250);
+  --accent-foreground: oklch(0.94 0.006 85);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  /* Opaque: the old 16 % white measured below 3:1 on cards. */
+  --input: oklch(0.52 0.01 85);
+  --ring: oklch(0.72 0.1 258);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar: oklch(0.19 0.006 85);
+  --sidebar-foreground: oklch(0.94 0.006 85);
+  --sidebar-primary: oklch(0.78 0.08 258);
+  --sidebar-primary-foreground: oklch(0.18 0.03 258);
+  --sidebar-accent: oklch(0.26 0.008 250);
+  --sidebar-accent-foreground: oklch(0.94 0.006 85);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.439 0 0);
+  --sidebar-ring: oklch(0.72 0.1 258);
+  --deficiency: oklch(0.8 0.13 75);
+  --deficiency-foreground: oklch(0.2 0.03 60);
+  --deficiency-soft: oklch(0.3 0.05 70);
+  --risk-negligible: oklch(0.62 0 0);
+  --risk-negligible-soft: oklch(0.28 0 0);
+  --risk-low: oklch(0.74 0.15 135);
+  --risk-low-soft: oklch(0.29 0.05 135);
+  --risk-medium: oklch(0.86 0.15 95);
+  --risk-medium-soft: oklch(0.31 0.06 95);
+  --risk-high: oklch(0.68 0.19 27);
+  --risk-high-soft: oklch(0.31 0.08 27);
+  --risk-intolerable: oklch(0.94 0.006 85);
+  --risk-intolerable-soft: oklch(0.34 0.06 27);
+  --risk-intolerable-foreground: oklch(0.17 0.005 85);
 }
 @theme inline {
   /* Hyperlegible: distinct I/l/1 and O/0 for older teachers; bundled, no runtime font requests. */
@@ -117,6 +152,20 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-deficiency: var(--deficiency);
+  --color-deficiency-foreground: var(--deficiency-foreground);
+  --color-deficiency-soft: var(--deficiency-soft);
+  --color-risk-negligible: var(--risk-negligible);
+  --color-risk-negligible-soft: var(--risk-negligible-soft);
+  --color-risk-low: var(--risk-low);
+  --color-risk-low-soft: var(--risk-low-soft);
+  --color-risk-medium: var(--risk-medium);
+  --color-risk-medium-soft: var(--risk-medium-soft);
+  --color-risk-high: var(--risk-high);
+  --color-risk-high-soft: var(--risk-high-soft);
+  --color-risk-intolerable: var(--risk-intolerable);
+  --color-risk-intolerable-soft: var(--risk-intolerable-soft);
+  --color-risk-intolerable-foreground: var(--risk-intolerable-foreground);
 }
 @layer base {
   * {
