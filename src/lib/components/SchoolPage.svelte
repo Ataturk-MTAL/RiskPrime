@@ -1,6 +1,8 @@
 <script lang="ts">
   import ChevronDown from '@lucide/svelte/icons/chevron-down';
+  import ListChecks from '@lucide/svelte/icons/list-checks';
   import * as Collapsible from '$lib/components/ui/collapsible';
+  import EmptyState from './EmptyState.svelte';
   import InspectionEditor from './InspectionEditor.svelte';
   import PageHeader from './PageHeader.svelte';
   import SchoolCard from './SchoolCard.svelte';
@@ -46,7 +48,7 @@
         {/each}
       </ul>
     {:else}
-      <p class="text-sm text-muted-foreground">Okul genelinde denetlenen liste yok.</p>
+      <EmptyState icon={ListChecks} text="Okul genelinde doldurulan liste yok." />
     {/if}
   </section>
 </div>

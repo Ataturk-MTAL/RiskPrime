@@ -3,12 +3,14 @@
   import ChevronDown from '@lucide/svelte/icons/chevron-down';
   import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
   import Ellipsis from '@lucide/svelte/icons/ellipsis';
+  import ListChecks from '@lucide/svelte/icons/list-checks';
   import * as AlertDialog from '$lib/components/ui/alert-dialog';
   import { Button, buttonVariants } from '$lib/components/ui/button';
   import * as Collapsible from '$lib/components/ui/collapsible';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
+  import EmptyState from './EmptyState.svelte';
   import InspectionEditor from './InspectionEditor.svelte';
   import PageHeader from './PageHeader.svelte';
   import SelectField from './SelectField.svelte';
@@ -142,7 +144,7 @@
   <section class="space-y-2" aria-labelledby="location-lists">
     <h2 id="location-lists" class={SECTION_TITLE}>Kontrol listeleri</h2>
     {#if inspections.length === 0}
-      <p class="py-4 text-center text-sm text-muted-foreground">Bu mekâna atanmış kontrol listesi yok.</p>
+      <EmptyState icon={ListChecks} text="Bu mekâna atanmış kontrol listesi yok." />
     {:else}
       <ul class="divide-y rounded-md border">
         {#each inspections as i (i.list.id)}

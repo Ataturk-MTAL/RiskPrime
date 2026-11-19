@@ -2,6 +2,9 @@
   import ArrowLeft from '@lucide/svelte/icons/arrow-left';
   import ChevronDown from '@lucide/svelte/icons/chevron-down';
   import Funnel from '@lucide/svelte/icons/funnel';
+  import FunnelX from '@lucide/svelte/icons/funnel-x';
+  import MapPinOff from '@lucide/svelte/icons/map-pin-off';
+  import Table2 from '@lucide/svelte/icons/table-2';
   import { untrack } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { Checkbox } from '$lib/components/ui/checkbox';
@@ -9,6 +12,7 @@
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import DeficienciesPage from './DeficienciesPage.svelte';
+  import EmptyState from './EmptyState.svelte';
   import LocationEditor from './LocationEditor.svelte';
   import PageHeader from './PageHeader.svelte';
   import SelectField from './SelectField.svelte';
@@ -109,18 +113,16 @@
       </div>
     </div>
 
-    {#if filter.locationId}
+    {#if filter.locationId && !filteredLocation}
+      <EmptyState icon={MapPinOff} text="Bu mekân artık yok." action={{ label: 'Tüm risklere dön', run: () => nav.openRegister() }} />
+    {:else if filter.locationId}
       <LocationEditor locationId={filter.locationId} items={shown} {dimIds} {dimLabel} />
     {:else if !shown.length}
-      <div class="flex flex-col items-center gap-3 rounded-lg border border-dashed p-6 text-center">
-        {#if everything.length}
-          <p class="text-sm text-muted-foreground">Bu süzgece uyan risk satırı yok.</p>
-          {#if isFiltered}<Button variant="outline" size="sm" onclick={() => nav.openRegister()}>Süzgeçleri temizle</Button>{/if}
-        {:else}
-          <p class="text-sm text-muted-foreground">Henüz risk satırı yok.</p>
-          <Button variant="outline" size="sm" onclick={() => nav.openDeficiencies({ state: 'untransferred' })}>Eksiklere git</Button>
-        {/if}
-      </div>
+      {#if everything.length}
+        <EmptyState icon={FunnelX} text="Bu süzgece uyan risk satırı yok." action={isFiltered ? { label: 'Süzgeçleri temizle', run: () => nav.openRegister() } : undefined} />
+      {:else}
+        <EmptyState icon={Table2} text="Henüz risk satırı yok." action={{ label: 'Eksiklere git', run: () => nav.openDeficiencies({ state: 'untransferred' }) }} />
+      {/if}
     {:else}
       <div class="flex flex-col divide-y rounded-md border">
         {#each groups as g (g.key)}

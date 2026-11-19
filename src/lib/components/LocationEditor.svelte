@@ -1,6 +1,9 @@
 <script lang="ts">
+  import FunnelX from '@lucide/svelte/icons/funnel-x';
   import Plus from '@lucide/svelte/icons/plus';
+  import Table2 from '@lucide/svelte/icons/table-2';
   import { Button } from '$lib/components/ui/button';
+  import EmptyState from './EmptyState.svelte';
   import RiskRowCard from './RiskRowCard.svelte';
   import RiskRowSheet, { ADD_ROW_BUTTON_ID } from './RiskRowSheet.svelte';
   import RiskTable from './RiskTable.svelte';
@@ -39,7 +42,9 @@
 {#if loc}
   <div class="@container flex min-w-0 flex-col gap-3">
     {#if loc.rows.length === 0}
-      <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda risk satırı yok.</p>
+      <EmptyState icon={Table2} text="Bu mekânda risk satırı yok." />
+    {:else if items.length === 0}
+      <EmptyState icon={FunnelX} text="Bu süzgece uyan satır yok." action={{ label: 'Süzgeçleri temizle', run: () => nav.openRegister({ locationId }) }} />
     {/if}
     <div class="hidden @3xl:block">
       {#if items.length}<RiskTable {items} {locationId} {openId} {dimIds} {dimLabel} onopen={(id) => (openId = id)} />{/if}

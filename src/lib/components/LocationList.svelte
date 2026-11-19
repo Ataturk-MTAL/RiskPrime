@@ -3,11 +3,14 @@
   import Clock from '@lucide/svelte/icons/clock';
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
   import Library from '@lucide/svelte/icons/library';
+  import MapPin from '@lucide/svelte/icons/map-pin';
+  import SearchX from '@lucide/svelte/icons/search-x';
   import Plus from '@lucide/svelte/icons/plus';
   import School from '@lucide/svelte/icons/school';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import EmptyState from './EmptyState.svelte';
   import LibraryDialog from './LibraryDialog.svelte';
   import NewLocationDialog from './NewLocationDialog.svelte';
   import PageHeader from './PageHeader.svelte';
@@ -70,7 +73,7 @@
   {/if}
 
   {#if store.assessment.locations.length === 0}
-    <p class="py-8 text-center text-sm text-muted-foreground">Henüz mekân yok. "Mekân ekle" ile başlayın.</p>
+    <EmptyState icon={MapPin} text="Henüz mekân yok. Mekân ekleyin ya da hazır mekân listesinden başlayın." action={{ label: 'Hazır mekân ekle', run: () => (libraryOpen = true) }} />
   {:else}
     <Input type="search" class="max-w-sm" aria-label="Mekânlarda ara" placeholder="Mekân adına göre ara" bind:value={query} />
     {#each groups as group (group.title)}
@@ -97,7 +100,7 @@
         </ul>
       </section>
     {:else}
-      <p class="py-6 text-center text-sm text-muted-foreground">Eşleşen mekân yok.</p>
+      <EmptyState icon={SearchX} text="Bu adla mekân yok." action={{ label: 'Aramayı temizle', run: () => (query = '') }} />
     {/each}
   {/if}
 </div>

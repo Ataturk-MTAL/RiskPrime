@@ -1,10 +1,12 @@
 <script lang="ts">
   import ArrowLeft from '@lucide/svelte/icons/arrow-left';
+  import LibraryIcon from '@lucide/svelte/icons/library';
   import Plus from '@lucide/svelte/icons/plus';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import * as Table from '$lib/components/ui/table';
   import ChecklistEditor from './ChecklistEditor.svelte';
+  import EmptyState from './EmptyState.svelte';
   import LibraryDialog from './LibraryDialog.svelte';
   import PageHeader from './PageHeader.svelte';
   import ProposeItemDialog from './ProposeItemDialog.svelte';
@@ -78,7 +80,7 @@
         </Table.Root>
       </div>
     {:else}
-      <p class="py-8 text-sm text-muted-foreground" role="status">Henüz liste yok. "Hazır listelerden ekle" ile MEB listelerini ekleyin ya da boş bir liste başlatın.</p>
+      <EmptyState icon={LibraryIcon} text="Henüz liste yok." action={{ label: 'Hazır listelerden ekle', run: () => (libraryOpen = true) }} />
     {/if}
     <LibraryDialog bind:open={libraryOpen} />
     <ProposeItemDialog bind:open={proposeOpen} initialText={prefill} />

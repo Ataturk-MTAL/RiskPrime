@@ -1,9 +1,12 @@
 <script lang="ts">
+  import ClipboardCheck from '@lucide/svelte/icons/clipboard-check';
+  import FunnelX from '@lucide/svelte/icons/funnel-x';
   import ShieldAlert from '@lucide/svelte/icons/shield-alert';
   import { toast } from 'svelte-sonner';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import DeficiencyItem from './DeficiencyItem.svelte';
+  import EmptyState from './EmptyState.svelte';
   import SelectField from './SelectField.svelte';
   import { SECTION_TITLE } from './shared-classes';
   import { defaultLocationId } from '$lib/domain/checklist-risk';
@@ -72,15 +75,11 @@
   </div>
 
   {#if !shown.length}
-    <div class="space-y-3 rounded-lg border border-dashed p-6 text-center">
-      {#if everything.length}
-        <p class="text-sm text-muted-foreground">Bu süzgece uyan eksik yok.</p>
-        {#if isFiltered}<Button variant="outline" size="sm" onclick={reset}>Süzgeçleri temizle</Button>{/if}
-      {:else}
-        <p class="text-sm text-muted-foreground">Henüz eksik yok — denetimleri doldurmak için Mekânlar'a gidin.</p>
-        <Button variant="outline" size="sm" onclick={() => nav.go('locations')}>Mekânlar'a git</Button>
-      {/if}
-    </div>
+    {#if everything.length}
+      <EmptyState icon={FunnelX} text="Bu süzgece uyan eksik yok." action={isFiltered ? { label: 'Süzgeçleri temizle', run: reset } : undefined} />
+    {:else}
+      <EmptyState icon={ClipboardCheck} text="Henüz eksik yok." action={{ label: "Mekânlar'a git", run: () => nav.go('locations') }} />
+    {/if}
   {:else}
     {#each groups as group (group.key)}
       <section class="space-y-2" aria-label={group.name}>
