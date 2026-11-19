@@ -61,13 +61,19 @@
   const pick = (prefix: string) => [...selected].filter((k) => k.startsWith(prefix)).map((k) => Number(k.slice(2)));
   const chosenLocations = $derived(pick('m:').map((i) => locationTemplates[i]));
   const chosenLists = $derived(pick('l:').map((i) => library.checklists[i]));
-  const preview = $derived.by(() => {
-    if (!selected.size) return null;
+  const summary = $derived.by(() => {
+    if (!selected.size) return '';
+    let preview;
     try {
-      return previewLibraryAdd(store.assessment, chosenLocations, chosenLists, library.checklists);
+      preview = previewLibraryAdd(store.assessment, chosenLocations, chosenLists, library.checklists);
     } catch {
-      return null; // the add itself reports the error through store.apply
+      return ''; // the add itself reports the error through store.apply
     }
+    const { added, bound } = preview;
+    const parts = [`${chosenLocations.length} mekân`];
+    if (added.length || !bound.length) parts.push(`${added.length} yeni kontrol listesi${added.length ? ` (${added.join(', ')})` : ''}`);
+    const text = `Eklenecek: ${parts.join(', ')}`;
+    return bound.length ? `${text}; ${bound.length} mevcut liste eklenen mekâna bağlanacak (${bound.join(', ')})` : text;
   });
 
   function toggle(key: string, on: boolean) {
@@ -140,17 +146,15 @@
         {/each}
       </section>
     </div>
-    <Dialog.Footer class="items-center sm:justify-between">
-      <span class="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-        {#if preview}
-          <span class="w-full text-sm text-foreground" role="status">
-            Eklenecek: {chosenLocations.length} mekân, {preview.length} yeni kontrol listesi{preview.length ? ` (${preview.join(', ')})` : ''}
-          </span>
-        {/if}
+    <Dialog.Footer class="flex-col items-center sm:flex-row sm:justify-between">
+      <span class="flex flex-col gap-1">
+        <span class="text-sm text-foreground" aria-live="polite">{summary}</span>
+        <span class="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
         Kendi listeniz mi var? Excel şablonu indirin, doldurun, "Dosya aç" ile yükleyin:
         <Button variant="link" size="sm" class="h-auto p-0 text-xs" onclick={downloadMebTemplate}>MEB KL-01–KL-43 şablonu</Button>
         ·
         <Button variant="link" size="sm" class="h-auto p-0 text-xs" onclick={downloadBlankTemplate}>boş şablon</Button>
+        </span>
       </span>
       <span class="flex gap-2">
         <Button variant="outline" onclick={() => (open = false)}>Vazgeç</Button>

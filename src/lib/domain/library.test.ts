@@ -93,26 +93,36 @@ describe("addFromLibrary", () => {
 });
 
 describe("previewLibraryAdd", () => {
-  test("names the lists a new location brings", () => {
-    const names = previewLibraryAdd(emptyAssessment(), [tpl("CNC", ["KL-26", "KL-37"])], [], MEB);
-    expect(names).toEqual(["KL-26", "KL-37"]);
-  });
-
-  test("is empty when the lists already exist and are bound elsewhere", () => {
+  const boundElsewhere = () => {
     const start = addChecklist(
       addLocation(emptyAssessment(), { id: "x", name: "Eski" }),
       meb("KL-40"),
     );
-    const bound = setChecklistLocations(start, start.checklists[0].id, ["x"]);
-    expect(previewLibraryAdd(bound, [tpl("Kaynak", ["KL-40"])], [], MEB)).toEqual([]);
+    return setChecklistLocations(start, start.checklists[0].id, ["x"]);
+  };
+
+  test("names the lists a new location brings", () => {
+    const p = previewLibraryAdd(emptyAssessment(), [tpl("CNC", ["KL-26", "KL-37"])], [], MEB);
+    expect(p).toEqual({ added: ["KL-26", "KL-37"], bound: [] });
   });
 
-  test("agrees with the lists addFromLibrary really adds", () => {
+  test("names existing lists that gain the new location, adding none", () => {
+    const p = previewLibraryAdd(boundElsewhere(), [tpl("Kaynak", ["KL-40"])], [], MEB);
+    expect(p).toEqual({ added: [], bound: ["KL-40"] });
+  });
+
+  test("a school-wide list is neither added nor bound", () => {
+    const start = addChecklist(emptyAssessment(), meb("KL-26"));
+    const p = previewLibraryAdd(start, [tpl("CNC", ["KL-26"])], [], MEB);
+    expect(p).toEqual({ added: [], bound: [] });
+  });
+
+  test("agrees with what addFromLibrary really does", () => {
     const locations = [tpl("CNC", ["KL-26"]), tpl("Torna", ["KL-26", "KL-37"])];
     const before = emptyAssessment();
     const real = addFromLibrary(before, locations, [meb("KL-40")], MEB);
-    const names = previewLibraryAdd(before, locations, [meb("KL-40")], MEB);
-    expect(names).toHaveLength(real.checklists.length - before.checklists.length);
+    const p = previewLibraryAdd(before, locations, [meb("KL-40")], MEB);
+    expect(p.added).toEqual(real.checklists.slice(before.checklists.length).map((c) => c.code));
   });
 
   test("does not change the assessment it is given", () => {

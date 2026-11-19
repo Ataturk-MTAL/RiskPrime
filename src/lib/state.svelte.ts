@@ -3,7 +3,7 @@ import { tick } from "svelte";
 import type { ChecklistTemplate, LocationTemplate } from "$lib/domain/types";
 import { emptyAssessment } from "$lib/domain/assessment";
 import { addChecklist as addChecklistFromTemplate } from "$lib/domain/checklist";
-import { addFromLibrary } from "$lib/domain/library";
+import { addFromLibrary, previewLibraryAdd } from "$lib/domain/library";
 import {
   applyBankChanges,
   bankChanges,
@@ -136,11 +136,16 @@ class Store extends StoreCore {
   ) {
     const beforeLocations = this.assessment.locations.length;
     const beforeLists = this.assessment.checklists.length;
-    const ok = this.apply((a) => addFromLibrary(a, locations, checklists, library));
+    let boundLists = 0;
+    const ok = this.apply((a) => {
+      boundLists = previewLibraryAdd(a, locations, checklists, library).bound.length;
+      return addFromLibrary(a, locations, checklists, library);
+    });
     if (!ok) return;
     const addedLists = this.assessment.checklists.length - beforeLists;
+    const bound = boundLists ? `, ${boundLists} mevcut liste bağlandı` : "";
     toast.info(
-      `Eklendi: ${locations.length} mekân, ${addedLists} kontrol listesi. İstemediğinizi ilgili ekrandan silebilirsiniz.`,
+      `Eklendi: ${locations.length} mekân, ${addedLists} kontrol listesi${bound}. İstemediğinizi ilgili ekrandan silebilirsiniz.`,
     );
     if (locations.length) nav.openLocation(this.assessment.locations[beforeLocations].id);
     else nav.openLibrary(this.assessment.checklists[beforeLists]?.id ?? null);

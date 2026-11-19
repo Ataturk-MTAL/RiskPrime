@@ -4,7 +4,7 @@ import { autoAssign } from "./auto-assign";
 import { addChecklist } from "./checklist";
 import { liveLocationIds } from "./inspections";
 import { setChecklistLocations } from "./links";
-import type { Assessment, ChecklistTemplate, LocationTemplate } from "./types";
+import type { Assessment, Checklist, ChecklistTemplate, LocationTemplate } from "./types";
 
 /**
  * Puts the MEB list `code` on location `locationId`: a list bound to other locations gets this one too,
@@ -62,17 +62,31 @@ export function addFromLibrary(
   );
 }
 
+export interface LibraryPreview {
+  /** Code (or name) of each checklist the add would create, in order. */
+  added: string[];
+  /** Code (or name) of each existing checklist that would gain a location. */
+  bound: string[];
+}
+
 /**
- * Dry run of `addFromLibrary`: the code (or name) of each checklist it would add, in order.
- * Derived by diffing the real result, so it cannot drift from what the add does. Throws like it.
+ * Dry run of `addFromLibrary`: which lists it would create and which existing ones it would bind
+ * to a new location. Derived by diffing the real result, so it cannot drift from the add. Throws like it.
  */
 export function previewLibraryAdd(
   a: Assessment,
   locations: LocationTemplate[],
   checklists: ChecklistTemplate[],
   library: ChecklistTemplate[],
-): string[] {
-  return addFromLibrary(a, locations, checklists, library)
-    .checklists.slice(a.checklists.length)
-    .map((c) => c.code || c.name);
+): LibraryPreview {
+  const after = addFromLibrary(a, locations, checklists, library);
+  const label = (c: { code?: string; name: string }) => c.code || c.name;
+  const grew = (c: Checklist) => {
+    const next = after.checklists.find((n) => n.id === c.id);
+    return !!next && liveLocationIds(after, next).length > liveLocationIds(a, c).length;
+  };
+  return {
+    added: after.checklists.slice(a.checklists.length).map(label),
+    bound: a.checklists.filter(grew).map(label),
+  };
 }
