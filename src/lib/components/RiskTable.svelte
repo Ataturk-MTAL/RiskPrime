@@ -79,6 +79,7 @@
           <Table.Cell><div class={clamp} title={row.responsible}>{row.responsible}</div></Table.Cell>
           <Table.Cell>
             {STATUS_LABELS[row.status]}
+            {#if row.dueDate}<div class="text-xs text-muted-foreground tabular-nums">{row.dueDate}</div>{/if}
             {#if isOverdue(row, today)}<Badge variant="outline" class="mt-1"><Clock aria-hidden="true" />Süresi geçti</Badge>{/if}
           </Table.Cell>
           <Table.Cell><LevelBadge likelihood={row.likelihoodAfter} severity={row.severityAfter} /></Table.Cell>

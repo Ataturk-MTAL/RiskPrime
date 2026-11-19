@@ -7,7 +7,7 @@
   import SourceBadge from './SourceBadge.svelte';
   import { RISK_TONE } from './shared-classes';
   import { LIKELIHOOD_OPTIONS, parseScore, scoreValue, SEVERITY_OPTIONS } from './score-options';
-  import { isOverdue, updateRow } from '$lib/domain/assessment';
+  import { isOverdue, STATUS_LABELS, updateRow } from '$lib/domain/assessment';
   import { riskLevel } from '$lib/domain/matrix';
   import type { RiskRow } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
@@ -25,6 +25,7 @@
     <span class="min-w-0 flex-1">
       <span class="line-clamp-1 block text-sm font-semibold">{row.equipment || 'Ekipman girilmedi'}</span>
       <span class="line-clamp-2 block text-sm text-muted-foreground">{row.hazard || 'Tehlike girilmedi'}</span>
+      <span class="block text-xs text-muted-foreground">{STATUS_LABELS[row.status]}{row.dueDate ? ` · ${row.dueDate}` : ''}</span>
     </span>
     <ChevronRight class="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
   </button>
