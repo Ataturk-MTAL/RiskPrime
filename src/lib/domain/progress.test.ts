@@ -97,7 +97,7 @@ describe("progress", () => {
     });
   });
 
-  test("counts answers, eksik items and the first incomplete list", () => {
+  test("counts answers, deficiencies and the first incomplete list", () => {
     const { checklists } = progress(sample(), today);
     expect(checklists).toMatchObject({
       answered: 3,
@@ -205,7 +205,7 @@ describe("unansweredScope", () => {
   });
 
   test("locations come first while any location item is open", () => {
-    // Arrange: 10 items, 4 of them okul geneli; 2 location items and 1 school-wide item open
+    // Arrange: 10 items, 4 of them school-wide; 2 location items and 1 school-wide item open
     const input = counts(7, 10, 3, 4);
     // Act
     const scope = unansweredScope(input);

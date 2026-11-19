@@ -355,7 +355,7 @@ describe("readiness gaps", () => {
     expect(r.hasGaps).toBe(true);
   });
 
-  test("an eksik in one location is counted per inspection", () => {
+  test("a deficiency in one location is counted per inspection", () => {
     const a = perLocation();
     // l1: m1 has a row; l2: m2 has a row; nothing else is "no"
     expect(readiness(a).noWithoutRow).toEqual([]);

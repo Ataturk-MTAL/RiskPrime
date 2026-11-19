@@ -118,7 +118,7 @@ describe("filterRegister", () => {
 });
 
 describe("school-wide filter", () => {
-  test("matches only okul geneli deficiencies", () => {
+  test("matches only school-wide deficiencies", () => {
     const { a } = sample();
     const all = deficiencies(a);
     const wide = { ...all[0], locationId: null };

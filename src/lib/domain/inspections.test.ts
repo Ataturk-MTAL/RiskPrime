@@ -119,7 +119,7 @@ describe("inspection queries", () => {
     expect(inspectionsForList(a, "yok")).toEqual([]);
   });
 
-  test("inspectionSummary counts items, answers and eksik of one inspection", () => {
+  test("inspectionSummary counts items, answers and deficiencies of one inspection", () => {
     const a0 = sample();
     const { k1, m1, m2 } = ids(a0);
     const a = withAnswers(a0, k1, "l1", { [m1]: "no", [m2]: "yes" }, { [m1]: "not" });
@@ -163,7 +163,7 @@ describe("deficiencies", () => {
     expect("ref" in list[1]).toBe(false);
   });
 
-  test("a row linked to one location's eksik does not cover the same item elsewhere", () => {
+  test("a row linked to one location's deficiency does not cover the same item elsewhere", () => {
     const a0 = sample();
     const { k1, m1 } = ids(a0);
     let a = withAnswers(withAnswers(a0, k1, "l1", { [m1]: "no" }), k1, "l2", { [m1]: "no" });
@@ -172,7 +172,7 @@ describe("deficiencies", () => {
       ["l1", 0],
       ["l2", 1],
     ]);
-    // one row can serve both inspections' eksik
+    // one row can serve both inspections' deficiencies
     const row = a.locations[1].rows[0];
     a = addRowSource(a, "l2", row.id, { listId: k1, itemId: m1, locationId: "l1" });
     expect(deficiencies(a).map((d) => d.rowIds)).toEqual([[row.id], [row.id]]);

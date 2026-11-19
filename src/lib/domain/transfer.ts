@@ -1,5 +1,5 @@
-// Bulk "eksik -> risk satiri": every "Hayir" item of an inspection without a linked row gets a row,
-// in the inspection's own location (okul geneli inspections use the list's default location).
+// Bulk "deficiency -> risk satiri": every "Hayir" item of an inspection without a linked row gets a row,
+// in the inspection's own location (school-wide inspections use the list's default location).
 import {
   defaultLocationId,
   hasDeficiencyRisk,

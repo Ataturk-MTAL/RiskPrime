@@ -149,7 +149,7 @@ describe("similarRows", () => {
 
   test("skips rows already linked to the item", () => {
     const { a, listId, itemId } = sample();
-    // the list has only its okul geneli inspection, so the link comes from there
+    // the list has only its school-wide inspection, so the link comes from there
     const linked = addRowSource(a, "l1", "r2", { listId, itemId, locationId: null });
     expect(similarRows(linked, listId, itemId, null, "l1")).toEqual([]);
   });

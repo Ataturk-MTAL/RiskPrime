@@ -1,4 +1,4 @@
-// Turns a "Hayır" checklist item (an eksik of one inspection) into a risk row.
+// Turns a "Hayır" checklist item (a deficiency of one inspection) into a risk row.
 import { addRow } from "./assessment";
 import { noSiblings, siblingTargets } from "./common-items";
 import { answerOf, liveLocationIds, scopeName } from "./inspections";
@@ -58,7 +58,7 @@ function rowLocation(a: Assessment, locationId: string | null, rowLocationId?: s
 
 /**
  * True when the row location already has a row for the item of that inspection (locationId = the
- * inspection's scope, null = okul geneli; rowLocationId = where the row lives, needed for okul geneli).
+ * inspection's scope, null = school-wide; rowLocationId = where the row lives, needed for school-wide).
  * Rows without links count when their hazard text matches.
  */
 export function hasChecklistRisk(
@@ -80,7 +80,7 @@ export function hasChecklistRisk(
   return !!a.locations.find((l) => l.id === target)?.rows.some(linked);
 }
 
-/** Adds a risk row for the item of that inspection; for okul geneli pass the location to put it in. */
+/** Adds a risk row for the item of that inspection; for school-wide pass the location to put it in. */
 export function riskRowFromChecklistItem(
   a: Assessment,
   listId: string,
@@ -128,7 +128,7 @@ export interface SimilarRow {
 /**
  * Rows of the target location whose hazard reads like the item, skipping rows already linked to it
  * (from any inspection, or via a common sibling of this inspection): link instead of duplicating.
- * locationId = the inspection's scope (null = okul geneli); rowLocationId = where the rows live.
+ * locationId = the inspection's scope (null = school-wide); rowLocationId = where the rows live.
  */
 export function similarRows(
   a: Assessment,

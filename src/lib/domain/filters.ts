@@ -22,7 +22,7 @@ const matches = (query: string, fields: (string | undefined)[]): boolean => {
   return !q || fields.some((f) => f?.toLocaleLowerCase("tr").includes(q));
 };
 
-/** DeficiencyFilter.locationId value for okul geneli inspections (null means "all locations"). */
+/** DeficiencyFilter.locationId value for school-wide inspections (null means "all locations"). */
 export const SCHOOL_WIDE_FILTER = "__school__";
 
 /** A deficiency with the same "already in the risk table" rule the bulk transfer uses. */
@@ -137,7 +137,7 @@ export function levelCounts(
   return counts;
 }
 
-/** Items grouped by location (okul geneli under SCHOOL_WIDE_FILTER), groups in first-seen order. */
+/** Items grouped by location (school-wide under SCHOOL_WIDE_FILTER), groups in first-seen order. */
 export function groupByLocation<T extends { locationId: string | null; locationName: string }>(
   items: readonly T[],
 ): { key: string; name: string; items: T[] }[] {

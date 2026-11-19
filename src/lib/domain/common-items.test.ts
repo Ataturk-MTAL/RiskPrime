@@ -78,7 +78,7 @@ describe("common items", () => {
     expect(siblingTargets(a, "kb", "b2", "l1", BANK)).toEqual([]);
   });
 
-  test("siblingTargets matches okul geneli (null) siblings", () => {
+  test("siblingTargets matches school-wide (null) siblings", () => {
     const base = sample();
     const a = ensureInspections({
       ...base,

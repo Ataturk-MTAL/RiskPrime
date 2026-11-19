@@ -49,7 +49,7 @@ export function progress(a: Assessment, today: Date) {
     state: stateOf(answered, total),
   };
 
-  // The eksik (Hayır) answers waiting to become risk rows.
+  // The deficiency ("Hayır") answers waiting to become risk rows.
   const untransferred = countUntransferred(a);
   const transferred = Math.max(0, checklists.missing - untransferred);
   const transfer = {
@@ -93,7 +93,7 @@ export function progress(a: Assessment, today: Date) {
       return r.status === "open" && level !== null && SERIOUS.includes(level.key);
     }).length,
     overdue: rows.filter((r) => isOverdue(r, today)).length,
-    // Done needs every row scored and no eksik still waiting to become a row.
+    // Done needs every row scored and no deficiency still waiting to become a row.
     state: (untransferred > 0 && scored === rows.length
       ? "doing"
       : stateOf(scored, rows.length)) as StepState,
@@ -133,7 +133,7 @@ export function nextStep(steps: Record<StepKey, { state: StepState }>): StepKey 
   return STEP_ORDER.find((k) => steps[k].state !== "done") ?? null;
 }
 
-/** Where unanswered checklist items are left: locations first, then okul geneli; null when none. */
+/** Where unanswered checklist items are left: locations first, then school-wide; null when none. */
 export function unansweredScope(p: {
   checklists: { answered: number; total: number };
   schoolWide: { answered: number; total: number };

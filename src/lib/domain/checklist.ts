@@ -157,7 +157,7 @@ function setInspectionValue(
   };
 }
 
-/** Sets the answer of one item in one inspection (locationId null = okul geneli). "" clears it. */
+/** Sets the answer of one item in one inspection (locationId null = school-wide). "" clears it. */
 export function setAnswer(
   a: Assessment,
   listId: string,

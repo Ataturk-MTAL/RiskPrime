@@ -81,7 +81,7 @@ export const inspectionsForList = (a: Assessment, listId: string): Inspection[] 
 export const inspectionsForLocation = (a: Assessment, locationId: string): Inspection[] =>
   a.inspections.filter((i) => i.locationId === locationId);
 
-/** Item counts of one inspection: total items of its list, answered ones, and "no" answers (eksik). */
+/** Item counts of one inspection: total items of its list, answered ones, and "no" answers (deficiencies). */
 export function inspectionSummary(
   a: Assessment,
   inspection: Inspection,
@@ -102,7 +102,7 @@ export interface Deficiency {
   itemNo: string;
   text: string;
   ref?: string;
-  /** Inspection scope; null = okul geneli. */
+  /** Inspection scope; null = school-wide. */
   locationId: string | null;
   locationName: string;
   note: string;
