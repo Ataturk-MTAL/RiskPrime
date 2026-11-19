@@ -18,7 +18,7 @@ import type {
 export const listLabel = (code: string, name: string): string =>
   `${code ? `${code} · ` : ""}${name || "Adsız liste"}`;
 
-export const ANSWERS: Answer[] =["yes", "no", "na", ""];
+export const ANSWERS: Answer[] = ["yes", "no", "na", ""];
 export const ANSWER_LABELS: Record<Answer, string> = {
   yes: "Evet",
   no: "Hayır",

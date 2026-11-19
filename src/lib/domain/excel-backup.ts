@@ -148,13 +148,7 @@ export function backupSheets(a: Assessment): Record<string, Table> {
     [SHEET_SCHOOL]: schoolSheet(a),
     [SHEET_LOCATIONS]: [
       [...LOCATION_COLUMNS.map(([, h]) => h), LOCATION_KEY_HEADER],
-      ...a.locations.map((l, i) => [
-        l.name,
-        FILE_TYPE_LABELS[l.type],
-        l.building,
-        l.area,
-        i + 1,
-      ]),
+      ...a.locations.map((l, i) => [l.name, FILE_TYPE_LABELS[l.type], l.building, l.area, i + 1]),
     ],
     [SHEET_RISK]: riskSheet(a),
     [SHEET_CHECKLIST]: checklistSheet(a),
