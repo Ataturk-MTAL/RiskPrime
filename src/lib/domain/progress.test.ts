@@ -110,7 +110,7 @@ describe("progress", () => {
     });
   });
 
-  test("counts scored rows, serious levels, overdue rows, untransferred eksik and first unscored location", () => {
+  test("counts scored rows, serious levels, overdue rows and untransferred deficiencies", () => {
     const { risk } = progress(sample(), today);
     expect(risk).toMatchObject({
       scored: 2,
@@ -213,7 +213,7 @@ describe("unansweredScope", () => {
     expect(scope).toBe("locations");
   });
 
-  test("only okul geneli items left points to the school page", () => {
+  test("only school-wide items left points to the school page", () => {
     expect(unansweredScope(counts(9, 10, 3, 4))).toBe("school");
   });
 

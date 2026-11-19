@@ -11,7 +11,7 @@
   import UserAvatar from './UserAvatar.svelte';
 
   const TITLES = {
-    checking: 'Kilit durumu denetleniyor…',
+    checking: 'Kilit durumu kontrol ediliyor…',
     firstUser: 'İlk kullanıcıyı oluşturun',
     showRecovery: 'Okul kurtarma kodu',
     pickUser: 'Kullanıcı seçin',

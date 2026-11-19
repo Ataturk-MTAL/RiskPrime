@@ -32,7 +32,7 @@
     {/snippet}
   </Popover.Trigger>
   <Popover.Content class="max-h-80 w-72 space-y-2 overflow-y-auto">
-    <p class="text-xs text-muted-foreground">Her seçili mekânda ayrı denetlenir. Hiçbiri seçili değilse okul genelinde bir kez denetlenir.</p>
+    <p class="text-xs text-muted-foreground">Her seçili mekânda ayrı doldurulur. Hiçbiri seçili değilse okul genelinde bir kez doldurulur.</p>
     {#each groups as group (group.title)}
       <fieldset class="space-y-1">
         {#if group.title}<legend class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{group.title}</legend>{/if}

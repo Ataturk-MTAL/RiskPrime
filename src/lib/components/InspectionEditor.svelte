@@ -108,5 +108,5 @@
     </div>
   </div>
 {:else}
-  <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda böyle bir denetim yok.</p>
+  <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda böyle bir kontrol listesi yok.</p>
 {/if}

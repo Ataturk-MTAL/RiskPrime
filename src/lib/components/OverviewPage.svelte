@@ -24,14 +24,14 @@
     },
     {
       key: 'checklists',
-      title: 'Mekânları denetleyin',
+      title: 'Kontrol listelerini doldurun',
       detail: `${p.checklists.answered}/${p.checklists.total} madde yanıtlandı, ${p.checklists.missing} eksik`,
       run: () => (unansweredScope(p) === 'school' ? nav.openSchool() : nav.go('locations')),
     },
     {
       key: 'transfer',
       title: 'Eksikleri riske ekleyin',
-      detail: `${p.transfer.untransferred} riske eklenmemiş eksik`,
+      detail: `${p.transfer.untransferred} eksik riske eklenmedi`,
       run: () => nav.openDeficiencies({ state: 'untransferred' }),
     },
     {
@@ -53,7 +53,7 @@
     [
       { label: 'Yüksek/tolere edilemez açık riskler', value: p.risk.openSerious, run: () => nav.openRegister({ level: 'serious', status: 'open' }) },
       { label: 'Süresi geçmiş', value: p.risk.overdue, run: () => nav.openRegister({ overdue: true }) },
-      { label: 'Aktarılmamış eksik', value: p.transfer.untransferred, run: () => nav.openDeficiencies({ state: 'untransferred' }) },
+      { label: 'Riske eklenmemiş eksik', value: p.transfer.untransferred, run: () => nav.openDeficiencies({ state: 'untransferred' }) },
     ].filter((t) => t.value > 0),
   );
 </script>

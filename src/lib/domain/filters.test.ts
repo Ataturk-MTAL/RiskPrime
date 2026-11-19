@@ -193,7 +193,7 @@ describe("groupByLocation", () => {
     ]);
   });
 
-  test("okul geneli items share the school-wide key", () => {
+  test("school-wide items share the school-wide key", () => {
     const groups = groupByLocation([{ locationId: null, locationName: "Okul geneli" }]);
     expect(groups[0].key).toBe(SCHOOL_WIDE_FILTER);
   });

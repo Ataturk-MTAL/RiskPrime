@@ -33,8 +33,8 @@
   const listOptions = $derived([{ value: ALL, label: 'Tüm listeler' }, ...a.checklists.map((c) => ({ value: c.id, label: c.name }))]);
   const stateOptions = $derived([
     { value: 'all', label: `Tümü (${counts.all})` },
-    { value: 'untransferred', label: `Risk tablosuna aktarılmamış (${counts.untransferred})` },
-    { value: 'transferred', label: `Aktarılmış (${counts.transferred})` },
+    { value: 'untransferred', label: `Riske eklenmemiş (${counts.untransferred})` },
+    { value: 'transferred', label: `Riske eklenmiş (${counts.transferred})` },
   ]);
 
   const groups = $derived(groupByLocation(shown));

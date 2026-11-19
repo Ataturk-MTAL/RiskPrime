@@ -128,7 +128,7 @@ export function progress(a: Assessment, today: Date) {
 export type StepKey = "school" | "checklists" | "transfer" | "risk" | "readiness";
 const STEP_ORDER: readonly StepKey[] = ["school", "checklists", "transfer", "risk", "readiness"];
 
-/** The step the overview points at: the first one not done yet, or null when all are done. */
+/** The step the start page points at: the first one not done yet, or null when all are done. */
 export function nextStep(steps: Record<StepKey, { state: StepState }>): StepKey | null {
   return STEP_ORDER.find((k) => steps[k].state !== "done") ?? null;
 }
