@@ -40,9 +40,6 @@
     </div>
     <ChecklistEditor listId={openId} />
   {:else}
-    <p class="max-w-2xl text-sm text-muted-foreground">
-      Kontrol listesi şablonları burada durur. Bir şablonu hangi mekânlarda denetleyeceğinizi şablondan seçersiniz; cevaplar Mekânlar bölümünde girilir.
-    </p>
     <div class="flex flex-wrap gap-2">
       <Button onclick={addBlank}><Plus />Boş liste ekle</Button>
       <Button variant="outline" onclick={() => (libraryOpen = true)}>Hazır listelerden ekle</Button>

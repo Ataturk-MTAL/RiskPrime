@@ -87,13 +87,13 @@ class Store extends StoreCore {
         : nav.openRegister({ status: "open" });
     this.applyUndoable(
       () => result.assessment,
-      `${result.created} risk satırı oluşturuldu; puanlamak için risk kaydına geçin.`,
+      `${result.created} risk satırı oluşturuldu; puanlamak için Riskler'e geçin.`,
       {
         // The jump is the toast's main action; undo moves to the secondary button.
         notify: ((message, options) =>
           toast.success(message, {
             ...options,
-            action: { label: "Risk kaydını aç", onClick: open },
+            action: { label: "Riskleri aç", onClick: open },
             cancel: options?.action,
           })) as typeof toast.success,
       },

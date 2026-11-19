@@ -63,9 +63,6 @@
   <div class="flex max-w-2xl flex-col gap-2">
     <h1 class="text-2xl font-semibold">Genel bakış</h1>
     <p class="text-sm text-muted-foreground">{periodLine}</p>
-    <p class="text-sm text-muted-foreground">
-      Yıllık risk değerlendirmesi beş adımda hazırlanır. Sırayla ilerleyin; her adımın durumu burada görünür.
-    </p>
   </div>
 
   <ol class="flex max-w-2xl flex-col divide-y rounded-xl border bg-card" aria-label="Yıllık değerlendirme adımları">

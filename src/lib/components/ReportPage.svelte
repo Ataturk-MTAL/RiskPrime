@@ -123,7 +123,6 @@
         </li>
       {/each}
     </ul>
-    <p class="text-sm text-muted-foreground">Bu listeler okulun tamamı için bir kez doldurulur; açmak için listenin adına tıklayın.</p>
   {:else}
     <p class="text-sm text-muted-foreground">Okul genelinde denetlenen liste yok; tüm listeler mekânlara atanmış.</p>
   {/if}
@@ -153,10 +152,7 @@
 {/snippet}
 
 <div class="flex max-w-3xl flex-col gap-4 p-4">
-  <div class="flex flex-col gap-2">
-    <h1 class="text-2xl font-semibold">Rapor</h1>
-    <p class="text-sm text-muted-foreground">İmzaya göndermeden önce her bölümü kontrol edin; yanlış olanı "Değiştir" ile düzeltin.</p>
-  </div>
+  <h1 class="text-2xl font-semibold">Rapor</h1>
 
   {@render section('report-school', 'Okul bilgileri ve imzacılar', null, schoolBody)}
   {@render section('report-wide', 'Okul geneli denetimler', null, schoolWideBody)}
@@ -219,7 +215,6 @@
   <Card.Root>
     <Card.Header>
       <Card.Title>Çıktılar</Card.Title>
-      <Card.Description>İmzalanacak belge PDF'tir; kayıt dosyası ve Excel uygulamada tekrar açılabilir.</Card.Description>
     </Card.Header>
     <Card.Content class="flex flex-col items-start gap-3">
       <Button disabled={busy} onclick={() => store.requestFullPdf()}>İmzaya hazır PDF oluştur</Button>

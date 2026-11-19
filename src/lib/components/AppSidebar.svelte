@@ -11,6 +11,12 @@
 
   const badges = $derived(sectionBadges(store.assessment));
   const counts = $derived({ deficiencies: badges.deficiencies, register: badges.register });
+  const schoolLine = $derived(
+    [store.assessment.school.name, store.assessment.school.scope]
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .join(' · '),
+  );
 </script>
 
 <Sidebar.Root collapsible="icon">
@@ -21,7 +27,7 @@
           <img src="{import.meta.env.BASE_URL}logo.png" alt="" width="32" height="32" class="size-8 shrink-0" />
           <span class="grid min-w-0 flex-1 text-left leading-tight">
             <span class="truncate font-semibold">RiskPrime</span>
-            <span class="truncate text-xs text-muted-foreground">Mersin Atatürk MTAL · Elektrik-Elektronik</span>
+            {#if schoolLine}<span class="truncate text-xs text-muted-foreground">{schoolLine}</span>{/if}
           </span>
         </Sidebar.MenuButton>
       </Sidebar.MenuItem>

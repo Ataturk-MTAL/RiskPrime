@@ -35,7 +35,7 @@
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>Yeni mekân</Dialog.Title>
-      <Dialog.Description>Atölye, depo, ofis gibi bir mekân ekleyin; risk satırları mekâna bağlıdır.</Dialog.Description>
+      <Dialog.Description class="sr-only">Yeni mekân ekleyin.</Dialog.Description>
     </Dialog.Header>
     <form class="space-y-2" onsubmit={submit}>
       <Input bind:value={name} required placeholder="Mekân adı, ör. ELE16" aria-label="Mekân adı" />

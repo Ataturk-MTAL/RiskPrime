@@ -21,7 +21,6 @@
   import { dragHasFiles, isOpenableFile, UNSUPPORTED_DROP_MESSAGE } from '$lib/drop';
   import LockScreen from '$lib/components/LockScreen.svelte';
   import { lock } from '$lib/lock.svelte';
-  import { MediaQuery } from 'svelte/reactivity';
   import { isDesktop } from '$lib/platform';
   import { nav } from '$lib/nav.svelte';
   import { formatHash, parseHash } from '$lib/nav-route';
@@ -87,8 +86,6 @@
     event.preventDefault();
     event.returnValue = '';
   }
-  // Phone: toasts at the top so they never cover a dialog footer or the BottomNav.
-  const isPhone = new MediaQuery('max-width: 767px');
 </script>
 
 <svelte:window ondragover={onDragOver} ondrop={onDrop} onbeforeunload={onBeforeUnload} onhashchange={applyHash} onpopstate={applyHash} onpointerdown={() => lock.touch()} onpointermove={() => lock.touch()} onkeydown={() => lock.touch()} />
@@ -130,4 +127,4 @@
 <ConflictDialog />
 <DiscardDialog />
 {/if}
-<Toaster position={isPhone.current ? "top-center" : "bottom-right"} />
+<Toaster position="top-center" />

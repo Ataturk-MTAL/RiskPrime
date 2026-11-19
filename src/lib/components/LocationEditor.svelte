@@ -42,7 +42,7 @@
 {#if loc}
   <div class="@container min-w-0 space-y-3">
     {#if loc.rows.length === 0}
-      <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda risk satırı yok. "Satır ekle" ile başlayın ya da Denetimler sekmesinden eksikleri aktarın.</p>
+      <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda risk satırı yok.</p>
     {:else}
       <div class="flex flex-wrap items-end gap-2">
         <Label class="flex min-w-48 flex-1 flex-col items-start gap-1 text-xs text-muted-foreground">Satırlarda ara

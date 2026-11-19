@@ -43,7 +43,7 @@
 {/snippet}
 
 <div class="mx-auto w-full max-w-6xl space-y-4 p-4">
-  <h1 class="text-xl font-semibold">Risk kaydı</h1>
+  <h1 class="text-xl font-semibold">Riskler</h1>
 
   <div class="flex flex-wrap items-center gap-2">
     <Button variant={filter.level === 'all' ? 'default' : 'outline'} size="sm" aria-pressed={filter.level === 'all'} onclick={() => patch({ level: 'all' })}>Tümü ({counts.all})</Button>
@@ -58,7 +58,7 @@
   <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.5fr_auto]">
     <SelectField label="Mekân" options={locationOptions} value={filter.locationId ?? ALL} onValueChange={(v) => patch({ locationId: v === ALL ? null : v })} />
     <SelectField label="Durum" options={statusOptions} value={filter.status} onValueChange={(v) => patch({ status: v as RegisterFilter['status'] })} />
-    <Input type="search" aria-label="Risk kaydında ara" placeholder="Ara…" value={filter.query} oninput={(e) => patch({ query: e.currentTarget.value })} />
+    <Input type="search" aria-label="Risklerde ara" placeholder="Ara…" value={filter.query} oninput={(e) => patch({ query: e.currentTarget.value })} />
     <Label class="flex min-h-9 items-center gap-2 text-sm">
       <Checkbox checked={filter.overdue} onCheckedChange={(v) => patch({ overdue: v === true })} />Süresi geçmiş
     </Label>
@@ -70,7 +70,7 @@
         <p class="text-sm text-muted-foreground">Bu süzgece uyan risk satırı yok.</p>
         {#if isFiltered}<Button variant="outline" size="sm" onclick={reset}>Süzgeçleri temizle</Button>{/if}
       {:else}
-        <p class="text-sm text-muted-foreground">Henüz risk satırı yok — eksiklerden risk satırı oluşturabilir veya bir mekânın risk tablosuna satır ekleyebilirsiniz.</p>
+        <p class="text-sm text-muted-foreground">Henüz risk satırı yok.</p>
         <Button variant="outline" size="sm" onclick={() => nav.go('deficiencies')}>Eksiklere git</Button>
       {/if}
     </div>

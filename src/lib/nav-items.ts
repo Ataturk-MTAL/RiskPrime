@@ -23,7 +23,7 @@ export const SECTION_ITEMS: readonly SectionItem[] = [
   { section: "overview", label: "Genel bakış", icon: House },
   { section: "locations", label: "Mekânlar", icon: MapPin },
   { section: "deficiencies", label: "Eksikler", icon: ClipboardX },
-  { section: "register", label: "Risk kaydı", icon: Table2 },
+  { section: "register", label: "Riskler", icon: Table2 },
   { section: "report", label: "Rapor", icon: FileText },
 ];
 
@@ -31,7 +31,7 @@ export const SECTION_LABELS: Readonly<Record<Section, string>> = {
   overview: "Genel bakış",
   locations: "Mekânlar",
   deficiencies: "Eksikler",
-  register: "Risk kaydı",
+  register: "Riskler",
   report: "Rapor",
   library: "Kütüphane",
 };

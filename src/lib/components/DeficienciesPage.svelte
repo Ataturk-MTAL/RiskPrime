@@ -58,7 +58,7 @@
     }
     store.applyWithUndo(
       (x) => targets.reduce((acc, { d, target }) => riskRowFromChecklistItem(acc, d.listId, d.itemId, d.locationId, target), x),
-      `${targets.length} risk satırı oluşturuldu; puanlamak için Risk kaydına geçin.`,
+      `${targets.length} risk satırı oluşturuldu; puanlamak için Riskler'e geçin.`,
     );
   }
 </script>

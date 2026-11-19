@@ -1,5 +1,4 @@
 <script lang="ts">
-  import ArrowLeft from '@lucide/svelte/icons/arrow-left';
   import Pencil from '@lucide/svelte/icons/pencil';
   import Trash2 from '@lucide/svelte/icons/trash-2';
   import { Button } from '$lib/components/ui/button';
@@ -45,9 +44,10 @@
   function transfer() {
     const result = transferInspection(store.assessment, listId, locationId);
     if (!result.created) return;
-    store.applyWithUndo(() => result.assessment, locationId
-        ? `${result.created} risk satırı oluşturuldu; Risk tablosu sekmesinde puanlayın.`
-        : `${result.created} risk satırı oluşturuldu; Risk kaydında puanlayın.`);
+    store.applyWithUndo(
+      () => result.assessment,
+      `${result.created} risk satırı oluşturuldu; Riskler'de puanlayın.`,
+    );
   }
 
   function removeFromLocation() {
@@ -60,9 +60,6 @@
 {#if list && inspection}
   <div class="space-y-3">
     <div class="flex flex-wrap items-center gap-2">
-      {#if locationId}
-        <Button variant="ghost" size="sm" onclick={() => locationId && nav.openLocation(locationId, 'inspections')}><ArrowLeft />Denetimler</Button>
-      {/if}
       <h2 class="min-w-0 flex-1 font-semibold">{list.code ? `${list.code} · ` : ''}{list.name || 'Adsız liste'}</h2>
       <Button variant="outline" size="sm" onclick={() => nav.openLibrary(listId)}><Pencil />Listeyi düzenle</Button>
       {#if locationId}
@@ -104,7 +101,7 @@
           <div class="flex flex-col items-start gap-1.5">
             <ToggleGroup.Root type="single" variant="outline" aria-label="Madde {item.no} cevabı" value={current.answer} onValueChange={(v) => store.apply((a) => setAnswerShared(a, listId, locationId, item.id, v as Answer))}>
               {#each CHOICES as choice (choice.value)}
-                <ToggleGroup.Item value={choice.value} class={choice.tone}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
+                <ToggleGroup.Item value={choice.value} class={choice.tone} title={choice.value === 'na' ? 'Uygulanamaz' : undefined}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
               {/each}
             </ToggleGroup.Root>
             <ChecklistItemLinks {list} {item} {locationId} />
@@ -113,7 +110,6 @@
         </div>
       {/each}
     </div>
-    <p class="text-sm text-muted-foreground">"Hayır" cevaplanan her madde bir eksiktir; eksikler risk tablosunda puanlanır. U.D.: uygulanamaz. Seçili cevaba tekrar basınca cevap silinir.</p>
   </div>
 {:else}
   <p class="py-6 text-center text-sm text-muted-foreground">Bu mekânda böyle bir denetim yok.</p>
