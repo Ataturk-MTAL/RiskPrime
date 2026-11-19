@@ -61,3 +61,18 @@ export function addFromLibrary(
     added.checklists.slice(beforeLists).map((c) => c.id),
   );
 }
+
+/**
+ * Dry run of `addFromLibrary`: the code (or name) of each checklist it would add, in order.
+ * Derived by diffing the real result, so it cannot drift from what the add does. Throws like it.
+ */
+export function previewLibraryAdd(
+  a: Assessment,
+  locations: LocationTemplate[],
+  checklists: ChecklistTemplate[],
+  library: ChecklistTemplate[],
+): string[] {
+  return addFromLibrary(a, locations, checklists, library)
+    .checklists.slice(a.checklists.length)
+    .map((c) => c.code || c.name);
+}

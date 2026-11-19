@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vite-plus/test";
 import { addLocation, emptyAssessment } from "./assessment";
 import { addChecklist } from "./checklist";
-import { addFromLibrary } from "./library";
+import { addFromLibrary, previewLibraryAdd } from "./library";
 import { setChecklistLocations } from "./links";
 import libraryData from "../data/library.json";
 import areaLocations from "../data/locations.json";
@@ -89,5 +89,35 @@ describe("addFromLibrary", () => {
     expect(() => addFromLibrary(emptyAssessment(), [tpl("CNC", ["KL-99"])], [], MEB)).toThrow(
       "KL-99",
     );
+  });
+});
+
+describe("previewLibraryAdd", () => {
+  test("names the lists a new location brings", () => {
+    const names = previewLibraryAdd(emptyAssessment(), [tpl("CNC", ["KL-26", "KL-37"])], [], MEB);
+    expect(names).toEqual(["KL-26", "KL-37"]);
+  });
+
+  test("is empty when the lists already exist and are bound elsewhere", () => {
+    const start = addChecklist(
+      addLocation(emptyAssessment(), { id: "x", name: "Eski" }),
+      meb("KL-40"),
+    );
+    const bound = setChecklistLocations(start, start.checklists[0].id, ["x"]);
+    expect(previewLibraryAdd(bound, [tpl("Kaynak", ["KL-40"])], [], MEB)).toEqual([]);
+  });
+
+  test("agrees with the lists addFromLibrary really adds", () => {
+    const locations = [tpl("CNC", ["KL-26"]), tpl("Torna", ["KL-26", "KL-37"])];
+    const before = emptyAssessment();
+    const real = addFromLibrary(before, locations, [meb("KL-40")], MEB);
+    const names = previewLibraryAdd(before, locations, [meb("KL-40")], MEB);
+    expect(names).toHaveLength(real.checklists.length - before.checklists.length);
+  });
+
+  test("does not change the assessment it is given", () => {
+    const before = emptyAssessment();
+    previewLibraryAdd(before, [tpl("CNC", ["KL-26"])], [], MEB);
+    expect(before.checklists).toHaveLength(0);
   });
 });

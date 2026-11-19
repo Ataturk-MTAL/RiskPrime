@@ -4,6 +4,7 @@
   import { Checkbox } from '$lib/components/ui/checkbox';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Input } from '$lib/components/ui/input';
+  import { previewLibraryAdd } from '$lib/domain/library';
   import type { Library, LocationTemplate } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
   import libraryData from '$lib/data/library.json';
@@ -57,6 +58,18 @@
   const locationGroups = $derived(byGroup(locationEntries));
   const checklistGroups = $derived(byGroup(checklistEntries));
 
+  const pick = (prefix: string) => [...selected].filter((k) => k.startsWith(prefix)).map((k) => Number(k.slice(2)));
+  const chosenLocations = $derived(pick('m:').map((i) => locationTemplates[i]));
+  const chosenLists = $derived(pick('l:').map((i) => library.checklists[i]));
+  const preview = $derived.by(() => {
+    if (!selected.size) return null;
+    try {
+      return previewLibraryAdd(store.assessment, chosenLocations, chosenLists, library.checklists);
+    } catch {
+      return null; // the add itself reports the error through store.apply
+    }
+  });
+
   function toggle(key: string, on: boolean) {
     const next = new Set(selected);
     if (on) next.add(key);
@@ -73,12 +86,7 @@
     selected = next;
   }
   function add() {
-    const pick = (prefix: string) => [...selected].filter((k) => k.startsWith(prefix)).map((k) => Number(k.slice(2)));
-    store.addFromLibrary(
-      pick('m:').map((i) => locationTemplates[i]),
-      pick('l:').map((i) => library.checklists[i]),
-      library.checklists,
-    );
+    store.addFromLibrary(chosenLocations, chosenLists, library.checklists);
     open = false;
   }
 </script>
@@ -134,6 +142,11 @@
     </div>
     <Dialog.Footer class="items-center sm:justify-between">
       <span class="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+        {#if preview}
+          <span class="w-full text-sm text-foreground" role="status">
+            Eklenecek: {chosenLocations.length} mekân, {preview.length} yeni kontrol listesi{preview.length ? ` (${preview.join(', ')})` : ''}
+          </span>
+        {/if}
         Kendi listeniz mi var? Excel şablonu indirin, doldurun, "Dosya aç" ile yükleyin:
         <Button variant="link" size="sm" class="h-auto p-0 text-xs" onclick={downloadMebTemplate}>MEB KL-01–KL-43 şablonu</Button>
         ·
