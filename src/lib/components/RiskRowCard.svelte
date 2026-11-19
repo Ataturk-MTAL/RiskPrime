@@ -11,15 +11,16 @@
   import type { RiskRow } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
 
-  let { row, index, locationId, onopen }: { row: RiskRow; index: number; locationId: string; onopen: (rowId: string) => void } = $props();
+  let { row, index, locationId, onopen, dimLabel }: { row: RiskRow; index: number; locationId: string; onopen: (rowId: string) => void; dimLabel?: string } = $props();
 
   const level = $derived(riskLevel(row.likelihood, row.severity));
   const patch = (changes: Partial<RiskRow>) => store.apply((a) => updateRow(a, locationId, row.id, changes));
 </script>
 
-<article id="row-{row.id}" class="rounded-lg border border-l-4 bg-background" style:border-left-color={level?.background}>
+<article id="row-{row.id}" class="rounded-lg border border-l-4 bg-background" class:opacity-60={dimLabel !== undefined} style:border-left-color={level?.background}>
   <button type="button" class="flex min-h-11 w-full items-start gap-2 rounded-t-lg p-3 text-left hover:bg-muted" aria-label="Satır {index} düzenle" onclick={() => onopen(row.id)}>
     <span class="text-xs font-semibold text-muted-foreground">{index}</span>
+    {#if dimLabel}<span class="text-xs text-muted-foreground">{dimLabel}</span>{/if}
     <span class="min-w-0 flex-1">
       <span class="line-clamp-1 block text-sm font-semibold">{row.equipment || 'Ekipman girilmedi'}</span>
       <span class="line-clamp-2 block text-sm text-muted-foreground">{row.hazard || 'Tehlike girilmedi'}</span>

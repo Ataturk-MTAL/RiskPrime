@@ -14,7 +14,14 @@
   import type { RiskRow } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
 
-  let { items, locationId, openId, onopen }: { items: { row: RiskRow; number: number }[]; locationId: string; openId: string | null; onopen: (rowId: string) => void } = $props();
+  let {
+    items,
+    locationId,
+    openId,
+    onopen,
+    dimIds = new Set<string>(),
+    dimLabel = '',
+  }: { items: { row: RiskRow; number: number }[]; locationId: string; openId: string | null; onopen: (rowId: string) => void; dimIds?: ReadonlySet<string>; dimLabel?: string } = $props();
 
   const patch = (rowId: string, changes: Partial<RiskRow>) => store.apply((a) => updateRow(a, locationId, rowId, changes));
   // Clicks on the inline score selects or the chevron must not toggle through the row handler twice.
@@ -43,8 +50,8 @@
     <Table.Body>
       {#each items as { row, number: n } (row.id)}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-        <Table.Row id="trow-{row.id}" class="cursor-pointer align-top" data-state={openId === row.id ? 'selected' : undefined} onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}>
-          <Table.Cell class="border-l-4 font-semibold text-muted-foreground" style="border-left-color:{riskLevel(row.likelihood, row.severity)?.background ?? 'transparent'}">{n}</Table.Cell>
+        <Table.Row id="trow-{row.id}" class="cursor-pointer align-top {dimIds.has(row.id) ? 'opacity-60' : ''}" data-state={openId === row.id ? 'selected' : undefined} onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}>
+          <Table.Cell class="border-l-4 font-semibold text-muted-foreground" style="border-left-color:{riskLevel(row.likelihood, row.severity)?.background ?? 'transparent'}">{n}{#if dimIds.has(row.id)}<span class="block text-xs font-normal">{dimLabel}</span>{/if}</Table.Cell>
           <Table.Cell class="font-medium"><div class={clamp} title={row.equipment}>{row.equipment}</div></Table.Cell>
           <Table.Cell><div class={clamp} title={row.hazard}>{row.hazard}</div><SourceBadge {row} {locationId} /></Table.Cell>
           <Table.Cell class="px-1">

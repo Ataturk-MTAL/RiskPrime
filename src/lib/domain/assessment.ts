@@ -381,35 +381,3 @@ export function isOverdue(row: RiskRow, today: Date): boolean {
   const now = toIso({ y: today.getFullYear(), m: today.getMonth() + 1, d: today.getDate() });
   return toIso(due) < now;
 }
-
-export type RowFilter = "all" | "unscored" | "open" | "overdue";
-export const ROW_FILTERS: RowFilter[] = ["all", "unscored", "open", "overdue"];
-export const ROW_FILTER_LABELS: Record<RowFilter, string> = {
-  all: "Tümü",
-  unscored: "Puansız",
-  open: "Açık",
-  overdue: "Süresi geçmiş",
-};
-
-/** Rows matching a text query and a status filter, each with its original 1-based number. */
-export function filterRows(
-  rows: RiskRow[],
-  query: string,
-  filter: RowFilter,
-  today: Date,
-): { row: RiskRow; number: number }[] {
-  const q = query.trim().toLocaleLowerCase("tr");
-  const matchesFilter = (r: RiskRow) =>
-    filter === "all" ||
-    (filter === "unscored" && !(isScore(r.likelihood) && isScore(r.severity))) ||
-    (filter === "open" && r.status === "open") ||
-    (filter === "overdue" && isOverdue(r, today));
-  const matchesText = (r: RiskRow) =>
-    !q ||
-    [r.equipment, r.hazard, r.action, r.responsible].some((t) =>
-      t.toLocaleLowerCase("tr").includes(q),
-    );
-  return rows
-    .map((row, i) => ({ row, number: i + 1 }))
-    .filter(({ row }) => matchesFilter(row) && matchesText(row));
-}

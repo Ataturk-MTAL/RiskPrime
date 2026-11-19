@@ -170,7 +170,7 @@
       {/if}
     </Tabs.Content>
     <Tabs.Content value="risk" class="pt-3">
-      {#key id}<LocationEditor locationId={id} />{/key}
+      {#key id}<LocationEditor locationId={id} items={loc.rows.map((row, i) => ({ row, number: i + 1 }))} />{/key}
     </Tabs.Content>
   </Tabs.Root>
 </div>

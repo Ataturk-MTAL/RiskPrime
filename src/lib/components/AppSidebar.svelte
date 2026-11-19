@@ -4,13 +4,12 @@
   import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
   import * as Sidebar from '$lib/components/ui/sidebar';
   import { nav } from '$lib/nav.svelte';
-  import { SECTION_ITEMS, sectionBadges } from '$lib/nav-items';
+  import { isSectionActive, SECTION_ITEMS, sectionBadges } from '$lib/nav-items';
   import { store } from '$lib/state.svelte';
 
   let { onAbout }: { onAbout: () => void } = $props();
 
   const badges = $derived(sectionBadges(store.assessment));
-  const counts = $derived({ deficiencies: badges.deficiencies, register: badges.register });
   const schoolLine = $derived(
     [store.assessment.school.name, store.assessment.school.scope]
       .map((s) => s.trim())
@@ -40,18 +39,18 @@
         <Sidebar.GroupContent>
           <Sidebar.Menu>
             {#each SECTION_ITEMS as item (item.section)}
-              {@const count = item.section === 'deficiencies' || item.section === 'register' ? counts[item.section] : 0}
+              {@const count = item.section === 'register' ? badges.register : 0}
               <Sidebar.MenuItem>
                 <Sidebar.MenuButton
-                  isActive={nav.section === item.section}
-                  aria-current={nav.section === item.section ? 'page' : undefined}
+                  isActive={isSectionActive(item.section, nav.section)}
+                  aria-current={isSectionActive(item.section, nav.section) ? 'page' : undefined}
                   tooltipContent={item.label}
                   onclick={() => nav.go(item.section)}
                 >
                   <item.icon /><span>{item.label}</span>
                 </Sidebar.MenuButton>
                 {#if count > 0}
-                  <Sidebar.MenuBadge>{count}<span class="sr-only"> {item.section === 'register' ? 'yüksek ve tolere edilemez açık risk' : 'aktarılmamış eksik'}</span></Sidebar.MenuBadge>
+                  <Sidebar.MenuBadge>{count}<span class="sr-only"> yüksek ve tolere edilemez açık risk</span></Sidebar.MenuBadge>
                 {:else if item.section === 'report' && badges.reportGaps}
                   <Sidebar.MenuBadge><TriangleAlert class="size-3.5 text-destructive" aria-hidden="true" /><span class="sr-only">Eksik bilgi var</span></Sidebar.MenuBadge>
                 {/if}

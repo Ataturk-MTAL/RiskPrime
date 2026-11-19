@@ -7,7 +7,6 @@
   import BankUpdatesDialog from '$lib/components/BankUpdatesDialog.svelte';
   import BottomNav from '$lib/components/BottomNav.svelte';
   import ConflictDialog from '$lib/components/ConflictDialog.svelte';
-  import DeficienciesPage from '$lib/components/DeficienciesPage.svelte';
   import DiscardDialog from '$lib/components/DiscardDialog.svelte';
   import LockBanner from '$lib/components/LockBanner.svelte';
   import PeriodsDialog from '$lib/components/PeriodsDialog.svelte';
@@ -109,9 +108,7 @@
         <OverviewPage />
       {:else if nav.section === 'locations'}
         <LocationsPage />
-      {:else if nav.section === 'deficiencies'}
-        <DeficienciesPage />
-      {:else if nav.section === 'register'}
+      {:else if nav.section === 'deficiencies' || nav.section === 'register'}
         <RiskRegisterPage />
       {:else if nav.section === 'report'}
         <ReportPage onPeriods={() => (periodsOpen = true)} />

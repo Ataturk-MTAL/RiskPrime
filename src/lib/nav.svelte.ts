@@ -4,8 +4,8 @@ import { HOME, type LocationView, type Place, type Section } from "./nav-route";
 export type { LocationView, Place, Section } from "./nav-route";
 
 export interface RegisterFilter {
-  /** "serious" = Yüksek + Tolere edilemez. */
-  level: "all" | "serious";
+  /** "serious" = Yüksek + Tolere edilemez; "unscored" = olasılık ya da şiddet boş. */
+  level: "all" | "serious" | "unscored";
   locationId: string | null;
   status: "all" | "open" | "done";
   overdue: boolean;

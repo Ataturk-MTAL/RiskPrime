@@ -40,7 +40,7 @@
     const id = row.id;
     openId = null;
     store.apply((a) => removeRow(a, locationId, id));
-    void tick().then(() => document.getElementById(ADD_ROW_BUTTON_ID)?.focus());
+    void tick().then(() => document.getElementById(`${ADD_ROW_BUTTON_ID}-${locationId}`)?.focus());
   }
   function duplicateCurrent() {
     const id = newId('r');

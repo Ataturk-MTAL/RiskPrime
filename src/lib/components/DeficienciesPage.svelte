@@ -5,9 +5,10 @@
   import { Input } from '$lib/components/ui/input';
   import DeficiencyItem from './DeficiencyItem.svelte';
   import SelectField from './SelectField.svelte';
+  import { SECTION_TITLE } from './shared-classes';
   import { defaultLocationId, riskRowFromChecklistItem } from '$lib/domain/checklist-risk';
-  import { deficienciesWithState, deficiencyCounts, filterDeficiencies, isTransferred, SCHOOL_WIDE_FILTER } from '$lib/domain/filters';
-  import { SCHOOL_WIDE_LABEL, type Deficiency } from '$lib/domain/inspections';
+  import { deficienciesWithState, deficiencyCounts, filterDeficiencies, groupByLocation, isTransferred, SCHOOL_WIDE_FILTER } from '$lib/domain/filters';
+  import { SCHOOL_WIDE_LABEL } from '$lib/domain/inspections';
   import { nav, type DeficiencyFilter } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
@@ -32,15 +33,7 @@
     { value: 'transferred', label: `Aktarılmış (${counts.transferred})` },
   ]);
 
-  const groups = $derived(
-    shown.reduce<{ key: string; name: string; items: Deficiency[] }[]>((acc, d) => {
-      const key = d.locationId ?? SCHOOL_WIDE_FILTER;
-      const found = acc.find((g) => g.key === key);
-      if (found) found.items.push(d);
-      else acc.push({ key, name: d.locationName, items: [d] });
-      return acc;
-    }, []),
-  );
+  const groups = $derived(groupByLocation(shown));
 
   const patch = (changes: Partial<DeficiencyFilter>) => (nav.deficiencyFilter = { ...filter, ...changes });
   const reset = () => (nav.deficiencyFilter = { locationId: null, listId: null, state: 'all', query: '' });
@@ -63,10 +56,9 @@
   }
 </script>
 
-<div class="mx-auto w-full max-w-5xl space-y-4 p-4">
-  <div class="flex flex-wrap items-center justify-between gap-2">
-    <h1 class="text-xl font-semibold">Eksikler</h1>
-    <Button disabled={!pending.length} onclick={transferShown}><ShieldAlert />Görünenleri aktar ({pending.length})</Button>
+<div class="flex flex-col gap-4">
+  <div class="flex justify-end">
+    <Button variant="outline" disabled={!pending.length} onclick={transferShown}><ShieldAlert />Görünenleri riske ekle ({pending.length})</Button>
   </div>
 
   <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -89,7 +81,7 @@
   {:else}
     {#each groups as group (group.key)}
       <section class="space-y-2" aria-label={group.name}>
-        <h2 class="text-sm font-semibold text-muted-foreground">{group.name} <span class="font-normal">({group.items.length})</span></h2>
+        <h2 class={SECTION_TITLE}>{group.name} <span class="font-normal">({group.items.length})</span></h2>
         {#each group.items as d (d.listId + d.itemId + (d.locationId ?? ''))}
           <DeficiencyItem {d} />
         {/each}
