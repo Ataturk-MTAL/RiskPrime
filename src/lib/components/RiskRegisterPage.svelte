@@ -36,9 +36,10 @@
   let pin = $state<RegisterPin | null>(null);
   /** Groups the user opened or closed under the current filter; others use the default below. */
   let openOverrides = $state<Record<string, boolean>>({});
-  // Every new filter object (a facet change, or re-choosing the same filter) pins what it shows now.
+  // Every new filter object (a facet change, or re-choosing the same filter) or a newly opened document pins what it shows now.
   $effect.pre(() => {
     const f = nav.registerFilter;
+    void store.loadCount;
     untrack(() => {
       pin = pinRegister(everything, f, today);
       openOverrides = {};
@@ -83,8 +84,8 @@
   </div>
 
   <div class="flex flex-wrap gap-2" role="group" aria-label="Görünüm">
-    <Button variant={isDeficiencyView ? 'outline' : 'secondary'} size="sm" aria-pressed={!isDeficiencyView} onclick={() => nav.openRegister(filter)}>Risk satırları</Button>
-    <Button variant={isDeficiencyView ? 'secondary' : 'outline'} size="sm" aria-pressed={isDeficiencyView} onclick={() => nav.openDeficiencies({ state: 'untransferred' })}>
+    <Button variant={isDeficiencyView ? 'outline' : 'default'} size="sm" aria-pressed={!isDeficiencyView} onclick={() => nav.openRegister(filter)}>Risk satırları</Button>
+    <Button variant={isDeficiencyView ? 'default' : 'outline'} size="sm" aria-pressed={isDeficiencyView} onclick={() => nav.openDeficiencies({ state: 'untransferred' })}>
       Riske eklenmemiş eksikler{untransferred ? ` (${untransferred})` : ''}
     </Button>
   </div>

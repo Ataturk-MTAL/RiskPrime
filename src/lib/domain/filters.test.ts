@@ -243,6 +243,22 @@ describe("pinned register rows", () => {
     expect(keepPinned(riskRegister(after), pin).map((e) => e.row.id)).toEqual(["r1", "r2", "r3"]);
   });
 
+  test("re-pinning a replaced assessment shows its filtered rows worst first", () => {
+    // Arrange
+    const stale = pinRegister(riskRegister(twoUnscored()), ALL_RISKS, TODAY);
+    let next = emptyAssessment("2027-2028");
+    next = addLocation(next, { id: "n1", name: "Lab" });
+    next = addRow(next, "n1", { id: "low", likelihood: 1, severity: 1 });
+    next = addRow(next, "n1", { id: "unscored" });
+    next = addRow(next, "n1", { id: "worst", likelihood: 5, severity: 5 });
+    const entries = riskRegister(next);
+    // Act
+    const fresh = keepPinned(entries, pinRegister(entries, ALL_RISKS, TODAY));
+    // Assert
+    expect(keepPinned(entries, stale).map((e) => e.row.id)).toEqual(["low", "unscored", "worst"]);
+    expect(fresh.map((e) => e.row.id)).toEqual(["worst", "low", "unscored"]);
+  });
+
   test("a deleted row drops out", () => {
     const before = twoUnscored();
     const pin = pinRegister(riskRegister(before), unscored, TODAY);
