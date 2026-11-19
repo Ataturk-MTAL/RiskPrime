@@ -20,7 +20,7 @@
 
   const a = $derived(store.assessment);
   let root = $state<HTMLElement | null>(null);
-  // Opened from elsewhere (overview, readiness list): focus the first empty field once the page has rendered.
+  // Opened from elsewhere (Başla, readiness list): focus the first empty field once the page has rendered.
   $effect(() => {
     if (!nav.schoolRequest) return;
     nav.schoolRequest = 0;

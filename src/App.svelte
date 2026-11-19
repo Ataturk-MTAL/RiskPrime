@@ -14,6 +14,7 @@
   import LocationsPage from '$lib/components/LocationsPage.svelte';
   import Notices from '$lib/components/Notices.svelte';
   import OverviewPage from '$lib/components/OverviewPage.svelte';
+  import SchoolPage from '$lib/components/SchoolPage.svelte';
   import ReadinessDialog from '$lib/components/ReadinessDialog.svelte';
   import ReportPage from '$lib/components/ReportPage.svelte';
   import RiskRegisterPage from '$lib/components/RiskRegisterPage.svelte';
@@ -108,6 +109,8 @@
       {#key store.refusedEdits}
       {#if nav.section === 'overview'}
         <OverviewPage />
+      {:else if nav.section === 'school'}
+        <SchoolPage />
       {:else if nav.section === 'locations'}
         <LocationsPage />
       {:else if nav.section === 'deficiencies' || nav.section === 'register'}

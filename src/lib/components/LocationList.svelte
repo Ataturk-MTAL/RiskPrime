@@ -1,8 +1,10 @@
 <script lang="ts">
   import CircleAlert from '@lucide/svelte/icons/circle-alert';
   import Clock from '@lucide/svelte/icons/clock';
+  import ChevronRight from '@lucide/svelte/icons/chevron-right';
   import Library from '@lucide/svelte/icons/library';
   import Plus from '@lucide/svelte/icons/plus';
+  import School from '@lucide/svelte/icons/school';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
@@ -12,12 +14,15 @@
   import { grouped, isOverdue, LOCATION_TYPE_LABELS } from '$lib/domain/assessment';
   import { inspectionsForLocation, inspectionSummary } from '$lib/domain/inspections';
   import { riskLevel } from '$lib/domain/matrix';
+  import { progress } from '$lib/domain/progress';
   import type { Location } from '$lib/domain/types';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
   const SERIOUS = ['high', 'intolerable'];
   const today = new Date();
+
+  const schoolWide = $derived(progress(store.assessment, today).schoolWide);
 
   let query = $state('');
   let dialogOpen = $state(false);
@@ -52,6 +57,15 @@
   </div>
   <NewLocationDialog bind:open={dialogOpen} />
   <LibraryDialog bind:open={libraryOpen} />
+
+  {#if schoolWide.total}
+    <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center gap-3 rounded-md border p-3 text-left" onclick={() => nav.openSchool()}>
+      <School class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+      <span class="min-w-0 flex-1 font-medium">Okul geneli kontrol listeleri</span>
+      <span class="text-sm text-muted-foreground">{schoolWide.answered}/{schoolWide.total} cevaplı · Okul</span>
+      <ChevronRight class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+    </button>
+  {/if}
 
   {#if store.assessment.locations.length === 0}
     <p class="py-8 text-center text-sm text-muted-foreground">Henüz mekân yok. "Mekân ekle" ile başlayın.</p>

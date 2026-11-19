@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Button } from '$lib/components/ui/button';
+  import { progress, unansweredScope } from '$lib/domain/progress';
   import { countUntransferred } from '$lib/domain/transfer';
   import type { GapEntry, MetaField, Readiness } from '$lib/domain/readiness';
   import { nav } from '$lib/nav.svelte';
@@ -21,10 +22,15 @@
     select();
     onpick();
   }
-  const openSchool = () => go(() => nav.openReport(true));
+  const openSchool = () => go(() => nav.openSchool());
   const openRisks = (id: string) => go(() => nav.openRegister({ locationId: id }));
-  // Gap ids of checklist entries are template ids; the answers live in the locations.
-  const openUnanswered = () => go(() => nav.go('locations'));
+  // Gap ids of checklist entries are template ids; send the user where the open items are.
+  const openUnanswered = () =>
+    go(() =>
+      unansweredScope(progress(store.assessment, new Date())) === 'school'
+        ? nav.openSchool()
+        : nav.go('locations'),
+    );
   const openUntransferred = (listId: string) =>
     go(() => nav.openDeficiencies({ listId, state: 'untransferred' }));
 </script>

@@ -12,6 +12,7 @@ describe("nav routes", () => {
       place({ section: "locations", locationId: "a-11", listId: "k-3" }),
       place({ section: "deficiencies" }),
       place({ section: "register" }),
+      place({ section: "school" }),
       place({ section: "register", locationId: "a-11" }),
       place({ section: "report" }),
       place({ section: "library" }),
@@ -26,6 +27,7 @@ describe("nav routes", () => {
     );
     expect(formatHash(place({ section: "register", locationId: "a-11" }))).toBe("#riskler/a-11");
     expect(formatHash(place({ section: "register" }))).toBe("#riskler");
+    expect(formatHash(place({ section: "school" }))).toBe("#okul");
   });
 
   test("unknown or empty hashes open the overview", () => {

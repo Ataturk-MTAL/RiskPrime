@@ -11,8 +11,8 @@
   aria-label="Bölümler"
   class="fixed inset-x-0 bottom-0 z-40 border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
 >
-  <!-- grid-cols-4: one column per SECTION_ITEMS entry; update together. -->
-  <ul class="grid grid-cols-4">
+  <!-- grid-cols-5: one column per SECTION_ITEMS entry; update together. -->
+  <ul class="grid grid-cols-5">
     {#each SECTION_ITEMS as item (item.section)}
       {@const count = item.section === 'register' ? badges.register : 0}
       {@const active = isSectionActive(item.section, nav.section)}

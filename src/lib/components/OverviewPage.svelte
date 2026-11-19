@@ -2,7 +2,7 @@
   import CircleCheck from '@lucide/svelte/icons/circle-check';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
-  import { nextStep, progress, type StepKey } from '$lib/domain/progress';
+  import { nextStep, progress, unansweredScope, type StepKey } from '$lib/domain/progress';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
   import { INTERACTIVE_ROW } from './shared-classes';
@@ -19,13 +19,13 @@
       key: 'school',
       title: 'Okul bilgilerini girin',
       detail: `Bilgi ${p.school.metaFilled}/${p.school.metaTotal}, imzacı ${p.school.signatoriesFilled}/${p.school.signatoriesTotal} dolu`,
-      run: () => nav.openReport(true),
+      run: () => nav.openSchool(),
     },
     {
       key: 'checklists',
       title: 'Mekânları denetleyin',
       detail: `${p.checklists.answered}/${p.checklists.total} madde yanıtlandı, ${p.checklists.missing} eksik`,
-      run: () => nav.go('locations'),
+      run: () => (unansweredScope(p) === 'school' ? nav.openSchool() : nav.go('locations')),
     },
     {
       key: 'transfer',
@@ -59,7 +59,7 @@
 
 <div class="mx-auto flex w-full max-w-3xl flex-col gap-6 p-4">
   <div class="flex flex-col gap-1">
-    <h1 class="text-2xl font-semibold">Genel bakış</h1>
+    <h1 class="text-2xl font-semibold">Başla</h1>
     <p class="text-sm text-muted-foreground">{periodLine}{validUntil ? ` · Geçerlilik ${validUntil}` : ''}</p>
   </div>
 

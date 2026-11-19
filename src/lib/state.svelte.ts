@@ -155,15 +155,6 @@ class Store extends StoreCore {
       this.loadAssessment(emptyAssessment(""), "Boş çalışma açıldı.");
   }
 
-  // Thin wrappers over nav for callers that still go through the store.
-  openSchool() {
-    nav.openReport(true);
-  }
-
-  selectChecklist(id: string) {
-    nav.openLibrary(id);
-  }
-
   addBlankChecklist() {
     const before = this.assessment.checklists.length;
     if (!this.apply((a) => addChecklistFromTemplate(a))) return;

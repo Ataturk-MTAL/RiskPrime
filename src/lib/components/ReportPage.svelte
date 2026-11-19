@@ -5,10 +5,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Button, buttonVariants } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
-  import InspectionEditor from './InspectionEditor.svelte';
   import ReadinessList from './ReadinessList.svelte';
-  import SchoolCard from './SchoolCard.svelte';
-  import { inspectionSummary, inspectionsForList } from '$lib/domain/inspections';
   import { APP_VERSION } from '$lib/domain/app-version';
   import { isLocked, verifySnapshot, type Verification } from '$lib/domain/snapshot';
   import { progress } from '$lib/domain/progress';
@@ -78,15 +75,6 @@
   const p = $derived(progress(a, new Date()));
   const gaps = $derived(readiness(a));
   const busy = $derived(store.busy !== '');
-  /** School-wide list whose inspection is open for answering on this page. */
-  let openWideId = $state<string | null>(null);
-  const schoolWideLists = $derived(
-    a.checklists.flatMap((list) =>
-      inspectionsForList(a, list.id)
-        .filter((i) => i.locationId === null)
-        .map((i) => ({ list, ...inspectionSummary(a, i) })),
-    ),
-  );
 </script>
 
 {#snippet section(id: string, title: string, change: { label: string; run: () => void } | null, body: Snippet)}
@@ -97,35 +85,6 @@
     </div>
     {@render body()}
   </section>
-{/snippet}
-
-{#snippet schoolBody()}
-  <SchoolCard />
-{/snippet}
-
-{#snippet schoolWideBody()}
-  {#if schoolWideLists.length}
-    <ul class="flex flex-col gap-1 text-sm">
-      {#each schoolWideLists as item (item.list.id)}
-        <li>
-          <Button
-            variant="link"
-            class="h-auto p-0 text-left whitespace-normal"
-            aria-expanded={openWideId === item.list.id}
-            onclick={() => (openWideId = openWideId === item.list.id ? null : item.list.id)}
-          >
-            {item.list.code} {item.list.name}
-          </Button>
-          <span class="text-muted-foreground">: {item.answered}/{item.total} madde yanıtlandı{item.no ? `, ${item.no} eksik` : ''}</span>
-          {#if openWideId === item.list.id}
-            <div class="mt-3 rounded-lg border p-3"><InspectionEditor listId={item.list.id} locationId={null} /></div>
-          {/if}
-        </li>
-      {/each}
-    </ul>
-  {:else}
-    <p class="text-sm text-muted-foreground">Okul genelinde denetlenen liste yok; tüm listeler mekânlara atanmış.</p>
-  {/if}
 {/snippet}
 
 {#snippet inspectionsBody()}
@@ -154,8 +113,6 @@
 <div class="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4">
   <h1 class="text-2xl font-semibold">Rapor</h1>
 
-  {@render section('report-school', 'Okul bilgileri ve imzacılar', null, schoolBody)}
-  {@render section('report-wide', 'Okul geneli denetimler', null, schoolWideBody)}
   {@render section('report-inspections', 'Denetimler özeti', { label: 'Değiştir', run: () => nav.go('locations') }, inspectionsBody)}
   {@render section('report-risk', 'Risk tablosu özeti', { label: 'Değiştir', run: () => nav.openRegister() }, riskBody)}
   {@render section('report-gaps', 'İmza öncesi açık noktalar', null, gapsBody)}

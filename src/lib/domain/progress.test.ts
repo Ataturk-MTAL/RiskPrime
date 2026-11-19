@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vite-plus/test";
 import { emptyAssessment } from "./assessment";
-import { nextStep, progress, type StepState } from "./progress";
+import { nextStep, progress, unansweredScope, type StepState } from "./progress";
 import { withAnswers } from "./test-helpers";
 import type { Assessment, ChecklistItem, RiskRow } from "./types";
 
@@ -195,5 +195,29 @@ describe("nextStep", () => {
 
   test("returns null when every step is done", () => {
     expect(nextStep(steps("done", "done", "done", "done", "done"))).toBeNull();
+  });
+});
+
+describe("unansweredScope", () => {
+  const counts = (answered: number, total: number, wideAnswered: number, wideTotal: number) => ({
+    checklists: { answered, total },
+    schoolWide: { answered: wideAnswered, total: wideTotal },
+  });
+
+  test("locations come first while any location item is open", () => {
+    // Arrange: 10 items, 4 of them okul geneli; 2 location items and 1 school-wide item open
+    const input = counts(7, 10, 3, 4);
+    // Act
+    const scope = unansweredScope(input);
+    // Assert
+    expect(scope).toBe("locations");
+  });
+
+  test("only okul geneli items left points to the school page", () => {
+    expect(unansweredScope(counts(9, 10, 3, 4))).toBe("school");
+  });
+
+  test("nothing left is null", () => {
+    expect(unansweredScope(counts(10, 10, 4, 4))).toBeNull();
   });
 });

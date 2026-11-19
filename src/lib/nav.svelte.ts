@@ -38,7 +38,7 @@ class Nav {
   place = $state<Place>(HOME);
   registerFilter = $state<RegisterFilter>(ALL_RISKS);
   deficiencyFilter = $state<DeficiencyFilter>(ALL_DEFICIENCIES);
-  /** Incremented to ask the report page to show and focus the school details. */
+  /** Incremented to ask the school page to focus its first empty field. */
   schoolRequest = $state(0);
   /** Set to open a risk row's sheet; the row's LocationEditor in Riskler clears it. */
   rowRequest = $state<{ locationId: string; rowId: string } | null>(null);
@@ -73,9 +73,9 @@ class Nav {
     this.go("deficiencies");
   }
 
-  openReport(focusSchool = false) {
-    this.go("report");
-    if (focusSchool) this.schoolRequest += 1;
+  openSchool() {
+    this.go("school");
+    this.schoolRequest += 1;
   }
 
   openLibrary(listId: string | null = null) {

@@ -1,6 +1,13 @@
 // URL hash <-> navigation place. Pure, so it is unit tested; nav.svelte.ts keeps the live state.
 
-export type Section = "overview" | "locations" | "deficiencies" | "register" | "report" | "library";
+export type Section =
+  | "overview"
+  | "school"
+  | "locations"
+  | "deficiencies"
+  | "register"
+  | "report"
+  | "library";
 
 export interface Place {
   section: Section;
@@ -14,6 +21,7 @@ export const HOME: Place = { section: "overview", locationId: null, listId: null
 
 const SEGMENTS: Record<Section, string> = {
   overview: "genel",
+  school: "okul",
   locations: "mekanlar",
   deficiencies: "eksikler",
   register: "riskler",

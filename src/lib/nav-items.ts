@@ -1,7 +1,8 @@
-// The four primary sections, shared by the sidebar and the phone bottom bar, plus their badges.
+// The five primary sections (Başla, Okul, Mekânlar, Riskler, Rapor), shared by the sidebar and the phone bottom bar, plus their badges.
 import FileText from "@lucide/svelte/icons/file-text";
 import House from "@lucide/svelte/icons/house";
 import MapPin from "@lucide/svelte/icons/map-pin";
+import School from "@lucide/svelte/icons/school";
 import Table2 from "@lucide/svelte/icons/table-2";
 import type { Component } from "svelte";
 import type { Assessment } from "./domain/types";
@@ -18,14 +19,16 @@ export interface SectionItem {
 }
 
 export const SECTION_ITEMS: readonly SectionItem[] = [
-  { section: "overview", label: "Genel bakış", icon: House },
+  { section: "overview", label: "Başla", icon: House },
+  { section: "school", label: "Okul", icon: School },
   { section: "locations", label: "Mekânlar", icon: MapPin },
   { section: "register", label: "Riskler", icon: Table2 },
   { section: "report", label: "Rapor", icon: FileText },
 ];
 
 export const SECTION_LABELS: Readonly<Record<Section, string>> = {
-  overview: "Genel bakış",
+  overview: "Başla",
+  school: "Okul",
   locations: "Mekânlar",
   deficiencies: "Riske eklenmemiş eksikler",
   register: "Riskler",

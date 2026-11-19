@@ -1,4 +1,4 @@
-// Counts behind the "Genel bakış" page: one summary per MEB workflow step.
+// Counts behind the Başla page: one summary per MEB workflow step.
 import { isOverdue } from "./assessment";
 import { summary } from "./checklist";
 import { inspectionSummary } from "./inspections";
@@ -62,7 +62,7 @@ export function progress(a: Assessment, today: Date) {
         ? "todo"
         : "done") as StepState,
   };
-  // School-wide inspections (lists without locations) are answered on the report page.
+  // School-wide inspections (lists without locations) are answered on the Okul page.
   const wide = a.inspections
     .filter((i) => i.locationId === null)
     .map((i) => inspectionSummary(a, i));
@@ -131,4 +131,15 @@ const STEP_ORDER: readonly StepKey[] = ["school", "checklists", "transfer", "ris
 /** The step the overview points at: the first one not done yet, or null when all are done. */
 export function nextStep(steps: Record<StepKey, { state: StepState }>): StepKey | null {
   return STEP_ORDER.find((k) => steps[k].state !== "done") ?? null;
+}
+
+/** Where unanswered checklist items are left: locations first, then okul geneli; null when none. */
+export function unansweredScope(p: {
+  checklists: { answered: number; total: number };
+  schoolWide: { answered: number; total: number };
+}): "locations" | "school" | null {
+  const open = p.checklists.total - p.checklists.answered;
+  const wideOpen = p.schoolWide.total - p.schoolWide.answered;
+  if (open - wideOpen > 0) return "locations";
+  return wideOpen > 0 ? "school" : null;
 }
