@@ -4,7 +4,7 @@
 
 **Goal:** Aynı işin birden çok yerde yapıldığı, sayfaları aşırı yüklü RiskPrime arayüzünü; tek iş = tek yer ilkesiyle Başla / Okul / Mekânlar / Riskler / Rapor yapısına taşımak. Veri modeli ve dosya biçimi değişmeyecek.
 
-**Architecture:** Değişiklik yalnız Svelte bileşenlerinde, gezinme katmanında (`nav-route.ts`, `nav.svelte.ts`, `nav-items.ts`) ve birkaç küçük saf domain fonksiyonunda (`progress.ts`, `filters.ts`, `checklist-risk.ts`). Her zaman önce var olan bileşen yeniden kullanılır (`LocationEditor`, `RiskTable`, `LibraryDialog`, `ChecklistItemLinks`, `ExportMenu`, `ReadinessList`, `similarity.ts`); bir sayfa birleşirken yenisi yazılmaz, var olan genişletilir ve fazlası silinir. Toplamda iki yeni bileşen (`SchoolPage.svelte`, `EmptyState.svelte`) ve tema için iki küçük modül (`theme-choice.ts` saf + testli, `theme.svelte.ts`) eklenir; iki dosya (`transfer-inspection.ts` ve testi) silinir. Görsel katman `src/app.css` token'larının üzerine kurulur ve açık + koyu temayı destekler (Görsel yön bölümü).
+**Architecture:** Değişiklik yalnız Svelte bileşenlerinde, gezinme katmanında (`nav-route.ts`, `nav.svelte.ts`, `nav-items.ts`) ve birkaç küçük saf domain fonksiyonunda (`progress.ts`, `filters.ts`, `checklist-risk.ts`). Her zaman önce var olan bileşen yeniden kullanılır (`LocationEditor`, `RiskTable`, `LibraryDialog`, `ChecklistItemLinks`, `ExportMenu`, `ReadinessList`, `similarity.ts`); bir sayfa birleşirken yenisi yazılmaz, var olan genişletilir ve fazlası silinir. Toplamda üç yeni bileşen (`SchoolPage.svelte`, `EmptyState.svelte`, `PageHeader.svelte`), bir Tailwind sınıf dizisi dosyası (`shared-classes.ts`) ve tema için iki küçük modül (`theme-choice.ts` saf + testli, `theme.svelte.ts`) eklenir; iki dosya (`transfer-inspection.ts` ve testi) silinir. Stil yalnız shadcn tema yöntemiyle: `src/app.css` değişkenleri + bileşenlerde Tailwind sınıfları; görsel katman bunun üzerine kurulur ve açık + koyu temayı destekler (Görsel yön bölümü).
 
 **Referans tasarım (bakıcı onaylı):** claude.ai artifact "RiskPrime Yeni Arayüz Taslağı" — https://claude.ai/artifact/RnpP7sa8ni6K5aUGuXnD7v. Kaynak dosyalar: `/private/tmp/claude-501/-Users-hakan-VSCodeProjects-RiskPrime/59742d32-7fe6-4214-b5fc-65b2e4e5e3ed/scratchpad/design/project/*.dc.html` (`Main`, `Mekan`, `Riskler`, `Telefon`). Token değerleri ve düzen oradan okunabilir; bu plandaki değerler onunla aynıdır, tek bilinçli fark `--input` (taslakta `oklch(0.66 0.01 85)` = 2.98:1 ölçüldü; plan `0.64` = 3.22:1 kullanır).
 
@@ -24,6 +24,7 @@
 - Commit: önce ayrı komutla `git add …`, sonra yalın `git commit -q -m "type: description"`; zincirleme (`&&`), `--amend`, `--no-edit` yok (hook engeller). Commit mesajı İngilizce, **Co-Authored-By / Claude satırı yok**.
 - Her görevde "Silinecekler" listesi uygulanır; silme eklemeden önce gelir.
 - Faz 1.5'ten sonra her görsel kontrol **açık ve koyu** iki temada yapılır; PDF/Excel renkleri temadan etkilenmez.
+- Stil: yalnız shadcn tema değişkenleri (`app.css`) + bileşenlerde Tailwind sınıfları; özel `@utility`/elle CSS ve `ui/**` düzenlemesi yasak. Yeni renk shadcn "Adding new colors" yoluyla eklenir (`--deficiency` + `@theme inline` içinde `--color-deficiency: var(--deficiency)`); hareket `motion-safe:`/`motion-reduce:` önekleri ve `tw-animate-css` sınıflarıyla.
 
 ---
 
@@ -71,7 +72,8 @@ Raporun iddiaları koda karşı tek tek kontrol edildi. Doğru olanlar plana gir
 | `src/lib/components/DeficiencyItem.svelte`                                                                                                                                                                                | kendi popover kopyaları silinir, `ChecklistItemLinks` kullanır                                                           |
 | `src/lib/components/ChecklistRiskButton.svelte`                                                                                                                                                                           | tek tıkla ekleme + benzer satır önerisi                                                                                  |
 | `src/lib/components/LibraryDialog.svelte`                                                                                                                                                                                 | eklenecekleri önceden gösterir                                                                                           |
-| `src/app.css`                                                                                                                                                                                                             | açık + koyu token'lar, risk/eksik renkleri, `page-title`/`section-title`/`interactive-row`, azaltılmış hareket (Görev 5) |
+| `src/app.css`                                                                                                                                                                                                             | yalnız shadcn tema değişkenleri: açık + koyu token'lar, risk/eksik renkleri, `@theme inline` eşlemeleri (Görev 5)        |
+| `src/lib/components/PageHeader.svelte`, `src/lib/components/shared-classes.ts`                                                                                                                                            | **yeni** — sayfa başlığı bileşeni; `SECTION_TITLE`, `INTERACTIVE_ROW`, `RISK_TONE` Tailwind sınıf dizileri (Görev 5, 16) |
 | `src/lib/theme-choice.ts` (+test), `src/lib/theme.svelte.ts`                                                                                                                                                              | **yeni** — Açık/Koyu/Sistem seçimi, `.dark` sınıfı (Görev 6)                                                             |
 | `src/lib/components/EmptyState.svelte`                                                                                                                                                                                    | **yeni** — tek boş durum bileşeni (Görev 17)                                                                             |
 | `src/lib/domain/progress.ts`                                                                                                                                                                                              | ayrıca `unansweredScope()` (Görev 9)                                                                                     |
@@ -531,32 +533,32 @@ Bu bölüm Faz 4'ün (ve Faz 1-3'te dokunulan ekranların) ölçütüdür. "En k
 - **Kitle:** MEB meslek lisesi öğretmenleri ve müdür yardımcıları; çoğu 40 yaş üstü, kâğıt formlara alışkın, uygulamayı yılda birkaç hafta yoğun kullanıyor; masaüstünde (Tauri) ve atölyede telefonda.
 - **Ton:** sakin, güven veren; resmi bir kâğıt form ya da iş defteri gibi düzenli. Sıkıcı değil: sıcak kâğıt zemin, mürekkep rengi metin, tek bir lacivert vurgu ve renkli kenar şeritleri yaşam katar.
 - **Akılda kalan tek ayrıntı:** _defter marjı._ Her risk satırı ve risk düzeyi rozeti, kâğıt defterin sol kenarındaki renkli sekme gibi ince bir şerit taşır: şerit güçlü renk (MEB matrisinin rengi), satırın kendisi soluk ton. Ekran sakin kalır, risk düzeyi yine ilk bakışta okunur. PDF/Excel'deki doygun MEB dolguları değişmez (`src/lib/domain/matrix.ts` `LEVELS` dokunulmaz).
-- **Kısıtlar:** yeni bağımlılık yok; var olan token'lar (`src/app.css`) genişletilir; shadcn `ui/**` elle düzenlenmez; Atkinson Hyperlegible Next yazı tipi kalır; WCAG AA kontrast (gövde ≥4.5:1, büyük metin ve odak halkası ≥3:1); `prefers-reduced-motion` her harekette geçerli.
+- **Kısıtlar:** yeni bağımlılık yok; stil yalnız shadcn tema değişkenleri (`src/app.css`: `:root`, `.dark`, `@theme inline`) + bileşenlerde Tailwind sınıfları; `@utility`/elle CSS yok; shadcn `ui/**` elle düzenlenmez; Atkinson Hyperlegible Next yazı tipi kalır; WCAG AA kontrast (gövde ≥4.5:1, büyük metin ve odak halkası ≥3:1); `prefers-reduced-motion` her harekette geçerli.
 
 **Renk kuralları:** Kırmızı yalnız risk düzeyinde (yüksek) ve gerçek hatada. "Hayır"/eksik nötr amber. Sayfa başına tek dolu (`default`) düğme; birincil vurgu = lacivert `--primary`. Rozet yalnız istisna için (sıfır sayaç gösterilmez).
 
-**Tipografi ölçeği (Görev 5'te `@utility` olarak tanımlanır):**
+**Tipografi ölçeği (Görev 5'te bileşen ve sabit olarak gelir; CSS sınıfı tanımlanmaz):**
 
-| Rol              | Sınıf                           | Boyut / satır yüksekliği                                |
-| ---------------- | ------------------------------- | ------------------------------------------------------- |
-| Sayfa başlığı    | `page-title`                    | `text-xl` 20/28, `font-semibold`, `tracking-tight`      |
-| Bölüm başlığı    | `section-title`                 | `text-sm` 14/20, `font-medium`, `text-muted-foreground` |
-| Gövde            | (varsayılan) `text-sm`          | 14/24 (`leading-6`) — tablo ve listelerde               |
-| Küçük / yardımcı | `text-xs text-muted-foreground` | 12/16                                                   |
+| Rol              | Nerede                                                 | Tailwind sınıfları                                            |
+| ---------------- | ------------------------------------------------------ | ------------------------------------------------------------- |
+| Sayfa başlığı    | `PageHeader.svelte` (`title`, `subtitle?`, `actions?`) | `text-xl leading-7 font-semibold tracking-tight` (20/28)      |
+| Bölüm başlığı    | `class={SECTION_TITLE}` (`shared-classes.ts`)          | `text-sm leading-5 font-medium text-muted-foreground` (14/20) |
+| Gövde            | varsayılan                                             | `text-sm leading-6` (14/24) — tablo ve listelerde             |
+| Küçük / yardımcı | doğrudan                                               | `text-xs text-muted-foreground` (12/16)                       |
 
-Sayılar her yerde `tabular-nums` (gövdeye bir kez verilir; yazı tipinde `tnum` özelliği var).
+Sayılar her yerde `tabular-nums` (`<body class="tabular-nums">`; yazı tipinde `tnum` özelliği var).
 
 **Eğik çizgili sıfır (Ø) araştırması:** Yazı tipinin GSUB özellikleri `node_modules/@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2` dosyasından okundu (WOFF2 tablo dizini + Node `zlib.brotliDecompressSync` ile GSUB FeatureList): yalnız `ccmp frac locl pnum tnum`. **`zero` ya da `ss01…ss20` yok**, yani eğik çizgili sıfır yazı tipinin varsayılan glifi ve `font-feature-settings` ile kapatılamaz. Tek teknik yol `unicode-range: U+0030` ile sıfırı yerel bir sistem yazı tipinden almak; ancak değişken ağırlıkla uyumsuz, rakamlar karışık görünür — **önerilmez**. Öneri: korumak (app.css:80'deki gerekçe: O/0 karışmasın). Karar 7.
 
 **Boşluk ölçeği (Tailwind 4 px tabanı):** `gap-1` (4) simge–metin; `gap-2` (8) bir grup içindeki denetimler; `gap-3` (12) bölüm içi; `gap-6` (24) sayfadaki bölümler arası; sayfa kenar boşluğu `p-4` (telefon) / `md:p-6` (masaüstü). Başlık bloğu (h1 + alt satır) `gap-1`.
 
-**Tek sayfa iskeleti:** kap genişliği ve dolgu yalnız `App.svelte`'de (`max-w-6xl`, `p-4 md:p-6`); sayfa kökü `flex flex-col gap-6`; ilk öğe başlık bloğu (`page-title` + isteğe bağlı tek satır `text-sm text-muted-foreground`); bölümler `section-title` + içerik; listeler kart değil `divide-y rounded-md border` (kart içinde kart yok).
+**Tek sayfa iskeleti:** kap genişliği ve dolgu yalnız `App.svelte`'de (`max-w-6xl`, `p-4 md:p-6`); sayfa kökü `flex flex-col gap-6`; ilk öğe `PageHeader` (başlık + isteğe bağlı tek satır + eylemler); bölümler `SECTION_TITLE` başlık + içerik; listeler kart değil `divide-y rounded-md border` (kart içinde kart yok).
 
 **Boş durumlar:** simge (`size-8 text-muted-foreground`) + tek cümle + en çok tek eylem (`outline sm`), kesik kenarlı sakin kutu. Tek bileşen: `EmptyState.svelte` (Görev 17).
 
-**Hareket:** durum değişimini anlatan ölçülü hareket; 150–200 ms, `ease-out`; yalnız CSS (`tw-animate-css` zaten yüklü: `animate-collapsible-down/up`, `animate-in fade-in slide-in-from-top-1`). Global `prefers-reduced-motion` kuralı hepsini kapatır (Görev 5).
+**Hareket:** durum değişimini anlatan ölçülü hareket; 150–200 ms, `ease-out`; yalnız Tailwind sınıfları (`tw-animate-css` zaten yüklü: `animate-collapsible-down/up`, `animate-in fade-in slide-in-from-top-1`). Her hareketli sınıf `motion-reduce:` öneki ile kapatılır (`motion-reduce:animate-none`, `motion-reduce:transition-none`); genel CSS kuralı yok. Hareket gerektirmeyen bilgi hiçbir zaman yalnız hareketle verilmez.
 
-**Etkileşim durumları:** özel tıklanabilir satırlar (adım satırı, akordeon tetikleyici, mekân kartı, grup başlığı) tek bir `interactive-row` yardımcı sınıfını kullanır: hover `bg-accent`, active `bg-accent/80`, odak opak `ring-2 ring-ring` (yarı saydam halka 1.98:1 ölçüldü), renk geçişi 150 ms. shadcn düğmeleri kendi durumlarıyla kalır; odak halkası rengi `--ring` ile ikisi aynı görünür.
+**Etkileşim durumları:** özel tıklanabilir satırlar (adım satırı, akordeon tetikleyici, mekân kartı, grup başlığı) aynı Tailwind sınıf dizisini, `shared-classes.ts`'teki `INTERACTIVE_ROW` sabitini kullanır: hover `bg-accent`, active `bg-accent/80`, odak opak `ring-2 ring-ring` (yarı saydam halka 1.98:1 ölçüldü), renk geçişi 150 ms. shadcn düğmeleri kendi durumlarıyla kalır; odak halkası rengi `--ring` ile ikisi aynı görünür.
 
 ## Görsel doğrulama aracı (her görsel görevde kullanılır)
 
@@ -630,19 +632,26 @@ Kullanım: Görev 5'e başlamadan önce `node ui-shots.mjs before`; her görsel 
 
 # FAZ 1.5 — Görsel temel ve tema
 
-**Boyut:** M (2 görev). Faz 1'in hemen ardından gelir ki Faz 2-3'te yazılan ya da baştan yazılan bileşenler (`SchoolPage`, `RiskRegisterPage`, `LocationEditor`, akordeonlar, `EmptyState`) ilk günden `page-title` / `section-title` / `interactive-row` ve yeni renk token'larıyla yazılsın; Faz 4 yalnız eski sayfaları hizalar. **Kırılabilecekler:** yeni `theme-choice.test.ts` dışında test yok; tüm ekranların renkleri değişir. **Geri alma:** Görev 5 geri alınırsa sonraki görevlerin `page-title`, `bg-deficiency` gibi sınıfları çözülmez; 5 ancak sonraki tüm görevlerle birlikte geri alınır. Görev 6 tek başına geri alınabilir (koyu sınıfı hiç eklenmez, açık tema kalır).
+**Boyut:** M (2 görev). Faz 1'in hemen ardından gelir ki Faz 2-3'te yazılan ya da baştan yazılan bileşenler (`SchoolPage`, `RiskRegisterPage`, `LocationEditor`, akordeonlar, `EmptyState`) ilk günden `PageHeader`, `SECTION_TITLE`, `INTERACTIVE_ROW` ve yeni renk token'larıyla yazılsın; Faz 4 yalnız eski sayfaları hizalar. **Kırılabilecekler:** yeni `theme-choice.test.ts` dışında test yok; tüm ekranların renkleri değişir. **Geri alma:** Görev 5 geri alınırsa sonraki görevlerin `PageHeader`/`shared-classes` importları ve `bg-deficiency` gibi sınıfları çözülmez; 5 ancak sonraki tüm görevlerle birlikte geri alınır. Görev 6 tek başına geri alınabilir (koyu sınıfı hiç eklenmez, açık tema kalır).
 
-### Görev 5: Görsel temel — token'lar, tipografi yardımcıları, etkileşim ve hareket kuralları
+### Görev 5: Görsel temel — shadcn tema değişkenleri, sayfa başlığı ve ortak sınıflar
+
+Stil yalnız shadcn tema yöntemiyle (https://ui.shadcn.com/docs/theming): `app.css`'te `:root` / `.dark` değişkenleri ve `@theme inline` eşlemeleri; yeni renkler dokümandaki "Adding new colors" yoluyla (`--deficiency` + `--color-deficiency: var(--deficiency)`). Tekrar eden sınıf grupları CSS'e değil, bileşene ya da Tailwind sınıf dizisi sabitine gider.
 
 **Files:**
 
-- Modify: `src/app.css` (`:root` 12-45, `.dark` 46-78, `@theme inline` 79-120, `@layer base` 121-128, dosya sonuna `@utility`'ler)
+- Modify: `src/app.css` (`:root` 12-45, `.dark` 46-78, `@theme inline` 79-120 — yalnız değişken değerleri ve eşlemeler)
+- Modify: `index.html:17` (`<body class="tabular-nums">`)
+- Create: `src/lib/components/PageHeader.svelte` (sayfa başlığı bloğu)
+- Create: `src/lib/components/shared-classes.ts` (birden çok bileşenin kullandığı Tailwind sınıf dizileri)
+- Modify: `src/lib/components/OverviewPage.svelte`, `src/lib/components/LocationList.svelte:61` (özel satırlar ortak sınıfa)
 
 **Interfaces:**
 
 - Produces (sonraki görevler bu adları kullanır):
-  - Renkler: `--deficiency`, `--deficiency-foreground`, `--deficiency-soft` → Tailwind `bg-deficiency`, `text-deficiency`, `text-deficiency-foreground`, `bg-deficiency-soft`; `--risk-<key>` ve `--risk-<key>-soft` (`key` = `negligible | low | medium | high | intolerable`), `--risk-intolerable-foreground`.
-  - Yardımcılar: `page-title`, `section-title`, `interactive-row`.
+  - Renkler: `--deficiency`, `--deficiency-foreground`, `--deficiency-soft` → Tailwind `bg-deficiency`, `text-deficiency`, `text-deficiency-foreground`, `bg-deficiency-soft`, `border-l-deficiency`; `--risk-<key>` ve `--risk-<key>-soft` (`key` = `negligible | low | medium | high | intolerable`), `--risk-intolerable-foreground` → `bg-risk-<key>-soft`, `bg-risk-intolerable`, `text-risk-intolerable-foreground`, `var(--color-risk-<key>)`.
+  - `PageHeader` props: `{ title: string; subtitle?: string; actions?: Snippet }`.
+  - `shared-classes.ts`: `export const SECTION_TITLE: string`, `export const INTERACTIVE_ROW: string` (Görev 16 buraya `RISK_TONE` ekler).
 
 **Silinecekler:** turuncu odak halkası (`--ring: oklch(0.7 0.17 50)`) — tek vurgu rengine geçer; nötr gri `--sidebar-primary` (vurgu `--primary` ile aynı olur).
 
@@ -775,52 +784,63 @@ Koyu blok bugün hiçbir yerde etkin değil; Görev 6 `.dark` sınıfını ekley
 --color-deficiency: var(--deficiency);
 --color-deficiency-foreground: var(--deficiency-foreground);
 --color-deficiency-soft: var(--deficiency-soft);
+--color-risk-negligible: var(--risk-negligible);
+--color-risk-negligible-soft: var(--risk-negligible-soft);
+--color-risk-low: var(--risk-low);
+--color-risk-low-soft: var(--risk-low-soft);
+--color-risk-medium: var(--risk-medium);
+--color-risk-medium-soft: var(--risk-medium-soft);
+--color-risk-high: var(--risk-high);
+--color-risk-high-soft: var(--risk-high-soft);
+--color-risk-intolerable: var(--risk-intolerable);
+--color-risk-intolerable-soft: var(--risk-intolerable-soft);
+--color-risk-intolerable-foreground: var(--risk-intolerable-foreground);
 ```
 
-(Risk renkleri yalnız satır içi `style` ile `var(--risk-<key>)` olarak kullanılır; Tailwind adı gerekmez.)
+`app.css`'te başka hiçbir şey değişmez: `@layer base` olduğu gibi kalır, `@utility` ya da özel kural eklenmez.
 
-- [ ] **Step 5: Tabular rakamlar, azaltılmış hareket, yardımcılar**
+- [ ] **Step 5: Tabular rakamlar, sayfa başlığı, ortak sınıflar**
 
-`@layer base` içindeki `body` kuralını:
+`index.html:17` → `<body class="tabular-nums">` (dialog ve toast'lar `body`'ye taşındığı için hepsi kapsanır; yazı tipinde `tnum` var).
 
-```css
-body {
-  @apply bg-background text-foreground;
-  font-variant-numeric: tabular-nums;
-}
+`src/lib/components/PageHeader.svelte`:
+
+```svelte
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
+  // Page title block: one h1 size on every page, an optional line under it, actions on the right.
+  let { title, subtitle = '', actions }: { title: string; subtitle?: string; actions?: Snippet } = $props();
+</script>
+
+<div class="flex flex-wrap items-start gap-2">
+  <div class="flex min-w-0 flex-1 flex-col gap-1">
+    <h1 class="text-xl leading-7 font-semibold tracking-tight break-words">{title}</h1>
+    {#if subtitle}<p class="text-sm text-muted-foreground">{subtitle}</p>{/if}
+  </div>
+  {#if actions}<div class="flex shrink-0 flex-wrap items-center gap-2">{@render actions()}</div>{/if}
+</div>
 ```
 
-`@layer base` bloğundan sonra, dosya sonuna:
+`src/lib/components/shared-classes.ts`:
 
-```css
-/* One rule for every CSS animation and transition (Svelte has none of its own here). */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  ::before,
-  ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
+```ts
+// Tailwind class strings used by several components; colours come from the theme variables in app.css.
 
-@utility page-title {
-  @apply text-xl leading-7 font-semibold tracking-tight;
-}
-@utility section-title {
-  @apply text-sm leading-5 font-medium text-muted-foreground;
-}
-/* Custom clickable rows (steps, accordion triggers, location cards): same hover, press and focus as buttons. */
-@utility interactive-row {
-  @apply transition-colors duration-150 hover:bg-accent active:bg-accent/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none;
-}
+/** Section heading inside a page. */
+export const SECTION_TITLE = "text-sm leading-5 font-medium text-muted-foreground";
+
+/** Custom clickable rows (steps, accordion triggers, location cards): same hover, press and focus as buttons. */
+export const INTERACTIVE_ROW =
+  "transition-colors duration-150 motion-reduce:transition-none hover:bg-accent active:bg-accent/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none";
 ```
 
-- [ ] **Step 6: Var olan özel satırları yardımcıya bağla**
+(Tailwind 4 kaynak taraması `.ts` dosyalarındaki sabit dizgeleri de görür; sınıflar üretilir.)
+
+- [ ] **Step 6: Var olan özel satırları ortak sınıfa bağla**
 
 Run: `rg -n "hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none" src/lib/components --glob '!ui/**'`
-Expected: `OverviewPage.svelte` (adım düğmesi, Görev 3) ve `LocationList.svelte:61` (mekân kartı). Her isabette bu dört sınıfı tek `interactive-row` ile değiştir (diğer sınıflar kalır). Faz 2-3'te yazılan tetikleyiciler (`SchoolPage`, `LocationDetail` akordeonu, Riskler grup başlıkları, Mekânlar'daki okul geneli satırı) plan kodunda zaten `interactive-row` kullanır.
+Expected: `OverviewPage.svelte` (adım düğmesi, Görev 3) ve `LocationList.svelte:61` (mekân kartı). Her isabette bu dört sınıfı kaldırıp `class="{INTERACTIVE_ROW} …kalan sınıflar…"` yaz ve `import { INTERACTIVE_ROW } from './shared-classes';` ekle. Faz 2-3'te yazılan tetikleyiciler (`SchoolPage`, `LocationDetail` akordeonu, Riskler grup başlıkları, Mekânlar'daki okul geneli satırı) plan kodunda zaten `INTERACTIVE_ROW` kullanır.
 
 - [ ] **Step 7: Kapılar + görsel kontrol**
 
@@ -829,17 +849,17 @@ Kapıları çalıştır. `node "$TMPDIR/riskprime-shots/ui-shots.mjs" after-5` (
 - [ ] Zemin sıcak kâğıt tonu, kartlar/popover'lar beyaz "kâğıt yaprağı"; kenarlıklar seçilebiliyor ama bağırmıyor.
 - [ ] Odak halkası (Tab) lacivert; düğmede ve özel satırlarda aynı görünüyor.
 - [ ] Tablo sayıları alt alta hizalı (O, Ş, No sütunları).
-- [ ] macOS "Hareketi azalt" açıkken akordeon/diyalog anında açılıyor.
 - [ ] Kontrast: `--muted-foreground` metni zemin üzerinde ≥4.5:1 (Chrome DevTools > Inspect > kontrast).
+- [ ] `git diff src/app.css` yalnız değişken değerleri ve `@theme inline` satırları gösteriyor (kural, `@utility`, `@media` yok).
 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add src/app.css src/lib/components
+git add src/app.css index.html src/lib/components
 ```
 
 ```bash
-git commit -q -m "style: paper-and-ink tokens, risk and deficiency colors, shared interaction rules"
+git commit -q -m "style: paper-and-ink theme variables, page header and shared classes"
 ```
 
 ### Görev 6: Koyu tema — sistem tercihi + Dosya menüsünde Açık / Koyu / Sistem
@@ -948,10 +968,10 @@ class Theme {
 
 export const theme = new Theme();
 
-/** Puts the current theme on <html>; color-scheme also themes scrollbars and native inputs. */
+/** Puts the current theme on <html>; Tailwind's scheme-dark also themes scrollbars and native inputs. */
 export function applyTheme(isDark: boolean) {
   document.documentElement.classList.toggle("dark", isDark);
-  document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+  document.documentElement.classList.toggle("scheme-dark", isDark);
 }
 ```
 
@@ -1051,7 +1071,7 @@ git commit -q -m "feat: dark theme with a light, dark or system choice"
 
 **Interfaces:**
 
-- Consumes: `riskRegister(a): RegisterEntry[]`, `levelCounts`, `deficienciesWithState`, `RiskTable`, `RiskRowCard`, `RiskRowSheet`, `Collapsible`; Görev 5'teki `page-title`, `section-title`, `interactive-row`.
+- Consumes: `riskRegister(a): RegisterEntry[]`, `levelCounts`, `deficienciesWithState`, `RiskTable`, `RiskRowCard`, `RiskRowSheet`, `Collapsible`; Görev 5'teki `PageHeader`, `INTERACTIVE_ROW`.
 - Produces:
   - `RegisterFilter.level: "all" | "serious" | "unscored"`
   - `export function groupByLocation<T extends { locationId: string | null; locationName: string }>(items: readonly T[]): { key: string; name: string; items: T[] }[]` — `key` = `locationId ?? SCHOOL_WIDE_FILTER`, ilk görülme sırası korunur.
@@ -1335,7 +1355,7 @@ const groups = $derived(groupByLocation(shown));
   </div>
 ```
 
-Grup başlıklarının sınıfı `section-title`. `Deficiency` tip importu artık kullanılmıyorsa lint uyarısına göre kaldır.
+Grup başlıklarının sınıfı `{SECTION_TITLE}` (`import { SECTION_TITLE } from './shared-classes';`). `Deficiency` tip importu artık kullanılmıyorsa lint uyarısına göre kaldır.
 
 - [ ] **Step 8: `RiskRegisterPage.svelte`'yi yeniden yaz**
 
@@ -1354,7 +1374,9 @@ Dosyanın tamamı:
   import { Label } from '$lib/components/ui/label';
   import DeficienciesPage from './DeficienciesPage.svelte';
   import LocationEditor from './LocationEditor.svelte';
+  import PageHeader from './PageHeader.svelte';
   import SelectField from './SelectField.svelte';
+  import { INTERACTIVE_ROW } from './shared-classes';
   import { STATUS_LABELS } from '$lib/domain/assessment';
   import { filterRegister, groupByLocation, keepPinned, levelCounts, matchesRegisterFilter, pinRegister, type RegisterPin } from '$lib/domain/filters';
   import { riskRegister } from '$lib/domain/inspections';
@@ -1421,7 +1443,7 @@ Dosyanın tamamı:
     {#if filteredLocation}
       <Button variant="link" class="h-auto self-start p-0" onclick={() => nav.openLocation(filteredLocation.id)}><ArrowLeft />{filteredLocation.name || 'Adsız mekân'} kontrol listeleri</Button>
     {/if}
-    <h1 class="page-title">Riskler</h1>
+    <PageHeader title="Riskler" />
   </div>
 
   <div class="flex flex-wrap gap-2" role="group" aria-label="Görünüm">
@@ -1470,8 +1492,8 @@ Dosyanın tamamı:
           <Collapsible.Root open={isOpen} onOpenChange={(o) => (openOverrides = { ...openOverrides, [g.key]: o })}>
             <div class="flex items-center gap-1 pr-2">
               <h2 class="flex-1">
-                <Collapsible.Trigger class="interactive-row flex min-h-11 w-full items-center gap-2 px-3 text-left">
-                  <ChevronDown class="size-4 shrink-0 text-muted-foreground transition-transform duration-200 {isOpen ? '' : '-rotate-90'}" aria-hidden="true" />
+                <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center gap-2 px-3 text-left">
+                  <ChevronDown class="size-4 shrink-0 text-muted-foreground transition-transform duration-200 motion-reduce:transition-none {isOpen ? '' : '-rotate-90'}" aria-hidden="true" />
                   <span class="font-medium">{name}</span>
                   <span class="text-xs text-muted-foreground">{g.items.length} satır · {unscoredIn(g.items)} puansız</span>
                 </Collapsible.Trigger>
@@ -1921,7 +1943,9 @@ Expected: PASS.
 <script lang="ts">
   import { Button } from '$lib/components/ui/button';
   import InspectionEditor from './InspectionEditor.svelte';
+  import PageHeader from './PageHeader.svelte';
   import SchoolCard from './SchoolCard.svelte';
+  import { SECTION_TITLE } from './shared-classes';
   import { inspectionSummary, inspectionsForList } from '$lib/domain/inspections';
   import { store } from '$lib/state.svelte';
 
@@ -1938,10 +1962,10 @@ Expected: PASS.
 </script>
 
 <div class="flex max-w-3xl flex-col gap-6">
-  <h1 class="page-title">Okul</h1>
+  <PageHeader title="Okul" />
   <SchoolCard />
   <section class="flex flex-col gap-3" aria-labelledby="school-wide">
-    <h2 id="school-wide" class="section-title">Okul geneli kontrol listeleri</h2>
+    <h2 id="school-wide" class={SECTION_TITLE}>Okul geneli kontrol listeleri</h2>
     {#if schoolWideLists.length}
       <ul class="flex flex-col gap-1 text-sm">
         {#each schoolWideLists as item (item.list.id)}
@@ -2030,7 +2054,7 @@ const openUnanswered = () =>
 
 ```svelte
   {#if schoolWide.total}
-    <button type="button" class="interactive-row flex min-h-11 w-full items-center gap-3 rounded-md border p-3 text-left" onclick={() => nav.openSchool()}>
+    <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center gap-3 rounded-md border p-3 text-left" onclick={() => nav.openSchool()}>
       <School class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
       <span class="min-w-0 flex-1 font-medium">Okul geneli kontrol listeleri</span>
       <span class="text-sm text-muted-foreground">{schoolWide.answered}/{schoolWide.total} cevaplı · Okul</span>
@@ -2039,7 +2063,7 @@ const openUnanswered = () =>
   {/if}
 ```
 
-Betiğe: `import School from '@lucide/svelte/icons/school';`, `import ChevronRight from '@lucide/svelte/icons/chevron-right';`, `import { progress } from '$lib/domain/progress';` ve `const schoolWide = $derived(progress(store.assessment, today).schoolWide);`.
+Betiğe (`INTERACTIVE_ROW` importu Görev 5'ten var): `import School from '@lucide/svelte/icons/school';`, `import ChevronRight from '@lucide/svelte/icons/chevron-right';`, `import { progress } from '$lib/domain/progress';` ve `const schoolWide = $derived(progress(store.assessment, today).schoolWide);`.
 
 - `DeficiencyItem.svelte:100` → `d.locationId ? nav.openLocation(d.locationId, d.listId) : nav.openSchool()`
 - `SchoolCard.svelte:23` yorumu `// Opened from elsewhere (Başla, readiness list): focus the first empty field once the page has rendered.`
@@ -2080,7 +2104,7 @@ git commit -q -m "feat: Okul section split out of the report page"
 
 - [ ] **Step 1: `ReportPage` betiğini sadeleştir**
 
-Sil: satır 3 (`Snippet`), 23-29 (`OTHER_OUTPUTS`), 31 (`let { onPeriods } …`), 14 (`progress` importu), 18 (`nav` importu), 21'deki `type ExportKind` (`import { store } from '$lib/state.svelte';` kalır), `const p = $derived(progress(…))`, `section`/`inspectionsBody`/`riskBody` snippet'leri. Ekle: `import ExportMenu from './ExportMenu.svelte';`. Doğrulama (`verification`) ve son düzenleyen (`lastEditor`) efektleri **aynen kalır**.
+Sil: satır 3 (`Snippet`), 23-29 (`OTHER_OUTPUTS`), 31 (`let { onPeriods } …`), 14 (`progress` importu), 18 (`nav` importu), 21'deki `type ExportKind` (`import { store } from '$lib/state.svelte';` kalır), `const p = $derived(progress(…))`, `section`/`inspectionsBody`/`riskBody` snippet'leri. Ekle: `import ExportMenu from './ExportMenu.svelte';`, `import PageHeader from './PageHeader.svelte';`, `import { SECTION_TITLE } from './shared-classes';`. Doğrulama (`verification`) ve son düzenleyen (`lastEditor`) efektleri **aynen kalır**.
 
 - [ ] **Step 2: `ReportPage` işaretlemesi**
 
@@ -2088,10 +2112,10 @@ Sil: satır 3 (`Snippet`), 23-29 (`OTHER_OUTPUTS`), 31 (`let { onPeriods } …`)
 
 ```svelte
 <div class="flex max-w-3xl flex-col gap-6 p-4">
-  <h1 class="page-title">Rapor</h1>
+  <PageHeader title="Rapor" />
 
   <section class="flex flex-col gap-3" aria-labelledby="report-gaps">
-    <h2 id="report-gaps" class="section-title">İmza öncesi açık noktalar</h2>
+    <h2 id="report-gaps" class={SECTION_TITLE}>İmza öncesi açık noktalar</h2>
     {#if gaps.hasGaps}
       <ReadinessList {gaps} />
     {:else}
@@ -2654,11 +2678,11 @@ git commit -q -m "feat: suggest a similar existing row before adding a risk"
 
 - [ ] **Step 1: `LocationDetail` akordeon**
 
-Importlarda `ChevronRight` yerine `import ChevronDown from '@lucide/svelte/icons/chevron-down';` (`Collapsible` zaten import ediliyor). Görev 8'den kalan `<div class="space-y-3">` içindeki `{#if openListId} … {/if}` bloğunun tamamı yerine:
+Importlarda `ChevronRight` yerine `import ChevronDown from '@lucide/svelte/icons/chevron-down';` ve `import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';` (`Collapsible` zaten import ediliyor). Görev 8'den kalan `<div class="space-y-3">` içindeki `{#if openListId} … {/if}` bloğunun tamamı yerine:
 
 ```svelte
   <section class="space-y-2" aria-labelledby="location-lists">
-    <h2 id="location-lists" class="section-title">Kontrol listeleri</h2>
+    <h2 id="location-lists" class={SECTION_TITLE}>Kontrol listeleri</h2>
     {#if inspections.length === 0}
       <p class="py-4 text-center text-sm text-muted-foreground">Bu mekâna atanmış kontrol listesi yok.</p>
     {:else}
@@ -2667,11 +2691,11 @@ Importlarda `ChevronRight` yerine `import ChevronDown from '@lucide/svelte/icons
           {@const isOpen = openListId === i.list.id}
           <li>
             <Collapsible.Root open={isOpen} onOpenChange={(o) => nav.openLocation(id, o ? i.list.id : null)}>
-              <Collapsible.Trigger class="interactive-row flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
+              <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
                 <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
                   {i.answered}/{i.total}{#if i.no}{' '}· {i.no} eksik{/if}
-                  <ChevronDown class="size-4 transition-transform {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
+                  <ChevronDown class="size-4 transition-transform motion-reduce:transition-none {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
                 </span>
               </Collapsible.Trigger>
               <Collapsible.Content class="border-t p-3">
@@ -2699,7 +2723,7 @@ Importlarda `ChevronRight` yerine `import ChevronDown from '@lucide/svelte/icons
 
 - [ ] **Step 3: `SchoolPage` aynı desen**
 
-`SchoolPage.svelte`: importlara `import ChevronDown from '@lucide/svelte/icons/chevron-down';` ve `import * as Collapsible from '$lib/components/ui/collapsible';` ekle, `Button` importunu sil. `{#if schoolWideLists.length}` dalındaki `<ul>` yerine:
+`SchoolPage.svelte`: importlara `import ChevronDown from '@lucide/svelte/icons/chevron-down';` ve `import * as Collapsible from '$lib/components/ui/collapsible';` ekle, `shared-classes` importuna `INTERACTIVE_ROW` ekle (`import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';`), `Button` importunu sil. `{#if schoolWideLists.length}` dalındaki `<ul>` yerine:
 
 ```svelte
       <ul class="divide-y rounded-md border">
@@ -2707,11 +2731,11 @@ Importlarda `ChevronRight` yerine `import ChevronDown from '@lucide/svelte/icons
           {@const isOpen = openWideId === item.list.id}
           <li>
             <Collapsible.Root open={isOpen} onOpenChange={(o) => (openWideId = o ? item.list.id : null)}>
-              <Collapsible.Trigger class="interactive-row flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
+              <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
                 <span class="min-w-0 font-medium">{item.list.code} {item.list.name}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
                   {item.answered}/{item.total}{#if item.no}{' '}· {item.no} eksik{/if}
-                  <ChevronDown class="size-4 transition-transform {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
+                  <ChevronDown class="size-4 transition-transform motion-reduce:transition-none {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
                 </span>
               </Collapsible.Trigger>
               <Collapsible.Content class="border-t p-3">
@@ -2821,7 +2845,7 @@ git commit -q -m "feat: library dialog previews the lists a location brings"
 
 **Interfaces:**
 
-- Consumes: `page-title`, `section-title` (Görev 5).
+- Consumes: `PageHeader`, `SECTION_TITLE` (Görev 5).
 - Produces: iskelet kuralı (Görsel yön).
 
 **Silinecekler:** sayfa köklerindeki ikinci `p-4`, `mx-auto w-full max-w-*`, `max-w-2xl`; Rapor'daki `Card` kabukları ve `Card` importu; elle yazılmış başlık sınıfları.
@@ -2834,18 +2858,18 @@ Kap `max-w-6xl` (1152 px) kalır. **Okuma sayfaları** (Başla, Okul, Rapor, mek
 
 - [ ] **Step 2: Sayfa kökleri ve başlıklar**
 
-(Görev 7-10'da yazılan `SchoolPage`, `RiskRegisterPage`, `ReportPage` zaten `page-title`/`section-title` ve `gap-6` kullanır; aşağıdaki tablo eski sayfalar içindir.)
+(Görev 7-10'da yazılan `SchoolPage`, `RiskRegisterPage`, `ReportPage` zaten `PageHeader`/`SECTION_TITLE` ve `gap-6` kullanır; aşağıdaki tablo eski sayfalar içindir.)
 
-| Dosya                                                                                                                                                                                         | Eski                                                                                          | Yeni                                                                                         |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `OverviewPage.svelte` kök                                                                                                                                                                     | `flex flex-col gap-6 p-4`                                                                     | `flex max-w-3xl flex-col gap-6`                                                              |
-| `OverviewPage.svelte` başlık kabı, `<ol>`                                                                                                                                                     | `flex max-w-2xl flex-col gap-1`, `flex max-w-2xl flex-col divide-y …`                         | `flex flex-col gap-1`, `flex flex-col divide-y …`                                            |
-| `ReportPage.svelte` kök (Görev 10)                                                                                                                                                            | `flex max-w-3xl flex-col gap-6 p-4`                                                           | `flex max-w-3xl flex-col gap-6`                                                              |
-| her sayfanın `<h1>` sınıfı (Overview, School, LocationList `mr-auto …`, LocationDetail `truncate …`, RiskRegister, Report, Library)                                                           | `text-2xl font-semibold` / `text-xl font-semibold`                                            | `page-title` (LocationList'te `mr-auto page-title`, LocationDetail'de `truncate page-title`) |
-| her bölüm/grup `<h2>` (Overview "Dikkat edilecekler", School ×2, LocationList grup, LocationDetail "Kontrol listeleri", RiskRegister grup, Deficiencies grup, SchoolCard "İmzacılar", Report) | `text-lg font-medium`, `text-sm font-semibold …`, `text-sm font-medium text-muted-foreground` | `section-title`                                                                              |
-| `LibraryPage.svelte` kök                                                                                                                                                                      | `flex flex-col gap-4 p-4`                                                                     | `flex flex-col gap-6`                                                                        |
-| `LocationList.svelte` kök (tablo sayfası)                                                                                                                                                     | `space-y-4`                                                                                   | `flex flex-col gap-6`                                                                        |
-| `LocationDetail.svelte` kök (okuma sayfası)                                                                                                                                                   | `min-w-0 space-y-3`                                                                           | `flex max-w-3xl min-w-0 flex-col gap-6`                                                      |
+| Dosya                                                                                                                                                                                         | Eski                                                                                          | Yeni                                                                                                                                                                                                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `OverviewPage.svelte` kök                                                                                                                                                                     | `flex flex-col gap-6 p-4`                                                                     | `flex max-w-3xl flex-col gap-6`                                                                                                                                                                                                                            |
+| `OverviewPage.svelte` başlık kabı, `<ol>`                                                                                                                                                     | `flex max-w-2xl flex-col gap-1`, `flex max-w-2xl flex-col divide-y …`                         | `flex flex-col gap-1`, `flex flex-col divide-y …`                                                                                                                                                                                                          |
+| `ReportPage.svelte` kök (Görev 10)                                                                                                                                                            | `flex max-w-3xl flex-col gap-6 p-4`                                                           | `flex max-w-3xl flex-col gap-6`                                                                                                                                                                                                                            |
+| her sayfanın `<h1>` sınıfı (Overview, School, LocationList `mr-auto …`, LocationDetail `truncate …`, RiskRegister, Report, Library)                                                           | `text-2xl font-semibold` / `text-xl font-semibold`                                            | `<PageHeader title=… subtitle=… actions=… />` (LocationList: "Hazır mekân ekle" + "Mekân ekle" `actions` snippet'inde; LocationDetail: alt satır = tür · bina · alan, "Riskler" düğmesi ve "…" menüsü `actions`'ta; ← düğmesi PageHeader'ın solunda kalır) |
+| her bölüm/grup `<h2>` (Overview "Dikkat edilecekler", School ×2, LocationList grup, LocationDetail "Kontrol listeleri", RiskRegister grup, Deficiencies grup, SchoolCard "İmzacılar", Report) | `text-lg font-medium`, `text-sm font-semibold …`, `text-sm font-medium text-muted-foreground` | `class={SECTION_TITLE}` (+ `import { SECTION_TITLE } from './shared-classes';`)                                                                                                                                                                            |
+| `LibraryPage.svelte` kök                                                                                                                                                                      | `flex flex-col gap-4 p-4`                                                                     | `flex flex-col gap-6`                                                                                                                                                                                                                                      |
+| `LocationList.svelte` kök (tablo sayfası)                                                                                                                                                     | `space-y-4`                                                                                   | `flex flex-col gap-6`                                                                                                                                                                                                                                      |
+| `LocationDetail.svelte` kök (okuma sayfası)                                                                                                                                                   | `min-w-0 space-y-3`                                                                           | `flex max-w-3xl min-w-0 flex-col gap-6`                                                                                                                                                                                                                    |
 
 - [ ] **Step 3: Rapor — kart yerine düz bölümler, tek birincil düğme**
 
@@ -2853,11 +2877,11 @@ Kap `max-w-6xl` (1152 px) kalır. **Okuma sayfaları** (Başla, Okul, Rapor, mek
 
 ```svelte
   <section class="flex flex-col gap-3 border-t pt-6" aria-labelledby="report-period">
-    <h2 id="report-period" class="section-title">Dönem · {a.period.trim() || 'girilmedi'} · Revizyon {a.meta.revision}</h2>
+    <h2 id="report-period" class={SECTION_TITLE}>Dönem · {a.period.trim() || 'girilmedi'} · Revizyon {a.meta.revision}</h2>
     <!-- move the former Card.Content children here unchanged -->
   </section>
   <section class="flex flex-col gap-3 border-t pt-6" aria-labelledby="report-outputs">
-    <h2 id="report-outputs" class="section-title">Çıktılar</h2>
+    <h2 id="report-outputs" class={SECTION_TITLE}>Çıktılar</h2>
     <div><ExportMenu /></div>
   </section>
 ```
@@ -2894,6 +2918,7 @@ git commit -q -m "style: one page skeleton and type scale"
 
 **Files:**
 
+- Modify: `src/lib/components/shared-classes.ts` (`RISK_TONE` eklenir)
 - Modify: `src/lib/components/LevelBadge.svelte:13`
 - Modify: `src/lib/components/RiskTable.svelte:44-47,61`
 - Modify: `src/lib/components/RiskRowCard.svelte:20,40`
@@ -2903,43 +2928,87 @@ git commit -q -m "style: one page skeleton and type scale"
 
 **Interfaces:**
 
-- Consumes: `--risk-<key>`, `--risk-<key>-soft`, `--risk-intolerable-foreground`, `bg-deficiency`, `text-deficiency`, `bg-deficiency-soft` (Görev 5); `Level.key` (`matrix.ts`, değişmez).
-- Produces: yok.
+- Consumes: Görev 5'teki tema renkleri (`bg-risk-<key>-soft`, `bg-risk-intolerable`, `text-risk-intolerable-foreground`, `var(--color-risk-<key>)`, `bg-deficiency`, `text-deficiency`, `bg-deficiency-soft`, `border-l-deficiency`); `LevelKey` (`matrix.ts`, değişmez).
+- Produces: `export const RISK_TONE: Record<LevelKey, { fill: string; stripe: string; badge: string }>` (`shared-classes.ts`).
 
-**Silinecekler:** ekranda `level.background` / `level.text` (doygun Excel dolguları) kullanımı; tablo/kart `border-l-4` şeritleri (yerine `box-shadow` şerit); "Hayır", "eksik", "süresi geçti", "eksik bilgi" için `red-600`, `green-700`, `gray-500`, `destructive`.
+**Silinecekler:** ekranda `level.background` / `level.text` (doygun Excel dolguları) ve satır içi `style` ile renk verme; tablo/kart `border-l-4` şeritleri (yerine tema rengiyle `shadow-[inset_…]` şerit); "Hayır", "eksik", "süresi geçti", "eksik bilgi" için `red-600`, `green-700`, `gray-500`, `destructive`.
 
-Kural (referans tasarımla aynı): **satırın kendisi soluk ton, ilk hücrede güçlü şerit; düzey adı rozette yazılı.** Şerit ve ton tamamlayıcıdır — renk görmeyen kullanıcı düzeyi rozetteki addan okur (WCAG 1.4.1). Puansız satırda ton ve şerit yok.
+Kural (referans tasarımla aynı): **satırın kendisi soluk ton, ilk hücrede güçlü şerit; düzey adı rozette yazılı.** Şerit ve ton tamamlayıcıdır — renk görmeyen kullanıcı düzeyi rozetteki addan okur (WCAG 1.4.1). Puansız satırda ton ve şerit yok. Renkler yalnız tema değişkenlerinden Tailwind sınıflarıyla gelir; sınıflar Tailwind'in görebilmesi için tam dizge olarak yazılır (`bg-risk-${key}` gibi birleştirilmiş sınıf üretilmez).
 
-- [ ] **Step 1: Risk düzeyi rozeti — soluk dolgu + sol şerit**
+- [ ] **Step 1: Düzey → sınıf tablosu**
+
+`shared-classes.ts` sonuna:
+
+```ts
+import type { LevelKey } from "$lib/domain/matrix";
+
+/** Risk level on screen: soft row fill, strong ledger stripe, badge. Full literals so Tailwind generates them. */
+export const RISK_TONE: Record<LevelKey, { fill: string; stripe: string; badge: string }> = {
+  negligible: {
+    fill: "bg-risk-negligible-soft",
+    stripe: "shadow-[inset_4px_0_0_var(--color-risk-negligible)]",
+    badge:
+      "bg-risk-negligible-soft text-foreground shadow-[inset_3px_0_0_var(--color-risk-negligible)]",
+  },
+  low: {
+    fill: "bg-risk-low-soft",
+    stripe: "shadow-[inset_4px_0_0_var(--color-risk-low)]",
+    badge: "bg-risk-low-soft text-foreground shadow-[inset_3px_0_0_var(--color-risk-low)]",
+  },
+  medium: {
+    fill: "bg-risk-medium-soft",
+    stripe: "shadow-[inset_4px_0_0_var(--color-risk-medium)]",
+    badge: "bg-risk-medium-soft text-foreground shadow-[inset_3px_0_0_var(--color-risk-medium)]",
+  },
+  high: {
+    fill: "bg-risk-high-soft",
+    stripe: "shadow-[inset_4px_0_0_var(--color-risk-high)]",
+    badge: "bg-risk-high-soft text-foreground shadow-[inset_3px_0_0_var(--color-risk-high)]",
+  },
+  intolerable: {
+    fill: "bg-risk-intolerable-soft",
+    stripe: "shadow-[inset_4px_0_0_var(--color-risk-intolerable)]",
+    badge: "bg-risk-intolerable text-risk-intolerable-foreground",
+  },
+};
+```
+
+(`import` satırını dosyanın başına taşı.)
+
+- [ ] **Step 2: Rozet, tablo satırı, kart, süresi geçmiş**
 
 `LevelBadge.svelte:13` (tolere edilemez tek düz koyu rozet; diğerleri soluk ton + 3 px şerit):
 
 ```svelte
-  <Badge
-    class="h-auto min-h-5 whitespace-normal border-0 text-center leading-tight shadow-[inset_3px_0_0_var(--stripe)]"
-    style="--stripe: var(--risk-{level.key}); background: {level.key === 'intolerable' ? 'var(--risk-intolerable)' : `var(--risk-${level.key}-soft)`}; color: {level.key === 'intolerable' ? 'var(--risk-intolerable-foreground)' : 'var(--foreground)'}"
-    title="Skor = O × Ş"
-  >{showScore ? `${score} ` : ''}{level.label}</Badge>
+  <Badge class="h-auto min-h-5 whitespace-normal border-0 text-center leading-tight {RISK_TONE[level.key].badge}" title="Skor = O × Ş">{showScore ? `${score} ` : ''}{level.label}</Badge>
 ```
 
-- [ ] **Step 2: Tablo satırı tonu + şerit, kart şeridi, süresi geçmiş**
+(`import { RISK_TONE } from './shared-classes';`)
 
 `RiskTable.svelte` satır 44-47 (satır tonu, ilk hücrede şerit, seçili satırda zemin yerine halka; satır 56'daki çağrılar aynı kalır):
 
 ```svelte
       {#each items as { row, number: n } (row.id)}
-        {@const level = riskLevel(row.likelihood, row.severity)}
+        {@const tone = toneOf(row)}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
         <Table.Row
           id="trow-{row.id}"
-          class="cursor-pointer align-top transition-colors duration-150 data-[state=selected]:ring-2 data-[state=selected]:ring-ring data-[state=selected]:ring-inset {dimIds.has(row.id) ? 'opacity-60' : ''}"
-          style:background={level ? `var(--risk-${level.key}-soft)` : undefined}
+          class="cursor-pointer align-top transition-colors duration-150 motion-reduce:transition-none data-[state=selected]:ring-2 data-[state=selected]:ring-ring data-[state=selected]:ring-inset {tone?.fill ?? ''} {dimIds.has(row.id) ? 'opacity-60' : ''}"
           data-state={openId === row.id ? 'selected' : undefined}
           onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}
         >
-          <Table.Cell class="font-semibold text-muted-foreground" style:box-shadow={level ? `inset 4px 0 0 var(--risk-${level.key})` : undefined}>
+          <Table.Cell class="font-semibold text-muted-foreground {tone?.stripe ?? ''}">
             {n}{#if dimIds.has(row.id)}<span class="block text-xs font-normal">{dimLabel}</span>{/if}
           </Table.Cell>
+```
+
+Betiğe (`import { RISK_TONE } from './shared-classes';` ile):
+
+```ts
+const toneOf = (r: RiskRow) => {
+  const level = riskLevel(r.likelihood, r.severity);
+  return level ? RISK_TONE[level.key] : null;
+};
 ```
 
 `RiskTable.svelte:61` ve `RiskRowCard.svelte:40` süresi geçti rozeti → nötr çerçeve + saat (amber de kırmızı da değil; süre bir durum, risk değil):
@@ -2953,14 +3022,10 @@ Kural (referans tasarımla aynı): **satırın kendisi soluk ton, ilk hücrede g
 `RiskRowCard.svelte:20` (`border-l-4` ve `style:border-left-color` silinir; Görev 7'deki `class:opacity-60` kalır):
 
 ```svelte
-<article
-  id="row-{row.id}"
-  class="rounded-lg border bg-background"
-  class:opacity-60={dimLabel !== undefined}
-  style:background={level ? `var(--risk-${level.key}-soft)` : undefined}
-  style:box-shadow={level ? `inset 4px 0 0 var(--risk-${level.key})` : undefined}
->
+<article id="row-{row.id}" class="rounded-lg border bg-background {level ? `${RISK_TONE[level.key].fill} ${RISK_TONE[level.key].stripe}` : ''}" class:opacity-60={dimLabel !== undefined}>
 ```
+
+(`import { RISK_TONE } from './shared-classes';`)
 
 - [ ] **Step 3: Cevap düğmeleri ve eksik metni**
 
@@ -2974,10 +3039,10 @@ const CHOICES: { value: Exclude<Answer, "">; tone: string }[] = [
 ];
 ```
 
-`ToggleGroup.Item` sınıfına `transition-colors duration-150` ekle (`class="{choice.tone} transition-colors duration-150"`). Eksik sayısı `<b class="text-red-600">` → `<b class="text-deficiency">`. Madde satırı (`<div id="item-{item.id}" class="grid … rounded-lg border p-2 …">`): cevap "Hayır" iken soluk amber zemin ve defter marjı:
+`ToggleGroup.Item` sınıfına `transition-colors duration-150 motion-reduce:transition-none` ekle (`class="{choice.tone} transition-colors duration-150 motion-reduce:transition-none"`). Eksik sayısı `<b class="text-red-600">` → `<b class="text-deficiency">`. Madde satırı (`<div id="item-{item.id}" class="grid … rounded-lg border p-2 …">`): cevap "Hayır" iken soluk amber zemin ve defter marjı:
 
 ```svelte
-        <div id="item-{item.id}" class="grid items-start gap-2 rounded-lg border p-2 transition-colors duration-150 {ROW_GRID} {current.answer === 'no' ? 'border-l-4 border-l-deficiency bg-deficiency-soft' : ''}">
+        <div id="item-{item.id}" class="grid items-start gap-2 rounded-lg border p-2 transition-colors duration-150 motion-reduce:transition-none {ROW_GRID} {current.answer === 'no' ? 'border-l-4 border-l-deficiency bg-deficiency-soft' : ''}">
 ```
 
 `LocationList.svelte:64` `<b class="text-red-600">` → `<b class="text-deficiency">`.
@@ -3037,7 +3102,7 @@ git commit -q -m "style: ledger stripes and soft risk tints on screen, amber def
   let { icon: Icon, text, action }: { icon: Component<any>; text: string; action?: { label: string; run: () => void } } = $props();
 </script>
 
-<div class="flex flex-col items-center gap-3 rounded-lg border border-dashed px-4 py-10 text-center animate-in fade-in duration-200">
+<div class="flex flex-col items-center gap-3 rounded-lg border border-dashed px-4 py-10 text-center motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200">
   <Icon class="size-8 text-muted-foreground" aria-hidden="true" />
   <p class="max-w-sm text-sm text-muted-foreground">{text}</p>
   {#if action}<Button variant="outline" size="sm" onclick={action.run}>{action.label}</Button>{/if}
@@ -3097,29 +3162,29 @@ git commit -q -m "feat: calm empty states with one way forward"
 
 **Files:**
 
-- Modify: `src/lib/components/LocationDetail.svelte`, `src/lib/components/SchoolPage.svelte` (akordeon içerik ve ok)
+- Modify: `src/lib/components/LocationDetail.svelte`, `src/lib/components/SchoolPage.svelte`, `src/lib/components/RiskRegisterPage.svelte` (akordeon içerik ve ok)
 - Modify: `src/lib/components/ChecklistItemLinks.svelte:20` (yeni risk bağlantısı)
 - Modify: `src/lib/components/RiskTable.svelte:46` (seçili satır)
 
 **Interfaces:**
 
-- Consumes: `tw-animate-css` sınıfları (`animate-collapsible-down/up`, `animate-in`, `fade-in`, `slide-in-from-top-1`) ve `data-open`/`data-closed` özel varyantları (`app.css:7-8`); Görev 5'teki azaltılmış hareket kuralı.
+- Consumes: `tw-animate-css` sınıfları (`animate-collapsible-down/up`, `animate-in`, `fade-in`, `slide-in-from-top-1`) , `data-open`/`data-closed` özel varyantları (`app.css:7-8`, var olan) ve Tailwind `motion-safe:`/`motion-reduce:` önekleri. Genel CSS kuralı yok: her hareketli sınıf kendi `motion-reduce:` karşılığını taşır.
 - Produces: yok.
 
 **Silinecekler:** akordeondaki `{#if isOpen}` korumaları (bits-ui `Collapsible.Content` kapalıyken zaten içeriği bağlamaz; koruma kapanış animasyonunu engelliyordu) — Step 1'deki doğrulamadan sonra.
 
 - [ ] **Step 1: Akordeon aç/kapa**
 
-Her iki dosyada `Collapsible.Content` sınıfına `overflow-hidden data-open:animate-collapsible-down data-closed:animate-collapsible-up` ekle; `{#if isOpen}…{/if}` sarmalını kaldır (yalnız içteki `InspectionEditor` kalsın). Ok simgesindeki `transition-transform` sınıfına `duration-200` ekle.
+Her iki dosyada ve Riskler grup başlıklarında (`RiskRegisterPage.svelte`) `Collapsible.Content` sınıfına `overflow-hidden data-open:animate-collapsible-down data-closed:animate-collapsible-up motion-reduce:animate-none` ekle; `{#if isOpen}…{/if}` sarmalını kaldır (yalnız içteki `InspectionEditor` kalsın). Ok simgesindeki `transition-transform motion-reduce:transition-none` sınıfına `duration-200` ekle.
 Doğrula (DevTools Elements): kapalı bir öğenin içinde `InspectionEditor` DOM'u yok. Varsa (bits-ui sürümü içeriği bağlı tutuyorsa) korumayı geri koy ve yalnız açılış animasyonu kalsın.
 
 - [ ] **Step 2: Riske ekleme sonucu**
 
-`ChecklistItemLinks.svelte:20` `Button` sınıfına `animate-in fade-in slide-in-from-top-1 duration-200` ekle: "Riske ekle"den sonra "Risk satırı: … #n" bağlantısı yumuşakça belirir (sayfa ilk açılırken de 200 ms solarak gelir; ölçülü).
+`ChecklistItemLinks.svelte:20` `Button` sınıfına `motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-1 motion-safe:duration-200` ekle: "Riske ekle"den sonra "Risk satırı: … #n" bağlantısı yumuşakça belirir (sayfa ilk açılırken de 200 ms solarak gelir; ölçülü).
 
 - [ ] **Step 3: Seçili satır**
 
-`RiskTable.svelte:46` `Table.Row` sınıfına `transition-colors duration-150` ekle (yan sayfa açılınca seçili satır vurgusu yumuşak geçer).
+`RiskTable.svelte:46` `Table.Row` sınıfına `transition-colors duration-150 motion-reduce:transition-none` ekle (yan sayfa açılınca seçili satır vurgusu yumuşak geçer).
 
 - [ ] **Step 4: Kapılar + görsel kontrol**
 
@@ -3218,7 +3283,7 @@ const commonLocations = $derived(a.locations.filter((l) => l.type === "common"))
 ```svelte
   {#if commonLocations.length}
     <section class="flex flex-col gap-3" aria-labelledby="school-wide-rows">
-      <h2 id="school-wide-rows" class="section-title">Okul geneli risk satırları</h2>
+      <h2 id="school-wide-rows" class={SECTION_TITLE}>Okul geneli risk satırları</h2>
       <ul class="flex flex-col items-start gap-1 text-sm">
         {#each commonLocations as l (l.id)}
           <li><Button variant="link" class="h-auto p-0" onclick={() => nav.openRegister({ locationId: l.id })}>{l.name || 'Adsız mekân'} ({l.rows.length} satır)</Button></li>
@@ -3252,7 +3317,7 @@ git commit -q -m "feat: show common locations as school-wide on the school page"
 - **`#genel` yerine `#basla` adresi** — yer imlerini kırar, değer katmaz.
 - **Eksikler süzgecini URL'ye yazmak** — istenmedi; yalnız mekân süzgeci (Görev 8) URL'de.
 - **Kart-içinde-kart temizliği (genel)** — kodda tek gerçek örnek Rapor'du (Görev 15).
-- **Svelte JS geçişleri (`transition:slide`) ve ayrı bir hareket modülü** — `tw-animate-css` zaten yüklü ve `--bits-collapsible-content-height` destekliyor; CSS ile aynı sonuç, `prefers-reduced-motion` tek global kuralla.
+- **Svelte JS geçişleri (`transition:slide`) ve ayrı bir hareket modülü** — `tw-animate-css` zaten yüklü ve `--bits-collapsible-content-height` destekliyor; Tailwind sınıflarıyla aynı sonuç; azaltılmış hareket her sınıfın `motion-reduce:` karşılığıyla.
 - **Eğik çizgisiz sıfır için yazı tipi değişikliği** — yazı tipinde `zero`/`ss*` özelliği yok (Görsel yön); `unicode-range` yaması rakamları karıştırır. Karar 7.
 - **Kütüphane mekânlarının hazır satırlarını kaldırmak/eklemeyi değiştirmek** — veri ve kütüphane içeriği değişikliği; yinelenme sorunu Görev 12'deki öneriyle çözülüyor.
 
@@ -3278,17 +3343,17 @@ git commit -q -m "feat: show common locations as school-wide on the school page"
 
 - Faz 1 hızlı kazanımlar: toast, açıklama paragrafları, "Riskler" adı, iç geri düğmesi, okul adı (G1); bayat mekân PDF'i (G2); sıradaki adım lacivert sol şeritle, tamamlanan soluk, sıfır kutu gizli (G3); "Hazır mekân ekle" (G4). ✔
 - Görsel yön + doğrulama aracı (Faz 1.5'ten önce): amaç, kitle, ton, akılda kalan ayrıntı, kısıtlar; tipografi ve boşluk ölçeği; eğik sıfır araştırması; boş durum ve hareket kuralları; açık+koyu ekran görüntüsü betiği. ✔
-- Faz 1.5 (M6): token'lar + yardımcılar + koyu değerler + ölçülen kontrast tablosu (G5); koyu tema seçimi (G6, karar 8). Faz 2-3 bileşenleri baştan `page-title`/`section-title`/`interactive-row` ile yazılı. ✔
+- Faz 1.5 (M6): yalnız shadcn tema değişkenleri (açık + koyu, risk/eksik renkleri "Adding new colors" yoluyla) + ölçülen kontrast tablosu, `PageHeader` bileşeni ve `SECTION_TITLE`/`INTERACTIVE_ROW` Tailwind sınıf dizileri (G5); koyu tema seçimi (G6, karar 8). `@utility`, genel CSS ve `ui/**` düzenlemesi yok; hareket `motion-safe:`/`motion-reduce:` önekleriyle (G17, G18). Faz 2-3 bileşenleri baştan `PageHeader`/`SECTION_TITLE`/`INTERACTIVE_ROW` ile yazılı. ✔
 - Faz 2 bilgi mimarisi, tek sürüm (M6): Riskler birleşik, katlanır gruplar (M9), sabit satır kümesi (H2), eksik görünümü + kırıntı (L14) (G7); risk sekmesi kalkar, rota uyumu, Riskler'den mekâna dönüş (H3) (G8); Okul sayfası, köprü satır, okul geneli yönlendirmesi (H4) (G9); ince Rapor, imzalı dönemde "Yeni dönem başlat" (M12), PDF üst çubuktan kalkar (G10). ✔
 - Faz 3 iş akışı: tek eksik→risk eylemi, `applyWithUndo` + "Geri al" (M7), liste başlığında toplu ekleme bağlantısı (M8), toplu eklemede yinelenen atlama (karar 5) (G11); benzer satır satır içi ipucu (L17), eşik 0.45 (G12); akordeon (G13); kütüphane önizlemesi (G14). ✔
 - Faz 4: iskelet + okuma/tablo genişliği (H5) (G15); satır tonu + şerit, tamamlayıcı şerit kuralı (M11), süresi geçmiş nötr (L15) (G16); boş durumlar, `role="status"` yok (L16) (G17); hareket (G18); terimler (G19); Ortak = Okul geneli (G20). ✔
-- Yüksek bulgular: H1 opak `ring-2 ring-ring` (G5) ✔, H2 (G7) ✔, H3 (G7 başlık + G8 kırıntı) ✔, H4 (G9) ✔, H5 (G15) ✔. Orta: M6 ✔, M7 ✔, M8 ✔, M9 ✔, M10 (`--input` 0.64 — taslağın 0.66'sı 2.98:1 ölçüldüğü için; "Sıradaki" sol şerit; `--accent` soğuk gri, iki temada) ✔, M11 ✔, M12 ✔. Düşük: L13 yeniden numaralama ✔, L14 ✔, L15 ✔, L16 ✔, L17 ✔, L18 sonner koyu (G6) ✔.
+- Yüksek bulgular: H1 opak `ring-2 ring-ring` (`INTERACTIVE_ROW`, G5) ✔, H2 (G7) ✔, H3 (G7 başlık + G8 kırıntı) ✔, H4 (G9) ✔, H5 (G15) ✔. Orta: M6 ✔, M7 ✔, M8 ✔, M9 ✔, M10 (`--input` 0.64 — taslağın 0.66'sı 2.98:1 ölçüldüğü için; "Sıradaki" sol şerit; `--accent` soğuk gri, iki temada) ✔, M11 ✔, M12 ✔. Düşük: L13 yeniden numaralama ✔, L14 ✔, L15 ✔, L16 ✔, L17 ✔, L18 sonner koyu (G6) ✔.
 - Referans tasarım bağlantısı ve kaynak dosyaları başlıkta; değerler eşit (tek fark `--input`, gerekçeli). ✔
 
 **2. Yer tutucu taraması:** "TBD/TODO/sonra" yok. HTML yorumu ile "eski satırlar aynen taşınır" deyen yerler (G10 Step 2, G15 Step 3) taşınan satır aralığını açıkça veriyor ve yorumun dosyada kalmamasını söylüyor — yeni kod değil, taşıma.
 
-**3. Tip/ad tutarlılığı:** `nextStep`/`StepKey` (G3); `unansweredScope` (G9) OverviewPage ve ReadinessList'te aynı imzayla; `groupByLocation`, `RegisterFilter.level "unscored"`, `RegisterPin`, `pinRegister`, `keepPinned`, `matchesRegisterFilter`, `isSectionActive`, `LocationEditor { locationId, items, dimIds?, dimLabel? }` (G7) G8-G16'da aynı adlarla; `RiskTable`'ın `dimIds`/`dimLabel` prop'ları G16'daki satır kodunda korunuyor; `Place` `locationView`'suz ve `openLocation(id, listId)` (G8) G9, G11, G13'te; `nav.openSchool()` (G9) G10, G11'de; `ROW_SIMILAR_THRESHOLD`, `similarRows`/`SimilarRow` (G12) yalnız `ChecklistRiskButton`'da; `ThemeChoice`, `parseThemeChoice`, `isDarkFor`, `theme`, `applyTheme` (G6) yalnız `main.ts`, `App.svelte`, `AppTopbar.svelte`'de; G5'teki `bg-deficiency`/`text-deficiency`/`bg-deficiency-soft`, `--risk-<key>[-soft]`, `page-title`, `section-title`, `interactive-row` adları G7-G20'de aynı yazımla. G3'teki `nav.openReport(true)` ve `openLocation(…, 'risk')` çağrıları G8 ve G9'da açıkça güncelleniyor.
+**3. Tip/ad tutarlılığı:** `nextStep`/`StepKey` (G3); `unansweredScope` (G9) OverviewPage ve ReadinessList'te aynı imzayla; `groupByLocation`, `RegisterFilter.level "unscored"`, `RegisterPin`, `pinRegister`, `keepPinned`, `matchesRegisterFilter`, `isSectionActive`, `LocationEditor { locationId, items, dimIds?, dimLabel? }` (G7) G8-G16'da aynı adlarla; `RiskTable`'ın `dimIds`/`dimLabel` prop'ları G16'daki satır kodunda korunuyor; `Place` `locationView`'suz ve `openLocation(id, listId)` (G8) G9, G11, G13'te; `nav.openSchool()` (G9) G10, G11'de; `ROW_SIMILAR_THRESHOLD`, `similarRows`/`SimilarRow` (G12) yalnız `ChecklistRiskButton`'da; `ThemeChoice`, `parseThemeChoice`, `isDarkFor`, `theme`, `applyTheme` (G6) yalnız `main.ts`, `App.svelte`, `AppTopbar.svelte`'de; G5'teki `bg-deficiency`/`text-deficiency`/`bg-deficiency-soft`, `bg-risk-<key>-soft`/`var(--color-risk-<key>)`, `PageHeader`, `SECTION_TITLE`, `INTERACTIVE_ROW` ve G16'daki `RISK_TONE` adları G7-G20'de aynı yazımla. G3'teki `nav.openReport(true)` ve `openLocation(…, 'risk')` çağrıları G8 ve G9'da açıkça güncelleniyor.
 
 **Fazlar:** Faz 1 (4 görev, S) · Faz 1.5 (2 görev, M) · Faz 2 (4 görev, L, tek sürüm) · Faz 3 (4 görev, M) · Faz 4 (6 görev, M) — toplam 20 görev, numaralar 1-20 boşluksuz.
 
-**Yeni dosya:** 4 (`SchoolPage.svelte`, `EmptyState.svelte`, `theme-choice.ts` + testi, `theme.svelte.ts`). **Silinen dosya:** 2 (`transfer-inspection.ts` + testi). **Yeni dışa açık API:** `nextStep`, `StepKey`, `unansweredScope`, `groupByLocation`, `RegisterPin`, `pinRegister`, `keepPinned`, `matchesRegisterFilter`, `isSectionActive`, `ROW_SIMILAR_THRESHOLD`, `similarRows`, `SimilarRow`, `nav.openSchool`, `ThemeChoice`, `parseThemeChoice`, `isDarkFor`, `theme`, `applyTheme` (18). **Silinen API:** `filterRows`, `RowFilter`, `ROW_FILTERS`, `ROW_FILTER_LABELS`, `transferInspection`, `countUntransferredInspection`, `LocationView`, `nav.openReport`, `store.transferMissing`, `store.openSchool`, `store.selectLocation`, `store.openRow`, `store.selectChecklist` (13).
+**Yeni dosya:** 6 (`SchoolPage.svelte`, `EmptyState.svelte`, `PageHeader.svelte`, `shared-classes.ts`, `theme-choice.ts` + testi, `theme.svelte.ts`); `SectionTitle.svelte`/`InteractiveRow.svelte` yerine tek sınıf dizisi dosyası seçildi (daha az dosya, aynı tutarlılık). **Silinen dosya:** 2 (`transfer-inspection.ts` + testi). **Yeni dışa açık API:** `nextStep`, `StepKey`, `unansweredScope`, `groupByLocation`, `RegisterPin`, `pinRegister`, `keepPinned`, `matchesRegisterFilter`, `isSectionActive`, `ROW_SIMILAR_THRESHOLD`, `similarRows`, `SimilarRow`, `nav.openSchool`, `ThemeChoice`, `parseThemeChoice`, `isDarkFor`, `theme`, `applyTheme`, `PageHeader`, `SECTION_TITLE`, `INTERACTIVE_ROW`, `RISK_TONE` (22). **Silinen API:** `filterRows`, `RowFilter`, `ROW_FILTERS`, `ROW_FILTER_LABELS`, `transferInspection`, `countUntransferredInspection`, `LocationView`, `nav.openReport`, `store.transferMissing`, `store.openSchool`, `store.selectLocation`, `store.openRow`, `store.selectChecklist` (13).
