@@ -82,10 +82,7 @@
       <Card.Header>
         <div class="flex items-center gap-3 print:hidden">
           <img src="{import.meta.env.BASE_URL}logo.png" alt="" width="32" height="32" class="size-8 shrink-0" />
-          <span class="grid min-w-0 leading-tight">
-            <span class="font-semibold">RiskPrime</span>
-            <span class="text-xs text-muted-foreground">Mersin Atatürk MTAL · Elektrik-Elektronik</span>
-          </span>
+          <span class="font-semibold">RiskPrime</span>
         </div>
         <Card.Title class="pt-2" role="heading" aria-level={1}>{TITLES[lock.state]}</Card.Title>
       </Card.Header>
