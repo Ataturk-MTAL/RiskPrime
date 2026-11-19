@@ -5,6 +5,7 @@
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import SelectField from './SelectField.svelte';
+  import { SECTION_TITLE } from './shared-classes';
   import { addSignatory, removeSignatory, updateMeta, updateSchool, updateSignatory } from '$lib/domain/assessment';
   import type { Assessment, Grouping } from '$lib/domain/types';
   import { isBefore } from '$lib/domain/date';
@@ -59,8 +60,8 @@
       {@render dateInput('Değerlendirme tarihi', 'assessment-date', a.assessmentDate, (x, v) => updateMeta(x, { assessmentDate: v }))}
       {@render dateInput('Geçerlilik tarihi', 'valid-until', a.validUntil, (x, v) => updateMeta(x, { validUntil: v }), validUntilError)}
     </div>
-    <div class="max-w-3xl space-y-2">
-      <h2 class="text-sm font-semibold">İmzacılar</h2>
+    <div class="space-y-2">
+      <h2 class={SECTION_TITLE}>İmzacılar</h2>
       {#each a.school.signatories as signatory, i (i)}
         <div class="grid grid-cols-[1fr_auto] gap-2 sm:grid-cols-[1fr_1fr_auto]">
           <Input class="col-span-2 sm:col-span-1" aria-label="{i + 1}. imzacı unvanı" value={signatory.title} onchange={(e) => store.apply((x) => updateSignatory(x, i, { title: value(e) }))} />

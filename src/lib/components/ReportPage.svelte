@@ -3,7 +3,6 @@
   import * as AlertDialog from '$lib/components/ui/alert-dialog';
   import { Badge } from '$lib/components/ui/badge';
   import { Button, buttonVariants } from '$lib/components/ui/button';
-  import * as Card from '$lib/components/ui/card';
   import ExportMenu from './ExportMenu.svelte';
   import PageHeader from './PageHeader.svelte';
   import ReadinessList from './ReadinessList.svelte';
@@ -78,12 +77,9 @@
     {/if}
   </section>
 
-  <Card.Root>
-    <Card.Header>
-      <Card.Title>Dönem</Card.Title>
-      <Card.Description>{a.period.trim() || 'Dönem girilmedi'} · Revizyon {a.meta.revision}</Card.Description>
-    </Card.Header>
-    <Card.Content class="flex flex-col items-start gap-3">
+  <!-- items-start keeps the badges at their own width, as the former card content did. -->
+  <section class="flex flex-col items-start gap-3 border-t pt-6" aria-labelledby="report-period">
+    <h2 id="report-period" class={SECTION_TITLE}>Dönem · {a.period.trim() || 'girilmedi'} · Revizyon {a.meta.revision}</h2>
       <dl class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 text-sm">
         <dt class="text-muted-foreground">Durum</dt>
         <dd><Badge variant={locked ? 'default' : 'secondary'}>{locked ? `İmzalandı${a.meta.signedAt ? ` · ${day(a.meta.signedAt)}` : ''}` : 'Taslak'}</Badge></dd>
@@ -107,11 +103,11 @@
       {/if}
       <div class="flex flex-wrap gap-2">
         {#if locked}
-          <Button disabled={busy} onclick={() => store.reviseLocked()}>Düzeltme taslağı aç</Button>
+          <Button variant="outline" disabled={busy} onclick={() => store.reviseLocked()}>Düzeltme taslağı aç</Button>
           <Button variant="link" class="h-auto p-0" disabled={busy} onclick={() => store.newPeriod()}>Yeni dönem başlat</Button>
         {:else}
           <AlertDialog.Root>
-            <AlertDialog.Trigger class={buttonVariants()} disabled={busy}>Dönemi kapat (imzalandı)</AlertDialog.Trigger>
+            <AlertDialog.Trigger class={buttonVariants({ variant: 'outline' })} disabled={busy}>Dönemi kapat (imzalandı)</AlertDialog.Trigger>
             <AlertDialog.Content>
               <AlertDialog.Header>
                 <AlertDialog.Title>Dönem kapatılsın mı?</AlertDialog.Title>
@@ -127,11 +123,10 @@
           </AlertDialog.Root>
         {/if}
       </div>
-    </Card.Content>
-  </Card.Root>
+  </section>
 
-  <Card.Root>
-    <Card.Header><Card.Title>Çıktılar</Card.Title></Card.Header>
-    <Card.Content><ExportMenu /></Card.Content>
-  </Card.Root>
+  <section class="flex flex-col gap-3 border-t pt-6" aria-labelledby="report-outputs">
+    <h2 id="report-outputs" class={SECTION_TITLE}>Çıktılar</h2>
+    <div><ExportMenu /></div>
+  </section>
 </div>

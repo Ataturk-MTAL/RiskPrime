@@ -10,6 +10,7 @@
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import InspectionEditor from './InspectionEditor.svelte';
+  import PageHeader from './PageHeader.svelte';
   import SelectField from './SelectField.svelte';
   import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';
   import { duplicateLocation, groupNeighbourId, LOCATION_TYPES, LOCATION_TYPE_LABELS, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
@@ -76,25 +77,28 @@
   }
 </script>
 
-<div class="mx-auto w-full max-w-3xl min-w-0 space-y-3">
-  <div class="flex flex-wrap items-center gap-2">
+<div class="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-6">
+  <div class="flex items-start gap-2">
     <Button variant="ghost" size="icon" aria-label="Mekânlar listesine dön" onclick={() => nav.go('locations')}><ArrowLeft /></Button>
-    <div class="min-w-0 flex-1 basis-[calc(100%-3rem)] sm:basis-0">
-      <h1 class="text-2xl font-semibold wrap-break-word sm:truncate">{loc.name || 'Adsız mekân'}</h1>
-      <p class="text-sm text-muted-foreground sm:truncate">{LOCATION_TYPE_LABELS[loc.type]}{loc.building ? ` · ${loc.building}` : ''}{loc.area ? ` · ${loc.area}` : ''}</p>
-    </div>
-    <div class="ml-auto flex items-center gap-2">
-      <Button variant="outline" onclick={() => nav.openRegister({ locationId: id })}>Riskler ({scoredRows}/{loc.rows.length} puanlı)</Button>
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' })} aria-label="Mekân işlemleri"><Ellipsis /></DropdownMenu.Trigger>
-        <DropdownMenu.Content align="end">
-          <DropdownMenu.Item disabled={!canMoveUp} onSelect={() => store.apply((a) => moveLocation(a, id, -1))}>Yukarı taşı</DropdownMenu.Item>
-          <DropdownMenu.Item disabled={!canMoveDown} onSelect={() => store.apply((a) => moveLocation(a, id, 1))}>Aşağı taşı</DropdownMenu.Item>
-          <DropdownMenu.Item disabled={store.busy !== ''} onSelect={exportPdf}>Bu mekânın PDF'i</DropdownMenu.Item>
-          <DropdownMenu.Item onSelect={duplicate}>Mekânı çoğalt</DropdownMenu.Item>
-          <DropdownMenu.Item class="text-destructive" onSelect={() => (deleteOpen = true)}>Mekânı sil</DropdownMenu.Item>
-        </DropdownMenu.Content>
-      </DropdownMenu.Root>
+    <div class="min-w-0 flex-1">
+      <PageHeader
+        title={loc.name || 'Adsız mekân'}
+        subtitle={`${LOCATION_TYPE_LABELS[loc.type]}${loc.building ? ` · ${loc.building}` : ''}${loc.area ? ` · ${loc.area}` : ''}`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => nav.openRegister({ locationId: id })}>Riskler ({scoredRows}/{loc.rows.length} puanlı)</Button>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' })} aria-label="Mekân işlemleri"><Ellipsis /></DropdownMenu.Trigger>
+            <DropdownMenu.Content align="end">
+              <DropdownMenu.Item disabled={!canMoveUp} onSelect={() => store.apply((a) => moveLocation(a, id, -1))}>Yukarı taşı</DropdownMenu.Item>
+              <DropdownMenu.Item disabled={!canMoveDown} onSelect={() => store.apply((a) => moveLocation(a, id, 1))}>Aşağı taşı</DropdownMenu.Item>
+              <DropdownMenu.Item disabled={store.busy !== ''} onSelect={exportPdf}>Bu mekânın PDF'i</DropdownMenu.Item>
+              <DropdownMenu.Item onSelect={duplicate}>Mekânı çoğalt</DropdownMenu.Item>
+              <DropdownMenu.Item class="text-destructive" onSelect={() => (deleteOpen = true)}>Mekânı sil</DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
+        {/snippet}
+      </PageHeader>
     </div>
   </div>
 

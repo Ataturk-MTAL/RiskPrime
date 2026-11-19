@@ -6,6 +6,7 @@
   import * as Table from '$lib/components/ui/table';
   import ChecklistEditor from './ChecklistEditor.svelte';
   import LibraryDialog from './LibraryDialog.svelte';
+  import PageHeader from './PageHeader.svelte';
   import ProposeItemDialog from './ProposeItemDialog.svelte';
   import { bankChanges } from '$lib/domain/bank-sync';
   import { LIMITS } from '$lib/domain/proposal';
@@ -31,8 +32,8 @@
   }
 </script>
 
-<div class="flex flex-col gap-4 p-4">
-  <h1 class="text-2xl font-semibold">Kütüphane</h1>
+<div class="flex flex-col gap-6">
+  <PageHeader title="Kütüphane" />
 
   {#if openId}
     <div>

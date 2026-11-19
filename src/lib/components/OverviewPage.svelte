@@ -5,7 +5,8 @@
   import { nextStep, progress, unansweredScope, type StepKey } from '$lib/domain/progress';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
-  import { INTERACTIVE_ROW } from './shared-classes';
+  import PageHeader from './PageHeader.svelte';
+  import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';
 
   const p = $derived(progress(store.assessment, new Date()));
   const next = $derived(nextStep(p));
@@ -57,11 +58,8 @@
   );
 </script>
 
-<div class="mx-auto flex w-full max-w-3xl flex-col gap-6 p-4">
-  <div class="flex flex-col gap-1">
-    <h1 class="text-2xl font-semibold">Başla</h1>
-    <p class="text-sm text-muted-foreground">{periodLine}{validUntil ? ` · Geçerlilik ${validUntil}` : ''}</p>
-  </div>
+<div class="mx-auto flex w-full max-w-3xl flex-col gap-6">
+  <PageHeader title="Başla" subtitle={periodLine + (validUntil ? ` · Geçerlilik ${validUntil}` : '')} />
 
   <ol class="flex flex-col divide-y rounded-xl border bg-card" aria-label="Yıllık değerlendirme adımları">
     {#each tasks as task, i (task.key)}
@@ -90,7 +88,7 @@
 
   {#if tiles.length}
     <section class="flex flex-col gap-3" aria-labelledby="quick-links">
-      <h2 id="quick-links" class="text-lg font-medium">Dikkat edilecekler</h2>
+      <h2 id="quick-links" class={SECTION_TITLE}>Dikkat edilecekler</h2>
       <ul class="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {#each tiles as tile (tile.label)}
           <li>

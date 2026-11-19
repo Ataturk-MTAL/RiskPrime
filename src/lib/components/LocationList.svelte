@@ -10,7 +10,8 @@
   import { Input } from '$lib/components/ui/input';
   import LibraryDialog from './LibraryDialog.svelte';
   import NewLocationDialog from './NewLocationDialog.svelte';
-  import { INTERACTIVE_ROW } from './shared-classes';
+  import PageHeader from './PageHeader.svelte';
+  import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';
   import { grouped, isOverdue, LOCATION_TYPE_LABELS } from '$lib/domain/assessment';
   import { inspectionsForLocation, inspectionSummary } from '$lib/domain/inspections';
   import { riskLevel } from '$lib/domain/matrix';
@@ -49,12 +50,13 @@
   }
 </script>
 
-<div class="space-y-4">
-  <div class="flex flex-wrap items-center gap-2">
-    <h1 class="mr-auto text-2xl font-semibold">Mekânlar</h1>
-    <Button variant="outline" onclick={() => (libraryOpen = true)}><Library />Hazır mekân ekle</Button>
-    <Button onclick={() => (dialogOpen = true)}><Plus />Mekân ekle</Button>
-  </div>
+<div class="flex flex-col gap-6">
+  <PageHeader title="Mekânlar">
+    {#snippet actions()}
+      <Button variant="outline" onclick={() => (libraryOpen = true)}><Library />Hazır mekân ekle</Button>
+      <Button onclick={() => (dialogOpen = true)}><Plus />Mekân ekle</Button>
+    {/snippet}
+  </PageHeader>
   <NewLocationDialog bind:open={dialogOpen} />
   <LibraryDialog bind:open={libraryOpen} />
 
@@ -73,7 +75,7 @@
     <Input type="search" class="max-w-sm" aria-label="Mekânlarda ara" placeholder="Mekân adına göre ara" bind:value={query} />
     {#each groups as group (group.title)}
       <section class="space-y-2">
-        {#if group.title}<h2 class="text-sm font-semibold text-muted-foreground">{group.title}</h2>{/if}
+        {#if group.title}<h2 class={SECTION_TITLE}>{group.title}</h2>{/if}
         <ul class="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
           {#each group.locations as l (l.id)}
             {@const s = statsOf(l)}
