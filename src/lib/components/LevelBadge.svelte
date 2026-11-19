@@ -11,7 +11,7 @@
 </script>
 
 {#if level}
-  <Badge class="h-auto min-h-5 whitespace-normal rounded-sm border-0 text-center leading-tight {RISK_TONE[level.key].badge}" title="Skor = O × Ş">{showScore ? `${score} ` : ''}{level.label}</Badge>
+  <Badge class="h-auto min-h-5 whitespace-normal rounded-none border-0 text-center leading-tight {RISK_TONE[level.key].badge}" title="Skor = O × Ş">{showScore ? `${score} ` : ''}{level.label}</Badge>
 {:else}
   <span class="text-muted-foreground">—</span>
 {/if}

@@ -64,7 +64,7 @@
       {#each items as { row, number: n } (row.id)}
         {@const tone = toneOf(row)}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-        <Table.Row id="trow-{row.id}" class="cursor-pointer align-top transition-colors duration-150 motion-reduce:transition-none data-[state=selected]:ring-2 data-[state=selected]:ring-inset data-[state=selected]:ring-ring {tone?.fill ?? ""} {tone?.keep ?? ""} {dimIds.has(row.id) ? 'opacity-60' : ''}" data-state={openId === row.id ? 'selected' : undefined} onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}>
+        <Table.Row id="trow-{row.id}" class="cursor-pointer align-top transition-colors duration-150 motion-reduce:transition-none data-[state=selected]:ring-2 data-[state=selected]:ring-inset data-[state=selected]:ring-ring {tone?.fill ?? ''} {tone?.keep ?? ''} {dimIds.has(row.id) ? 'opacity-60' : ''}" data-state={openId === row.id ? 'selected' : undefined} onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}>
           <Table.Cell class="font-semibold text-muted-foreground {tone?.stripe ?? ''}">{n}{#if dimIds.has(row.id)}<span class="block text-xs font-normal">{dimLabel}</span>{/if}</Table.Cell>
           <Table.Cell class="font-medium"><div class={clamp} title={row.equipment}>{row.equipment}</div></Table.Cell>
           <Table.Cell><div class={clamp} title={row.hazard}>{row.hazard}</div><SourceBadge {row} {locationId} /></Table.Cell>
