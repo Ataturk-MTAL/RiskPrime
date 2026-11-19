@@ -20,6 +20,8 @@
   import { SECTION_LABELS } from '$lib/nav-items';
   import { formatHash, HOME } from '$lib/nav-route';
   import { store } from '$lib/state.svelte';
+  import type { ThemeChoice } from '$lib/theme-choice';
+  import { theme } from '$lib/theme.svelte';
   import { downloadBlankTemplate, downloadMebTemplate } from '$lib/templates';
 
   let { onAbout, onPeriods }: { onAbout: () => void; onPeriods: () => void } = $props();
@@ -116,6 +118,13 @@
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newEmpty())}>Yeni (boş)</DropdownMenu.Item>
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newPeriod())}>Yeni dönem (bu çalışmadan)</DropdownMenu.Item>
         <DropdownMenu.Item onSelect={() => afterMenuCloses(onPeriods)}>Dönemler…</DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Label class="text-xs text-muted-foreground">Görünüm</DropdownMenu.Label>
+        <DropdownMenu.RadioGroup value={theme.choice} onValueChange={(v) => theme.set(v as ThemeChoice)}>
+          <DropdownMenu.RadioItem value="light" closeOnSelect={false}>Açık</DropdownMenu.RadioItem>
+          <DropdownMenu.RadioItem value="dark" closeOnSelect={false}>Koyu</DropdownMenu.RadioItem>
+          <DropdownMenu.RadioItem value="system" closeOnSelect={false}>Sistem</DropdownMenu.RadioItem>
+        </DropdownMenu.RadioGroup>
         <DropdownMenu.Separator />
         <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={() => fileInput.click()}>
           <span class="font-semibold">Dosya aç…</span>

@@ -25,6 +25,10 @@
   import { nav } from '$lib/nav.svelte';
   import { formatHash, parseHash } from '$lib/nav-route';
   import { store } from '$lib/state.svelte';
+  import { applyTheme, theme } from '$lib/theme.svelte';
+
+  // System changes (choice "system") and menu picks both land here.
+  $effect(() => applyTheme(theme.isDark));
 
   lock.beforeLock = () => store.flushArchive();
   void lock.init();
@@ -127,4 +131,4 @@
 <ConflictDialog />
 <DiscardDialog />
 {/if}
-<Toaster position="top-center" />
+<Toaster position="top-center" theme={theme.isDark ? 'dark' : 'light'} />
