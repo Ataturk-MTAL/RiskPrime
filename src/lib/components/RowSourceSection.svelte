@@ -51,7 +51,7 @@
       <p><b>{info.listName}</b> ({info.code || 'kodsuz'}) · madde {info.no} · cevap: <b>{SOURCE_ANSWER_TEXT[info.answer]}</b></p>
       <p class="text-muted-foreground">{info.text}</p>
       <div class="flex flex-wrap gap-2">
-        <Button variant="outline" size="sm" onclick={() => nav.openLocation(info.locationId ?? locationId, info.listId)}>Maddeye git</Button>
+        <Button variant="outline" size="sm" onclick={() => nav.openItem(info.locationId, info.listId)}>Maddeye git</Button>
         <Button variant="outline" size="icon-sm" aria-label="Bağlantıyı kaldır: {sourceLabel(info)}" onclick={() => unlink(info)}><X /></Button>
       </div>
     </div>

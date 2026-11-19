@@ -67,7 +67,7 @@
         <Table.Row id="trow-{row.id}" class="cursor-pointer align-top transition-colors duration-150 motion-reduce:transition-none data-[state=selected]:ring-2 data-[state=selected]:ring-inset data-[state=selected]:ring-ring {tone?.fill ?? ''} {tone?.keep ?? ''} {dimIds.has(row.id) ? 'opacity-60' : ''}" data-state={openId === row.id ? 'selected' : undefined} onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}>
           <Table.Cell class="font-semibold text-muted-foreground {tone?.stripe ?? ''}">{n}{#if dimIds.has(row.id)}<span class="block text-xs font-normal">{dimLabel}</span>{/if}</Table.Cell>
           <Table.Cell class="font-medium"><div class={clamp} title={row.equipment}>{row.equipment}</div></Table.Cell>
-          <Table.Cell><div class={clamp} title={row.hazard}>{row.hazard}</div><SourceBadge {row} {locationId} /></Table.Cell>
+          <Table.Cell><div class={clamp} title={row.hazard}>{row.hazard}</div><SourceBadge {row} /></Table.Cell>
           <Table.Cell class="px-1">
             <SelectField size="sm" class="px-1.5" label="Satır {n}: olasılık" options={LIKELIHOOD_OPTIONS} value={scoreValue(row.likelihood)} onValueChange={(v) => patch(row.id, { likelihood: parseScore(v) })} />
           </Table.Cell>

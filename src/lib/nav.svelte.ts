@@ -56,6 +56,12 @@ class Nav {
     this.place = { section: "locations", locationId, listId };
   }
 
+  /** Where a checklist item lives: its location page, or the school page for school-wide lists. */
+  openItem(locationId: string | null, listId: string | null) {
+    if (locationId) this.openLocation(locationId, listId);
+    else this.openSchool();
+  }
+
   /** Opens Riskler on the row's location and asks for that row's sheet. */
   openRow(locationId: string, rowId: string) {
     this.openRegister({ locationId });

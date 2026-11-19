@@ -23,6 +23,6 @@
   {#if d.note}<p class="text-sm">{d.note}</p>{/if}
   <div class="flex flex-wrap items-center gap-2">
     {#if list && item}<ChecklistItemLinks {list} {item} locationId={d.locationId} />{/if}
-    <Button variant="ghost" size="sm" onclick={() => (d.locationId ? nav.openLocation(d.locationId, d.listId) : nav.openSchool())}><ExternalLink />Listede aç</Button>
+    <Button variant="ghost" size="sm" onclick={() => nav.openItem(d.locationId, d.listId)}><ExternalLink />Listede aç</Button>
   </div>
 </article>

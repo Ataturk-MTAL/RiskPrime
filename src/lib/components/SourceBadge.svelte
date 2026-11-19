@@ -14,7 +14,7 @@
 
   const MAX_BADGES = 3;
 
-  let { row, locationId }: { row: RiskRow; locationId: string } = $props();
+  let { row }: { row: RiskRow } = $props();
 
   const infos = $derived(sourcesOf(store.assessment, row));
   const nowYes = $derived(row.status === 'open' && infos.some((i) => i.answer === 'yes'));
@@ -23,7 +23,7 @@
 {#if infos.length}
   <span class="flex flex-wrap items-center gap-1">
     {#each infos.slice(0, MAX_BADGES) as info (info.listId + info.itemId)}
-      <button type="button" class="rounded-4xl focus-visible:outline-none" title="{info.no}. {info.text}" aria-label="Kontrol maddesine git: {sourceLabel(info)}, cevap {SOURCE_ANSWER_TEXT[info.answer]}" onclick={() => nav.openLocation(info.locationId ?? locationId, info.listId)}>
+      <button type="button" class="rounded-4xl focus-visible:outline-none" title="{info.no}. {info.text}" aria-label="Kontrol maddesine git: {sourceLabel(info)}, cevap {SOURCE_ANSWER_TEXT[info.answer]}" onclick={() => nav.openItem(info.locationId, info.listId)}>
         <Badge variant="outline">{sourceLabel(info)} · {SOURCE_ANSWER_TEXT[info.answer]}</Badge>
       </button>
     {/each}
