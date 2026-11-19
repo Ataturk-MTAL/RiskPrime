@@ -63,6 +63,19 @@
   function remove() {
     if (store.apply((a) => removeLocation(a, id))) nav.go('locations');
   }
+
+  // The shared store has no per-location export kind, so this drives the PDF module itself.
+  async function exportPdf() {
+    store.busy = 'PDF hazırlanıyor… (ilk seferde derleyici indirilir, biraz sürebilir)';
+    store.clearErrors();
+    try {
+      await (await import('$lib/export/pdf')).downloadPdf(store.assessment, 'full', id);
+    } catch (error) {
+      store.fail([`Çıktı alınamadı: ${error instanceof Error ? error.message : ''}`]);
+    } finally {
+      store.busy = '';
+    }
+  }
 </script>
 
 <div class="min-w-0 space-y-3">
@@ -77,6 +90,7 @@
       <DropdownMenu.Content align="end">
         <DropdownMenu.Item disabled={!canMoveUp} onSelect={() => store.apply((a) => moveLocation(a, id, -1))}>Yukarı taşı</DropdownMenu.Item>
         <DropdownMenu.Item disabled={!canMoveDown} onSelect={() => store.apply((a) => moveLocation(a, id, 1))}>Aşağı taşı</DropdownMenu.Item>
+        <DropdownMenu.Item disabled={store.busy !== ''} onSelect={exportPdf}>Bu mekânın PDF'i</DropdownMenu.Item>
         <DropdownMenu.Item onSelect={duplicate}>Mekânı çoğalt</DropdownMenu.Item>
         <DropdownMenu.Item class="text-destructive" onSelect={() => (deleteOpen = true)}>Mekânı sil</DropdownMenu.Item>
       </DropdownMenu.Content>
