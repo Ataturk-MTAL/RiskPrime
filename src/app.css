@@ -30,8 +30,8 @@
   --border: oklch(0.89 0.01 85);
   /* Form field edge: >= 3:1 against paper and card (the mock-up's 0.66 measured 2.98:1). */
   --input: oklch(0.64 0.01 85);
-  /* Focus ring = the one accent colour, opaque (ring/50 measured 1.98:1). */
-  --ring: oklch(0.34 0.08 258);
+  /* Focus ring: mid navy, calmer than --primary; 4.66:1 on paper, 4.86:1 on card. */
+  --ring: oklch(0.55 0.09 258);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -44,7 +44,7 @@
   --sidebar-accent: oklch(0.935 0.008 250);
   --sidebar-accent-foreground: oklch(0.2 0.01 260);
   --sidebar-border: oklch(0.89 0.01 85);
-  --sidebar-ring: oklch(0.34 0.08 258);
+  --sidebar-ring: oklch(0.55 0.09 258);
   /* "Hayır" / eksik: neutral amber, never red. */
   --deficiency: oklch(0.52 0.12 65);
   --deficiency-foreground: oklch(0.99 0.01 85);

@@ -100,7 +100,7 @@
   <AppSidebar onAbout={() => (aboutOpen = true)} />
   <Sidebar.Inset class="min-w-0">
     <AppTopbar onAbout={() => (aboutOpen = true)} onPeriods={() => (periodsOpen = true)} />
-    <div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col gap-4 p-4 max-md:pb-24">
+    <div class="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4 p-4 md:p-6 max-md:pb-24">
       <Notices />
       <LockBanner />
       {#key store.refusedEdits}

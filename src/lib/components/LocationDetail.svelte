@@ -79,7 +79,7 @@
   }
 </script>
 
-<div class="min-w-0 space-y-3">
+<div class="mx-auto w-full max-w-3xl min-w-0 space-y-3">
   <div class="flex items-center gap-2">
     <Button variant="ghost" size="icon" aria-label="Mekânlar listesine dön" onclick={() => nav.go('locations')}><ArrowLeft /></Button>
     <div class="min-w-0 flex-1">

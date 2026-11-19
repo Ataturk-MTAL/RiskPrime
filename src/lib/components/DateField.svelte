@@ -41,7 +41,7 @@
   <div class="flex w-full">
     <Input
       {id}
-      class="rounded-r-none text-foreground"
+      class="relative rounded-r-none text-foreground focus-visible:z-10"
       inputmode="numeric"
       autocomplete="off"
       placeholder="gg.aa.yyyy"
@@ -52,7 +52,7 @@
     />
     <Popover.Root bind:open>
       <Popover.Trigger
-        class={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'shrink-0 rounded-l-none border-l-0')}
+        class={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'relative shrink-0 rounded-l-none border-l-0 focus-visible:z-10')}
         aria-label="Takvimden seç"
       >
         <CalendarDays />

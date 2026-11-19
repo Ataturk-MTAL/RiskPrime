@@ -151,7 +151,7 @@
   {/if}
 {/snippet}
 
-<div class="flex max-w-3xl flex-col gap-4 p-4">
+<div class="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4">
   <h1 class="text-2xl font-semibold">Rapor</h1>
 
   {@render section('report-school', 'Okul bilgileri ve imzacılar', null, schoolBody)}

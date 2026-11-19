@@ -57,13 +57,13 @@
   );
 </script>
 
-<div class="flex flex-col gap-6 p-4">
-  <div class="flex max-w-2xl flex-col gap-1">
+<div class="mx-auto flex w-full max-w-3xl flex-col gap-6 p-4">
+  <div class="flex flex-col gap-1">
     <h1 class="text-2xl font-semibold">Genel bakış</h1>
     <p class="text-sm text-muted-foreground">{periodLine}{validUntil ? ` · Geçerlilik ${validUntil}` : ''}</p>
   </div>
 
-  <ol class="flex max-w-2xl flex-col divide-y rounded-xl border bg-card" aria-label="Yıllık değerlendirme adımları">
+  <ol class="flex flex-col divide-y rounded-xl border bg-card" aria-label="Yıllık değerlendirme adımları">
     {#each tasks as task, i (task.key)}
       {@const isNext = task.key === next}
       {@const isDone = p[task.key].state === 'done'}
