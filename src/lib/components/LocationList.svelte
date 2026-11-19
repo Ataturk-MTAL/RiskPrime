@@ -1,10 +1,12 @@
 <script lang="ts">
   import CircleAlert from '@lucide/svelte/icons/circle-alert';
   import Clock from '@lucide/svelte/icons/clock';
+  import Library from '@lucide/svelte/icons/library';
   import Plus from '@lucide/svelte/icons/plus';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import LibraryDialog from './LibraryDialog.svelte';
   import NewLocationDialog from './NewLocationDialog.svelte';
   import { grouped, isOverdue, LOCATION_TYPE_LABELS } from '$lib/domain/assessment';
   import { inspectionsForLocation, inspectionSummary } from '$lib/domain/inspections';
@@ -18,6 +20,7 @@
 
   let query = $state('');
   let dialogOpen = $state(false);
+  let libraryOpen = $state(false);
 
   const groups = $derived(
     grouped(store.assessment)
@@ -43,9 +46,11 @@
 <div class="space-y-4">
   <div class="flex flex-wrap items-center gap-2">
     <h1 class="mr-auto text-2xl font-semibold">Mekânlar</h1>
+    <Button variant="outline" onclick={() => (libraryOpen = true)}><Library />Hazır mekân ekle</Button>
     <Button onclick={() => (dialogOpen = true)}><Plus />Mekân ekle</Button>
   </div>
   <NewLocationDialog bind:open={dialogOpen} />
+  <LibraryDialog bind:open={libraryOpen} />
 
   {#if store.assessment.locations.length === 0}
     <p class="py-8 text-center text-sm text-muted-foreground">Henüz mekân yok. "Mekân ekle" ile başlayın.</p>
