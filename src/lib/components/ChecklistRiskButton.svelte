@@ -4,7 +4,7 @@
   import { Button } from '$lib/components/ui/button';
   import * as Popover from '$lib/components/ui/popover';
   import SelectField from './SelectField.svelte';
-  import { defaultLocationId, hasChecklistRisk, riskRowFromChecklistItem } from '$lib/domain/checklist-risk';
+  import { defaultLocationId, hasDeficiencyRisk, riskRowFromChecklistItem } from '$lib/domain/checklist-risk';
   import type { Checklist } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
 
@@ -24,7 +24,7 @@
     const target = store.assessment.locations.find((l) => l.id === targetId);
     if (!target) return;
     open = false;
-    if (hasChecklistRisk(store.assessment, list.id, itemId, scope, target.id)) {
+    if (hasDeficiencyRisk(store.assessment, list.id, itemId, scope, target.id)) {
       toast.info('Bu madde için satır zaten var');
       return;
     }

@@ -6,7 +6,8 @@
   import DeficiencyItem from './DeficiencyItem.svelte';
   import SelectField from './SelectField.svelte';
   import { SECTION_TITLE } from './shared-classes';
-  import { defaultLocationId, hasChecklistRisk, riskRowFromChecklistItem } from '$lib/domain/checklist-risk';
+  import { defaultLocationId } from '$lib/domain/checklist-risk';
+  import { addRowsForDeficiencies } from '$lib/domain/transfer';
   import { deficienciesWithState, deficiencyCounts, filterDeficiencies, groupByLocation, isTransferred, SCHOOL_WIDE_FILTER } from '$lib/domain/filters';
   import { SCHOOL_WIDE_LABEL } from '$lib/domain/inspections';
   import { nav, type DeficiencyFilter } from '$lib/nav.svelte';
@@ -43,25 +44,18 @@
     const targets = pending.flatMap((d) => {
       const list = a.checklists.find((c) => c.id === d.listId);
       const target = d.locationId ?? (list ? defaultLocationId(a, list) : '');
-      return target ? [{ d, target }] : [];
+      return target ? [{ listId: d.listId, itemId: d.itemId, locationId: d.locationId, target }] : [];
     });
     if (!targets.length) {
       toast.info('Risk satırı açılacak mekân yok; önce bir mekân ekleyin.');
       return;
     }
-    // Skip items that already have a row (a common sibling added earlier in this run, or a legacy unlinked row).
-    const next = targets.reduce(
-      (acc, { d, target }) =>
-        hasChecklistRisk(acc, d.listId, d.itemId, d.locationId, target) ? acc : riskRowFromChecklistItem(acc, d.listId, d.itemId, d.locationId, target),
-      a,
-    );
-    const rowCount = (x: typeof a) => x.locations.reduce((n, l) => n + l.rows.length, 0);
-    const created = rowCount(next) - rowCount(a);
+    const { assessment, created } = addRowsForDeficiencies(a, targets);
     if (!created) {
       toast.info('Görünen eksiklerin hepsinin risk satırı zaten var.');
       return;
     }
-    store.applyWithUndo(() => next, `${created} risk satırı oluşturuldu; puanlamak için Riskler'e geçin.`);
+    store.applyWithUndo(() => assessment, `${created} risk satırı oluşturuldu; puanlamak için Riskler'e geçin.`);
   }
 </script>
 

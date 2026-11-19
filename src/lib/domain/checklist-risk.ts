@@ -1,8 +1,36 @@
 // Turns a "Hayır" checklist item (an eksik of one inspection) into a risk row.
 import { addRow } from "./assessment";
-import { noSiblings } from "./common-items";
+import { noSiblings, siblingTargets } from "./common-items";
 import { answerOf, liveLocationIds, scopeName } from "./inspections";
-import type { Assessment, Checklist, ChecklistItem, RiskRow } from "./types";
+import { rowsForItem, type ItemRow } from "./links";
+import { loadBank } from "./question-bank";
+import type { Assessment, BankQuestion, Checklist, ChecklistItem, RiskRow } from "./types";
+
+/** Rows linked to the item or to any common sibling at the same location, each row once. */
+export function itemRiskRows(
+  a: Assessment,
+  listId: string,
+  itemId: string,
+  locationId: string | null,
+  bank: BankQuestion[] = loadBank(),
+): ItemRow[] {
+  const targets = [{ listId, itemId }, ...siblingTargets(a, listId, itemId, locationId, bank)];
+  return targets
+    .flatMap((t) => rowsForItem(a, t.listId, t.itemId, locationId))
+    .filter((r, i, all) => all.findIndex((x) => x.rowId === r.rowId) === i);
+}
+
+/** True when the deficiency already has a row: linked via itself or a sibling, or a matching legacy row. */
+export const hasDeficiencyRisk = (
+  a: Assessment,
+  listId: string,
+  itemId: string,
+  locationId: string | null,
+  rowLocationId?: string,
+  bank: BankQuestion[] = loadBank(),
+): boolean =>
+  itemRiskRows(a, listId, itemId, locationId, bank).length > 0 ||
+  hasChecklistRisk(a, listId, itemId, locationId, rowLocationId);
 
 function find(
   a: Assessment,
