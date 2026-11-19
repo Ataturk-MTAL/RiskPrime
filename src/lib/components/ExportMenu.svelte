@@ -15,17 +15,19 @@
     { kind: 'docx', label: 'Word (.docx)', hint: 'Yalnız çıktı, uygulamada açılmaz' },
   ];
   const busy = $derived(store.busy !== '');
+  // The menu lines up with the whole split button, not just its chevron, so it stays inside the page column.
+  let splitButton = $state<HTMLElement | null>(null);
 </script>
 
-<div class="flex">
-  <Button class="rounded-r-none" disabled={busy} aria-busy={busy} aria-label="PDF indir" onclick={() => store.requestFullPdf()}>
-    {#if busy}<LoaderCircle class="animate-spin motion-reduce:animate-none" />{:else}<Download />{/if}<span class="max-sm:hidden">PDF indir</span>
+<div class="flex" bind:this={splitButton}>
+  <Button class="rounded-r-none" disabled={busy} aria-busy={busy} onclick={() => store.requestFullPdf()}>
+    {#if busy}<LoaderCircle class="animate-spin motion-reduce:animate-none" />{:else}<Download />{/if}PDF indir
   </Button>
   <DropdownMenu.Root>
     <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' }) + ' rounded-l-none'} disabled={busy} aria-label="Diğer biçimler">
       <ChevronDown />
     </DropdownMenu.Trigger>
-    <DropdownMenu.Content align="end" class="w-72">
+    <DropdownMenu.Content align="start" customAnchor={splitButton} class="w-72">
       {#each ITEMS as item (item.kind)}
         <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={() => store.exportAs(item.kind)}>
           <span class={item.kind === 'json' ? 'font-semibold' : ''}>{item.label}</span>
