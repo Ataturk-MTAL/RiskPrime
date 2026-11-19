@@ -1,6 +1,7 @@
 <script lang="ts">
   import ChevronDown from '@lucide/svelte/icons/chevron-down';
   import ListChecks from '@lucide/svelte/icons/list-checks';
+  import { Button } from '$lib/components/ui/button';
   import * as Collapsible from '$lib/components/ui/collapsible';
   import EmptyState from './EmptyState.svelte';
   import InspectionEditor from './InspectionEditor.svelte';
@@ -8,11 +9,13 @@
   import SchoolCard from './SchoolCard.svelte';
   import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';
   import { inspectionSummary, inspectionsForList } from '$lib/domain/inspections';
+  import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
   const a = $derived(store.assessment);
   /** School-wide list whose inspection is open for answering. */
   let openWideId = $state<string | null>(null);
+  const commonLocations = $derived(a.locations.filter((l) => l.type === 'common'));
   const schoolWideLists = $derived(
     a.checklists.flatMap((list) =>
       inspectionsForList(a, list.id)
@@ -51,4 +54,14 @@
       <EmptyState icon={ListChecks} text="Okul genelinde doldurulan liste yok." />
     {/if}
   </section>
+  {#if commonLocations.length}
+    <section class="flex flex-col gap-3" aria-labelledby="school-wide-rows">
+      <h2 id="school-wide-rows" class={SECTION_TITLE}>Okul geneli risk satırları</h2>
+      <ul class="flex flex-col items-start gap-1 text-sm">
+        {#each commonLocations as l (l.id)}
+          <li><Button variant="link" class="h-auto p-0" onclick={() => nav.openRegister({ locationId: l.id })}>{l.name || 'Adsız mekân'} ({l.rows.length} satır)</Button></li>
+        {/each}
+      </ul>
+    </section>
+  {/if}
 </div>

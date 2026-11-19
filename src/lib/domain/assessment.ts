@@ -27,7 +27,7 @@ export const LOCATION_TYPE_LABELS: Record<LocationType, string> = {
   storage: "Depo",
   office: "Ofis / oda",
   wet: "Islak hacim",
-  common: "Ortak (tüm mekânlar)",
+  common: "Okul geneli (tüm mekânlar)",
 };
 export const GROUPINGS: Grouping[] = ["area", "building", "none"];
 export const STATUSES: RowStatus[] = ["open", "done"];
