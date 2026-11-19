@@ -78,23 +78,25 @@
 </script>
 
 <div class="mx-auto w-full max-w-3xl min-w-0 space-y-3">
-  <div class="flex items-center gap-2">
+  <div class="flex flex-wrap items-center gap-2">
     <Button variant="ghost" size="icon" aria-label="Mekânlar listesine dön" onclick={() => nav.go('locations')}><ArrowLeft /></Button>
-    <div class="min-w-0 flex-1">
-      <h1 class="truncate text-2xl font-semibold">{loc.name || 'Adsız mekân'}</h1>
-      <p class="truncate text-sm text-muted-foreground">{LOCATION_TYPE_LABELS[loc.type]}{loc.building ? ` · ${loc.building}` : ''}{loc.area ? ` · ${loc.area}` : ''}</p>
+    <div class="min-w-0 flex-1 basis-[calc(100%-3rem)] sm:basis-0">
+      <h1 class="text-2xl font-semibold wrap-break-word sm:truncate">{loc.name || 'Adsız mekân'}</h1>
+      <p class="text-sm text-muted-foreground sm:truncate">{LOCATION_TYPE_LABELS[loc.type]}{loc.building ? ` · ${loc.building}` : ''}{loc.area ? ` · ${loc.area}` : ''}</p>
     </div>
-    <Button variant="outline" onclick={() => nav.openRegister({ locationId: id })}>Riskler ({scoredRows}/{loc.rows.length} puanlı)</Button>
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' })} aria-label="Mekân işlemleri"><Ellipsis /></DropdownMenu.Trigger>
-      <DropdownMenu.Content align="end">
-        <DropdownMenu.Item disabled={!canMoveUp} onSelect={() => store.apply((a) => moveLocation(a, id, -1))}>Yukarı taşı</DropdownMenu.Item>
-        <DropdownMenu.Item disabled={!canMoveDown} onSelect={() => store.apply((a) => moveLocation(a, id, 1))}>Aşağı taşı</DropdownMenu.Item>
-        <DropdownMenu.Item disabled={store.busy !== ''} onSelect={exportPdf}>Bu mekânın PDF'i</DropdownMenu.Item>
-        <DropdownMenu.Item onSelect={duplicate}>Mekânı çoğalt</DropdownMenu.Item>
-        <DropdownMenu.Item class="text-destructive" onSelect={() => (deleteOpen = true)}>Mekânı sil</DropdownMenu.Item>
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
+    <div class="ml-auto flex items-center gap-2">
+      <Button variant="outline" onclick={() => nav.openRegister({ locationId: id })}>Riskler ({scoredRows}/{loc.rows.length} puanlı)</Button>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' })} aria-label="Mekân işlemleri"><Ellipsis /></DropdownMenu.Trigger>
+        <DropdownMenu.Content align="end">
+          <DropdownMenu.Item disabled={!canMoveUp} onSelect={() => store.apply((a) => moveLocation(a, id, -1))}>Yukarı taşı</DropdownMenu.Item>
+          <DropdownMenu.Item disabled={!canMoveDown} onSelect={() => store.apply((a) => moveLocation(a, id, 1))}>Aşağı taşı</DropdownMenu.Item>
+          <DropdownMenu.Item disabled={store.busy !== ''} onSelect={exportPdf}>Bu mekânın PDF'i</DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={duplicate}>Mekânı çoğalt</DropdownMenu.Item>
+          <DropdownMenu.Item class="text-destructive" onSelect={() => (deleteOpen = true)}>Mekânı sil</DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+    </div>
   </div>
 
   <AlertDialog.Root bind:open={deleteOpen}>
@@ -135,32 +137,32 @@
   </Collapsible.Root>
 
   <div class="space-y-3">
-      {#if openListId}
-        {#key openListId}<InspectionEditor listId={openListId} locationId={id} />{/key}
-      {:else}
-        {#if inspections.length === 0}
-          <p class="py-4 text-center text-sm text-muted-foreground">Bu mekâna atanmış kontrol listesi yok.</p>
-        {/if}
-        <ul class="space-y-2">
-          {#each inspections as i (i.list.id)}
-            <li>
-              <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border bg-card p-3 text-left" onclick={() => nav.openLocation(id, i.list.id)}>
-                <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
-                <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
-                  {i.answered}/{i.total} cevaplı
-                  {#if i.no}<Badge variant="destructive">{i.no} eksik</Badge>{/if}
-                  <ChevronRight class="size-4" aria-hidden="true" />
-                </span>
-              </button>
-            </li>
-          {/each}
-        </ul>
-        {#if addable.length}
-          <div class="max-w-sm space-y-1">
-            <span class="text-xs text-muted-foreground" aria-hidden="true">Bu mekâna liste ekle</span>
-            <SelectField label="Bu mekâna liste ekle" options={addable} value="" onValueChange={addList} />
-          </div>
-        {/if}
+    {#if openListId}
+      {#key openListId}<InspectionEditor listId={openListId} locationId={id} />{/key}
+    {:else}
+      {#if inspections.length === 0}
+        <p class="py-4 text-center text-sm text-muted-foreground">Bu mekâna atanmış kontrol listesi yok.</p>
       {/if}
+      <ul class="space-y-2">
+        {#each inspections as i (i.list.id)}
+          <li>
+            <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border bg-card p-3 text-left" onclick={() => nav.openLocation(id, i.list.id)}>
+              <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
+              <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
+                {i.answered}/{i.total} cevaplı
+                {#if i.no}<Badge variant="destructive">{i.no} eksik</Badge>{/if}
+                <ChevronRight class="size-4" aria-hidden="true" />
+              </span>
+            </button>
+          </li>
+        {/each}
+      </ul>
+      {#if addable.length}
+        <div class="max-w-sm space-y-1">
+          <span class="text-xs text-muted-foreground" aria-hidden="true">Bu mekâna liste ekle</span>
+          <SelectField label="Bu mekâna liste ekle" options={addable} value="" onValueChange={addList} />
+        </div>
+      {/if}
+    {/if}
   </div>
 </div>

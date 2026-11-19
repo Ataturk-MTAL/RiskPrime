@@ -93,9 +93,6 @@ export function progress(a: Assessment, today: Date) {
       return r.status === "open" && level !== null && SERIOUS.includes(level.key);
     }).length,
     overdue: rows.filter((r) => isOverdue(r, today)).length,
-    firstUnscoredLocationId:
-      a.locations.find((l) => l.rows.some((r) => riskLevel(r.likelihood, r.severity) === null))
-        ?.id ?? null,
     // Done needs every row scored and no eksik still waiting to become a row.
     state: (untransferred > 0 && scored === rows.length
       ? "doing"

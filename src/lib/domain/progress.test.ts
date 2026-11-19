@@ -118,7 +118,6 @@ describe("progress", () => {
       serious: 1,
       overdue: 1,
       untransferred: 1,
-      firstUnscoredLocationId: "l2",
       state: "doing",
     });
   });
