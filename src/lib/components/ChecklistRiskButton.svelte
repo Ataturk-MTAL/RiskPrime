@@ -1,3 +1,13 @@
+<script lang="ts" module>
+  import { addRowSource } from '$lib/domain/links';
+  import { store } from '$lib/state.svelte';
+
+  /** Links an existing risk row to the checklist item (undoable); shared with ChecklistExistingRowButton. */
+  export function linkItemToRow(listId: string, itemId: string, scope: string | null, rowLocationId: string, rowId: string) {
+    store.applyWithUndo((a) => addRowSource(a, rowLocationId, rowId, { listId, itemId, locationId: scope }), 'Eksik var olan riske bağlandı');
+  }
+</script>
+
 <script lang="ts">
   import Link from '@lucide/svelte/icons/link';
   import ShieldAlert from '@lucide/svelte/icons/shield-alert';
@@ -6,9 +16,7 @@
   import * as Popover from '$lib/components/ui/popover';
   import SelectField from './SelectField.svelte';
   import { defaultLocationId, hasDeficiencyRisk, riskRowFromChecklistItem, similarRows } from '$lib/domain/checklist-risk';
-  import { addRowSource } from '$lib/domain/links';
   import type { Checklist } from '$lib/domain/types';
-  import { store } from '$lib/state.svelte';
 
   /** locationId = the inspection's scope (null = okul geneli, the row's location is then chosen). */
   let { list, itemId, locationId: scope }: { list: Checklist; itemId: string; locationId: string | null } = $props();
@@ -38,7 +46,7 @@
 
   function link(rowId: string) {
     open = false;
-    store.applyWithUndo((a) => addRowSource(a, target, rowId, { listId: list.id, itemId, locationId: scope }), 'Eksik var olan riske bağlandı');
+    linkItemToRow(list.id, itemId, scope, target, rowId);
   }
 </script>
 
