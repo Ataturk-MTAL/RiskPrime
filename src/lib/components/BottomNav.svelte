@@ -28,7 +28,7 @@
           {#if count > 0}
             <span class="absolute top-1 left-1/2 ml-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] text-white tabular-nums">{count}<span class="sr-only"> yüksek ve tolere edilemez açık risk</span></span>
           {:else if item.section === 'report' && badges.reportGaps}
-            <TriangleAlert class="absolute top-1 left-1/2 ml-2 size-3.5 text-destructive" aria-hidden="true" /><span class="sr-only">Eksik bilgi var</span>
+            <TriangleAlert class="absolute top-1 left-1/2 ml-2 size-3.5 text-deficiency" aria-hidden="true" /><span class="sr-only">Eksik bilgi var</span>
           {/if}
         </button>
       </li>

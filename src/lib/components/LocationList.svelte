@@ -83,7 +83,7 @@
               <button type="button" class="{INTERACTIVE_ROW} flex min-h-11 w-full flex-col items-start gap-1 rounded-xl border bg-card p-3 text-left" onclick={() => nav.openLocation(l.id)}>
                 <span class="font-semibold">{l.name || 'Adsız mekân'}</span>
                 <span class="text-xs text-muted-foreground">{LOCATION_TYPE_LABELS[l.type]}{l.building ? ` · ${l.building}` : ''}</span>
-                <span class="text-sm">Denetim: {s.answered}/{s.total} cevaplı{#if s.no} · <b class="text-red-600">{s.no} eksik</b>{/if}</span>
+                <span class="text-sm">Denetim: {s.answered}/{s.total} cevaplı{#if s.no} · <b class="text-deficiency">{s.no} eksik</b>{/if}</span>
                 <span class="text-sm">Risk satırı: {s.scored}/{l.rows.length} puanlı</span>
                 {#if s.serious || s.overdue}
                   <span class="flex flex-wrap gap-1">

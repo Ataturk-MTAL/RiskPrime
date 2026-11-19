@@ -52,7 +52,7 @@
                 {#if count > 0}
                   <Sidebar.MenuBadge>{count}<span class="sr-only"> yüksek ve tolere edilemez açık risk</span></Sidebar.MenuBadge>
                 {:else if item.section === 'report' && badges.reportGaps}
-                  <Sidebar.MenuBadge><TriangleAlert class="size-3.5 text-destructive" aria-hidden="true" /><span class="sr-only">Eksik bilgi var</span></Sidebar.MenuBadge>
+                  <Sidebar.MenuBadge><TriangleAlert class="size-3.5 text-deficiency" aria-hidden="true" /><span class="sr-only">Eksik bilgi var</span></Sidebar.MenuBadge>
                 {/if}
               </Sidebar.MenuItem>
             {/each}

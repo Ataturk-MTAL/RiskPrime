@@ -23,9 +23,9 @@
   let { listId, locationId }: { listId: string; locationId: string | null } = $props();
 
   const CHOICES: { value: Exclude<Answer, ''>; tone: string }[] = [
-    { value: 'yes', tone: 'data-[state=on]:bg-green-700 data-[state=on]:text-white' },
-    { value: 'no', tone: 'data-[state=on]:bg-red-600 data-[state=on]:text-white' },
-    { value: 'na', tone: 'data-[state=on]:bg-gray-500 data-[state=on]:text-white' },
+    { value: 'yes', tone: 'data-[state=on]:bg-primary data-[state=on]:text-primary-foreground' },
+    { value: 'no', tone: 'data-[state=on]:bg-deficiency data-[state=on]:text-deficiency-foreground' },
+    { value: 'na', tone: 'data-[state=on]:bg-muted-foreground data-[state=on]:text-background' },
   ];
   const ROW_GRID = '@3xl:grid-cols-[4rem_minmax(0,2fr)_auto_minmax(0,1.2fr)]';
 
@@ -70,7 +70,7 @@
     <div class="flex flex-wrap items-center gap-3">
       <Progress value={stats.answered} max={stats.total || 1} class="h-2 max-w-sm" aria-label="Cevaplanan madde oranı" />
       <span class="text-sm text-muted-foreground">
-        {stats.answered}/{stats.total} cevaplandı{#if stats.no}{' '}· <b class="text-red-600">{stats.no} eksik</b>{/if}
+        {stats.answered}/{stats.total} cevaplandı{#if stats.no}{' '}· <b class="text-deficiency">{stats.no} eksik</b>{/if}
       </span>
       {#if pendingCount}
         <Button variant="link" size="sm" class="h-auto p-0" onclick={() => nav.openDeficiencies({ locationId: locationId ?? SCHOOL_WIDE_FILTER, listId, state: 'untransferred' })}>
@@ -86,7 +86,7 @@
       {#each list.items as item (item.id)}
         {@const current = answerOf(store.assessment, listId, locationId, item.id)}
         {@const refs = siblingRefs(item.id)}
-        <div id="item-{item.id}" class="grid items-start gap-2 rounded-lg border p-2 {ROW_GRID}">
+        <div id="item-{item.id}" class="grid items-start gap-2 rounded-lg border p-2 transition-colors duration-150 motion-reduce:transition-none {ROW_GRID} {current.answer === 'no' ? 'border-l-4 border-l-deficiency bg-deficiency-soft' : ''}">
           <span class="pt-1.5 text-sm">{item.no}</span>
           <div class="space-y-1 pt-1.5 text-sm">
             <p>{item.text}</p>
@@ -97,7 +97,7 @@
           <div class="flex flex-col items-start gap-1.5">
             <ToggleGroup.Root type="single" variant="outline" aria-label="Madde {item.no} cevabı" value={current.answer} onValueChange={(v) => store.apply((a) => setAnswerShared(a, listId, locationId, item.id, v as Answer))}>
               {#each CHOICES as choice (choice.value)}
-                <ToggleGroup.Item value={choice.value} class={choice.tone} title={choice.value === 'na' ? 'Uygulanamaz' : undefined}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
+                <ToggleGroup.Item value={choice.value} class="{choice.tone} transition-colors duration-150 motion-reduce:transition-none" title={choice.value === 'na' ? 'Uygulanamaz' : undefined}>{ANSWER_LABELS[choice.value]}</ToggleGroup.Item>
               {/each}
             </ToggleGroup.Root>
             <ChecklistItemLinks {list} {item} {locationId} />

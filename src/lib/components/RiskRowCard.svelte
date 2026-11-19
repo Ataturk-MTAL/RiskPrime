@@ -1,10 +1,11 @@
 <script lang="ts">
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
-  import CircleAlert from '@lucide/svelte/icons/circle-alert';
+  import Clock from '@lucide/svelte/icons/clock';
   import { Badge } from '$lib/components/ui/badge';
   import LevelBadge from './LevelBadge.svelte';
   import SelectField from './SelectField.svelte';
   import SourceBadge from './SourceBadge.svelte';
+  import { RISK_TONE } from './shared-classes';
   import { LIKELIHOOD_OPTIONS, parseScore, scoreValue, SEVERITY_OPTIONS } from './score-options';
   import { isOverdue, updateRow } from '$lib/domain/assessment';
   import { riskLevel } from '$lib/domain/matrix';
@@ -17,7 +18,7 @@
   const patch = (changes: Partial<RiskRow>) => store.apply((a) => updateRow(a, locationId, row.id, changes));
 </script>
 
-<article id="row-{row.id}" class="rounded-lg border border-l-4 bg-background" class:opacity-60={dimLabel !== undefined} style:border-left-color={level?.background}>
+<article id="row-{row.id}" class="rounded-lg border bg-background {level ? `${RISK_TONE[level.key].fill} ${RISK_TONE[level.key].stripe}` : ''}" class:opacity-60={dimLabel !== undefined}>
   <button type="button" class="flex min-h-11 w-full items-start gap-2 rounded-t-lg p-3 text-left hover:bg-muted" aria-label="Satır {index} düzenle" onclick={() => onopen(row.id)}>
     <span class="text-xs font-semibold text-muted-foreground">{index}</span>
     {#if dimLabel}<span class="text-xs text-muted-foreground">{dimLabel}</span>{/if}
@@ -38,7 +39,7 @@
       <SelectField label="Satır {index}: şiddet" options={SEVERITY_OPTIONS} value={scoreValue(row.severity)} onValueChange={(v) => patch({ severity: parseScore(v) })} />
     </div>
     <div class="flex min-h-9 items-center justify-end">
-      {#if isOverdue(row, new Date())}<Badge variant="destructive" class="mr-2"><CircleAlert aria-hidden="true" />Süresi geçti</Badge>{/if}
+      {#if isOverdue(row, new Date())}<Badge variant="outline" class="mr-2"><Clock aria-hidden="true" />Süresi geçti</Badge>{/if}
       <LevelBadge likelihood={row.likelihood} severity={row.severity} showScore /></div>
   </div>
 </article>

@@ -152,7 +152,7 @@
               <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
                 <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
-                  {i.answered}/{i.total}{#if i.no}{' '}· {i.no} eksik{/if}
+                  {i.answered}/{i.total}{#if i.no}{' '}· <b class="text-deficiency">{i.no} eksik</b>{/if}
                   <ChevronDown class="size-4 transition-transform motion-reduce:transition-none {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
                 </span>
               </Collapsible.Trigger>
