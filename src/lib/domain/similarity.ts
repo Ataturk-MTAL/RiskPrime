@@ -5,10 +5,10 @@
 /** Words shorter than this ("mi", "ve", "var") carry no meaning for matching. */
 const MIN_WORD_LENGTH = 4;
 
-/** Turkish is agglutinative ("merdiven", "merdivenlerde"): words match on their first letters. */
+/** Prefix length compared when stemming: Turkish is agglutinative. Opt-in, stemming merges roots like "elektrik"/"elektronik". */
 const STEM_LENGTH = 5;
 
-/** Default score from which two items count as similar (tuned on the MEB lists). */
+/** Default score from which two items count as similar (the item-proposal form; the relay and triage use their own stricter scores). */
 export const SIMILAR_THRESHOLD = 0.35;
 
 export interface SimilarHit {
@@ -24,18 +24,18 @@ export const normalizeText = (s: string): string =>
     .replace(/\s+/g, " ")
     .trim();
 
-const words = (s: string): Set<string> =>
+const words = (s: string, stem: boolean): Set<string> =>
   new Set(
     normalizeText(s)
       .split(" ")
       .filter((w) => w.length >= MIN_WORD_LENGTH)
-      .map((w) => w.slice(0, STEM_LENGTH)),
+      .map((w) => (stem ? w.slice(0, STEM_LENGTH) : w)),
   );
 
-/** Jaccard overlap of the meaningful words, 0..1. */
-export function similarity(a: string, b: string): number {
-  const wa = words(a);
-  const wb = words(b);
+/** Jaccard overlap of the meaningful words, 0..1. With `stem`, words match on their first letters. */
+export function similarity(a: string, b: string, stem = false): number {
+  const wa = words(a, stem);
+  const wb = words(b, stem);
   if (!wa.size || !wb.size) return normalizeText(a) === normalizeText(b) ? 1 : 0;
   const shared = [...wa].filter((w) => wb.has(w)).length;
   return shared / (wa.size + wb.size - shared);
@@ -76,9 +76,10 @@ export function findSimilar(
   candidates: readonly { key: string; text: string }[],
   threshold = SIMILAR_THRESHOLD,
   limit = 5,
+  stem = false,
 ): SimilarHit[] {
   return candidates
-    .map((c) => ({ key: c.key, text: c.text, score: similarity(text, c.text) }))
+    .map((c) => ({ key: c.key, text: c.text, score: similarity(text, c.text, stem) }))
     .filter((h) => h.score >= threshold)
     .sort((x, y) => y.score - x.score)
     .slice(0, limit);

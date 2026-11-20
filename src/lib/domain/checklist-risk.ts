@@ -152,7 +152,7 @@ export function similarRows(
   const candidates = loc.rows.flatMap((r) =>
     isLinked(r) || !r.hazard.trim() ? [] : [{ key: r.id, text: r.hazard }],
   );
-  return findSimilar(hazardOf(list, item), candidates, ROW_SIMILAR_THRESHOLD).map((h) => ({
+  return findSimilar(hazardOf(list, item), candidates, ROW_SIMILAR_THRESHOLD, undefined, true).map((h) => ({
     rowId: h.key,
     number: loc.rows.findIndex((r) => r.id === h.key) + 1,
     text: h.text,
