@@ -16,6 +16,10 @@
   const a = $derived(store.assessment);
   /** School-wide list whose inspection is open for answering. */
   let openWideId = $state<string | null>(null);
+  // Arrived from "Maddeye git" and the like: open that list.
+  $effect(() => {
+    if (nav.place.listId) openWideId = nav.place.listId;
+  });
   const commonLocations = $derived(a.locations.filter((l) => l.type === 'common'));
   const schoolWideLists = $derived(
     a.checklists.flatMap((list) =>
@@ -32,7 +36,7 @@
   <section class="flex flex-col gap-3" aria-labelledby="school-wide">
     <h2 id="school-wide" class={SECTION_TITLE}>Okul geneli kontrol listeleri</h2>
     {#if schoolWideLists.length}
-      <ul class="divide-y rounded-md border">
+      <ul class="divide-y overflow-hidden rounded-md border">
         {#each schoolWideLists as item (item.list.id)}
           {@const isOpen = openWideId === item.list.id}
           <li>

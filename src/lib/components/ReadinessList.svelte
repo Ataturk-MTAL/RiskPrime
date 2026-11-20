@@ -22,7 +22,7 @@
     select();
     onpick();
   }
-  const openSchool = () => go(() => nav.openSchool());
+  const openSchool = () => go(() => nav.openSchoolInfo());
   const openRisks = (id: string) => go(() => nav.openRegister({ locationId: id }));
   // Gap ids of checklist entries are template ids; send the user where the open items are.
   const openUnanswered = () =>

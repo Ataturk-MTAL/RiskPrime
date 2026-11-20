@@ -59,7 +59,7 @@ class Nav {
   /** Where a checklist item lives: its location page, or the school page for school-wide lists. */
   openItem(locationId: string | null, listId: string | null) {
     if (locationId) this.openLocation(locationId, listId);
-    else this.openSchool();
+    else this.openSchool(listId);
   }
 
   /** Opens Riskler on the row's location and asks for that row's sheet. */
@@ -79,8 +79,14 @@ class Nav {
     this.go("deficiencies");
   }
 
-  openSchool() {
-    this.go("school");
+  /** The school page; listId = the school-wide list to open. Does not move focus. */
+  openSchool(listId: string | null = null) {
+    this.place = { ...HOME, section: "school", listId };
+  }
+
+  /** The school page for filling in school info: focuses the first empty field. */
+  openSchoolInfo() {
+    this.openSchool();
     this.schoolRequest += 1;
   }
 

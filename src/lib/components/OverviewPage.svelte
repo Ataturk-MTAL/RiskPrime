@@ -20,7 +20,7 @@
       key: 'school',
       title: 'Okul bilgilerini girin',
       detail: `Bilgi ${p.school.metaFilled}/${p.school.metaTotal}, imzacı ${p.school.signatoriesFilled}/${p.school.signatoriesTotal} dolu`,
-      run: () => nav.openSchool(),
+      run: () => nav.openSchoolInfo(),
     },
     {
       key: 'checklists',

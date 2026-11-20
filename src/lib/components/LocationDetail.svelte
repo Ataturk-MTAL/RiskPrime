@@ -146,7 +146,7 @@
     {#if inspections.length === 0}
       <EmptyState icon={ListChecks} text="Bu mekâna atanmış kontrol listesi yok." />
     {:else}
-      <ul class="divide-y rounded-md border">
+      <ul class="divide-y overflow-hidden rounded-md border">
         {#each inspections as i (i.list.id)}
           {@const isOpen = openListId === i.list.id}
           <li>
