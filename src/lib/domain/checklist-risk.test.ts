@@ -159,3 +159,29 @@ describe("similarRows", () => {
     expect(similarRows(a, listId, itemId, null, "yok")).toEqual([]);
   });
 });
+
+describe("similarRows with Turkish suffixes", () => {
+  function hitsFor(hazards: string[]) {
+    let a = emptyAssessment("2026-2027");
+    a = addLocation(a, { id: "l1", name: "Koridor" });
+    a = addChecklist(a, {
+      code: "KL-1",
+      name: "Merdivenler",
+      source: "external",
+      items: [{ no: "1", text: "Merdiven korkuluğu yok" }],
+    });
+    hazards.forEach((hazard, i) => {
+      a = addRow(a, "l1", { id: `r${i}`, hazard });
+    });
+    const list = a.checklists[0];
+    return similarRows(a, list.id, list.items[0].id, null, "l1").map((h) => h.rowId);
+  }
+
+  test("finds a row whose words carry suffixes", () => {
+    expect(hitsFor(["Merdivenlerde korkuluk eksik"])).toEqual(["r0"]);
+  });
+
+  test("does not find an unrelated row", () => {
+    expect(hitsFor(["Yangın tüpü eksik"])).toEqual([]);
+  });
+});

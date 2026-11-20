@@ -5,6 +5,9 @@
 /** Words shorter than this ("mi", "ve", "var") carry no meaning for matching. */
 const MIN_WORD_LENGTH = 4;
 
+/** Turkish is agglutinative ("merdiven", "merdivenlerde"): words match on their first letters. */
+const STEM_LENGTH = 5;
+
 /** Default score from which two items count as similar (tuned on the MEB lists). */
 export const SIMILAR_THRESHOLD = 0.35;
 
@@ -25,7 +28,8 @@ const words = (s: string): Set<string> =>
   new Set(
     normalizeText(s)
       .split(" ")
-      .filter((w) => w.length >= MIN_WORD_LENGTH),
+      .filter((w) => w.length >= MIN_WORD_LENGTH)
+      .map((w) => w.slice(0, STEM_LENGTH)),
   );
 
 /** Jaccard overlap of the meaningful words, 0..1. */
