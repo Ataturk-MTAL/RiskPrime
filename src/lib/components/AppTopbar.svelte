@@ -17,6 +17,7 @@
   import { isDesktop } from '$lib/platform';
   import { nav } from '$lib/nav.svelte';
   import { SECTION_LABELS } from '$lib/nav-items';
+  import { listLabel } from '$lib/domain/checklist';
   import { formatHash, HOME } from '$lib/nav-route';
   import { store } from '$lib/state.svelte';
   import type { ThemeChoice } from '$lib/theme-choice';
@@ -55,7 +56,7 @@
 
   const templateLabel = (id: string | null) => {
     const list = store.assessment.checklists.find((c) => c.id === id);
-    return list ? `${list.code ? `${list.code} · ` : ''}${list.name}` : '';
+    return list ? listLabel(list.code, list.name) : '';
   };
 
   /** Section, then the location / view / checklist the place points at; the last crumb is the current page. */
@@ -123,7 +124,7 @@
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newEmpty())}>Yeni (boş)</DropdownMenu.Item>
         <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={() => afterMenuCloses(() => store.newPeriod())}>
           <span>Yeni dönem (bu çalışmadan)</span>
-          <span class="text-xs text-muted-foreground">Mekânlar, listeler ve risk satırları kalır; cevaplar, tarihler ve durumlar sıfırlanır.</span>
+          <span class="text-xs text-muted-foreground">Mekânlar, listeler ve risk satırları kalır, kontrol sonrası puanlar güncel puan olur; cevaplar, tarihler ve durumlar sıfırlanır.</span>
         </DropdownMenu.Item>
         <DropdownMenu.Item onSelect={() => afterMenuCloses(onPeriods)}>Dönemler…</DropdownMenu.Item>
         <DropdownMenu.Separator />
