@@ -259,4 +259,16 @@ describe("common deficiencies and transfer", () => {
     expect(r.created).toBe(0);
     expect(r.assessment.locations[0].rows).toHaveLength(1);
   });
+
+  test("bulk add from deficiencies uses the given bank for the sources of the new row", () => {
+    // Arrange: a bank where the three items are not common siblings
+    const noCommon = [q("KL-01.17"), q("KL-04.07"), q("KL-05.05")];
+    const targets = [{ listId: "ka", itemId: "a1", locationId: "l1", target: "l1" }];
+
+    // Act
+    const r = addRowsForDeficiencies(answered(), targets, noCommon);
+
+    // Assert
+    expect(r.assessment.locations[0].rows[0].sources).toHaveLength(1);
+  });
 });

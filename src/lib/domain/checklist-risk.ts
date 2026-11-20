@@ -87,6 +87,7 @@ export function riskRowFromChecklistItem(
   itemId: string,
   locationId: string | null,
   rowLocationId?: string,
+  bank: BankQuestion[] = loadBank(),
 ): Assessment {
   const { list, item } = find(a, listId, itemId);
   const target = rowLocation(a, locationId, rowLocationId);
@@ -94,7 +95,7 @@ export function riskRowFromChecklistItem(
     hazard: hazardOf(list, item),
     action: answerOf(a, listId, locationId, itemId).note,
     // common siblings answered "Hayır" at this location share the one row
-    sources: [{ listId, itemId }, ...noSiblings(a, listId, itemId, locationId)].map((t) => ({
+    sources: [{ listId, itemId }, ...noSiblings(a, listId, itemId, locationId, bank)].map((t) => ({
       ...t,
       locationId,
     })),

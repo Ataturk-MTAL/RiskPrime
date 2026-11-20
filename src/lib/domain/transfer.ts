@@ -36,6 +36,7 @@ export function addRowsForDeficiencies(
               t.itemId,
               t.locationId,
               t.target,
+              bank,
             ),
             created: acc.created + 1,
           },
