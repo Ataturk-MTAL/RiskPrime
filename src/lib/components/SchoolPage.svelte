@@ -14,13 +14,6 @@
   import { store } from '$lib/state.svelte';
 
   const a = $derived(store.assessment);
-  /** School-wide list whose inspection is open for answering. */
-  let openWideId = $state<string | null>(null);
-  // Arrived from "Maddeye git" and the like: open that list.
-  $effect(() => {
-    if (nav.place.listId) openWideId = nav.place.listId;
-  });
-  const commonLocations = $derived(a.locations.filter((l) => l.type === 'common'));
   const schoolWideLists = $derived(
     a.checklists.flatMap((list) =>
       inspectionsForList(a, list.id)
@@ -28,6 +21,22 @@
         .map((i) => ({ list, ...inspectionSummary(a, i) })),
     ),
   );
+  /** School-wide list whose inspection is open for answering (the place's listId, as in LocationDetail). */
+  const openWideId = $derived(
+    schoolWideLists.some((s) => s.list.id === nav.place.listId) ? nav.place.listId : null,
+  );
+  // Arrived from "Maddeye git" and the like: bring the opened list into view once the page rendered.
+  $effect(() => {
+    const id = openWideId;
+    if (!id) return;
+    requestAnimationFrame(() =>
+      document.getElementById(`wide-${id}`)?.scrollIntoView({
+        block: 'nearest',
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      }),
+    );
+  });
+  const commonLocations = $derived(a.locations.filter((l) => l.type === 'common'));
 </script>
 
 <div class="mx-auto flex w-full max-w-3xl flex-col gap-6">
@@ -39,9 +48,9 @@
       <ul class="divide-y overflow-hidden rounded-md border">
         {#each schoolWideLists as item (item.list.id)}
           {@const isOpen = openWideId === item.list.id}
-          <li>
-            <Collapsible.Root open={isOpen} onOpenChange={(o) => (openWideId = o ? item.list.id : null)}>
-              <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
+          <li id="wide-{item.list.id}">
+            <Collapsible.Root open={isOpen} onOpenChange={(o) => nav.openSchool(o ? item.list.id : null)}>
+              <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left focus-visible:ring-inset">
                 <span class="min-w-0 font-medium">{listLabel(item.list.code, item.list.name)}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
                   {item.answered}/{item.total}{#if item.no}{' '}· <b class="text-deficiency">{item.no} eksik</b>{/if}

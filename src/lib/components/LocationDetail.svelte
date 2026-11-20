@@ -151,7 +151,7 @@
           {@const isOpen = openListId === i.list.id}
           <li>
             <Collapsible.Root open={isOpen} onOpenChange={(o) => nav.openLocation(id, o ? i.list.id : null)}>
-              <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left">
+              <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left focus-visible:ring-inset">
                 <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
                   {i.answered}/{i.total}{#if i.no}{' '}· <b class="text-deficiency">{i.no} eksik</b>{/if}
