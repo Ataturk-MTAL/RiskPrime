@@ -124,7 +124,7 @@
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newEmpty())}>Yeni (boş)</DropdownMenu.Item>
         <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={() => afterMenuCloses(() => store.newPeriod())}>
           <span>Yeni dönem (bu çalışmadan)</span>
-          <span class="text-xs text-muted-foreground">Mekânlar, listeler ve risk satırları kalır, kontrol sonrası puanlar güncel puan olur; cevaplar, tarihler ve durumlar sıfırlanır.</span>
+          <span class="text-xs text-muted-foreground">Mekânlar, listeler ve risk satırları kalır, önlem sonrası puanlar güncel puan olur; cevaplar, tarihler ve durumlar sıfırlanır.</span>
         </DropdownMenu.Item>
         <DropdownMenu.Item onSelect={() => afterMenuCloses(onPeriods)}>Dönemler…</DropdownMenu.Item>
         <DropdownMenu.Separator />
