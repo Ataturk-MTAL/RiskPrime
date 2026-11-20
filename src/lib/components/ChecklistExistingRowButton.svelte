@@ -1,11 +1,10 @@
 <script lang="ts">
   import Link from '@lucide/svelte/icons/link';
-  import { toast } from 'svelte-sonner';
   import { Button } from '$lib/components/ui/button';
   import * as Popover from '$lib/components/ui/popover';
+  import { linkItemToRow } from './ChecklistRiskButton.svelte';
   import SelectField from './SelectField.svelte';
-  import { defaultLocationId } from '$lib/domain/checklist-risk';
-  import { addRowSource, rowsForItem } from '$lib/domain/links';
+  import { defaultLocationId, itemRiskRows } from '$lib/domain/checklist-risk';
   import type { Checklist } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
 
@@ -17,7 +16,7 @@
   let locationId = $state('');
   const locationOptions = $derived(store.assessment.locations.map((l) => ({ value: l.id, label: l.name || 'Adsız mekân' })));
   const rowOptions = $derived.by(() => {
-    const linked = new Set(rowsForItem(store.assessment, list.id, itemId, scope).map((r) => r.rowId));
+    const linked = new Set(itemRiskRows(store.assessment, list.id, itemId, scope).map((r) => r.rowId));
     const rows = store.assessment.locations.find((l) => l.id === locationId)?.rows ?? [];
     return rows.flatMap((r, i) =>
       linked.has(r.id) ? [] : [{ value: r.id, label: `#${i + 1} · ${(r.equipment || r.hazard || 'Boş satır').slice(0, LABEL_LENGTH)}` }],
@@ -31,15 +30,14 @@
 
   function link(rowId: string) {
     open = false;
-    if (!store.apply((a) => addRowSource(a, locationId, rowId, { listId: list.id, itemId, locationId: scope }))) return;
-    toast.success('Madde var olan satıra bağlandı');
+    linkItemToRow(list.id, itemId, scope, locationId, rowId);
   }
 </script>
 
 <Popover.Root {open} {onOpenChange}>
   <Popover.Trigger>
     {#snippet child({ props })}
-      <Button {...props} variant="outline" size="sm"><Link />Var olan satıra bağla</Button>
+      <Button {...props} variant="outline" size="sm"><Link />Var olan riske bağla</Button>
     {/snippet}
   </Popover.Trigger>
   <Popover.Content class="w-72 space-y-3">

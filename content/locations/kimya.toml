@@ -1,0 +1,177 @@
+# Kimya Teknolojisi alanı hazır mekânları. Biçim: content/locations/README.md
+
+area = "Kimya Teknolojisi"
+
+[[location]]
+name = "Kimya Laboratuvarı"
+type = "workshop"
+checklists = ["KL-17", "KL-32", "KL-30", "KL-33", "KL-29", "KL-26", "KL-21", "KL-23", "KL-24"]
+
+[[location.row]]
+equipment = "Asit ve bazlar"
+hazard = "Cilde veya göze sıçrama: kimyasal yanık; seyreltme sırasında ısınma ve sıçrama"
+affected = "Öğrenci, öğretmen"
+action = "Asit suya eklenir, tersi yapılmaz; laboratuvar önlüğü, koruyucu gözlük, kimyasala dayanıklı eldiven; göz duşu ve acil duşun önü boş, haftada bir denenir ve kaydedilir (KL-32.20)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Kanserojen, mutajen veya üreme için toksik kimyasallar ve cıva"
+hazard = "Uzun vadeli sağlık etkisi (kanser, genetik hasar); kırılan termometreden cıva buharı"
+affected = "Öğrenci, öğretmen"
+action = "Bu maddeler mümkünse daha az tehlikeli olanla değiştirilir; öğrenciye kullandırılmaz; zorunluysa öğretmence çeker ocakta, en az miktarla kullanılır ve kilitli dolapta tutulur; cıvalı termometre yerine dijital termometre; cıva dökülmesi için cıva kiti bulunur (KL-32.31)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Uçucu ve zehirli kimyasallar"
+hazard = "Buhar veya gaz soluma"
+affected = "Öğrenci, öğretmen"
+action = "Bu kimyasallarla çalışma çeker ocakta; çeker ocağın çalıştığı ders başında kontrol edilir; şişeler kullanılmadığında kapalı (KL-17)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Yanıcı çözücüler (etanol, aseton, eter)"
+hazard = "Açık alev veya ısıtıcı yakınında tutuşma"
+affected = "Herkes"
+action = "Tezgâhta yalnız gereken miktar; ısıtma ısıtıcı tabla veya su banyosuyla, yanıcı varken açık alev yok; söndürücü ve yangın battaniyesi erişilebilir (KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Cam malzeme"
+hazard = "Kırık camla kesilme; ısıtılan camın çatlaması"
+affected = "Öğrenci"
+action = "Çatlak cam kullanılmaz; kırık cam ayrı ve etiketli kapta toplanır; ısıtmada ısıya dayanıklı cam (KL-21)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Bek ve laboratuvar gaz tesisatı"
+hazard = "Gaz kaçağı veya hortum çıkması: yangın, patlama"
+affected = "Herkes"
+action = "Hortumlar kelepçeli ve düzenli yenilenir; ders sonunda ana gaz vanası kapatılır; gaz kaçağı dedektörü gazı otomatik kesen vanaya bağlı ve düzenli test edilir; LPG tüpü kullanılıyorsa tüp laboratuvar dışında (KL-17.11, KL-30)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Kimyasal atıklar"
+hazard = "Uyumsuz atıkların karışması: tepkime, zehirli gaz; lavaboya dökme"
+affected = "Herkes"
+action = "Atıklar türüne göre etiketli kaplarda; lavaboya dökülmez; lisanslı firmaya teslim edilir (KL-33)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Etiket ve güvenlik bilgi formları"
+hazard = "Etiketsiz şişe veya bilgi formu eksikliği: yanlış kullanım, yanlış ilk yardım"
+affected = "Öğrenci, öğretmen"
+action = "Her kapta tehlike etiketi; güvenlik bilgi formları laboratuvarda erişilebilir; öğrenci kimyasalla öğretmen gözetiminde çalışır (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Enstrümental Analiz Laboratuvarı"
+type = "workshop"
+checklists = ["KL-17", "KL-29", "KL-30", "KL-32", "KL-26", "KL-27"]
+
+[[location.row]]
+equipment = "Basınçlı gaz tüpleri (argon, azot, hidrojen, AAS için asetilen ve diazot monoksit)"
+hazard = "Tüpün devrilmesi; hidrojen veya asetilen kaçağıyla yangın ve patlama; AAS alevinin geri tepmesi; kapalı alanda inert gaz birikmesiyle boğulma"
+affected = "Herkes"
+action = "Tüpler mümkünse laboratuvar dışında gaz dolabında, değilse zincirli; regülatör ve bağlantılar kaçak açısından kontrol edilir; AAS alevi yanarken cihaz başından ayrılınmaz, egzoz davlumbazı çalışır; iş bitince tüp vanaları kapatılır; oda mekanik havalandırmalı (KL-29, KL-30.15)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Analiz cihazları (spektrofotometre, AAS, GC)"
+hazard = "Cihaz içinde yüksek gerilim ve sıcak parçalar; alevli cihazda egzoz gazı"
+affected = "Öğrenci, öğretmen"
+action = "Kapak açılmadan önce cihaz kapatılır ve soğutulur; egzoz davlumbazı çalışır; bakım yetkili servisçe (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Standart çözeltiler ve çözücüler"
+hazard = "Cilde veya göze sıçrama; buhar soluma"
+affected = "Öğrenci"
+action = "Önlük, gözlük, eldiven; uçucu çözücüler çeker ocakta hazırlanır (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Bilgisayar başında uzun süre çalışma"
+hazard = "Göz yorgunluğu, boyun ve bel ağrısı"
+affected = "Öğrenci, öğretmen"
+action = "Ekran ve sandalye ayarlanabilir; düzenli ara (KL-27)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Kimya Proses Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-28", "KL-32", "KL-30", "KL-43", "KL-26", "KL-23", "KL-24"]
+
+[[location.row]]
+equipment = "Basınçlı kap, buhar kazanı veya otoklav"
+hazard = "Aşırı basınçla patlama; buhar yanığı"
+affected = "Herkes"
+action = "Emniyet ventili ve manometre çalışır; periyodik kontrol İş Ekipmanları Yönetmeliği Ek-III'teki aralıkla yetkili kişilerce yapılır, rapor saklanır ve etiket güncel; yalnız öğretmen çalıştırır (KL-28)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Reaktör, karıştırıcı ve pompa"
+hazard = "Dönen karıştırıcıya veya kaplina temas; sızıntı"
+affected = "Öğrenci"
+action = "Öğrenci ekipmanı yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; karıştırıcı kapak kapalıyken çalışır; kaplin koruyucusu takılı; sızıntı kontrolü (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Sıcak yüzeyler ve ısıtma ceketleri"
+hazard = "Sıcak boru ve yüzeye temas: yanık"
+affected = "Öğrenci"
+action = "Sıcak yüzeyler yalıtımlı veya işaretli; ısıya dayanıklı eldiven (KL-23)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Kimyasal aktarma ve bidon boşaltma"
+hazard = "Sıçrama, dökülme, kayma"
+affected = "Öğrenci"
+action = "Pompa veya devirme sehpası kullanılır; yüz siperi ve eldiven; dökülme için emici malzeme hazır (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Hortum ve boru bağlantıları"
+hazard = "Basınç altında hortumun çıkması: sıçrama, yaralanma"
+affected = "Öğrenci"
+action = "Bağlantılar kelepçeli; basınç vermeden önce kontrol edilir; hasarlı hortum değiştirilir"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Kimyasal Madde Deposu"
+type = "storage"
+checklists = ["KL-32", "KL-30", "KL-33", "KL-22"]
+
+[[location.row]]
+equipment = "Kimyasal rafları"
+hazard = "Uyumsuz kimyasalların (asit ile baz, oksitleyici ile yanıcı) yan yana durması: tepkime, yangın; raftan şişe düşmesi"
+affected = "Öğretmen, personel"
+action = "Uyumluluğa göre ayrı raf veya dolap; aşındırıcılar alt rafta; raflar duvara sabit ve kenar çıtalı (KL-32, KL-22)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Yanıcı sıvılar"
+hazard = "Buhar birikmesiyle yangın veya patlama"
+affected = "Herkes"
+action = "Yanıcılar yangına dayanıklı ve havalandırmalı dolapta; depoda kıvılcım kaynağı yok; söndürücü kapı yanında (KL-30)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Depo havalandırması ve erişim"
+hazard = "Buhar birikmesi; yetkisiz kişinin depoya girmesi"
+affected = "Herkes"
+action = "Depo sürekli havalandırılır; kapı kilitli, anahtar sorumlu öğretmende; envanter listesi güncel (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Dökülme ve sızıntı"
+hazard = "Kimyasal dökülmesi: temas, buhar, kayma"
+affected = "Öğretmen, personel"
+action = "Dökülme kiti ve emici malzeme hazır; sıvılar taşma tavasında (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Tarihi geçmiş ve bozunan kimyasallar"
+hazard = "Bekledikçe tehlikeli hâle gelen kimyasallar (ör. peroksit oluşturan eter)"
+affected = "Herkes"
+action = "Yılda en az bir kez envanter; tarihi geçen kimyasal atık olarak lisanslı firmaya verilir (KL-33)"
+responsible = "Atölye öğretmeni"

@@ -21,7 +21,7 @@ export interface ItemRow {
 export interface SourceInfo {
   listId: string;
   itemId: string;
-  /** Inspection scope of the answer; null = okul geneli. */
+  /** Inspection scope of the answer; null = school-wide. */
   locationId: string | null;
   code: string;
   listName: string;
@@ -54,7 +54,7 @@ const itemOf = (a: Assessment, s: RiskSource): { list: Checklist; item: Checklis
 const same = (x: RiskSource, y: RiskSource) =>
   x.listId === y.listId && x.itemId === y.itemId && x.locationId === y.locationId;
 
-/** Risk rows (in any location) that came from the given item in the given inspection (null = okul geneli). */
+/** Risk rows (in any location) that came from the given item in the given inspection (null = school-wide). */
 export function rowsForItem(
   a: Assessment,
   listId: string,

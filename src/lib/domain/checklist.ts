@@ -14,6 +14,10 @@ import type {
   Inspection,
 } from "./types";
 
+/** "KL-26 · Elektrik"; the code is dropped when empty, a missing name reads "Adsız liste". */
+export const listLabel = (code: string, name: string): string =>
+  `${code ? `${code} · ` : ""}${name || "Adsız liste"}`;
+
 export const ANSWERS: Answer[] = ["yes", "no", "na", ""];
 export const ANSWER_LABELS: Record<Answer, string> = {
   yes: "Evet",
@@ -157,7 +161,7 @@ function setInspectionValue(
   };
 }
 
-/** Sets the answer of one item in one inspection (locationId null = okul geneli). "" clears it. */
+/** Sets the answer of one item in one inspection (locationId null = school-wide). "" clears it. */
 export function setAnswer(
   a: Assessment,
   listId: string,

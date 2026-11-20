@@ -7,7 +7,6 @@
   import BankUpdatesDialog from '$lib/components/BankUpdatesDialog.svelte';
   import BottomNav from '$lib/components/BottomNav.svelte';
   import ConflictDialog from '$lib/components/ConflictDialog.svelte';
-  import DeficienciesPage from '$lib/components/DeficienciesPage.svelte';
   import DiscardDialog from '$lib/components/DiscardDialog.svelte';
   import LockBanner from '$lib/components/LockBanner.svelte';
   import PeriodsDialog from '$lib/components/PeriodsDialog.svelte';
@@ -15,17 +14,21 @@
   import LocationsPage from '$lib/components/LocationsPage.svelte';
   import Notices from '$lib/components/Notices.svelte';
   import OverviewPage from '$lib/components/OverviewPage.svelte';
+  import SchoolPage from '$lib/components/SchoolPage.svelte';
   import ReadinessDialog from '$lib/components/ReadinessDialog.svelte';
   import ReportPage from '$lib/components/ReportPage.svelte';
   import RiskRegisterPage from '$lib/components/RiskRegisterPage.svelte';
   import { dragHasFiles, isOpenableFile, UNSUPPORTED_DROP_MESSAGE } from '$lib/drop';
   import LockScreen from '$lib/components/LockScreen.svelte';
   import { lock } from '$lib/lock.svelte';
-  import { MediaQuery } from 'svelte/reactivity';
   import { isDesktop } from '$lib/platform';
   import { nav } from '$lib/nav.svelte';
   import { formatHash, parseHash } from '$lib/nav-route';
   import { store } from '$lib/state.svelte';
+  import { applyTheme, theme } from '$lib/theme.svelte';
+
+  // System changes (choice "system") and menu picks both land here.
+  $effect(() => applyTheme(theme.isDark));
 
   lock.beforeLock = () => store.flushArchive();
   void lock.init();
@@ -51,6 +54,8 @@
       locationId: locations.some((l) => l.id === place.locationId) ? place.locationId : null,
       listId: checklists.some((c) => c.id === place.listId) ? place.listId : null,
     };
+    // Riskler keeps its location filter in the URL (back button, saved links).
+    if (nav.place.section === 'register') nav.registerFilter = { ...nav.registerFilter, locationId: nav.place.locationId };
     history.replaceState(null, '', formatHash(nav.place));
   }
 
@@ -87,8 +92,6 @@
     event.preventDefault();
     event.returnValue = '';
   }
-  // Phone: toasts at the top so they never cover a dialog footer or the BottomNav.
-  const isPhone = new MediaQuery('max-width: 767px');
 </script>
 
 <svelte:window ondragover={onDragOver} ondrop={onDrop} onbeforeunload={onBeforeUnload} onhashchange={applyHash} onpopstate={applyHash} onpointerdown={() => lock.touch()} onpointermove={() => lock.touch()} onkeydown={() => lock.touch()} />
@@ -100,20 +103,20 @@
   <AppSidebar onAbout={() => (aboutOpen = true)} />
   <Sidebar.Inset class="min-w-0">
     <AppTopbar onAbout={() => (aboutOpen = true)} onPeriods={() => (periodsOpen = true)} />
-    <div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col gap-4 p-4 max-md:pb-24">
+    <div class="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4 p-4 md:p-6 max-md:pb-24">
       <Notices />
       <LockBanner />
       {#key store.refusedEdits}
       {#if nav.section === 'overview'}
         <OverviewPage />
+      {:else if nav.section === 'school'}
+        <SchoolPage />
       {:else if nav.section === 'locations'}
         <LocationsPage />
-      {:else if nav.section === 'deficiencies'}
-        <DeficienciesPage />
-      {:else if nav.section === 'register'}
+      {:else if nav.section === 'deficiencies' || nav.section === 'register'}
         <RiskRegisterPage />
       {:else if nav.section === 'report'}
-        <ReportPage onPeriods={() => (periodsOpen = true)} />
+        <ReportPage />
       {:else}
         <LibraryPage />
       {/if}
@@ -130,4 +133,4 @@
 <ConflictDialog />
 <DiscardDialog />
 {/if}
-<Toaster position={isPhone.current ? "top-center" : "bottom-right"} />
+<Toaster position="top-center" theme={theme.isDark ? 'dark' : 'light'} />

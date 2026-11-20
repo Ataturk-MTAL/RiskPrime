@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Button } from '$lib/components/ui/button';
   import X from '@lucide/svelte/icons/x';
+  import { listLabel } from '$lib/domain/checklist';
   import { answerOf, scopesOf } from '$lib/domain/inspections';
   import { addRowSource, listsForLocation, removeRowSource, sourceLabel, sourcesOf } from '$lib/domain/links';
   import type { RiskRow, RiskSource } from '$lib/domain/types';
@@ -18,7 +19,7 @@
     const own = listsForLocation(store.assessment, locationId).lists;
     return [...own, ...store.assessment.checklists.filter((c) => !own.includes(c))];
   });
-  const listOptions = $derived(orderedLists.map((c) => ({ value: c.id, label: `${c.code ? `${c.code} · ` : ''}${c.name || 'Adsız liste'}` })));
+  const listOptions = $derived(orderedLists.map((c) => ({ value: c.id, label: listLabel(c.code, c.name) })));
   let pickedListId = $state('');
   const listId = $derived(orderedLists.some((c) => c.id === pickedListId) ? pickedListId : (orderedLists[0]?.id ?? ''));
   // The inspection to link to: this row's location when the list has it, else the list's first scope.
@@ -51,7 +52,7 @@
       <p><b>{info.listName}</b> ({info.code || 'kodsuz'}) · madde {info.no} · cevap: <b>{SOURCE_ANSWER_TEXT[info.answer]}</b></p>
       <p class="text-muted-foreground">{info.text}</p>
       <div class="flex flex-wrap gap-2">
-        <Button variant="outline" size="sm" onclick={() => nav.openLocation(info.locationId ?? locationId, 'inspections', info.listId)}>Maddeye git</Button>
+        <Button variant="outline" size="sm" onclick={() => nav.openItem(info.locationId, info.listId)}>Maddeye git</Button>
         <Button variant="outline" size="icon-sm" aria-label="Bağlantıyı kaldır: {sourceLabel(info)}" onclick={() => unlink(info)}><X /></Button>
       </div>
     </div>

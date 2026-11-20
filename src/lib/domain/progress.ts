@@ -1,4 +1,4 @@
-// Counts behind the "Genel bakış" page: one summary per MEB workflow step.
+// Counts behind the Başla page: one summary per MEB workflow step.
 import { isOverdue } from "./assessment";
 import { summary } from "./checklist";
 import { inspectionSummary } from "./inspections";
@@ -49,7 +49,7 @@ export function progress(a: Assessment, today: Date) {
     state: stateOf(answered, total),
   };
 
-  // The eksik (Hayır) answers waiting to become risk rows.
+  // The deficiency ("Hayır") answers waiting to become risk rows.
   const untransferred = countUntransferred(a);
   const transferred = Math.max(0, checklists.missing - untransferred);
   const transfer = {
@@ -62,7 +62,7 @@ export function progress(a: Assessment, today: Date) {
         ? "todo"
         : "done") as StepState,
   };
-  // School-wide inspections (lists without locations) are answered on the report page.
+  // School-wide inspections (lists without locations) are answered on the Okul page.
   const wide = a.inspections
     .filter((i) => i.locationId === null)
     .map((i) => inspectionSummary(a, i));
@@ -93,10 +93,7 @@ export function progress(a: Assessment, today: Date) {
       return r.status === "open" && level !== null && SERIOUS.includes(level.key);
     }).length,
     overdue: rows.filter((r) => isOverdue(r, today)).length,
-    firstUnscoredLocationId:
-      a.locations.find((l) => l.rows.some((r) => riskLevel(r.likelihood, r.severity) === null))
-        ?.id ?? null,
-    // Done needs every row scored and no eksik still waiting to become a row.
+    // Done needs every row scored and no deficiency still waiting to become a row.
     state: (untransferred > 0 && scored === rows.length
       ? "doing"
       : stateOf(scored, rows.length)) as StepState,
@@ -126,4 +123,23 @@ export function progress(a: Assessment, today: Date) {
   };
 
   return { school, checklists, schoolWide, transfer, risk, readiness: readinessSummary, levels };
+}
+
+export type StepKey = "school" | "checklists" | "transfer" | "risk" | "readiness";
+const STEP_ORDER: readonly StepKey[] = ["school", "checklists", "transfer", "risk", "readiness"];
+
+/** The step the start page points at: the first one not done yet, or null when all are done. */
+export function nextStep(steps: Record<StepKey, { state: StepState }>): StepKey | null {
+  return STEP_ORDER.find((k) => steps[k].state !== "done") ?? null;
+}
+
+/** Where unanswered checklist items are left: locations first, then school-wide; null when none. */
+export function unansweredScope(p: {
+  checklists: { answered: number; total: number };
+  schoolWide: { answered: number; total: number };
+}): "locations" | "school" | null {
+  const open = p.checklists.total - p.checklists.answered;
+  const wideOpen = p.schoolWide.total - p.schoolWide.answered;
+  if (open - wideOpen > 0) return "locations";
+  return wideOpen > 0 ? "school" : null;
 }

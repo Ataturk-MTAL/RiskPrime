@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vite-plus/test";
-import { addLocation, addRow, emptyAssessment, updateRow } from "./assessment";
+import { addLocation, addRow, emptyAssessment, removeRow, updateRow } from "./assessment";
 import { addChecklist } from "./checklist";
 import { hazardOf, riskRowFromChecklistItem } from "./checklist-risk";
 import { setChecklistLocations } from "./links";
@@ -8,7 +8,11 @@ import {
   deficiencyCounts,
   filterDeficiencies,
   filterRegister,
+  groupByLocation,
+  keepPinned,
   levelCounts,
+  matchesRegisterFilter,
+  pinRegister,
   deficienciesWithState,
   isTransferred,
 } from "./filters";
@@ -114,7 +118,7 @@ describe("filterRegister", () => {
 });
 
 describe("school-wide filter", () => {
-  test("matches only okul geneli deficiencies", () => {
+  test("matches only school-wide deficiencies", () => {
     const { a } = sample();
     const all = deficiencies(a);
     const wide = { ...all[0], locationId: null };
@@ -169,5 +173,96 @@ describe("filterDeficiencies with merged common items", () => {
 
   test("does not match an unrelated list", () => {
     expect(filterDeficiencies([merged], filter("k3"))).toHaveLength(0);
+  });
+});
+
+describe("groupByLocation", () => {
+  test("groups by location in first-seen order and keeps item order", () => {
+    // Arrange
+    const items = [
+      { locationId: "l2", locationName: "Atölye", n: 1 },
+      { locationId: "l1", locationName: "Depo", n: 2 },
+      { locationId: "l2", locationName: "Atölye", n: 3 },
+    ];
+    // Act
+    const groups = groupByLocation(items);
+    // Assert
+    expect(groups.map((g) => [g.key, g.name, g.items.map((i) => i.n)])).toEqual([
+      ["l2", "Atölye", [1, 3]],
+      ["l1", "Depo", [2]],
+    ]);
+  });
+
+  test("school-wide items share the school-wide key", () => {
+    const groups = groupByLocation([{ locationId: null, locationName: "Okul geneli" }]);
+    expect(groups[0].key).toBe(SCHOOL_WIDE_FILTER);
+  });
+});
+
+describe("filterRegister unscored", () => {
+  test("keeps only rows without a level", () => {
+    // Arrange
+    let a = emptyAssessment("2026-2027");
+    a = addLocation(a, { id: "l1", name: "Depo" });
+    a = addRow(a, "l1", { id: "r1", hazard: "Puanlı" });
+    a = addRow(a, "l1", { id: "r2", hazard: "Puansız" });
+    a = updateRow(a, "l1", "r1", { likelihood: 3, severity: 4 });
+    // Act
+    const out = filterRegister(riskRegister(a), { ...ALL_RISKS, level: "unscored" }, TODAY);
+    // Assert
+    expect(out.map((e) => e.row.id)).toEqual(["r2"]);
+  });
+});
+
+describe("pinned register rows", () => {
+  function twoUnscored() {
+    let a = emptyAssessment("2026-2027");
+    a = addLocation(a, { id: "l1", name: "Depo" });
+    a = addLocation(a, { id: "l2", name: "Atölye" });
+    a = addRow(a, "l1", { id: "r1", hazard: "Bir" });
+    return addRow(a, "l1", { id: "r2", hazard: "İki" });
+  }
+  const unscored = { ...ALL_RISKS, level: "unscored" as const };
+
+  test("a row scored under Puansız stays listed and no longer matches", () => {
+    // Arrange
+    const before = twoUnscored();
+    const pin = pinRegister(riskRegister(before), unscored, TODAY);
+    const after = updateRow(before, "l1", "r1", { likelihood: 3, severity: 4 });
+    // Act
+    const shown = keepPinned(riskRegister(after), pin);
+    // Assert
+    expect(shown.map((e) => e.row.id)).toEqual(["r1", "r2"]);
+    expect(shown.map((e) => matchesRegisterFilter(e, unscored, TODAY))).toEqual([false, true]);
+  });
+
+  test("rows added since come last, only for the filtered location", () => {
+    const before = twoUnscored();
+    const pin = pinRegister(riskRegister(before), { ...unscored, locationId: "l1" }, TODAY);
+    const after = addRow(addRow(before, "l1", { id: "r3" }), "l2", { id: "r4" });
+    expect(keepPinned(riskRegister(after), pin).map((e) => e.row.id)).toEqual(["r1", "r2", "r3"]);
+  });
+
+  test("re-pinning a replaced assessment shows its filtered rows worst first", () => {
+    // Arrange
+    const stale = pinRegister(riskRegister(twoUnscored()), ALL_RISKS, TODAY);
+    let next = emptyAssessment("2027-2028");
+    next = addLocation(next, { id: "n1", name: "Lab" });
+    next = addRow(next, "n1", { id: "low", likelihood: 1, severity: 1 });
+    next = addRow(next, "n1", { id: "unscored" });
+    next = addRow(next, "n1", { id: "worst", likelihood: 5, severity: 5 });
+    const entries = riskRegister(next);
+    // Act
+    const fresh = keepPinned(entries, pinRegister(entries, ALL_RISKS, TODAY));
+    // Assert
+    expect(keepPinned(entries, stale).map((e) => e.row.id)).toEqual(["low", "unscored", "worst"]);
+    expect(fresh.map((e) => e.row.id)).toEqual(["worst", "low", "unscored"]);
+  });
+
+  test("a deleted row drops out", () => {
+    const before = twoUnscored();
+    const pin = pinRegister(riskRegister(before), unscored, TODAY);
+    const after = removeRow(before, "l1", "r2");
+    expect(keepPinned(riskRegister(after), pin).map((e) => e.row.id)).toEqual(["r1"]);
   });
 });

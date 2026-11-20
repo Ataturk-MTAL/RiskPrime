@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vite-plus/test";
-import { addLocation, emptyAssessment } from "./assessment";
+import { addLocation, addRow, emptyAssessment } from "./assessment";
+import { hasDeficiencyRisk, itemRiskRows, similarRows } from "./checklist-risk";
 import { answerOf, deficiencies, ensureInspections } from "./inspections";
 import {
   commonOfItem,
@@ -9,9 +10,8 @@ import {
   siblingTargets,
 } from "./common-items";
 import { deficienciesWithState } from "./filters";
-import { rowsForItem } from "./links";
-import { countUntransferred, isUntransferred, transferMissing } from "./transfer";
-import { countUntransferredInspection, transferInspection } from "./transfer-inspection";
+import { addRowSource } from "./links";
+import { addRowsForDeficiencies, countUntransferred, transferMissing } from "./transfer";
 import { withAnswers } from "./test-helpers";
 import type { Assessment, BankQuestion } from "./types";
 
@@ -78,7 +78,7 @@ describe("common items", () => {
     expect(siblingTargets(a, "kb", "b2", "l1", BANK)).toEqual([]);
   });
 
-  test("siblingTargets matches okul geneli (null) siblings", () => {
+  test("siblingTargets matches school-wide (null) siblings", () => {
     const base = sample();
     const a = ensureInspections({
       ...base,
@@ -155,18 +155,6 @@ describe("common deficiencies and transfer", () => {
     expect(countUntransferred(scoped.assessment)).toBe(0);
   });
 
-  test("single-inspection transfer marks the siblings transferred", () => {
-    const a = answered();
-    const r = transferInspection(a, "kb", "l1");
-    expect(r.created).toBe(1);
-    expect(rowsForItem(r.assessment, "ka", "a1", "l1")).toHaveLength(1);
-    expect(countUntransferredInspection(r.assessment, "ka", "l1")).toBe(0);
-    const list = r.assessment.checklists[0];
-    expect(isUntransferred(r.assessment, list, list.items[0], r.assessment.inspections[0])).toBe(
-      false,
-    );
-  });
-
   test("deficienciesWithState reports the merged deficiency transferred after one transfer", () => {
     const before = deficienciesWithState(answered());
     expect(before).toHaveLength(1);
@@ -174,5 +162,113 @@ describe("common deficiencies and transfer", () => {
     const after = deficienciesWithState(transferMissing(answered()).assessment);
     expect(after).toHaveLength(1);
     expect(after[0].transferred).toBe(true);
+  });
+
+  /** B's common item linked on its own to a fresh row "r1" in l1 (A and C stay unlinked). */
+  const siblingLinked = () =>
+    addRowSource(addRow(answered(), "l1", { id: "r1" }), "l1", "r1", {
+      listId: "kb",
+      itemId: "b1",
+      locationId: "l1",
+    });
+
+  test("a sibling linked on its own counts as the item's row (hides Riske ekle)", () => {
+    // Arrange
+    const a = siblingLinked();
+
+    // Act
+    const rows = itemRiskRows(a, "ka", "a1", "l1", BANK);
+
+    // Assert
+    expect(rows.map((r) => r.rowId)).toEqual(["r1"]);
+    expect(hasDeficiencyRisk(a, "ka", "a1", "l1", "l1", BANK)).toBe(true);
+    expect(hasDeficiencyRisk(answered(), "ka", "a1", "l1", "l1", BANK)).toBe(false);
+  });
+
+  test("a row linked via a sibling is not suggested as a similar row", () => {
+    // Arrange: r1 reads exactly like A's item and is linked only to the sibling B at l1
+    const hazard = "x (KL-01.17)";
+    const unlinked = addRow(answered(), "l1", { id: "r1", hazard });
+    const linked = addRowSource(unlinked, "l1", "r1", {
+      listId: "kb",
+      itemId: "b1",
+      locationId: "l1",
+    });
+
+    // Act
+    const before = similarRows(unlinked, "ka", "a1", "l1", "l1", BANK);
+    const after = similarRows(linked, "ka", "a1", "l1", "l1", BANK);
+
+    // Assert
+    expect(before.map((h) => h.rowId)).toEqual(["r1"]);
+    expect(after).toEqual([]);
+  });
+
+  test("item rows list a row linked to several siblings once", () => {
+    // Arrange: one row made from A carries A, B and C as sources
+    const a = transferMissing(answered()).assessment;
+
+    // Act
+    const rows = itemRiskRows(a, "ka", "a1", "l1", BANK);
+
+    // Assert
+    expect(rows).toHaveLength(1);
+  });
+
+  test("bulk add from deficiencies: a second run creates no rows", () => {
+    // Arrange
+    const targets = [{ listId: "ka", itemId: "a1", locationId: "l1", target: "l1" }];
+    const first = addRowsForDeficiencies(answered(), targets, BANK);
+
+    // Act
+    const second = addRowsForDeficiencies(first.assessment, targets, BANK);
+
+    // Assert
+    expect(first.created).toBe(1);
+    expect(second.created).toBe(0);
+    expect(second.assessment).toBe(first.assessment);
+  });
+
+  test("bulk add from deficiencies: common siblings in one run share one row", () => {
+    // Arrange
+    const targets = ["ka:a1", "kb:b1", "kc:c1"].map((t) => {
+      const [listId, itemId] = t.split(":");
+      return { listId, itemId, locationId: "l1", target: "l1" };
+    });
+
+    // Act
+    const r = addRowsForDeficiencies(answered(), targets, BANK);
+
+    // Assert
+    expect(r.created).toBe(1);
+    expect(r.assessment.locations[0].rows).toHaveLength(1);
+  });
+
+  test("bulk add from deficiencies skips an item whose sibling is already linked", () => {
+    // Arrange
+    const a = siblingLinked();
+
+    // Act
+    const r = addRowsForDeficiencies(
+      a,
+      [{ listId: "ka", itemId: "a1", locationId: "l1", target: "l1" }],
+      BANK,
+    );
+
+    // Assert
+    expect(r.created).toBe(0);
+    expect(r.assessment.locations[0].rows).toHaveLength(1);
+  });
+
+  test("bulk add from deficiencies uses the given bank for the sources of the new row", () => {
+    // Arrange: a bank where the three items are not common siblings
+    const noCommon = [q("KL-01.17"), q("KL-04.07"), q("KL-05.05")];
+    const targets = [{ listId: "ka", itemId: "a1", locationId: "l1", target: "l1" }];
+
+    // Act
+    const r = addRowsForDeficiencies(answered(), targets, noCommon);
+
+    // Assert
+    expect(r.assessment.locations[0].rows[0].sources).toHaveLength(1);
   });
 });

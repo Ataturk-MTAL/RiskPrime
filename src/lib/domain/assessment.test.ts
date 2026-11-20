@@ -188,25 +188,3 @@ describe("isOverdue", () => {
     expect(m.isOverdue(row({ dueDate: "yakında" }), today)).toBe(false);
   });
 });
-
-describe("filterRows", () => {
-  const today = new Date(2026, 8, 15);
-  const rows = [
-    { ...m.emptyRow("1"), equipment: "Işık", likelihood: 2 as const, severity: 2 as const },
-    { ...m.emptyRow("2"), hazard: "IŞIK kaçağı", dueDate: "01.01.2026" },
-    { ...m.emptyRow("3"), responsible: "Ali", status: "done" as const },
-  ];
-
-  test("matches case-insensitively with Turkish casing and keeps original numbers", () => {
-    const out = m.filterRows(rows, "ışık", "all", today);
-    expect(out.map((x) => x.number)).toEqual([1, 2]);
-  });
-  test("searches responsible and action", () => {
-    expect(m.filterRows(rows, "ali", "all", today).map((x) => x.number)).toEqual([3]);
-  });
-  test("status filters: unscored, open, overdue", () => {
-    expect(m.filterRows(rows, "", "unscored", today).map((x) => x.number)).toEqual([2, 3]);
-    expect(m.filterRows(rows, "", "open", today).map((x) => x.number)).toEqual([1, 2]);
-    expect(m.filterRows(rows, "", "overdue", today).map((x) => x.number)).toEqual([2]);
-  });
-});

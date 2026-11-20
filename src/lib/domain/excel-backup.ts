@@ -79,6 +79,12 @@ const COMPUTED_HEADERS = ["Skor", "Düzey", "Skor (önlem sonrası)", "Düzey (�
 // that location's inspection) the row came from; see sourceRef.
 const SOURCE_HEADER = "Kaynak Madde";
 
+// Older app versions only recognise "Ortak" in files, so the file keeps that label for common.
+const FILE_TYPE_LABELS: Record<LocationType, string> = {
+  ...LOCATION_TYPE_LABELS,
+  common: "Ortak (tüm mekânlar)",
+};
+
 const STATUS_LOOKUP = lookup(STATUS_LABELS, [[norm("Tamamlandı"), "done"]]);
 const SOURCE_SEPARATOR = "; ";
 
@@ -103,7 +109,7 @@ function riskSheet(a: Assessment): Table {
       const level = (x: ReturnType<typeof riskLevel>) => x?.label ?? "";
       return [
         l.name,
-        LOCATION_TYPE_LABELS[l.type],
+        FILE_TYPE_LABELS[l.type],
         l.building,
         l.area,
         r.equipment,
@@ -142,13 +148,7 @@ export function backupSheets(a: Assessment): Record<string, Table> {
     [SHEET_SCHOOL]: schoolSheet(a),
     [SHEET_LOCATIONS]: [
       [...LOCATION_COLUMNS.map(([, h]) => h), LOCATION_KEY_HEADER],
-      ...a.locations.map((l, i) => [
-        l.name,
-        LOCATION_TYPE_LABELS[l.type],
-        l.building,
-        l.area,
-        i + 1,
-      ]),
+      ...a.locations.map((l, i) => [l.name, FILE_TYPE_LABELS[l.type], l.building, l.area, i + 1]),
     ],
     [SHEET_RISK]: riskSheet(a),
     [SHEET_CHECKLIST]: checklistSheet(a),

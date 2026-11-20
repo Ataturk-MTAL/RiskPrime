@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vite-plus/test";
 import { emptyAssessment } from "./assessment";
-import { progress } from "./progress";
+import { nextStep, progress, unansweredScope, type StepState } from "./progress";
 import { withAnswers } from "./test-helpers";
 import type { Assessment, ChecklistItem, RiskRow } from "./types";
 
@@ -97,7 +97,7 @@ describe("progress", () => {
     });
   });
 
-  test("counts answers, eksik items and the first incomplete list", () => {
+  test("counts answers, deficiencies and the first incomplete list", () => {
     const { checklists } = progress(sample(), today);
     expect(checklists).toMatchObject({
       answered: 3,
@@ -110,7 +110,7 @@ describe("progress", () => {
     });
   });
 
-  test("counts scored rows, serious levels, overdue rows, untransferred eksik and first unscored location", () => {
+  test("counts scored rows, serious levels, overdue rows and untransferred deficiencies", () => {
     const { risk } = progress(sample(), today);
     expect(risk).toMatchObject({
       scored: 2,
@@ -118,7 +118,6 @@ describe("progress", () => {
       serious: 1,
       overdue: 1,
       untransferred: 1,
-      firstUnscoredLocationId: "l2",
       state: "doing",
     });
   });
@@ -163,5 +162,62 @@ describe("progress", () => {
   test("the signing review is blocked until an earlier step has begun", () => {
     expect(progress(emptyAssessment(""), today).readiness.state).toBe("blocked");
     expect(progress(sample(), today).readiness.state).toBe("doing");
+  });
+});
+
+describe("nextStep", () => {
+  const steps = (
+    school: StepState,
+    checklists: StepState,
+    transfer: StepState,
+    risk: StepState,
+    readiness: StepState,
+  ) => ({
+    school: { state: school },
+    checklists: { state: checklists },
+    transfer: { state: transfer },
+    risk: { state: risk },
+    readiness: { state: readiness },
+  });
+
+  test("returns the first step that is not done", () => {
+    // Arrange
+    const input = steps("done", "doing", "todo", "todo", "doing");
+    // Act
+    const next = nextStep(input);
+    // Assert
+    expect(next).toBe("checklists");
+  });
+
+  test("an empty assessment starts with the school step", () => {
+    expect(nextStep(progress(emptyAssessment(""), today))).toBe("school");
+  });
+
+  test("returns null when every step is done", () => {
+    expect(nextStep(steps("done", "done", "done", "done", "done"))).toBeNull();
+  });
+});
+
+describe("unansweredScope", () => {
+  const counts = (answered: number, total: number, wideAnswered: number, wideTotal: number) => ({
+    checklists: { answered, total },
+    schoolWide: { answered: wideAnswered, total: wideTotal },
+  });
+
+  test("locations come first while any location item is open", () => {
+    // Arrange: 10 items, 4 of them school-wide; 2 location items and 1 school-wide item open
+    const input = counts(7, 10, 3, 4);
+    // Act
+    const scope = unansweredScope(input);
+    // Assert
+    expect(scope).toBe("locations");
+  });
+
+  test("only school-wide items left points to the school page", () => {
+    expect(unansweredScope(counts(9, 10, 3, 4))).toBe("school");
+  });
+
+  test("nothing left is null", () => {
+    expect(unansweredScope(counts(10, 10, 4, 4))).toBeNull();
   });
 });

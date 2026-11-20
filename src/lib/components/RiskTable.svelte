@@ -1,6 +1,6 @@
 <script lang="ts">
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
-  import CircleAlert from '@lucide/svelte/icons/circle-alert';
+  import Clock from '@lucide/svelte/icons/clock';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import * as Table from '$lib/components/ui/table';
@@ -8,18 +8,38 @@
   import ScaleInfo from './ScaleInfo.svelte';
   import SourceBadge from './SourceBadge.svelte';
   import SelectField from './SelectField.svelte';
+  import { RISK_TONE } from './shared-classes';
   import { LIKELIHOOD_OPTIONS, parseScore, scoreValue, SEVERITY_OPTIONS } from './score-options';
   import { isOverdue, STATUS_LABELS, updateRow } from '$lib/domain/assessment';
   import { riskLevel } from '$lib/domain/matrix';
   import type { RiskRow } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
 
-  let { items, locationId, openId, onopen }: { items: { row: RiskRow; number: number }[]; locationId: string; openId: string | null; onopen: (rowId: string) => void } = $props();
+  let {
+    items,
+    locationId,
+    openId,
+    onopen,
+    dimIds = new Set<string>(),
+    dimLabel = '',
+  }: { items: { row: RiskRow; number: number }[]; locationId: string; openId: string | null; onopen: (rowId: string) => void; dimIds?: ReadonlySet<string>; dimLabel?: string } = $props();
 
   const patch = (rowId: string, changes: Partial<RiskRow>) => store.apply((a) => updateRow(a, locationId, rowId, changes));
   // Clicks on the inline score selects or the chevron must not toggle through the row handler twice.
   const isControl = (e: Event) => (e.target as HTMLElement).closest('select, button') !== null;
   const today = new Date();
+  const toneOf = (r: RiskRow) => {
+    const level = riskLevel(r.likelihood, r.severity);
+    return level ? { ...RISK_TONE[level.key], keep: KEEP_TINT[level.key] } : null;
+  };
+  // Keeps the risk tint under TableRow's grey hover/selected fills (selection is shown by the ring). Full literals for Tailwind.
+  const KEEP_TINT = {
+    negligible: 'hover:bg-risk-negligible-soft data-[state=selected]:bg-risk-negligible-soft',
+    low: 'hover:bg-risk-low-soft data-[state=selected]:bg-risk-low-soft',
+    medium: 'hover:bg-risk-medium-soft data-[state=selected]:bg-risk-medium-soft',
+    high: 'hover:bg-risk-high-soft data-[state=selected]:bg-risk-high-soft',
+    intolerable: 'hover:bg-risk-intolerable-soft data-[state=selected]:bg-risk-intolerable-soft',
+  } as const;
   const clamp = 'line-clamp-3 whitespace-normal hyphens-auto';
 </script>
 
@@ -42,11 +62,12 @@
     </Table.Header>
     <Table.Body>
       {#each items as { row, number: n } (row.id)}
+        {@const tone = toneOf(row)}
         <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-        <Table.Row id="trow-{row.id}" class="cursor-pointer align-top" data-state={openId === row.id ? 'selected' : undefined} onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}>
-          <Table.Cell class="border-l-4 font-semibold text-muted-foreground" style="border-left-color:{riskLevel(row.likelihood, row.severity)?.background ?? 'transparent'}">{n}</Table.Cell>
+        <Table.Row id="trow-{row.id}" class="cursor-pointer align-top transition-colors duration-150 motion-reduce:transition-none data-[state=selected]:ring-2 data-[state=selected]:ring-inset data-[state=selected]:ring-ring {tone?.fill ?? ''} {tone?.keep ?? ''} {dimIds.has(row.id) ? 'opacity-60' : ''}" data-state={openId === row.id ? 'selected' : undefined} onclick={(e: MouseEvent) => !isControl(e) && onopen(row.id)}>
+          <Table.Cell class="font-semibold text-muted-foreground {tone?.stripe ?? ''}">{n}{#if dimIds.has(row.id)}<span class="block text-xs font-normal">{dimLabel}</span>{/if}</Table.Cell>
           <Table.Cell class="font-medium"><div class={clamp} title={row.equipment}>{row.equipment}</div></Table.Cell>
-          <Table.Cell><div class={clamp} title={row.hazard}>{row.hazard}</div><SourceBadge {row} {locationId} /></Table.Cell>
+          <Table.Cell><div class={clamp} title={row.hazard}>{row.hazard}</div><SourceBadge {row} /></Table.Cell>
           <Table.Cell class="px-1">
             <SelectField size="sm" class="px-1.5" label="Satır {n}: olasılık" options={LIKELIHOOD_OPTIONS} value={scoreValue(row.likelihood)} onValueChange={(v) => patch(row.id, { likelihood: parseScore(v) })} />
           </Table.Cell>
@@ -58,7 +79,8 @@
           <Table.Cell><div class={clamp} title={row.responsible}>{row.responsible}</div></Table.Cell>
           <Table.Cell>
             {STATUS_LABELS[row.status]}
-            {#if isOverdue(row, today)}<Badge variant="destructive" class="mt-1"><CircleAlert aria-hidden="true" />Süresi geçti</Badge>{/if}
+            {#if row.dueDate}<div class="text-xs text-muted-foreground tabular-nums">{row.dueDate}</div>{/if}
+            {#if isOverdue(row, today)}<Badge variant="outline" class="mt-1"><Clock aria-hidden="true" />Süresi geçti</Badge>{/if}
           </Table.Cell>
           <Table.Cell><LevelBadge likelihood={row.likelihoodAfter} severity={row.severityAfter} /></Table.Cell>
           <Table.Cell class="px-1">

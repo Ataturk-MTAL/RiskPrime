@@ -1,9 +1,48 @@
-// Bulk "eksik -> risk satiri": every "Hayir" item of an inspection without a linked row gets a row,
-// in the inspection's own location (okul geneli inspections use the list's default location).
-import { defaultLocationId, hazardOf, riskRowFromChecklistItem } from "./checklist-risk";
+// Bulk "deficiency -> risk row": every "no" answer of an inspection without a linked row gets a row,
+// in the inspection's own location (school-wide inspections use the list's default location).
+import {
+  defaultLocationId,
+  hasDeficiencyRisk,
+  hazardOf,
+  riskRowFromChecklistItem,
+} from "./checklist-risk";
 import { isDuplicateDeficiency, siblingTargets } from "./common-items";
 import { rowsForItem } from "./links";
-import type { Assessment, Checklist, ChecklistItem, Inspection } from "./types";
+import { loadBank } from "./question-bank";
+import type { Assessment, BankQuestion, Checklist, ChecklistItem, Inspection } from "./types";
+
+/** A deficiency of one inspection (locationId = its scope) and the location its row goes to. */
+export interface DeficiencyTarget {
+  listId: string;
+  itemId: string;
+  locationId: string | null;
+  target: string;
+}
+
+/** One row per deficiency that has none yet; a common sibling added earlier in the run is skipped. */
+export function addRowsForDeficiencies(
+  a: Assessment,
+  targets: DeficiencyTarget[],
+  bank: BankQuestion[] = loadBank(),
+): { assessment: Assessment; created: number } {
+  return targets.reduce(
+    (acc, t) =>
+      hasDeficiencyRisk(acc.assessment, t.listId, t.itemId, t.locationId, t.target, bank)
+        ? acc
+        : {
+            assessment: riskRowFromChecklistItem(
+              acc.assessment,
+              t.listId,
+              t.itemId,
+              t.locationId,
+              t.target,
+              bank,
+            ),
+            created: acc.created + 1,
+          },
+    { assessment: a, created: 0 },
+  );
+}
 
 export interface TransferResult {
   assessment: Assessment;

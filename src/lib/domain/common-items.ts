@@ -26,7 +26,7 @@ export const commonOfItem = (
   bank: BankQuestion[] = loadBank(),
 ): string | undefined => (item.ref ? commonIndex(bank).get(item.ref) : undefined);
 
-/** Items of OTHER inspections at the SAME location (null = okul geneli) that share the item's common id. */
+/** Items of OTHER inspections at the SAME location (null = school-wide) that share the item's common id. */
 export function siblingTargets(
   a: Assessment,
   listId: string,

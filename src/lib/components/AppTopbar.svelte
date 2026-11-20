@@ -9,7 +9,6 @@
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Separator } from '$lib/components/ui/separator';
   import * as Sidebar from '$lib/components/ui/sidebar';
-  import ExportMenu from './ExportMenu.svelte';
   import HistoryDialog from './HistoryDialog.svelte';
   import LockSettingsDialog, { type LockSettingsMode } from './LockSettingsDialog.svelte';
   import UserAvatar from './UserAvatar.svelte';
@@ -18,8 +17,11 @@
   import { isDesktop } from '$lib/platform';
   import { nav } from '$lib/nav.svelte';
   import { SECTION_LABELS } from '$lib/nav-items';
+  import { listLabel } from '$lib/domain/checklist';
   import { formatHash, HOME } from '$lib/nav-route';
   import { store } from '$lib/state.svelte';
+  import type { ThemeChoice } from '$lib/theme-choice';
+  import { theme } from '$lib/theme.svelte';
   import { downloadBlankTemplate, downloadMebTemplate } from '$lib/templates';
 
   let { onAbout, onPeriods }: { onAbout: () => void; onPeriods: () => void } = $props();
@@ -54,7 +56,7 @@
 
   const templateLabel = (id: string | null) => {
     const list = store.assessment.checklists.find((c) => c.id === id);
-    return list ? `${list.code ? `${list.code} · ` : ''}${list.name}` : '';
+    return list ? listLabel(list.code, list.name) : '';
   };
 
   /** Section, then the location / view / checklist the place points at; the last crumb is the current page. */
@@ -65,13 +67,20 @@
       const list = templateLabel(p.listId);
       return list ? [root, { label: list }] : [{ label: root.label }];
     }
+    const register: Crumb = { label: SECTION_LABELS.register, href: formatHash({ ...HOME, section: 'register' }) };
+    // The deficiency view lives under Riskler.
+    if (p.section === 'deficiencies') return [register, { label: SECTION_LABELS.deficiencies }];
     const loc = store.assessment.locations.find((l) => l.id === p.locationId);
-    if (p.section !== 'locations' || !loc) return [{ label: root.label }];
-    const locCrumb = { label: loc.name || 'Adsız mekân', href: formatHash({ ...p, locationView: 'inspections', listId: null }) };
-    if (p.locationView === 'risk') return [root, locCrumb, { label: 'Risk tablosu' }];
+    if (!loc) return [{ label: root.label }];
+    const locName = loc.name || 'Adsız mekân';
+    // Riskler filtered to one location: the location crumb leads back to its checklists.
+    if (p.section === 'register') {
+      const locHref = formatHash({ ...HOME, section: 'locations', locationId: loc.id });
+      return [register, { label: locName, href: locHref }, { label: 'Risk satırları' }];
+    }
     const list = templateLabel(p.listId);
-    if (!list) return [root, locCrumb, { label: 'Denetimler' }];
-    return [root, locCrumb, { label: 'Denetimler', href: formatHash({ ...p, listId: null }) }, { label: list }];
+    if (!list) return [root, { label: locName }];
+    return [root, { label: locName, href: formatHash({ ...p, listId: null }) }, { label: list }];
   });
 
   function onPick(event: Event & { currentTarget: HTMLInputElement }) {
@@ -106,7 +115,6 @@
       {/if}
     </div>
     <Button variant="outline" aria-label="Kaydet (.json)" onclick={() => store.exportAs('json')}><Save /><span class="max-sm:hidden">Kaydet</span></Button>
-    <ExportMenu />
     <DropdownMenu.Root>
       <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline' })} aria-label="Dosya işlemleri">
         <Ellipsis class="sm:hidden" aria-hidden="true" /><span class="max-sm:hidden">Dosya</span><ChevronDown class="max-sm:hidden" aria-hidden="true" />
@@ -114,8 +122,18 @@
       <DropdownMenu.Content align="end" class="w-80">
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newFromStarter())}>Yeni (okul verisiyle)</DropdownMenu.Item>
         <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newEmpty())}>Yeni (boş)</DropdownMenu.Item>
-        <DropdownMenu.Item onSelect={() => afterMenuCloses(() => store.newPeriod())}>Yeni dönem (bu çalışmadan)</DropdownMenu.Item>
+        <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={() => afterMenuCloses(() => store.newPeriod())}>
+          <span>Yeni dönem (bu çalışmadan)</span>
+          <span class="text-xs text-muted-foreground">Mekânlar, listeler ve risk satırları kalır, önlem sonrası puanlar güncel puan olur; cevaplar, tarihler ve durumlar sıfırlanır.</span>
+        </DropdownMenu.Item>
         <DropdownMenu.Item onSelect={() => afterMenuCloses(onPeriods)}>Dönemler…</DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Label class="text-xs text-muted-foreground">Görünüm</DropdownMenu.Label>
+        <DropdownMenu.RadioGroup value={theme.choice} onValueChange={(v) => theme.set(v as ThemeChoice)}>
+          <DropdownMenu.RadioItem value="light" closeOnSelect={false}>Açık</DropdownMenu.RadioItem>
+          <DropdownMenu.RadioItem value="dark" closeOnSelect={false}>Koyu</DropdownMenu.RadioItem>
+          <DropdownMenu.RadioItem value="system" closeOnSelect={false}>Sistem</DropdownMenu.RadioItem>
+        </DropdownMenu.RadioGroup>
         <DropdownMenu.Separator />
         <DropdownMenu.Item class="flex-col items-start gap-0" onSelect={() => fileInput.click()}>
           <span class="font-semibold">Dosya aç…</span>

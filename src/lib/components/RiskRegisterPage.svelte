@@ -1,29 +1,72 @@
 <script lang="ts">
-  import CircleAlert from '@lucide/svelte/icons/circle-alert';
-  import { Badge } from '$lib/components/ui/badge';
+  import ArrowLeft from '@lucide/svelte/icons/arrow-left';
+  import ChevronDown from '@lucide/svelte/icons/chevron-down';
+  import Funnel from '@lucide/svelte/icons/funnel';
+  import FunnelX from '@lucide/svelte/icons/funnel-x';
+  import MapPinOff from '@lucide/svelte/icons/map-pin-off';
+  import Table2 from '@lucide/svelte/icons/table-2';
+  import { untrack } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { Checkbox } from '$lib/components/ui/checkbox';
+  import * as Collapsible from '$lib/components/ui/collapsible';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
-  import * as Table from '$lib/components/ui/table';
-  import LevelBadge from './LevelBadge.svelte';
+  import DeficienciesPage from './DeficienciesPage.svelte';
+  import EmptyState from './EmptyState.svelte';
+  import LocationEditor from './LocationEditor.svelte';
+  import PageHeader from './PageHeader.svelte';
   import SelectField from './SelectField.svelte';
-  import { isOverdue, STATUS_LABELS } from '$lib/domain/assessment';
-  import { filterRegister, LEVEL_ORDER, levelCounts } from '$lib/domain/filters';
-  import { riskRegister, type RegisterEntry } from '$lib/domain/inspections';
-  import { LEVELS } from '$lib/domain/matrix';
+  import { INTERACTIVE_ROW } from './shared-classes';
+  import { STATUS_LABELS } from '$lib/domain/assessment';
+  import { filterRegister, groupByLocation, keepPinned, levelCounts, matchesRegisterFilter, pinRegister, type RegisterPin } from '$lib/domain/filters';
+  import { riskRegister } from '$lib/domain/inspections';
+  import { countUntransferred } from '$lib/domain/transfer';
   import { nav, type RegisterFilter } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
+  type LevelFilter = { level: RegisterFilter['level']; label: string; count: number };
+
   const ALL = 'all';
-  const clamp = 'line-clamp-3 whitespace-normal hyphens-auto';
   const today = new Date();
 
   const a = $derived(store.assessment);
   const filter = $derived(nav.registerFilter);
   const everything = $derived(riskRegister(a));
-  const shown = $derived(filterRegister(everything, filter, today));
   const counts = $derived(levelCounts(everything, filter, today));
+  const untransferred = $derived(countUntransferred(a));
+  const isDeficiencyView = $derived(nav.section === 'deficiencies');
+  const isNarrowed = $derived(filter.level !== 'all' || filter.status !== 'all' || filter.overdue || filter.query !== '');
+
+  let pin = $state<RegisterPin | null>(null);
+  /** Groups the user opened or closed under the current filter; others use the default below. */
+  let openOverrides = $state<Record<string, boolean>>({});
+  // Every new filter object (a facet change, or re-choosing the same filter) or a newly opened document pins what it shows now.
+  $effect.pre(() => {
+    const f = nav.registerFilter;
+    void store.loadCount;
+    untrack(() => {
+      pin = pinRegister(everything, f, today);
+      openOverrides = {};
+    });
+  });
+  const shown = $derived(pin ? keepPinned(everything, pin) : filterRegister(everything, filter, today));
+  const dimIds = $derived(new Set(shown.filter((e) => !matchesRegisterFilter(e, filter, today)).map((e) => e.row.id)));
+  const dimLabel = $derived(filter.level === 'unscored' ? 'puanlandı' : 'güncellendi');
+  const groups = $derived(groupByLocation(shown));
+  const unscoredIn = (items: typeof shown) => items.filter((e) => !e.level).length;
+  // Unfiltered, only groups with unscored rows start open; a narrowed list opens everything it shows.
+  const isGroupOpen = (key: string, items: typeof shown) => openOverrides[key] ?? (isNarrowed || unscoredIn(items) > 0);
+  const filteredLocation = $derived(a.locations.find((l) => l.id === filter.locationId));
+
+  // A filter with nothing behind it is not offered (except "Tümü" and the active one).
+  const levelFilters = $derived.by(() => {
+    const all: LevelFilter[] = [
+      { level: 'all', label: 'Tümü', count: counts.all },
+      { level: 'serious', label: 'Yüksek ve tolere edilemez', count: counts.serious },
+      { level: 'unscored', label: 'Puansız', count: counts.unscored },
+    ];
+    return all.filter((f) => f.level === 'all' || f.level === filter.level || f.count > 0);
+  });
 
   const locationOptions = $derived([{ value: ALL, label: 'Tüm mekânlar' }, ...a.locations.map((l) => ({ value: l.id, label: l.name || 'Adsız mekân' }))]);
   const statusOptions = [
@@ -33,101 +76,75 @@
   ];
 
   const patch = (changes: Partial<RegisterFilter>) => (nav.registerFilter = { ...filter, ...changes });
-  const reset = () => (nav.registerFilter = { level: 'all', locationId: null, status: 'all', overdue: false, query: '' });
-  const isFiltered = $derived(filter.level !== 'all' || filter.locationId !== null || filter.status !== 'all' || filter.overdue || filter.query !== '');
-  const open = (e: RegisterEntry) => nav.openRow(e.locationId, e.row.id);
+  const isFiltered = $derived(isNarrowed || filter.locationId !== null);
 </script>
 
-{#snippet overdueBadge(e: RegisterEntry)}
-  {#if isOverdue(e.row, today)}<Badge variant="destructive" class="mt-1"><CircleAlert aria-hidden="true" />Süresi geçti</Badge>{/if}
-{/snippet}
-
-<div class="mx-auto w-full max-w-6xl space-y-4 p-4">
-  <h1 class="text-xl font-semibold">Risk kaydı</h1>
-
-  <div class="flex flex-wrap items-center gap-2">
-    <Button variant={filter.level === 'all' ? 'default' : 'outline'} size="sm" aria-pressed={filter.level === 'all'} onclick={() => patch({ level: 'all' })}>Tümü ({counts.all})</Button>
-    <Button variant={filter.level === 'serious' ? 'default' : 'outline'} size="sm" aria-pressed={filter.level === 'serious'} onclick={() => patch({ level: 'serious' })}>Yüksek ve tolere edilemez ({counts.serious})</Button>
-    <span class="mx-1 hidden h-5 w-px bg-border sm:block" aria-hidden="true"></span>
-    {#each LEVEL_ORDER as key (key)}
-      <Badge class="h-auto min-h-5 whitespace-normal leading-tight" style="background:{LEVELS[key].background};color:{LEVELS[key].text}">{LEVELS[key].label}: {counts[key]}</Badge>
-    {/each}
-    <Badge variant="outline">Puansız: {counts.unscored}</Badge>
+<div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-1">
+    {#if filteredLocation}
+      <Button variant="link" class="h-auto self-start p-0" onclick={() => nav.openLocation(filteredLocation.id)}><ArrowLeft />{filteredLocation.name || 'Adsız mekân'} kontrol listeleri</Button>
+    {/if}
+    <PageHeader title="Riskler" />
   </div>
 
-  <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.5fr_auto]">
-    <SelectField label="Mekân" options={locationOptions} value={filter.locationId ?? ALL} onValueChange={(v) => patch({ locationId: v === ALL ? null : v })} />
-    <SelectField label="Durum" options={statusOptions} value={filter.status} onValueChange={(v) => patch({ status: v as RegisterFilter['status'] })} />
-    <Input type="search" aria-label="Risk kaydında ara" placeholder="Ara…" value={filter.query} oninput={(e) => patch({ query: e.currentTarget.value })} />
-    <Label class="flex min-h-9 items-center gap-2 text-sm">
-      <Checkbox checked={filter.overdue} onCheckedChange={(v) => patch({ overdue: v === true })} />Süresi geçmiş
-    </Label>
+  <div class="flex flex-wrap gap-2" role="group" aria-label="Görünüm">
+    <Button variant={isDeficiencyView ? 'outline' : 'default'} size="sm" aria-pressed={!isDeficiencyView} onclick={() => nav.openRegister(filter)}>Risk satırları</Button>
+    <Button variant={isDeficiencyView ? 'default' : 'outline'} size="sm" aria-pressed={isDeficiencyView} onclick={() => nav.openDeficiencies({ state: 'untransferred' })}>
+      Riske eklenmemiş eksikler{untransferred ? ` (${untransferred})` : ''}
+    </Button>
   </div>
 
-  {#if !shown.length}
-    <div class="space-y-3 rounded-lg border border-dashed p-6 text-center">
-      {#if everything.length}
-        <p class="text-sm text-muted-foreground">Bu süzgece uyan risk satırı yok.</p>
-        {#if isFiltered}<Button variant="outline" size="sm" onclick={reset}>Süzgeçleri temizle</Button>{/if}
-      {:else}
-        <p class="text-sm text-muted-foreground">Henüz risk satırı yok — eksiklerden risk satırı oluşturabilir veya bir mekânın risk tablosuna satır ekleyebilirsiniz.</p>
-        <Button variant="outline" size="sm" onclick={() => nav.go('deficiencies')}>Eksiklere git</Button>
-      {/if}
-    </div>
+  {#if isDeficiencyView}
+    <DeficienciesPage />
   {:else}
-    <div class="hidden md:block">
-      <Table.Root class="table-fixed">
-        <Table.Header class="[&_th]:whitespace-normal [&_th]:text-xs [&_th]:text-muted-foreground">
-          <Table.Row class="hover:bg-transparent">
-            <Table.Head class="w-10">No</Table.Head>
-            <Table.Head class="w-[12%]">Mekân</Table.Head>
-            <Table.Head class="w-[14%]">Alet / ekipman</Table.Head>
-            <Table.Head class="w-[24%]">Tehlike</Table.Head>
-            <Table.Head class="w-9 px-1">O</Table.Head>
-            <Table.Head class="w-9 px-1">Ş</Table.Head>
-            <Table.Head class="w-24">Düzey</Table.Head>
-            <Table.Head class="w-[12%]">Sorumlu</Table.Head>
-            <Table.Head class="w-24">Bitiş</Table.Head>
-            <Table.Head class="w-24">Durum</Table.Head>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {#each shown as e (e.locationId + e.row.id)}
-            <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-            <Table.Row class="cursor-pointer align-top" onclick={() => open(e)}>
-              <Table.Cell class="border-l-4 font-semibold text-muted-foreground" style="border-left-color:{e.level?.background ?? 'transparent'}">
-                <button type="button" class="focus-visible:underline" aria-label="{e.locationName} satır {e.number} düzenle" onclick={(ev) => { ev.stopPropagation(); open(e); }}>{e.number}</button>
-              </Table.Cell>
-              <Table.Cell><div class={clamp} title={e.locationName}>{e.locationName}</div></Table.Cell>
-              <Table.Cell class="font-medium"><div class={clamp} title={e.row.equipment}>{e.row.equipment}</div></Table.Cell>
-              <Table.Cell><div class={clamp} title={e.row.hazard}>{e.row.hazard}</div></Table.Cell>
-              <Table.Cell class="px-1">{e.row.likelihood ?? '—'}</Table.Cell>
-              <Table.Cell class="px-1">{e.row.severity ?? '—'}</Table.Cell>
-              <Table.Cell><LevelBadge likelihood={e.row.likelihood} severity={e.row.severity} /></Table.Cell>
-              <Table.Cell><div class={clamp} title={e.row.responsible}>{e.row.responsible}</div></Table.Cell>
-              <Table.Cell class="whitespace-normal">{e.row.dueDate || '—'}</Table.Cell>
-              <Table.Cell>{STATUS_LABELS[e.row.status]}{@render overdueBadge(e)}</Table.Cell>
-            </Table.Row>
-          {/each}
-        </Table.Body>
-      </Table.Root>
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Düzey">
+        {#each levelFilters as f (f.level)}
+          <Button variant={filter.level === f.level ? 'default' : 'outline'} size="sm" aria-pressed={filter.level === f.level} onclick={() => patch({ level: f.level })}>{f.label} ({f.count})</Button>
+        {/each}
+      </div>
+      <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.5fr_auto]">
+        <SelectField label="Mekân" options={locationOptions} value={filter.locationId ?? ALL} onValueChange={(v) => nav.openRegister({ ...filter, locationId: v === ALL ? null : v })} />
+        <SelectField label="Durum" options={statusOptions} value={filter.status} onValueChange={(v) => patch({ status: v as RegisterFilter['status'] })} />
+        <Input type="search" aria-label="Risklerde ara" placeholder="Ara…" value={filter.query} oninput={(e) => patch({ query: e.currentTarget.value })} />
+        <Label class="flex min-h-9 items-center gap-2 text-sm">
+          <Checkbox checked={filter.overdue} onCheckedChange={(v) => patch({ overdue: v === true })} />Süresi geçmiş
+        </Label>
+      </div>
     </div>
 
-    <div class="space-y-2 md:hidden">
-      {#each shown as e (e.locationId + e.row.id)}
-        <article class="rounded-lg border border-l-4 bg-background" style:border-left-color={e.level?.background}>
-          <button type="button" class="block min-h-11 w-full space-y-1 rounded-lg p-3 text-left hover:bg-muted" aria-label="{e.locationName} satır {e.number} düzenle" onclick={() => open(e)}>
-            <span class="block text-xs text-muted-foreground">{e.locationName} · #{e.number}</span>
-            <span class="line-clamp-1 block text-sm font-semibold">{e.row.equipment || 'Ekipman girilmedi'}</span>
-            <span class="line-clamp-2 block text-sm text-muted-foreground">{e.row.hazard || 'Tehlike girilmedi'}</span>
-            <span class="flex flex-wrap items-center gap-2 pt-1">
-              <LevelBadge likelihood={e.row.likelihood} severity={e.row.severity} />
-              <span class="text-xs text-muted-foreground">{STATUS_LABELS[e.row.status]}{e.row.dueDate ? ` · ${e.row.dueDate}` : ''}{e.row.responsible ? ` · ${e.row.responsible}` : ''}</span>
-              {@render overdueBadge(e)}
-            </span>
-          </button>
-        </article>
-      {/each}
-    </div>
+    {#if filter.locationId && !filteredLocation}
+      <EmptyState icon={MapPinOff} text="Bu mekân artık yok." action={{ label: 'Tüm risklere dön', run: () => nav.openRegister() }} />
+    {:else if filter.locationId}
+      <LocationEditor locationId={filter.locationId} items={shown} {dimIds} {dimLabel} />
+    {:else if !shown.length}
+      {#if everything.length}
+        <EmptyState icon={FunnelX} text="Bu süzgece uyan risk satırı yok." action={isFiltered ? { label: 'Süzgeçleri temizle', run: () => nav.openRegister() } : undefined} />
+      {:else}
+        <EmptyState icon={Table2} text="Henüz risk satırı yok." action={{ label: 'Eksiklere git', run: () => nav.openDeficiencies({ state: 'untransferred' }) }} />
+      {/if}
+    {:else}
+      <div class="flex flex-col divide-y rounded-md border">
+        {#each groups as g (g.key)}
+          {@const isOpen = isGroupOpen(g.key, g.items)}
+          {@const name = g.name || 'Adsız mekân'}
+          <Collapsible.Root open={isOpen} onOpenChange={(o) => (openOverrides = { ...openOverrides, [g.key]: o })}>
+            <div class="flex items-center gap-1 pr-2">
+              <h2 class="flex-1">
+                <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center gap-2 px-3 text-left">
+                  <ChevronDown class="size-4 shrink-0 text-muted-foreground transition-transform duration-200 motion-reduce:transition-none {isOpen ? '' : '-rotate-90'}" aria-hidden="true" />
+                  <span class="font-medium">{name}</span>
+                  <span class="text-xs text-muted-foreground">{g.items.length} satır · {unscoredIn(g.items)} puansız</span>
+                </Collapsible.Trigger>
+              </h2>
+              <Button variant="ghost" size="icon-sm" aria-label="Yalnız {name}" title="Yalnız bu mekân" onclick={() => nav.openRegister({ ...filter, locationId: g.key })}><Funnel /></Button>
+            </div>
+            <Collapsible.Content class="overflow-hidden data-open:animate-collapsible-down data-closed:animate-collapsible-up motion-reduce:data-open:animate-none motion-reduce:data-closed:animate-none px-3 pb-3">
+              <LocationEditor locationId={g.key} items={g.items} {dimIds} {dimLabel} />
+            </Collapsible.Content>
+          </Collapsible.Root>
+        {/each}
+      </div>
+    {/if}
   {/if}
 </div>

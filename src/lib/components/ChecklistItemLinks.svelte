@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button } from '$lib/components/ui/button';
   import { answerOf } from '$lib/domain/inspections';
-  import { rowsForItem } from '$lib/domain/links';
+  import { itemRiskRows } from '$lib/domain/checklist-risk';
   import type { Checklist, ChecklistItem } from '$lib/domain/types';
   import { store } from '$lib/state.svelte';
   import { nav } from '$lib/nav.svelte';
@@ -10,14 +10,15 @@
 
   let { list, item, locationId }: { list: Checklist; item: ChecklistItem; locationId: string | null } = $props();
 
-  const rows = $derived(rowsForItem(store.assessment, list.id, item.id, locationId));
+  // Sibling-aware: a common item linked from another list at this location counts too.
+  const rows = $derived(itemRiskRows(store.assessment, list.id, item.id, locationId));
   const answer = $derived(answerOf(store.assessment, list.id, locationId, item.id).answer);
 
   const openRow = (locationId: string, rowId: string) => nav.openRow(locationId, rowId);
 </script>
 
 {#each rows as r (r.rowId)}
-  <Button variant="link" size="sm" class="h-auto justify-start p-0 text-left whitespace-normal" onclick={() => openRow(r.locationId, r.rowId)}>
+  <Button variant="link" size="sm" class="h-auto justify-start p-0 text-left whitespace-normal motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-1 motion-safe:duration-200" onclick={() => openRow(r.locationId, r.rowId)}>
     Risk satırı: {r.locationName || 'Adsız mekân'} #{r.number}
   </Button>
 {/each}

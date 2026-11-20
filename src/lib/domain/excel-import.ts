@@ -58,6 +58,9 @@ export const TYPE_LOOKUP = new Map<string, LocationType>(
     [norm(label.split(/[ /(]/)[0]), code],
   ]),
 );
+// Files exported before the label became "Okul geneli" still say "Ortak"; "Okul geneli" is the short form.
+for (const alias of ["Ortak (tüm mekânlar)", "Ortak", "Okul geneli"])
+  TYPE_LOOKUP.set(norm(alias), "common");
 
 export function template(): Record<string, (string | number)[][]> {
   return {
@@ -174,7 +177,7 @@ function readRisks(aoa: unknown[][], errors: string[]): ParsedRisk[] {
     const type = v.type ? TYPE_LOOKUP.get(norm(v.type)) : "";
     if (type === undefined) {
       local.push(
-        `Mekân Türü '${v.type}' tanınmadı; Atölye, Depo, Ofis, Islak hacim ya da Ortak yazın.`,
+        `Mekân Türü '${v.type}' tanınmadı; Atölye, Depo, Ofis, Islak hacim ya da Okul geneli yazın.`,
       );
     }
     if (!v.hazard) local.push("Tehlike ve Risk boş.");

@@ -1,32 +1,33 @@
 <script lang="ts">
   import ArrowLeft from '@lucide/svelte/icons/arrow-left';
-  import ChevronRight from '@lucide/svelte/icons/chevron-right';
+  import ChevronDown from '@lucide/svelte/icons/chevron-down';
   import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
   import Ellipsis from '@lucide/svelte/icons/ellipsis';
+  import ListChecks from '@lucide/svelte/icons/list-checks';
   import * as AlertDialog from '$lib/components/ui/alert-dialog';
-  import { Badge } from '$lib/components/ui/badge';
   import { Button, buttonVariants } from '$lib/components/ui/button';
   import * as Collapsible from '$lib/components/ui/collapsible';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
-  import * as Tabs from '$lib/components/ui/tabs';
+  import EmptyState from './EmptyState.svelte';
   import InspectionEditor from './InspectionEditor.svelte';
-  import LocationEditor from './LocationEditor.svelte';
+  import PageHeader from './PageHeader.svelte';
   import SelectField from './SelectField.svelte';
+  import { INTERACTIVE_ROW, SECTION_TITLE } from './shared-classes';
   import { duplicateLocation, groupNeighbourId, LOCATION_TYPES, LOCATION_TYPE_LABELS, moveLocation, newId, removeLocation, updateLocation } from '$lib/domain/assessment';
+  import { listLabel } from '$lib/domain/checklist';
   import { inspectionsForLocation, inspectionSummary, liveLocationIds } from '$lib/domain/inspections';
   import { setChecklistLocations } from '$lib/domain/links';
   import { riskLevel } from '$lib/domain/matrix';
   import type { Location, LocationType } from '$lib/domain/types';
-  import { nav, type LocationView } from '$lib/nav.svelte';
+  import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
   let { location: loc }: { location: Location } = $props();
 
   const TYPE_OPTIONS = LOCATION_TYPES.map((value) => ({ value, label: LOCATION_TYPE_LABELS[value] }));
   const value = (e: Event) => (e.currentTarget as HTMLInputElement).value.trim();
-  const listLabel = (code: string, name: string) => `${code ? `${code} · ` : ''}${name || 'Adsız liste'}`;
 
   let deleteOpen = $state(false);
   const id = $derived(loc.id);
@@ -52,7 +53,7 @@
     const list = store.assessment.checklists.find((c) => c.id === listId);
     if (!list) return;
     const next = [...liveLocationIds(store.assessment, list), id];
-    if (store.apply((a) => setChecklistLocations(a, listId, next))) nav.openLocation(id, 'inspections', listId);
+    if (store.apply((a) => setChecklistLocations(a, listId, next))) nav.openLocation(id, listId);
   }
 
   function duplicate() {
@@ -63,24 +64,44 @@
   function remove() {
     if (store.apply((a) => removeLocation(a, id))) nav.go('locations');
   }
+
+  // The shared store has no per-location export kind, so this drives the PDF module itself.
+  async function exportPdf() {
+    store.busy = 'PDF hazırlanıyor… (ilk seferde derleyici indirilir, biraz sürebilir)';
+    store.clearErrors();
+    try {
+      await (await import('$lib/export/pdf')).downloadPdf(store.assessment, 'full', id);
+    } catch (error) {
+      store.fail([`Çıktı alınamadı: ${error instanceof Error ? error.message : ''}`]);
+    } finally {
+      store.busy = '';
+    }
+  }
 </script>
 
-<div class="min-w-0 space-y-3">
-  <div class="flex items-center gap-2">
+<div class="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-6">
+  <div class="flex items-start gap-2">
     <Button variant="ghost" size="icon" aria-label="Mekânlar listesine dön" onclick={() => nav.go('locations')}><ArrowLeft /></Button>
     <div class="min-w-0 flex-1">
-      <h1 class="truncate text-2xl font-semibold">{loc.name || 'Adsız mekân'}</h1>
-      <p class="truncate text-sm text-muted-foreground">{LOCATION_TYPE_LABELS[loc.type]}{loc.building ? ` · ${loc.building}` : ''}{loc.area ? ` · ${loc.area}` : ''}</p>
+      <PageHeader
+        title={loc.name || 'Adsız mekân'}
+        subtitle={`${LOCATION_TYPE_LABELS[loc.type]}${loc.building ? ` · ${loc.building}` : ''}${loc.area ? ` · ${loc.area}` : ''}`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => nav.openRegister({ locationId: id })}>Riskler ({scoredRows}/{loc.rows.length} puanlı)</Button>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' })} aria-label="Mekân işlemleri"><Ellipsis /></DropdownMenu.Trigger>
+            <DropdownMenu.Content align="end">
+              <DropdownMenu.Item disabled={!canMoveUp} onSelect={() => store.apply((a) => moveLocation(a, id, -1))}>Yukarı taşı</DropdownMenu.Item>
+              <DropdownMenu.Item disabled={!canMoveDown} onSelect={() => store.apply((a) => moveLocation(a, id, 1))}>Aşağı taşı</DropdownMenu.Item>
+              <DropdownMenu.Item disabled={store.busy !== ''} onSelect={exportPdf}>Bu mekânın PDF'i</DropdownMenu.Item>
+              <DropdownMenu.Item onSelect={duplicate}>Mekânı çoğalt</DropdownMenu.Item>
+              <DropdownMenu.Item class="text-destructive" onSelect={() => (deleteOpen = true)}>Mekânı sil</DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
+        {/snippet}
+      </PageHeader>
     </div>
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' })} aria-label="Mekân işlemleri"><Ellipsis /></DropdownMenu.Trigger>
-      <DropdownMenu.Content align="end">
-        <DropdownMenu.Item disabled={!canMoveUp} onSelect={() => store.apply((a) => moveLocation(a, id, -1))}>Yukarı taşı</DropdownMenu.Item>
-        <DropdownMenu.Item disabled={!canMoveDown} onSelect={() => store.apply((a) => moveLocation(a, id, 1))}>Aşağı taşı</DropdownMenu.Item>
-        <DropdownMenu.Item onSelect={duplicate}>Mekânı çoğalt</DropdownMenu.Item>
-        <DropdownMenu.Item class="text-destructive" onSelect={() => (deleteOpen = true)}>Mekânı sil</DropdownMenu.Item>
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
   </div>
 
   <AlertDialog.Root bind:open={deleteOpen}>
@@ -100,7 +121,7 @@
     <Collapsible.Trigger class="flex min-h-11 w-full items-center justify-between gap-2 px-3 text-left text-sm">
       Mekân bilgilerini düzenle<ChevronsUpDown class="size-4 text-muted-foreground" aria-hidden="true" />
     </Collapsible.Trigger>
-    <Collapsible.Content class="@container border-t p-3">
+    <Collapsible.Content class="overflow-hidden data-open:animate-collapsible-down data-closed:animate-collapsible-up motion-reduce:data-open:animate-none motion-reduce:data-closed:animate-none @container border-t p-3">
       {#key id}
         <div class="grid gap-2 @lg:grid-cols-2">
           <Label class="flex flex-col items-start gap-1 @lg:col-span-2">Mekân adı
@@ -120,42 +141,36 @@
     </Collapsible.Content>
   </Collapsible.Root>
 
-  <Tabs.Root value={nav.place.locationView} onValueChange={(v) => nav.openLocation(id, v as LocationView)}>
-    <Tabs.List>
-      <Tabs.Trigger value="inspections">Denetimler ({inspections.length})</Tabs.Trigger>
-      <Tabs.Trigger value="risk">Risk tablosu ({scoredRows}/{loc.rows.length})</Tabs.Trigger>
-    </Tabs.List>
-    <Tabs.Content value="inspections" class="space-y-3 pt-3">
-      {#if openListId}
-        {#key openListId}<InspectionEditor listId={openListId} locationId={id} />{/key}
-      {:else}
-        {#if inspections.length === 0}
-          <p class="py-4 text-center text-sm text-muted-foreground">Bu mekâna atanmış kontrol listesi yok.</p>
-        {/if}
-        <ul class="space-y-2">
-          {#each inspections as i (i.list.id)}
-            <li>
-              <button type="button" class="flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border bg-card p-3 text-left hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none" onclick={() => nav.openLocation(id, 'inspections', i.list.id)}>
+  <section class="space-y-2" aria-labelledby="location-lists">
+    <h2 id="location-lists" class={SECTION_TITLE}>Kontrol listeleri</h2>
+    {#if inspections.length === 0}
+      <EmptyState icon={ListChecks} text="Bu mekâna atanmış kontrol listesi yok." />
+    {:else}
+      <ul class="divide-y overflow-hidden rounded-md border">
+        {#each inspections as i (i.list.id)}
+          {@const isOpen = openListId === i.list.id}
+          <li>
+            <Collapsible.Root open={isOpen} onOpenChange={(o) => nav.openLocation(id, o ? i.list.id : null)}>
+              <Collapsible.Trigger class="{INTERACTIVE_ROW} flex min-h-11 w-full items-center justify-between gap-2 p-3 text-left focus-visible:ring-inset">
                 <span class="min-w-0 font-medium">{listLabel(i.list.code, i.list.name)}</span>
                 <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
-                  {i.answered}/{i.total} cevaplı
-                  {#if i.no}<Badge variant="destructive">{i.no} eksik</Badge>{/if}
-                  <ChevronRight class="size-4" aria-hidden="true" />
+                  {i.answered}/{i.total}{#if i.no}{' '}· <b class="text-deficiency">{i.no} eksik</b>{/if}
+                  <ChevronDown class="size-4 transition-transform duration-200 motion-reduce:transition-none {isOpen ? 'rotate-180' : ''}" aria-hidden="true" />
                 </span>
-              </button>
-            </li>
-          {/each}
-        </ul>
-        {#if addable.length}
-          <div class="max-w-sm space-y-1">
-            <span class="text-xs text-muted-foreground" aria-hidden="true">Bu mekâna liste ekle</span>
-            <SelectField label="Bu mekâna liste ekle" options={addable} value="" onValueChange={addList} />
-          </div>
-        {/if}
-      {/if}
-    </Tabs.Content>
-    <Tabs.Content value="risk" class="pt-3">
-      {#key id}<LocationEditor locationId={id} />{/key}
-    </Tabs.Content>
-  </Tabs.Root>
+              </Collapsible.Trigger>
+              <Collapsible.Content class="overflow-hidden data-open:animate-collapsible-down motion-reduce:data-open:animate-none border-t p-3">
+                {#if isOpen}<InspectionEditor listId={i.list.id} locationId={id} />{/if}
+              </Collapsible.Content>
+            </Collapsible.Root>
+          </li>
+        {/each}
+      </ul>
+    {/if}
+    {#if addable.length}
+      <div class="max-w-sm space-y-1">
+        <span class="text-xs text-muted-foreground" aria-hidden="true">Bu mekâna liste ekle</span>
+        <SelectField label="Bu mekâna liste ekle" options={addable} value="" onValueChange={addList} />
+      </div>
+    {/if}
+  </section>
 </div>

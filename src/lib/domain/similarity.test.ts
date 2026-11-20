@@ -17,6 +17,18 @@ describe("similarity", () => {
     expect(similarity(a, b)).toBeGreaterThanOrEqual(0.6);
   });
 
+  test("words are compared whole by default and by their first letters when stemming", () => {
+    // Arrange
+    const a = "Merdivenlerde korkuluk eksik";
+    const b = "Merdiven korkuluğu yok";
+
+    // Act / Assert
+    expect(similarity(a, b)).toBe(0);
+    expect(similarity(a, b, true)).toBeGreaterThan(0.6);
+    expect(findSimilar(a, [{ key: "B", text: b }], 0.35)).toEqual([]);
+    expect(findSimilar(a, [{ key: "B", text: b }], 0.35, 5, true)).toHaveLength(1);
+  });
+
   test("findSimilar returns best matches first above the threshold", () => {
     const candidates = [
       { key: "A", text: "Forklift muayene ediliyor mu?" },

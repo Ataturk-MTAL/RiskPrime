@@ -95,7 +95,6 @@
         </div>
       {/each}
     </div>
-    <p class="text-sm text-muted-foreground">Bu bir şablondur; cevaplar Mekânlar bölümünde her mekân için ayrı girilir. "Hayır" cevaplanan her madde bir eksiktir.</p>
     <div class="flex flex-wrap gap-2">
       <Button onclick={addNewItem}><Plus />Madde ekle</Button>
       <Button variant="outline" onclick={() => (bankOpen = true)}>Kontrol listelerinden madde ekle</Button>

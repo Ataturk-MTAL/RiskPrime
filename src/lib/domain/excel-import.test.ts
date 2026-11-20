@@ -122,6 +122,26 @@ describe("excel-import", () => {
     });
   });
 
+  test("old and new labels for the school-wide type all resolve to common", () => {
+    const labels = ["Ortak (tüm mekânlar)", "Ortak", "Okul geneli (tüm mekânlar)", "Okul geneli"];
+    const rows = labels.map((label, i) => [
+      `M${i}`,
+      label,
+      "",
+      "",
+      "",
+      "Kesik",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+    ]);
+    const r = ok(read(empty(), { "Risk Satırları": [RISK_HEADER, ...rows] }));
+    expect(r.assessment.locations.map((l) => l.type)).toEqual(labels.map(() => "common"));
+  });
+
   test("a bad row adds nothing and errors carry sheet and row number", () => {
     const a = empty();
     const r = read(a, {

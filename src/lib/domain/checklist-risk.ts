@@ -1,8 +1,37 @@
-// Turns a "Hayır" checklist item (an eksik of one inspection) into a risk row.
+// Turns a "Hayır" checklist item (a deficiency of one inspection) into a risk row.
 import { addRow } from "./assessment";
-import { noSiblings } from "./common-items";
+import { noSiblings, siblingTargets } from "./common-items";
 import { answerOf, liveLocationIds, scopeName } from "./inspections";
-import type { Assessment, Checklist, ChecklistItem, RiskRow } from "./types";
+import { rowsForItem, type ItemRow } from "./links";
+import { loadBank } from "./question-bank";
+import { findSimilar } from "./similarity";
+import type { Assessment, BankQuestion, Checklist, ChecklistItem, RiskRow } from "./types";
+
+/** Rows linked to the item or to any common sibling at the same location, each row once. */
+export function itemRiskRows(
+  a: Assessment,
+  listId: string,
+  itemId: string,
+  locationId: string | null,
+  bank: BankQuestion[] = loadBank(),
+): ItemRow[] {
+  const targets = [{ listId, itemId }, ...siblingTargets(a, listId, itemId, locationId, bank)];
+  return targets
+    .flatMap((t) => rowsForItem(a, t.listId, t.itemId, locationId))
+    .filter((r, i, all) => all.findIndex((x) => x.rowId === r.rowId) === i);
+}
+
+/** True when the deficiency already has a row: linked via itself or a sibling, or a matching legacy row. */
+export const hasDeficiencyRisk = (
+  a: Assessment,
+  listId: string,
+  itemId: string,
+  locationId: string | null,
+  rowLocationId?: string,
+  bank: BankQuestion[] = loadBank(),
+): boolean =>
+  itemRiskRows(a, listId, itemId, locationId, bank).length > 0 ||
+  hasChecklistRisk(a, listId, itemId, locationId, rowLocationId);
 
 function find(
   a: Assessment,
@@ -29,7 +58,7 @@ function rowLocation(a: Assessment, locationId: string | null, rowLocationId?: s
 
 /**
  * True when the row location already has a row for the item of that inspection (locationId = the
- * inspection's scope, null = okul geneli; rowLocationId = where the row lives, needed for okul geneli).
+ * inspection's scope, null = school-wide; rowLocationId = where the row lives, needed for school-wide).
  * Rows without links count when their hazard text matches.
  */
 export function hasChecklistRisk(
@@ -51,13 +80,14 @@ export function hasChecklistRisk(
   return !!a.locations.find((l) => l.id === target)?.rows.some(linked);
 }
 
-/** Adds a risk row for the item of that inspection; for okul geneli pass the location to put it in. */
+/** Adds a risk row for the item of that inspection; for school-wide pass the location to put it in. */
 export function riskRowFromChecklistItem(
   a: Assessment,
   listId: string,
   itemId: string,
   locationId: string | null,
   rowLocationId?: string,
+  bank: BankQuestion[] = loadBank(),
 ): Assessment {
   const { list, item } = find(a, listId, itemId);
   const target = rowLocation(a, locationId, rowLocationId);
@@ -65,7 +95,7 @@ export function riskRowFromChecklistItem(
     hazard: hazardOf(list, item),
     action: answerOf(a, listId, locationId, itemId).note,
     // common siblings answered "Hayır" at this location share the one row
-    sources: [{ listId, itemId }, ...noSiblings(a, listId, itemId, locationId)].map((t) => ({
+    sources: [{ listId, itemId }, ...noSiblings(a, listId, itemId, locationId, bank)].map((t) => ({
       ...t,
       locationId,
     })),
@@ -83,4 +113,51 @@ export function defaultLocationId(a: Assessment, list: Checklist): string {
     return n && keys.some((k) => k.includes(n) || n.includes(k));
   });
   return (match ?? a.locations[0])?.id ?? "";
+}
+
+/** Stricter than the item-proposal threshold (0.35): a wrong "similar row" hint leads to a wrong link. Measure on a real school file. */
+export const ROW_SIMILAR_THRESHOLD = 0.45;
+
+export interface SimilarRow {
+  rowId: string;
+  /** 1-based row number inside its location. */
+  number: number;
+  text: string;
+  score: number;
+}
+
+/**
+ * Rows of the target location whose hazard reads like the item, skipping rows already linked to it
+ * (from any inspection, or via a common sibling of this inspection): link instead of duplicating.
+ * locationId = the inspection's scope (null = school-wide); rowLocationId = where the rows live.
+ */
+export function similarRows(
+  a: Assessment,
+  listId: string,
+  itemId: string,
+  locationId: string | null,
+  rowLocationId: string,
+  bank: BankQuestion[] = loadBank(),
+): SimilarRow[] {
+  const loc = a.locations.find((l) => l.id === rowLocationId);
+  if (!loc) return [];
+  const { list, item } = find(a, listId, itemId);
+  const viaSiblings = new Set(
+    itemRiskRows(a, listId, itemId, locationId, bank)
+      .filter((r) => r.locationId === rowLocationId)
+      .map((r) => r.rowId),
+  );
+  const isLinked = (r: RiskRow) =>
+    viaSiblings.has(r.id) || !!r.sources?.some((s) => s.listId === listId && s.itemId === itemId);
+  const candidates = loc.rows.flatMap((r) =>
+    isLinked(r) || !r.hazard.trim() ? [] : [{ key: r.id, text: r.hazard }],
+  );
+  return findSimilar(hazardOf(list, item), candidates, ROW_SIMILAR_THRESHOLD, undefined, true).map(
+    (h) => ({
+      rowId: h.key,
+      number: loc.rows.findIndex((r) => r.id === h.key) + 1,
+      text: h.text,
+      score: h.score,
+    }),
+  );
 }

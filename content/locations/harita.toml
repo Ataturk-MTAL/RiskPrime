@@ -1,0 +1,142 @@
+# Harita-Tapu-Kadastro alanı hazır mekânları. Biçim: content/locations/README.md
+
+area = "Harita-Tapu-Kadastro"
+
+[[location]]
+name = "Harita Çizim ve Bilgisayar Laboratuvarı"
+type = "workshop"
+checklists = ["KL-27", "KL-19", "KL-20", "KL-26", "KL-24"]
+
+[[location.row]]
+equipment = "Bilgisayar ve ekran (CBS ve çizim yazılımları)"
+hazard = "Uzun süre ekran başında çalışma: göz yorgunluğu, boyun, bel ve bilek ağrısı"
+affected = "Öğrenci, öğretmen"
+action = "Ekran göz hizasında ve 50-80 cm uzakta; ayarlanabilir sandalye; düzenli ara verilir (KL-27)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Çizici (plotter) ve büyük format yazıcı"
+hazard = "Hareketli kafaya veya kesiciye el kaptırma; sıkışmayı cihaz çalışırken giderme"
+affected = "Öğrenci"
+action = "Kâğıt sıkışması cihaz kapatılarak giderilir; kesici kapağı kapalı"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Kablo, priz, çoklu priz"
+hazard = "Dağınık kabloya takılma; zincirleme çoklu priz: aşırı yük, yangın"
+affected = "Öğrenci"
+action = "Kablolar kanalda; zincirleme çoklu priz yasak; aylık gözle kontrol (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Aydınlatma ve iç iklim"
+hazard = "Ekranda yansıma, yetersiz aydınlatma; kalabalık sınıfta sıcaklık ve havasızlık"
+affected = "Öğrenci, öğretmen"
+action = "Ekranlar pencereye dik, perde var; havalandırma ve klima bakımı düzenli (KL-20, KL-24)"
+responsible = "Okul müdürü"
+
+[[location]]
+name = "Ölçme Aletleri Deposu"
+type = "storage"
+checklists = ["KL-22", "KL-18", "KL-30", "KL-26"]
+
+[[location.row]]
+equipment = "Elektronik takeometre (total station), GNSS alıcısı, nivo, sehpa, jalon, mira"
+hazard = "Ağır alet çantasını kaldırma: bel yaralanması; sehpa ve jalon uçlarıyla batma"
+affected = "Öğrenci, öğretmen"
+action = "Alet çantası kayışla taşınır; sivri uçlar kılıflı; aletler rafta yerinde (KL-18)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Lityum piller ve şarj cihazları"
+hazard = "Şarjda aşırı ısınma veya şişmiş pil: yangın"
+affected = "Herkes"
+action = "Orijinal şarj cihazı; şarj yanmaz yüzeyde ve gözetimli; şişmiş pil kullanılmaz ve atık olarak ayrılır (KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Raf ve dolaplar"
+hazard = "Rafın veya dolabın devrilmesi; üst raftan alet düşmesi"
+affected = "Öğretmen, personel"
+action = "Raflar duvara sabit; ağır aletler alt rafta (KL-22)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Lazerli ölçme aletleri"
+hazard = "Lazer ışınına doğrudan bakma: göz hasarı"
+affected = "Öğrenci"
+action = "Lazer sınıf etiketi üzerinde; ışın kimsenin gözüne tutulmaz; kullanım talimatı anlatılır"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Arazi Ölçme Uygulamaları (okul bahçesi ve okul dışı)"
+type = "common"
+checklists = ["KL-03", "KL-15", "KL-16"]
+
+[[location.row]]
+equipment = "Yol kenarında ve trafiğe yakın ölçme"
+hazard = "Araç çarpması"
+affected = "Öğrenci, öğretmen"
+action = "Yüksek görünürlüklü yelek ve trafik konisi; öğretmen gözetimi; taşıt yoluna izinsiz çıkılmaz (KL-15)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Hava koşulları"
+hazard = "Güneş çarpması, sıcak veya soğuk stresi; fırtınada metal jalon ve mira nedeniyle yıldırım riski"
+affected = "Öğrenci, öğretmen"
+action = "Şapka, su, mevsime uygun giysi; fırtına ve şimşekte uygulama durdurulur, jalon ve miralar indirilir"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Engebeli arazi, çukur ve kazı"
+hazard = "Takılma, düşme, ayak burkulması"
+affected = "Öğrenci"
+action = "Arazi önceden gezilir; uygun ayakkabı; çukur ve kazılar işaretlenir (KL-03)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Havai enerji hatları yakınında jalon ve mira"
+hazard = "Uzun jalon veya miranın enerji hattına değmesi veya yaklaşması: elektrik çarpması"
+affected = "Öğrenci"
+action = "Hat altında ve hat yakınında mira ve jalon açılmaz, kaldırılmaz; metal mira hat yakınında kullanılmaz; hatla mira arasındaki mesafe her zaman mira boyundan fazla (kesin mesafe Elektrik Kuvvetli Akım Tesisleri Yönetmeliği'nden doğrulanmalı)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Böcek, kene ve hayvanlar"
+hazard = "Sokma, ısırma, alerjik tepki; kene ile bulaşan Kırım-Kongo Kanamalı Ateşi"
+affected = "Öğrenci"
+action = "İlk yardım çantası yanında; alerjisi bilinen öğrenciler önceden belirlenir; uzun kollu giysi, paçalar çorap içinde; dönüşte vücut kene açısından kontrol edilir; kene çıplak elle ezilmez, sağlık kuruluşunda çıkarılır"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Okul dışına ulaşım"
+hazard = "Araçla ulaşımda kaza; öğrencinin gruptan ayrılması"
+affected = "Öğrenci"
+action = "Veli izni ve etkinlik planı; uygun ve belgeli taşıt; yoklama (KL-15, KL-16)"
+responsible = "Okul müdürü"
+
+[[location]]
+name = "Tapu ve Kadastro Büro Uygulama Sınıfı"
+type = "office"
+checklists = ["KL-19", "KL-27", "KL-22", "KL-30"]
+
+[[location.row]]
+equipment = "Arşiv dolapları ve pafta dolapları"
+hazard = "Dolabın devrilmesi; birden fazla çekmece aynı anda açılınca devrilme"
+affected = "Öğrenci, öğretmen"
+action = "Dolaplar duvara sabit; aynı anda tek çekmece açılır; ağır dosyalar alt çekmecede (KL-22)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Kâğıt arşiv ve dosyalar"
+hazard = "Yüksek yangın yükü"
+affected = "Herkes"
+action = "Söndürücü erişilebilir; priz ve ısıtıcı yakınında kâğıt yığını yok (KL-30)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Büro masası, bilgisayar ve sandalye"
+hazard = "Uygun olmayan oturma ve ekran düzeni: boyun, bel, bilek ağrısı"
+affected = "Öğrenci, öğretmen"
+action = "Ayarlanabilir sandalye; ekran göz hizasında; düzenli ara (KL-19, KL-27)"
+responsible = "Atölye öğretmeni"

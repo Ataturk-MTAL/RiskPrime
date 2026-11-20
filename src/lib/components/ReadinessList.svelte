@@ -1,6 +1,7 @@
 <script lang="ts">
+  import ChevronRight from '@lucide/svelte/icons/chevron-right';
   import { Button } from '$lib/components/ui/button';
-  import { countUntransferred } from '$lib/domain/transfer';
+  import { progress, unansweredScope } from '$lib/domain/progress';
   import type { GapEntry, MetaField, Readiness } from '$lib/domain/readiness';
   import { nav } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
@@ -12,102 +13,74 @@
     validUntil: 'Geçerlilik tarihi',
   };
 
-  /** `onpick` runs after any jump or transfer, so the dialog can close itself. */
+  /** `onpick` runs after any jump, so the dialog can close itself. */
   let { gaps, onpick = () => {} }: { gaps: Readiness; onpick?: () => void } = $props();
 
-  const untransferred = $derived(countUntransferred(store.assessment));
+  const total = (list: GapEntry[]) => list.reduce((n, g) => n + g.count, 0);
 
   function go(select: () => void) {
     select();
     onpick();
   }
-  const openSchool = () => go(() => nav.openReport(true));
-  const openRisks = (id: string) => go(() => nav.openLocation(id, 'risk'));
-  // Gap ids of checklist entries are template ids; the answers live in the locations.
-  const openUnanswered = () => go(() => nav.go('locations'));
-  const openUntransferred = (listId: string) =>
-    go(() => nav.openDeficiencies({ listId, state: 'untransferred' }));
+  const openSchool = () => go(() => nav.openSchoolInfo());
+  const openRisks = (id: string) => go(() => nav.openRegister({ locationId: id }));
+  // Gap ids of checklist entries are template ids; send the user where the open items are.
+  const openUnanswered = () =>
+    go(() =>
+      unansweredScope(progress(store.assessment, new Date())) === 'school'
+        ? nav.openSchool()
+        : nav.go('locations'),
+    );
+  const openUntransferred = (listId: string) => go(() => nav.openDeficiencies({ listId, state: 'untransferred' }));
 </script>
 
 {#snippet entries(list: GapEntry[], suffix: string, select: (id: string) => void)}
-  <ul class="flex flex-col items-start gap-0.5">
+  <ul class="flex flex-col items-start gap-0.5 pt-1 pl-5">
     {#each list as g (g.id)}
       <li>
-        <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={() => select(g.id)}>
-          {g.name || 'Adsız'}
-        </Button>
+        <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={() => select(g.id)}>{g.name || 'Adsız'}</Button>
         <span class="text-muted-foreground">: {g.count} {suffix}{g.detail ? ` (${g.detail})` : ''}</span>
       </li>
     {/each}
   </ul>
 {/snippet}
 
-<div class="flex flex-col gap-3 text-sm">
-  {#if gaps.missingMeta.length}
+{#snippet summary(title: string, list: GapEntry[])}
+  <!-- flex drops the native disclosure triangle, so the chevron is the open/closed cue -->
+  <summary class="flex min-h-9 cursor-pointer items-center gap-1 font-semibold">
+    <ChevronRight class="size-4 shrink-0 text-muted-foreground motion-safe:transition-transform motion-reduce:transition-none group-open:rotate-90" aria-hidden="true" />{title}<span class="font-normal text-muted-foreground">({total(list)})</span>
+  </summary>
+{/snippet}
+
+{#snippet group(title: string, list: GapEntry[], suffix: string, select: (id: string) => void)}
+  {#if list.length}
+    <details class="group">
+      {@render summary(title, list)}
+      {@render entries(list, suffix, select)}
+    </details>
+  {/if}
+{/snippet}
+
+<div class="flex flex-col gap-2 text-sm">
+  {#if gaps.missingMeta.length || gaps.invalidDates || gaps.emptySignatories}
     <section>
-      <h3 class="font-semibold">Boş alanlar</h3>
+      <h3 class="flex min-h-9 items-center font-semibold">Okul bilgileri</h3>
       <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={openSchool}>
-        {gaps.missingMeta.map((m) => META_LABELS[m]).join(', ')}
+        {[
+          gaps.missingMeta.length ? `Boş: ${gaps.missingMeta.map((m) => META_LABELS[m]).join(', ')}` : '',
+          gaps.invalidDates ? 'Geçerlilik tarihi değerlendirme tarihinden önce' : '',
+          gaps.emptySignatories ? `${gaps.emptySignatories} imzacının adı boş` : '',
+        ]
+          .filter(Boolean)
+          .join(' · ')}
       </Button>
     </section>
   {/if}
-  {#if gaps.invalidDates}
-    <section>
-      <h3 class="font-semibold">Tarihler</h3>
-      <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={openSchool}>
-        Geçerlilik tarihi değerlendirme tarihinden önce
-      </Button>
-    </section>
-  {/if}
-  {#if gaps.emptySignatories}
-    <section>
-      <h3 class="font-semibold">İmza</h3>
-      <Button variant="link" class="h-auto p-0 text-left whitespace-normal" onclick={openSchool}>
-        {gaps.emptySignatories} imzacının adı boş
-      </Button>
-    </section>
-  {/if}
-  {#if gaps.unscored.length}
-    <section>
-      <h3 class="font-semibold">Olasılık ya da şiddet puanı boş satırlar</h3>
-      {@render entries(gaps.unscored, 'satır', openRisks)}
-    </section>
-  {/if}
-  {#if gaps.missingAction.length}
-    <section>
-      <h3 class="font-semibold">Yüksek/tolere edilemez riskte önlem ya da sorumlu boş</h3>
-      {@render entries(gaps.missingAction, 'satır', openRisks)}
-    </section>
-  {/if}
-  {#if gaps.emptyHazard.length}
-    <section>
-      <h3 class="font-semibold">Tehlike ve risk alanı boş satırlar</h3>
-      {@render entries(gaps.emptyHazard, 'satır', openRisks)}
-    </section>
-  {/if}
-  {#if gaps.doneWithoutAfter.length}
-    <section>
-      <h3 class="font-semibold">Tamamlandı ama önlem sonrası puanı yok</h3>
-      {@render entries(gaps.doneWithoutAfter, 'satır', openRisks)}
-    </section>
-  {/if}
-  {#if gaps.noWithoutRow.length}
-    <section>
-      <h3 class="font-semibold">Risk tablosuna aktarılmamış eksikler</h3>
-      {@render entries(gaps.noWithoutRow, 'eksik', openUntransferred)}
-      <Button variant="outline" size="sm" class="mt-1" disabled={untransferred === 0} onclick={() => go(() => store.transferMissing())}>Tüm eksikleri aktar ({untransferred})</Button>
-    </section>
-  {/if}
-  {#if gaps.sourceNowYes.length}
-    <section>
-      <h3 class="font-semibold">Eksiği giderilmiş (Evet olmuş) ama açık satırlar</h3>
-      {@render entries(gaps.sourceNowYes, 'satır', openRisks)}
-    </section>
-  {/if}
-  {#if gaps.unanswered.length}
-    <section>
-      <h3 class="font-semibold">Cevaplanmamış kontrol listesi maddeleri</h3>
-      {@render entries(gaps.unanswered, 'madde', openUnanswered)}
-    </section>
-  {/if}
+  {@render group('Olasılık ya da şiddet puanı boş satırlar', gaps.unscored, 'satır', openRisks)}
+  {@render group('Yüksek/tolere edilemez riskte önlem ya da sorumlu boş', gaps.missingAction, 'satır', openRisks)}
+  {@render group('Tehlike ve risk alanı boş satırlar', gaps.emptyHazard, 'satır', openRisks)}
+  {@render group('Tamamlandı ama önlem sonrası puanı yok', gaps.doneWithoutAfter, 'satır', openRisks)}
+  {@render group('Riske eklenmemiş eksikler', gaps.noWithoutRow, 'eksik', openUntransferred)}
+  {@render group('Eksiği giderilmiş (Evet olmuş) ama açık satırlar', gaps.sourceNowYes, 'satır', openRisks)}
+  {@render group('Cevaplanmamış kontrol listesi maddeleri', gaps.unanswered, 'madde', openUnanswered)}
 </div>

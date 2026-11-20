@@ -1,13 +1,18 @@
 <script lang="ts">
+  import ClipboardCheck from '@lucide/svelte/icons/clipboard-check';
+  import FunnelX from '@lucide/svelte/icons/funnel-x';
   import ShieldAlert from '@lucide/svelte/icons/shield-alert';
   import { toast } from 'svelte-sonner';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import DeficiencyItem from './DeficiencyItem.svelte';
+  import EmptyState from './EmptyState.svelte';
   import SelectField from './SelectField.svelte';
-  import { defaultLocationId, riskRowFromChecklistItem } from '$lib/domain/checklist-risk';
-  import { deficienciesWithState, deficiencyCounts, filterDeficiencies, isTransferred, SCHOOL_WIDE_FILTER } from '$lib/domain/filters';
-  import { SCHOOL_WIDE_LABEL, type Deficiency } from '$lib/domain/inspections';
+  import { SECTION_TITLE } from './shared-classes';
+  import { defaultLocationId } from '$lib/domain/checklist-risk';
+  import { addRowsForDeficiencies } from '$lib/domain/transfer';
+  import { deficienciesWithState, deficiencyCounts, filterDeficiencies, groupByLocation, isTransferred, SCHOOL_WIDE_FILTER } from '$lib/domain/filters';
+  import { SCHOOL_WIDE_LABEL } from '$lib/domain/inspections';
   import { nav, type DeficiencyFilter } from '$lib/nav.svelte';
   import { store } from '$lib/state.svelte';
 
@@ -28,19 +33,11 @@
   const listOptions = $derived([{ value: ALL, label: 'Tüm listeler' }, ...a.checklists.map((c) => ({ value: c.id, label: c.name }))]);
   const stateOptions = $derived([
     { value: 'all', label: `Tümü (${counts.all})` },
-    { value: 'untransferred', label: `Risk tablosuna aktarılmamış (${counts.untransferred})` },
-    { value: 'transferred', label: `Aktarılmış (${counts.transferred})` },
+    { value: 'untransferred', label: `Riske eklenmemiş (${counts.untransferred})` },
+    { value: 'transferred', label: `Riske eklenmiş (${counts.transferred})` },
   ]);
 
-  const groups = $derived(
-    shown.reduce<{ key: string; name: string; items: Deficiency[] }[]>((acc, d) => {
-      const key = d.locationId ?? SCHOOL_WIDE_FILTER;
-      const found = acc.find((g) => g.key === key);
-      if (found) found.items.push(d);
-      else acc.push({ key, name: d.locationName, items: [d] });
-      return acc;
-    }, []),
-  );
+  const groups = $derived(groupByLocation(shown));
 
   const patch = (changes: Partial<DeficiencyFilter>) => (nav.deficiencyFilter = { ...filter, ...changes });
   const reset = () => (nav.deficiencyFilter = { locationId: null, listId: null, state: 'all', query: '' });
@@ -50,23 +47,24 @@
     const targets = pending.flatMap((d) => {
       const list = a.checklists.find((c) => c.id === d.listId);
       const target = d.locationId ?? (list ? defaultLocationId(a, list) : '');
-      return target ? [{ d, target }] : [];
+      return target ? [{ listId: d.listId, itemId: d.itemId, locationId: d.locationId, target }] : [];
     });
     if (!targets.length) {
       toast.info('Risk satırı açılacak mekân yok; önce bir mekân ekleyin.');
       return;
     }
-    store.applyWithUndo(
-      (x) => targets.reduce((acc, { d, target }) => riskRowFromChecklistItem(acc, d.listId, d.itemId, d.locationId, target), x),
-      `${targets.length} risk satırı oluşturuldu; puanlamak için Risk kaydına geçin.`,
-    );
+    const { assessment, created } = addRowsForDeficiencies(a, targets);
+    if (!created) {
+      toast.info('Görünen eksiklerin hepsinin risk satırı zaten var.');
+      return;
+    }
+    store.applyWithUndo(() => assessment, `${created} risk satırı oluşturuldu; puanlamak için Riskler'e geçin.`);
   }
 </script>
 
-<div class="mx-auto w-full max-w-5xl space-y-4 p-4">
-  <div class="flex flex-wrap items-center justify-between gap-2">
-    <h1 class="text-xl font-semibold">Eksikler</h1>
-    <Button disabled={!pending.length} onclick={transferShown}><ShieldAlert />Görünenleri aktar ({pending.length})</Button>
+<div class="flex flex-col gap-4">
+  <div class="flex justify-end">
+    <Button variant="outline" disabled={!pending.length} onclick={transferShown}><ShieldAlert />Görünenleri riske ekle ({pending.length})</Button>
   </div>
 
   <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -77,19 +75,15 @@
   </div>
 
   {#if !shown.length}
-    <div class="space-y-3 rounded-lg border border-dashed p-6 text-center">
-      {#if everything.length}
-        <p class="text-sm text-muted-foreground">Bu süzgece uyan eksik yok.</p>
-        {#if isFiltered}<Button variant="outline" size="sm" onclick={reset}>Süzgeçleri temizle</Button>{/if}
-      {:else}
-        <p class="text-sm text-muted-foreground">Henüz eksik yok — denetimleri doldurmak için Mekânlar'a gidin.</p>
-        <Button variant="outline" size="sm" onclick={() => nav.go('locations')}>Mekânlar'a git</Button>
-      {/if}
-    </div>
+    {#if everything.length}
+      <EmptyState icon={FunnelX} text="Bu süzgece uyan eksik yok." action={isFiltered ? { label: 'Süzgeçleri temizle', run: reset } : undefined} />
+    {:else}
+      <EmptyState icon={ClipboardCheck} text="Henüz eksik yok." action={{ label: "Mekânlar'a git", run: () => nav.go('locations') }} />
+    {/if}
   {:else}
     {#each groups as group (group.key)}
       <section class="space-y-2" aria-label={group.name}>
-        <h2 class="text-sm font-semibold text-muted-foreground">{group.name} <span class="font-normal">({group.items.length})</span></h2>
+        <h2 class={SECTION_TITLE}>{group.name} <span class="font-normal">({group.items.length})</span></h2>
         {#each group.items as d (d.listId + d.itemId + (d.locationId ?? ''))}
           <DeficiencyItem {d} />
         {/each}

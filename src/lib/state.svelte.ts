@@ -1,9 +1,9 @@
 import { toast } from "svelte-sonner";
 import { tick } from "svelte";
 import type { ChecklistTemplate, LocationTemplate } from "$lib/domain/types";
-import { addLocationFromTemplate, emptyAssessment } from "$lib/domain/assessment";
+import { emptyAssessment } from "$lib/domain/assessment";
 import { addChecklist as addChecklistFromTemplate } from "$lib/domain/checklist";
-import { autoAssign } from "$lib/domain/auto-assign";
+import { addFromLibrary, previewLibraryAdd } from "$lib/domain/library";
 import {
   applyBankChanges,
   bankChanges,
@@ -16,7 +16,6 @@ import { APP_VERSION, nowIso } from "$lib/domain/app-version";
 import { signSnapshot, reviseDraft, touch } from "$lib/domain/snapshot";
 import { parse } from "$lib/domain/file";
 import { readiness, type Readiness } from "$lib/domain/readiness";
-import { transferMissing } from "$lib/domain/transfer";
 import { nav } from "$lib/nav.svelte";
 import { runExport, isPdfKind } from "$lib/export-jobs";
 import { openExcel } from "$lib/excel-import-flow";
@@ -66,38 +65,6 @@ class Store extends StoreCore {
     });
     if (choice === "save") await this.exportAs("json");
     return choice !== null;
-  }
-  /** Moves untransferred deficiencies into the risk table (undoable) and offers a jump to it. */
-  transferMissing(listId?: string) {
-    const result = transferMissing(this.assessment, listId);
-    if (!result.created) {
-      toast.info(
-        result.skippedNoLocation
-          ? "Risk satırı açılacak mekân yok; önce bir mekân ekleyin."
-          : "Aktarılacak eksik yok.",
-      );
-      return;
-    }
-    const grown = result.assessment.locations.filter(
-      (l, i) => l.rows.length > (this.assessment.locations[i]?.rows.length ?? 0),
-    );
-    const open = () =>
-      grown.length === 1
-        ? nav.openLocation(grown[0].id, "risk")
-        : nav.openRegister({ status: "open" });
-    this.applyUndoable(
-      () => result.assessment,
-      `${result.created} risk satırı oluşturuldu; puanlamak için risk kaydına geçin.`,
-      {
-        // The jump is the toast's main action; undo moves to the secondary button.
-        notify: ((message, options) =>
-          toast.success(message, {
-            ...options,
-            action: { label: "Risk kaydını aç", onClick: open },
-            cancel: options?.action,
-          })) as typeof toast.success,
-      },
-    );
   }
 
   async newFromStarter() {
@@ -155,45 +122,30 @@ class Store extends StoreCore {
       this.loadAssessment(emptyAssessment(""), "Boş çalışma açıldı.");
   }
 
-  // Thin wrappers over nav for callers that still go through the store.
-  openSchool() {
-    nav.openReport(true);
-  }
-
-  selectLocation(id: string) {
-    nav.openLocation(id, "risk");
-  }
-
-  openRow(locationId: string, rowId: string) {
-    nav.openRow(locationId, rowId);
-  }
-
-  selectChecklist(id: string) {
-    nav.openLibrary(id);
-  }
-
   addBlankChecklist() {
     const before = this.assessment.checklists.length;
     if (!this.apply((a) => addChecklistFromTemplate(a))) return;
     nav.openLibrary(this.assessment.checklists[before]?.id ?? null);
   }
 
-  addFromLibrary(locations: LocationTemplate[], checklists: ChecklistTemplate[]) {
+  /** `library`: where the MEB lists named by location templates are taken from. */
+  addFromLibrary(
+    locations: LocationTemplate[],
+    checklists: ChecklistTemplate[],
+    library: ChecklistTemplate[],
+  ) {
     const beforeLocations = this.assessment.locations.length;
     const beforeLists = this.assessment.checklists.length;
+    let boundLists = 0;
     const ok = this.apply((a) => {
-      const added = checklists.reduce(
-        (acc, tpl) => addChecklistFromTemplate(acc, tpl),
-        locations.reduce(addLocationFromTemplate, a),
-      );
-      return autoAssign(
-        added,
-        added.checklists.slice(beforeLists).map((c) => c.id),
-      );
+      boundLists = previewLibraryAdd(a, locations, checklists, library).bound.length;
+      return addFromLibrary(a, locations, checklists, library);
     });
     if (!ok) return;
+    const addedLists = this.assessment.checklists.length - beforeLists;
+    const bound = boundLists ? `, ${boundLists} mevcut liste bağlandı` : "";
     toast.info(
-      `Eklendi: ${locations.length} mekân, ${checklists.length} kontrol listesi. İstemediğinizi ilgili ekrandan silebilirsiniz.`,
+      `Eklendi: ${locations.length} mekân, ${addedLists} kontrol listesi${bound}. İstemediğinizi ilgili ekrandan silebilirsiniz.`,
     );
     if (locations.length) nav.openLocation(this.assessment.locations[beforeLocations].id);
     else nav.openLibrary(this.assessment.checklists[beforeLists]?.id ?? null);

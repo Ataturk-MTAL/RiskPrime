@@ -8,7 +8,7 @@ Mersin Atatürk Mesleki ve Teknik Anadolu Lisesi Elektrik-Elektronik Teknolojisi
 
 1. Yayınlanmış sayfayı açın (ya da yerelde `pnpm dev`).
 2. Mekânları (bina ve alan etiketiyle) ve risk satırlarını ekleyin, düzenleyin, silin. O ve Ş seçince skor ve renkli düzey görünür.
-   - "+ Hazır formdan ekle": elektrik-elektronik hazır mekânları (risk satırlarıyla) ve kontrol listelerini, MEB KL-01–KL-43 listelerini seçip ekleyin; istemediğinizi silin.
+   - "+ Hazır formdan ekle": hazır mekânları (risk satırlarıyla; Elektrik-Elektronik, Makine ve Tasarım, Metal, İnşaat, Kimya, Harita-Tapu-Kadastro, Bilişim, Tesisat ve İklimlendirme) ve kontrol listelerini, MEB KL-01–KL-43 listelerini seçip ekleyin; istemediğinizi silin. Hazır mekân eklenince ona uygun MEB listeleri de eklenip mekâna bağlanır.
    - "Kontrol listeleri" sekmesi: Evet / Hayır / U-D işaretleyin, açıklama yazın. MEB listesinin hazır metni kilitlidir; madde eklenip çıkarılabilir.
    - Excel üç sayfadır: "Okul Bilgileri" (okul, dönem, tarihler, gruplama, imzacılar), "Kontrol Listesi", "Risk Satırları". Menüdeki "Excel şablonu: MEB KL-01–KL-43" dosyasında MEB kontrol listelerinin tamamı hazır; okul sayfasını doldurup "Dosya aç" ile yükleyin.
    - Kendi listeniz ya da risk satırlarınız için "diğer biçimler → Excel içe alma şablonu"nu doldurup "Dosya aç" ile yükleyin.
@@ -69,6 +69,10 @@ Etiket sürümle aynı değilse derleme başlamadan durur. Paketler kod imzası 
 2. `content/questions/bank.toml` içindeki `version` değerini artırın.
 3. `content/CHANGELOG.md` dosyasına aynı sürümle bir `## <sürüm>` girişi ekleyin.
 4. `pnpm bank:build` çalıştırın: doğrular, `src/lib/data/questions.json` dosyasını (ve `library.json` metinlerini) yeniden üretir. CI `pnpm bank:check` ile güncelliği denetler.
+
+## Hazır mekânları güncelleme
+
+Elektrik-Elektronik dışındaki alanların hazır mekânları `content/locations/<alan>.toml` dosyalarındadır (biçim: `content/locations/README.md`). Düzenleyip `pnpm bank:build` çalıştırın: doğrular ve `src/lib/data/locations.json` dosyasını üretir. CI `pnpm bank:check` ile güncelliği denetler.
 
 ## Madde önerileri
 

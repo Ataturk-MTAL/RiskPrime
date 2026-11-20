@@ -10,9 +10,10 @@ describe("nav routes", () => {
       place({ section: "locations" }),
       place({ section: "locations", locationId: "a-11" }),
       place({ section: "locations", locationId: "a-11", listId: "k-3" }),
-      place({ section: "locations", locationId: "a-11", locationView: "risk" }),
       place({ section: "deficiencies" }),
       place({ section: "register" }),
+      place({ section: "school" }),
+      place({ section: "register", locationId: "a-11" }),
       place({ section: "report" }),
       place({ section: "library" }),
       place({ section: "library", listId: "k 3/ö" }),
@@ -24,17 +25,19 @@ describe("nav routes", () => {
     expect(formatHash(place({ section: "locations", locationId: "a-11", listId: "k-3" }))).toBe(
       "#mekanlar/a-11/denetim/k-3",
     );
-    expect(
-      formatHash(place({ section: "locations", locationId: "a-11", locationView: "risk" })),
-    ).toBe("#mekanlar/a-11/risk");
+    expect(formatHash(place({ section: "register", locationId: "a-11" }))).toBe("#riskler/a-11");
     expect(formatHash(place({ section: "register" }))).toBe("#riskler");
+    expect(formatHash(place({ section: "school" }))).toBe("#okul");
   });
 
-  test("unknown or empty hashes open the overview; a risk view ignores a list id", () => {
+  test("unknown or empty hashes open the overview", () => {
     expect(parseHash("")).toEqual(HOME);
-    expect(parseHash("#okul")).toEqual(HOME);
-    expect(parseHash("#mekanlar/a-1/risk/k-9")).toEqual(
-      place({ section: "locations", locationId: "a-1", locationView: "risk" }),
-    );
+    expect(parseHash("#yok")).toEqual(HOME);
+  });
+
+  test("a saved location risk link opens Riskler for that location", () => {
+    const expected = place({ section: "register", locationId: "a-1" });
+    expect(parseHash("#mekanlar/a-1/risk")).toEqual(expected);
+    expect(parseHash("#mekanlar/a-1/risk/k-9")).toEqual(expected);
   });
 });

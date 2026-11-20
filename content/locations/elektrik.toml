@@ -1,0 +1,240 @@
+# Elektrik-Elektronik Teknolojisi alanının 2026 çerçeve programındaki yeni dallarına ait ek mekânlar.
+# Mevcut ELE atölyeleri src/lib/data/library.json içindedir; bunlar aynı alan başlığı altında görünür.
+# Biçim: content/locations/README.md
+
+area = "Elektrik-Elektronik Teknolojisi"
+
+[[location]]
+name = "Asansör ve Elektromekanik Taşıyıcılar Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-26", "KL-43", "KL-41", "KL-25", "KL-28", "KL-18", "KL-34"]
+
+[[location.row]]
+equipment = "Asansör eğitim kuyusu ve kabini"
+hazard = "Kabin hareket ederken kuyu, kabin üstü veya kuyu dibinde sıkışma ve ezilme; açık kuyu kapısından düşme"
+affected = "Öğrenci, öğretmen"
+action = "Öğrenci yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde çalışır; kuyuya ve kabin üstüne girmeden önce enerji kesilip kilitlenir, kabin üstü ve kuyu dibi stop butonları denenir; kat kapısı kilitleri çalışır, açık kapı korumaya alınır; kat kapısı acil açma anahtarı yalnız öğretmende; kuyu dibine girişte kabin mekanik olarak sabitlenir veya kuyu dibi emniyet desteği konur; kabin üstünde hareket yalnız revizyon (bakım) kumandasıyla ve öğretmence; kuyuda aynı anda öğretmen ve en fazla bir öğrenci; kabin üstünde korkuluk (Asansör İşletme, Bakım ve Periyodik Kontrol Yönetmeliği, madde doğrulanmalı; KL-43, KL-25)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Makine dairesi, tahrik makinesi, halat ve kasnak"
+hazard = "Dönen kasnak ve halata el kaptırma; fren açılırken kabinin hareket etmesi"
+affected = "Öğrenci, öğretmen"
+action = "Kasnak ve halat koruyucuları takılı; bakım enerji kesik ve öğretmence; elle kurtarma ve fren açma yalnız öğretmence, kabinde ve kuyuda kimse yokken, volan tutularak ve kabin kısa adımlarla hareket ettirilerek yapılır (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Asansör kumanda panosu"
+hazard = "Enerjili kumanda ve güç devresine temas: elektrik çarpması"
+affected = "Öğrenci"
+action = "Bağlantı enerji kesikken yapılır; öğretmen kontrolünden sonra enerji verilir; pano kilitli, kaçak akım korumalı (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Hidrolik asansör seti"
+hazard = "Basınçlı hidrolik hortumun patlaması; yağ jetinin cilde girmesi; kabinin ani inmesi"
+affected = "Öğrenci"
+action = "Bağlantı sökülmeden önce basınç boşaltılır ve kabin desteklenir; hortumlar kontrol edilir; kaçak elle aranmaz (KL-28)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Yürüyen merdiven ve yürüyen yol eğitim seti"
+hazard = "Basamak ile etek arasında veya tarak bölgesinde ayak, el, giysi sıkışması"
+affected = "Öğrenci"
+action = "Set yalnız öğretmen gözetiminde çalıştırılır; acil stop butonları erişilebilir ve denenmiş; bakımda basamak çıkarılan bölüm korumaya alınır, enerji kilitlenir (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Ray, kabin ve ağır parça montajı"
+hazard = "Ağır parçayı kaldırma: bel yaralanması; askıdaki parçanın düşmesi"
+affected = "Öğrenci, öğretmen"
+action = "Caraskal veya kaldırma aparatı; askıdaki yükün altında durulmaz; iş ayakkabısı ve baret (KL-41, KL-18)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Elektrikli Cihazlar Teknik Servis Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-26", "KL-23", "KL-29", "KL-30", "KL-32", "KL-33", "KL-34", "KL-18"]
+
+[[location.row]]
+equipment = "Arızalı ev aletleri ve servis masası"
+hazard = "Fişi takılı cihazın kapağı açıkken enerjili parçaya temas: elektrik çarpması"
+affected = "Öğrenci"
+action = "Kapak fiş çekilmeden açılmaz; enerjili ölçüm gerekiyorsa yalıtım trafosu üzerinden ve öğretmen gözetiminde; servis masası kaçak akım korumalı; onarılan cihaz teslimden önce izolasyon ve topraklama testinden geçer (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Mikrodalga fırın ve yüksek gerilimli cihazlar"
+hazard = "Mikrodalga fırının yüksek gerilim trafosu ve kondansatöründe fiş çekildikten sonra da kalan ölümcül gerilim"
+affected = "Öğrenci, öğretmen"
+action = "Yüksek gerilim bölümüne öğrenci müdahale etmez; kondansatör öğretmence uygun deşarj aletiyle boşaltılır ve ölçülerek kontrol edilir; cihaz dış kasası açıkken çalıştırılmaz; kapı kilit şalterleri değiştirildikten sonra mikrodalga sızıntı ölçümü yapılmadan cihaz teslim edilmez"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Çamaşır ve bulaşık makinesi gibi tesisatlı cihazlar"
+hazard = "Su ile elektrik temasında çarpma; ağır cihazı kaldırma; ıslak zeminde kayma"
+affected = "Öğrenci"
+action = "Cihaz topraklı ve kaçak akım korumalı prize bağlı; ağır cihaz iki kişiyle veya taşıma arabasıyla taşınır; dökülen su hemen silinir (KL-26, KL-18)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Isıtıcı cihazlar (fırın, ütü, su ısıtıcı, saç kurutma)"
+hazard = "Sıcak rezistans ve yüzeye temas: yanık; deneme sırasında yangın"
+affected = "Öğrenci"
+action = "Deneme yanmaz yüzeyde ve gözetimli; cihaz soğumadan sökülmez; söndürücü yakında (KL-23, KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Buzdolabı ve klima soğutucu akışkanı"
+hazard = "Akışkan kaçağı; yanıcı akışkanla (R600a, R290) yangın; soğuk yanığı"
+affected = "Öğrenci"
+action = "Soğutma devresi açılmaz, akışkanla ilgili işler sertifikalı kişice yapılır; yanıcı akışkanlı cihazın yakınında açık alev ve kıvılcım yok; ortam havalandırılır (KL-29, KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Yazıcı ve fotokopi makineleri"
+hazard = "Toner tozu soluma; sıcak fırın (fuser) ünitesiyle yanık"
+affected = "Öğrenci"
+action = "Toner dökülmesi nemli bezle veya toner için uygun süpürgeyle temizlenir; fuser ünitesine soğumadan dokunulmaz (KL-32, KL-23)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "GSM telefon ve lityum piller"
+hazard = "Delinen veya şişmiş lityum pilin alev alması"
+affected = "Herkes"
+action = "Pil sökülürken delici veya kesici alet kullanılmaz; şişmiş pil kumlu metal kapta ayrılır; söndürücü yakında; atık piller toplama kutusunda (KL-30, KL-33)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Elektronik atık"
+hazard = "Kırık ekran ve kartla kesilme; atığın evsel atığa karışması"
+affected = "Öğrenci, personel"
+action = "Elektronik atık ayrı toplanır ve lisanslı firmaya verilir; kesilmeye dayanıklı eldiven (KL-33)"
+responsible = "Okul müdürü"
+
+[[location]]
+name = "Robotik, İnsansız Araçlar ve Savunma Elektroniği Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-26", "KL-43", "KL-30", "KL-32", "KL-33", "KL-21", "KL-34", "KL-27"]
+
+[[location.row]]
+equipment = "Endüstriyel robot kolu"
+hazard = "Robotun çalışma alanında çarpma ve sıkışma; öğretme modunda beklenmedik hareket"
+affected = "Öğrenci, öğretmen"
+action = "Robot güvenlik çitli veya ışık perdeli hücrede; hücre kapısı açılınca robot durur; öğretme modunda düşük hız ve onay (enable) butonu; acil stop erişilebilir; öğrenci yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde çalışır (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "İnsansız hava aracı (drone)"
+hazard = "Dönen pervaneyle kesilme; kontrol kaybında çarpma"
+affected = "Öğrenci, öğretmen"
+action = "Bakım ve ayarda pervane sökülür veya pil çıkarılır; uçuş denemesi kapalı ve fileli alanda ya da açık alanda kişilerden uzakta, öğretmen gözetiminde; açık alan uçuşu Sivil Havacılık Genel Müdürlüğü İHA kurallarına (kayıt, uçuş bölgesi) uygun (talimat adı doğrulanmalı); pervane koruyucusu (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "LiPo piller ve şarj"
+hazard = "Hasarlı, şişmiş veya aşırı şarj edilen pilin alev alması"
+affected = "Herkes"
+action = "Uygun dengeli şarj cihazı; şarj gözetimli, yanmaz şarj torbasında; şişmiş veya darbe almış pil kullanılmaz, kumlu metal kapta ayrılır; söndürücü yakında (KL-30, KL-33)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "SMD lehimleme ve sıcak hava istasyonu"
+hazard = "Sıcak uca ve sıcak havaya temas: yanık; lehim ve flux dumanı"
+affected = "Öğrenci"
+action = "Havya ve sıcak hava tabancası yuvasında; kullanılmayan istasyon kapatılır; lokal lehim dumanı emici; kurşunlu lehimde masada yiyecek ve içecek yok; el yıkama (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "RF verici, anten ve radar eğitim setleri"
+hazard = "Verici anteninin yakınında yüksek RF alanına maruz kalma; verici çıkışı yüksüz çalıştırma"
+affected = "Öğrenci"
+action = "Eğitim setleri düşük güçte çalıştırılır; verici çalışırken antene yaklaşılmaz; verici çıkışında anten veya yük bağlı; üretici güvenlik mesafesine uyulur (değer üretici talimatından, doğrulanmalı)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Bilgisayar başında programlama"
+hazard = "Göz yorgunluğu, boyun, bel ve bilek ağrısı"
+affected = "Öğrenci, öğretmen"
+action = "Ekran göz hizasında; ayarlanabilir sandalye; düzenli ara (KL-27)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Elektrikli Araç ve Güneş Enerjisi Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-26", "KL-30", "KL-25", "KL-18", "KL-34", "KL-23"]
+
+[[location.row]]
+equipment = "Elektrikli araç yüksek voltaj (HV) bataryası ve eğitim seti"
+hazard = "Yüksek voltajlı DC sistemle elektrik çarpması ve ark; hasarlı bataryada termal kaçak ve yangın"
+affected = "Öğrenci, öğretmen"
+action = "Yüksek voltaj (HV) sistemine yalnız bu konuda eğitimi belgelenmiş öğretmen müdahale eder; öğrenci yalnız gerilimsizleştirilmiş ve kilitlenmiş sette çalışır; servis fişi çıkarılır, üretici bekleme süresine uyulur, gerilimsizlik ölçülür; sınıf 0 yalıtkan eldiven her kullanımdan önce hava testinden geçer, yalıtımlı aletler kullanılır; çalışma alanı bariyer ve uyarı levhasıyla ayrılır; hasarlı batarya ayrı alanda; termal kaçakta söndürmeye çalışılmaz, alan boşaltılır, itfaiye çağrılır (KL-26, KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Şarj istasyonu"
+hazard = "Hasarlı kablo veya fişle elektrik çarpması; aşırı ısınma"
+affected = "Öğrenci"
+action = "Şarj kablosu ve fişi kullanımdan önce gözle kontrol edilir; istasyonun kaçak akım ve topraklama koruması çalışır; tesisat yetkili kişice kurulmuş (KL-26)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Güneş paneli ve DC tesisatı"
+hazard = "Güneş alan panelin sürekli ürettiği DC gerilimle çarpma ve ark; bağlantı sökülürken ark"
+affected = "Öğrenci"
+action = "Bağlantılar panel örtülüyken veya DC ayırıcı açıkken yapılır; yük altında konnektör sökülmez; yalıtımlı aletler (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Çatı veya yüksekte panel montajı"
+hazard = "Yüksekten düşme; panelin rüzgârla devrilmesi"
+affected = "Öğrenci"
+action = "Montaj uygulaması yere yakın sehpada yapılır; öğrenci çatıya ve yüksekte çalışmaya çıkarılmaz; panel iki kişiyle taşınır (KL-25, KL-18)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "İnvertör ve akü grubu"
+hazard = "İnvertör kondansatöründe kalan gerilim; akü kutuplarının kısa devresi: yanık, yangın"
+affected = "Öğrenci"
+action = "İnvertör kapatıldıktan sonra bekleme süresine uyulur ve gerilimsizlik ölçülür; akü kutup başları kapalı; aletler yalıtımlı; kurşun-asit akü şarjı havalandırılan yerde, kıvılcımdan uzakta (KL-26, KL-30.15)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Sarım (Motor ve Trafo) Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-26", "KL-43", "KL-30", "KL-32", "KL-23", "KL-18", "KL-34"]
+
+[[location.row]]
+equipment = "Bobin sarma makinesi"
+hazard = "Dönen kalıp ve mile parmak veya giysi kaptırma"
+affected = "Öğrenci"
+action = "Öğrenci makineyi yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; ayak pedalı ve acil durdurma çalışır; dönen makinede eldiven giyilmez, saç toplu (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Emaye tel, kesici ve sıyırma işlemleri"
+hazard = "Tel uçlarıyla batma ve kesilme; ısıyla izolasyon sıyırmada duman ve yanık"
+affected = "Öğrenci"
+action = "Tel uçları kesildikten sonra bükülür; gözlük; ısıl sıyırma havalandırmalı yerde (KL-34, KL-23)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Emprenye verniği ve kurutma fırını"
+hazard = "Vernik çözücü buharı soluma ve tutuşma; sıcak fırın ve sargıyla yanık"
+affected = "Öğrenci"
+action = "Vernikleme havalandırmalı yerde, kıvılcım kaynağından uzakta; vernik kapalı dolapta; organik buhar filtreli maske ve nitril eldiven; fırından çıkan sargı maşayla alınır (KL-32, KL-30, KL-23)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Sarım sonrası deneme ve yalıtım (megger) testi"
+hazard = "Deneme sırasında motor ve trafo uçlarında gerilim; yalıtım test cihazının yüksek test gerilimi"
+affected = "Öğrenci"
+action = "Deneme bağlantıları enerji kesikken yapılır, deneme öğretmen kontrolünde; yalıtım testinden sonra sargı deşarj edilir; deney masası kaçak akım korumalı (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Trafo ve motor gövdesi taşıma"
+hazard = "Ağır parçayı kaldırma: bel yaralanması, ayağa düşme"
+affected = "Öğrenci"
+action = "Kaldırma aparatı veya iki kişiyle taşınır; iş ayakkabısı (KL-18)"
+responsible = "Atölye öğretmeni"

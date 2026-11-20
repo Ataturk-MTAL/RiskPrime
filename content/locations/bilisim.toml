@@ -1,0 +1,163 @@
+# Bilişim Teknolojileri alanı hazır mekânları. Biçim: content/locations/README.md
+
+area = "Bilişim Teknolojileri"
+
+[[location]]
+name = "Yazılım ve Grafik Tasarım Laboratuvarı"
+type = "workshop"
+checklists = ["KL-27", "KL-19", "KL-20", "KL-24", "KL-26"]
+
+[[location.row]]
+equipment = "Bilgisayar ve ekran"
+hazard = "Uzun süre ekran başında çalışma: göz yorgunluğu, boyun, bel ve bilek ağrısı"
+affected = "Öğrenci, öğretmen"
+action = "Ekran göz hizasında ve 50-80 cm uzakta; ayarlanabilir sandalye; düzenli ara verilir (KL-27)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Kablo, priz, çoklu priz"
+hazard = "Masa altında dağınık kablo: takılıp düşme; zincirleme çoklu priz: aşırı yük, yangın"
+affected = "Öğrenci"
+action = "Kablolar kanalda; zincirleme çoklu priz yasak; aylık gözle kontrol (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Masa düzeni ve geçişler"
+hazard = "Dar sıra arası ve çıkışın önünün kapanması: acil durumda tahliyenin gecikmesi"
+affected = "Herkes"
+action = "Sıra araları ve kapı önü boş; çantalar geçişe bırakılmaz"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Aydınlatma ve iç iklim"
+hazard = "Ekranda yansıma, yetersiz aydınlatma; çok bilgisayarlı sınıfta sıcaklık ve havasızlık"
+affected = "Öğrenci, öğretmen"
+action = "Ekranlar pencereye dik, perde var; havalandırma ve klima bakımı düzenli (KL-20, KL-24)"
+responsible = "Okul müdürü"
+
+[[location]]
+name = "Ağ ve Siber Güvenlik Laboratuvarı"
+type = "workshop"
+checklists = ["KL-37", "KL-27", "KL-19", "KL-20", "KL-26", "KL-34", "KL-21", "KL-18", "KL-33"]
+
+[[location.row]]
+equipment = "Bilgisayar ve ekran"
+hazard = "Uzun süre ekran başında çalışma: göz yorgunluğu, boyun, bel ve bilek ağrısı"
+affected = "Öğrenci, öğretmen"
+action = "Ekran göz hizasında ve 50-80 cm uzakta; ayarlanabilir sandalye; düzenli ara verilir (KL-27)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Bilgisayar kasası ve güç kaynağı"
+hazard = "Fiş takılıyken kasa içine müdahale; güç kaynağını açma: elektrik çarpması"
+affected = "Öğrenci"
+action = "Kasa içi çalışma fiş çekiliyken; güç kaynağı açılmaz, arızalıysa değiştirilir (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Kablo sonlandırma ve fiber optik"
+hazard = "Kesici ve sıkma pensesiyle el yaralanması; fiber cam kırıntısının cilde veya göze batması; fiber ucundaki ışığa bakma"
+affected = "Öğrenci"
+action = "Fiber kırıntıları koyu renkli altlıkta toplanır, kapaklı kaba atılır; koruyucu gözlük; fiber ucuna ve konnektöre bakılmaz (KL-34, KL-21)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Lehimleme istasyonu"
+hazard = "Sıcak uca temas: yanık; lehim dumanı"
+affected = "Öğrenci"
+action = "Havya yuvasında bırakılır; kullanılmayan istasyon kapatılır; lokal lehim dumanı emici; kurşunlu lehimde masada yiyecek ve içecek yok; el yıkama (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Rack kabin (kabinet), sunucu ve UPS montajı"
+hazard = "Ağır cihazı kaldırma: bel yaralanması; kabinin devrilmesi"
+affected = "Öğrenci, öğretmen"
+action = "Ağır cihaz iki kişiyle taşınır; kabin sabit; ağır cihaz alt bölmeye takılır (KL-18)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "UPS aküleri"
+hazard = "Akü kutuplarının kısa devresi: yanık, yangın"
+affected = "Öğretmen"
+action = "Akü değişimi yetkili kişi tarafından; kutup başları kapalı; aletler yalıtımlı"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Elektronik atık ve piller"
+hazard = "Kırık ekran ve kartla kesilme; pillerin evsel atığa karışması"
+affected = "Öğrenci, personel"
+action = "Atık pil kutusu; elektronik atık ayrı toplanır ve lisanslı firmaya verilir (KL-33)"
+responsible = "Okul müdürü"
+
+[[location]]
+name = "Bilgisayar ve Robotik Kodlama Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-26", "KL-43", "KL-30", "KL-32", "KL-21", "KL-34", "KL-27", "KL-33"]
+
+[[location.row]]
+equipment = "Lityum pil (Li-ion, LiPo) ve şarj"
+hazard = "Hasarlı, şişmiş veya aşırı şarj edilen pilin alev alması"
+affected = "Herkes"
+action = "Uygun şarj cihazı; şarj gözetimli ve yanmaz yüzeyde veya yanmaz şarj torbasında; şişmiş veya darbe almış pil kullanılmaz, kumlu metal kapta ayrılıp atık olarak verilir; söndürücü yakında (KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Hareketli robotlar, motorlar ve dişliler"
+hazard = "Beklenmedik hareketle çarpma; dişli ve pervaneye parmak kaptırma"
+affected = "Öğrenci"
+action = "Robot denemeleri ayrılmış test alanında; programı yüklemeden önce robot kaldırılır veya tekerlekleri boşa alınır; pervaneli araçlarda pervane koruyucusu; acil kapatma anahtarı erişilebilir (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Lehimleme istasyonu"
+hazard = "Sıcak uca temas: yanık; lehim dumanı"
+affected = "Öğrenci"
+action = "Havya yuvasında bırakılır; kullanılmayan istasyon kapatılır; lokal lehim dumanı emici; kurşunlu lehimde masada yiyecek ve içecek yok; el yıkama (KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Sıcak silikon tabancası, maket bıçağı ve el aletleri"
+hazard = "Sıcak silikon ve uçla yanık; kesilme"
+affected = "Öğrenci"
+action = "Silikon tabancası standında bırakılır; maket bıçağı kilitli ve kapaklı, kesim altlık üzerinde kendinden uzağa (KL-21, KL-34)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Bilgisayar başında çalışma"
+hazard = "Göz yorgunluğu, boyun, bel ve bilek ağrısı"
+affected = "Öğrenci, öğretmen"
+action = "Ekran göz hizasında; ayarlanabilir sandalye; düzenli ara (KL-27)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Sunucu ve Sistem Odası"
+type = "office"
+checklists = ["KL-26", "KL-30", "KL-24", "KL-22"]
+
+[[location.row]]
+equipment = "Sunucu kabini ve UPS"
+hazard = "Aşırı ısınma ve elektrik arızasıyla yangın; kabinin devrilmesi"
+affected = "Herkes"
+action = "Klima ve sıcaklık izleme; UPS bakımı düzenli; kapı yanında CO₂ söndürücü (iletken değil, kalıntı bırakmaz); kabin zemine veya duvara sabit (KL-30, KL-24, KL-22)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Elektrik tesisatı"
+hazard = "Aşırı yük, hasarlı kablo: yangın, elektrik çarpması"
+affected = "Herkes"
+action = "Oda ayrı sigortalı hatta; kaçak akım rölesi; pano kilitli (KL-26)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Oda erişimi"
+hazard = "Yetkisiz kişinin veya öğrencinin enerjili cihazlara erişmesi"
+affected = "Öğrenci"
+action = "Kapı kilitli; anahtar yalnız yetkili öğretmende; öğrenci gözetimsiz girmez"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Kablo yığınları"
+hazard = "Takılıp düşme; yangın yükü"
+affected = "Öğretmen, personel"
+action = "Kablolar etiketli ve kanallı; kullanılmayan kablolar sökülür (KL-26)"
+responsible = "Atölye öğretmeni"

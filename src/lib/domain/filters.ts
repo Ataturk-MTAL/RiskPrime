@@ -1,4 +1,4 @@
-// Pure filters of the school-wide pages (Eksikler, Risk kaydı). Filter shapes live in nav.svelte.ts.
+// Pure filters of Riskler and its deficiency view. Filter shapes live in nav.svelte.ts.
 import { isOverdue } from "./assessment";
 import { mergeCommonDeficiencies } from "./common-items";
 import { deficiencies, findInspection, type Deficiency, type RegisterEntry } from "./inspections";
@@ -22,7 +22,7 @@ const matches = (query: string, fields: (string | undefined)[]): boolean => {
   return !q || fields.some((f) => f?.toLocaleLowerCase("tr").includes(q));
 };
 
-/** DeficiencyFilter.locationId value for okul geneli inspections (null means "all locations"). */
+/** DeficiencyFilter.locationId value for school-wide inspections (null means "all locations"). */
 export const SCHOOL_WIDE_FILTER = "__school__";
 
 /** A deficiency with the same "already in the risk table" rule the bulk transfer uses. */
@@ -102,7 +102,11 @@ export function filterRegister(
   today: Date,
 ): RegisterEntry[] {
   return withoutLevel(entries, f, today)
-    .filter((e) => f.level === "all" || (!!e.level && SERIOUS.includes(e.level.key)))
+    .filter(
+      (e) =>
+        f.level === "all" ||
+        (f.level === "unscored" ? !e.level : !!e.level && SERIOUS.includes(e.level.key)),
+    )
     .sort((x, y) => rank(x) - rank(y) || x.locationName.localeCompare(y.locationName, "tr"));
 }
 
@@ -132,3 +136,49 @@ export function levelCounts(
   }
   return counts;
 }
+
+/** Items grouped by location (school-wide under SCHOOL_WIDE_FILTER), groups in first-seen order. */
+export function groupByLocation<T extends { locationId: string | null; locationName: string }>(
+  items: readonly T[],
+): { key: string; name: string; items: T[] }[] {
+  const keyOf = (i: T) => i.locationId ?? SCHOOL_WIDE_FILTER;
+  return [...new Set(items.map(keyOf))].map((key) => {
+    const members = items.filter((i) => keyOf(i) === key);
+    return { key, name: members[0].locationName, items: members };
+  });
+}
+
+/** What a Riskler filter showed when it was chosen, every row id known then, and its location. */
+export interface RegisterPin {
+  shown: readonly string[];
+  known: ReadonlySet<string>;
+  locationId: string | null;
+}
+
+export function pinRegister(
+  entries: readonly RegisterEntry[],
+  f: RegisterFilter,
+  today: Date,
+): RegisterPin {
+  return {
+    shown: filterRegister([...entries], f, today).map((e) => e.row.id),
+    known: new Set(entries.map((e) => e.row.id)),
+    locationId: f.locationId,
+  };
+}
+
+/**
+ * Pinned rows in pinned order (deleted ones drop out), then rows added since in the pinned location:
+ * a row scored under "Puansız" stays where it is instead of vanishing under the cursor.
+ */
+export function keepPinned(entries: readonly RegisterEntry[], pin: RegisterPin): RegisterEntry[] {
+  const byId = new Map(entries.map((e) => [e.row.id, e]));
+  const kept = pin.shown.flatMap((id) => byId.get(id) ?? []);
+  const added = entries.filter(
+    (e) => !pin.known.has(e.row.id) && (pin.locationId === null || e.locationId === pin.locationId),
+  );
+  return [...kept, ...added];
+}
+
+export const matchesRegisterFilter = (e: RegisterEntry, f: RegisterFilter, today: Date): boolean =>
+  filterRegister([e], f, today).length > 0;

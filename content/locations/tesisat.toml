@@ -1,0 +1,245 @@
+# Tesisat Teknolojisi ve İklimlendirme alanı hazır mekânları. Biçim: content/locations/README.md
+# Atölye adları alanın 2026 çerçeve öğretim programındaki modül başlıklarından alınmıştır.
+
+area = "Tesisat Teknolojisi ve İklimlendirme"
+
+[[location]]
+name = "Temel Tesisat Atölyesi"
+type = "workshop"
+checklists = [
+  "KL-37",
+  "KL-34",
+  "KL-43",
+  "KL-29",
+  "KL-30",
+  "KL-23",
+  "KL-18",
+  "KL-21",
+  "KL-31",
+  "KL-26",
+]
+
+[[location.row]]
+equipment = "Boru kesme ve diş açma makinesi"
+hazard = "Dönen boruya giysi veya eldiven kaptırma; çapakla kesilme"
+affected = "Öğrenci"
+action = "Öğrenci makineyi yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kullanır; ayak pedalı ve acil durdurma çalışır; dönen makinede eldiven giyilmez; kesilen boru çapaklanır (KL-43)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "El aletleri (boru anahtarı, boru kesici, pafta, eğe)"
+hazard = "Kayan boru anahtarıyla el ve parmak yaralanması; sapsız eğe, hasarlı alet"
+affected = "Öğrenci"
+action = "Aletler ders başında gözle kontrol edilir; boru mengeneye sabitlenir; boru anahtarına uzatma borusu takılmaz; hasarlı alet kullanılmaz (KL-34)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Plastik boru (PPR) kaynak makinesi"
+hazard = "Isıtıcı uca temas: yanık"
+affected = "Öğrenci"
+action = "Makine standında bırakılır; kullanılmayan makine kapatılır; soğumadan dokunulmaz (KL-23)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Bakır boru lehimi (propan hamlacı) ve gaz tüpü"
+hazard = "Alevle yanık; tüp kaçağıyla yangın"
+affected = "Öğrenci, öğretmen"
+action = "Öğrenci yalnız öğretmen gözetiminde lehim yapar; tüp dik ve devrilmeye karşı sabit, vanayı öğretmen açıp kapatır; yanıcı malzeme uzakta; söndürücü yakında (KL-29, KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Boru ve ağır malzeme taşıma"
+hazard = "Bel yaralanması; uzun boruyla çarpma; ayağa düşme"
+affected = "Öğrenci"
+action = "Ağır ve uzun malzeme iki kişiyle taşınır; iş ayakkabısı (KL-18)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Sıhhi Tesisat Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-26", "KL-18", "KL-34", "KL-21", "KL-32"]
+
+[[location.row]]
+equipment = "Tesisat basınç testi (su veya hava)"
+hazard = "Basınç altında tapa veya bağlantının fırlaması"
+affected = "Öğrenci"
+action = "Test öncelikle suyla yapılır; hava testi yalnız düşük basınçta ve öğretmence; basınç kademeli verilir; manometre ve tapalar test basıncına uygun ve test öncesi kontrol edilir (KL-28.02); test sırasında bağlantıların önünde durulmaz; test basıncı tesisatın dayanımını aşmaz"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Test suyu ve ıslak zemin"
+hazard = "Kayma, düşme; su ile elektrik temasında çarpma"
+affected = "Öğrenci"
+action = "Test sonrası zemin kurulanır; prizler ve uzatmalar su sıçramasından korunaklı ve kaçak akım korumalı (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Vitrifiye (lavabo, klozet) ve batarya montajı"
+hazard = "Ağır vitrifiyeyi kaldırma: bel yaralanması; kırılan vitrifiyeyle derin kesik"
+affected = "Öğrenci"
+action = "Vitrifiye iki kişiyle taşınır; kesilmeye dayanıklı eldiven; kırık vitrifiye hemen toplanır (KL-18, KL-21)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "PVC pis su borusu kesme ve yapıştırma"
+hazard = "Testereyle kesilme; yapıştırıcı çözücü buharı soluma, cilde temas"
+affected = "Öğrenci"
+action = "Boru mengene veya kesme aparatında sabit; yapıştırma havalandırmalı yerde; nitril eldiven; yapıştırıcı kapağı kapalı tutulur (KL-34, KL-32)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Isıtma ve Doğal Gaz Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-29", "KL-30", "KL-24", "KL-23", "KL-28", "KL-18", "KL-26", "KL-40"]
+
+[[location.row]]
+equipment = "Doğal gaz iç tesisatı uygulaması ve sızdırmazlık testi"
+hazard = "Gaz kaçağıyla yangın ve patlama; test basıncıyla bağlantının fırlaması"
+affected = "Herkes"
+action = "Uygulama tesisatına gaz verilmez, sızdırmazlık testi hava veya azotla ve regülatörle yapılır; test basıncı aşılmaz; köpükle kaçak kontrolü (KL-29, KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Çelik boru kaynağı"
+hazard = "Ark ışığı, kaynak dumanı, sıcak parça ve kıvılcımla yanık ve yangın"
+affected = "Öğrenci, öğretmen"
+action = "Öğrenci yalnız kullanım eğitimini almış olarak ve öğretmen gözetiminde kaynak yapar; kaynak maskesi, deri eldiven ve önlük; lokal emiş; yanıcı malzeme uzakta, söndürücü yakında (KL-40, KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Kalorifer ve sıcak su devresi eğitim setleri"
+hazard = "Sıcak su ve boruyla yanık; aşırı basınç"
+affected = "Öğrenci"
+action = "Emniyet ventili ve manometre çalışır; set çalışırken bağlantı sökülmez; sıcak yüzeyler işaretli (KL-23, KL-28)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Radyatör, kazan ve ağır ekipman taşıma"
+hazard = "Bel yaralanması; ayağa düşme"
+affected = "Öğrenci"
+action = "İki kişiyle veya taşıma arabasıyla taşınır; iş ayakkabısı (KL-18)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Gaz Yakıcı Cihazlar Atölyesi"
+type = "workshop"
+checklists = ["KL-37", "KL-29", "KL-30", "KL-24", "KL-23", "KL-26"]
+
+[[location.row]]
+equipment = "Kombi ve gaz yakıcı cihazların çalıştırılması"
+hazard = "Gaz kaçağıyla yangın, patlama; baca gazında karbon monoksit zehirlenmesi"
+affected = "Herkes"
+action = "Cihazlar gaz verilmeden çalışılır; gazlı çalıştırma yalnız dağıtım şirketinden sertifikalı (yetki belgeli) personelce, onaylı tesisatta ve bacası uygun yerde (ilgili mevzuat doğrulanmalı); öğrenci gaz vanasına ve bağlantısına müdahale etmez; gaz dedektörü otomatik kesme vanasına bağlı, karbon monoksit dedektörü test edilmiş; baş ağrısı veya baş dönmesinde çalışma durdurulur, ortam boşaltılıp havalandırılır (KL-24, KL-30.15)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Baca bağlantısı ve yanma havası"
+hazard = "Bacası bağlanmamış veya sızdıran cihazda karbon monoksit birikmesi"
+affected = "Herkes"
+action = "Gazlı çalıştırmadan önce baca bağlantısı öğretmence kontrol edilir; yanma havası menfezleri açık; karbon monoksit dedektörü test edilmiş (KL-24)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Cihaz elektronik kartı ve elektrik bağlantısı"
+hazard = "Enerjili kart ve klemenslere temas: elektrik çarpması"
+affected = "Öğrenci"
+action = "Müdahale öncesi fiş çekilir; cihazlar topraklı prize bağlı; kaçak akım koruması (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Eşanjör, brülör ve sıcak cihaz parçaları"
+hazard = "Sıcak parçaya temas: yanık"
+affected = "Öğrenci"
+action = "Cihaz kapatılıp soğuması beklendikten sonra sökülür; ısıya dayanıklı eldiven (KL-23)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Temel Soğutma ve İklimlendirme Atölyesi"
+type = "workshop"
+checklists = [
+  "KL-37",
+  "KL-29",
+  "KL-28",
+  "KL-26",
+  "KL-23",
+  "KL-30",
+  "KL-24",
+  "KL-34",
+  "KL-18",
+  "KL-25",
+]
+
+[[location.row]]
+equipment = "Soğutucu akışkan dolumu ve boşaltılması"
+hazard = "Sıvı akışkanla soğuk yanığı, göze sıçrama; kapalı alanda gaz birikmesiyle boğulma; yanıcı akışkanlarda (R290, R600a, R32) yangın"
+affected = "Öğrenci, öğretmen"
+action = "Öğrenci yalnız öğretmen gözetiminde çalışır; koruyucu gözlük ve eldiven; dolum havalandırmalı yerde; yanıcı akışkanla çalışırken açık alev ve kıvılcım yok; akışkan atmosfere salınmaz, geri kazanım cihazıyla toplanır; yanıcı akışkanda geri kazanım cihazı ve vakum pompası bu akışkana uygun (kıvılcımsız); akışkan havadan ağır olduğundan zemin seviyesi ve çukurlar havalandırılır; geri kazanım tüpü aşırı doldurulmaz; florlu gazlarla çalışma sertifikalı öğretmenin yönetiminde (Florlu Sera Gazları Yönetmeliği; KL-29, KL-23, KL-30.15)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Sert lehim (oksi-asetilen veya propan hamlacı)"
+hazard = "Alev ve sıcak boruyla yanık; tüp veya hortum kaçağıyla yangın; içinde akışkan kalan boruyu ısıtma: zehirli bozunma ürünleri"
+affected = "Öğrenci, öğretmen"
+action = "Öğrenci yalnız öğretmen gözetiminde lehim yapar; tüp dik ve zincirli, vanayı öğretmen açıp kapatır; lehim öncesi akışkan geri kazanılır, boru azotla süpürülür; yanıcı akışkanlı sistemde lehimden önce ortam ve boru yanıcı gaz dedektörüyle ölçülür; yanıcı malzeme uzakta, söndürücü yakında (KL-29, KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Basınç testi ve vakum (azot tüpü, manifold)"
+hazard = "Aşırı basınçla boru, hortum veya manometrenin patlaması"
+affected = "Öğrenci"
+action = "Azot tüpünde basınç düşürücü regülatör kullanılır, sisteme doğrudan tüp basıncı verilmez; test basıncı sistemin dayanımını aşmaz; manifold ve hortumlar kontrol edilir; test sırasında bağlantıların önünde durulmaz (KL-28)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Soğutma ve klima eğitim setlerinin elektrik bağlantısı"
+hazard = "Enerjili klemense veya kompresör kondansatörüne temas: elektrik çarpması"
+affected = "Öğrenci"
+action = "Müdahale öncesi enerji kesilir ve ölçülerek kontrol edilir; kondansatör deşarj edilir; setler kaçak akım korumalı (KL-26)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Kompresör, fan ve sıcak hatlar"
+hazard = "Dönen fana temas; basma hattı ve kompresör gövdesiyle yanık"
+affected = "Öğrenci"
+action = "Fan koruyucu kapağı takılı; sıcak hatlar işaretli, çalışma sonrası soğuması beklenir (KL-23)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Klima dış ünitesi taşıma ve montajı"
+hazard = "Ağır ünite taşıma: bel yaralanması, ayağa düşme; yüksekte montaj: düşme"
+affected = "Öğrenci"
+action = "Ünite iki kişiyle veya taşıma arabasıyla taşınır; montaj uygulaması yere yakın sehpada yapılır, öğrenci cephede ve yüksekte çalışmaz (KL-18, KL-25)"
+responsible = "Atölye öğretmeni"
+
+[[location]]
+name = "Tesisat Deposu"
+type = "storage"
+checklists = ["KL-22", "KL-29", "KL-30", "KL-18"]
+
+[[location.row]]
+equipment = "Boru istifi"
+hazard = "İstifin devrilmesi veya kayması; uzun boruyla çarpma"
+affected = "Öğretmen, personel"
+action = "Borular yatay raflarda, uçları geçişe taşmaz; istif yüksekliği sınırlı (KL-22)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Soğutucu akışkan, propan ve azot tüpleri"
+hazard = "Tüpün devrilmesi, ısınması veya sızıntısı: yangın, patlama, boğulma"
+affected = "Herkes"
+action = "Tüpler dik ve zincirli (KL-29.07); yanıcı (propan, R290, R600a, R32), inert (azot) ve diğer akışkan tüpleri sınıflarına göre ayrı (KL-29.05); dolu ve boş ayrı ve etiketli; vana başlıkları takılı; depo bodrumda değil, havadar, güneşten ve ısı kaynağından uzak (KL-30.11)"
+responsible = "Okul müdürü"
+
+[[location.row]]
+equipment = "Yapıştırıcı, PVC solüsyonu ve gres"
+hazard = "Yanıcı buharla yangın"
+affected = "Herkes"
+action = "Kapları kapalı, kapaklı dolapta; söndürücü kapı yanında (KL-30)"
+responsible = "Atölye öğretmeni"
+
+[[location.row]]
+equipment = "Kombi, radyatör ve ağır malzeme"
+hazard = "Raftan düşme; tek başına kaldırma: bel yaralanması"
+affected = "Öğretmen, personel"
+action = "Ağır malzeme alt rafta; iki kişiyle taşınır (KL-18)"
+responsible = "Okul müdürü"

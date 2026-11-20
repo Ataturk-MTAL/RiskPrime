@@ -27,7 +27,7 @@ export interface Readiness {
   doneWithoutAfter: GapEntry[];
   /** Locations with rows whose hazard text is empty. */
   emptyHazard: GapEntry[];
-  /** Checklists with deficiencies ("Hayır" items) that have no risk row ("Risk tablosuna aktarılmamış eksikler"). */
+  /** Checklists with deficiencies ("Hayır" items) that have no risk row ("Riske eklenmemiş eksikler"). */
   noWithoutRow: GapEntry[];
   /** Locations with open rows whose source item is now "Evet" ("Eksiği giderilmiş (Evet olmuş) ama açık satırlar"). */
   sourceNowYes: GapEntry[];
