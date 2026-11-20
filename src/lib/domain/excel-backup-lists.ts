@@ -1,6 +1,6 @@
 // Checklist part of the Excel backup. "Kontrol Listesi" has one row per item per inspection:
-// "Mekân No" names the inspection's location (blank = okul geneli). Version 1 backups have no such
-// column; their rows are one per item and the answers go to the list's first location (or okul geneli).
+// "Mekân No" names the inspection's location (blank = school-wide). Version 1 backups have no such
+// column; their rows are one per item and the answers go to the list's first location (or school-wide).
 import { newId } from "./assessment";
 import { cell, columns, dataRows, norm, SHEET_CHECKLIST, type ColumnDef } from "./excel-import";
 import { answerOf, liveLocationIds, scopesOf } from "./inspections";
@@ -118,7 +118,7 @@ export type KeyedList = {
   key: string;
   list: Checklist;
   locationNos: string[];
-  /** Answers per "Mekân No" value ("" = okul geneli, or every row of a version 1 backup). */
+  /** Answers per "Mekân No" value ("" = school-wide, or every row of a version 1 backup). */
   answers: Map<string, InspectionAnswer[]>;
   /** True for a version 1 backup (no "Mekân No" column in "Kontrol Listesi"). */
   legacy: boolean;

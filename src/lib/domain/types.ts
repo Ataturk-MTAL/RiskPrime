@@ -24,7 +24,7 @@ export interface School {
 
 /**
  * The checklist item a risk row came from, in one inspection (locationId = the inspection's scope,
- * null = okul geneli). Ids may dangle after edits; helpers treat that as unlinked.
+ * null = school-wide). Ids may dangle after edits; helpers treat that as unlinked.
  */
 export interface RiskSource {
   listId: string;
@@ -79,9 +79,9 @@ export interface InspectionAnswer {
 }
 
 /**
- * A checklist (template) filled in for one location (denetim). locationId null = okul geneli, used
+ * A checklist (template) filled in for one location (an inspection). locationId null = school-wide, used
  * when the list has no locations. Only answered or noted items are stored in `answers`; every other
- * item counts as unanswered. A "no" answer is an eksik (deficiency).
+ * item counts as unanswered. A "no" answer is a deficiency.
  */
 export interface Inspection {
   id: string;
@@ -103,7 +103,7 @@ export interface Checklist {
 export type PeriodStatus = "draft" | "signed";
 
 /**
- * Snapshot bookkeeping of one assessment period (dönem). A signed period is locked; correcting it
+ * Snapshot bookkeeping of one assessment period. A signed period is locked; correcting it
  * opens a new draft revision whose previousHash points back at the signed one.
  */
 export interface AssessmentMeta {

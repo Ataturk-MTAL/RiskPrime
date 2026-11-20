@@ -183,7 +183,7 @@ describe("migration v1 -> v2", () => {
     const a = open(v1File());
     const viaA03 = a.locations[3].rows[0];
     expect(sourcesOf(a, viaA03)[0]).toMatchObject({ no: "2", locationId: "a-03", answer: "yes" });
-    // an eksik that was "Hayır" in v1 is still a deficiency, now in a-03
+    // a deficiency that was "Hayır" in v1 is still a deficiency, now in a-03
     expect(deficiencies(a).map((d) => [d.itemNo, d.locationId, d.rowIds])).toEqual([
       ["1", "a-03", ["r-03-01"]],
     ]);

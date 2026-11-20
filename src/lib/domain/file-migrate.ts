@@ -10,7 +10,7 @@ const asList = (x: unknown): unknown[] => (Array.isArray(x) ? x : []);
 interface ListScope {
   /** Live location ids of the list, in order. */
   live: string[];
-  /** Where the v1 answers go: the first live location, or null (okul geneli). */
+  /** Where the v1 answers go: the first live location, or null (school-wide). */
   target: string | null;
 }
 
